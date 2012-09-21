@@ -1,0 +1,3 @@
+[submodule "Projet"]
+	path = Projet
+	url = ssh://git@git.snowsuprem.eu/xsilium-client.git
