@@ -33,7 +33,7 @@ if (APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
   set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_BIT})
 elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
   # Set 10.5 as the base SDK by default
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.5)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.6)
 
   if (NOT CMAKE_OSX_ARCHITECTURES)
     set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_64_BIT})
@@ -53,7 +53,7 @@ set (OGRE_BUILD "${CMAKE_BINARY_DIR}/Library/Ogre")
 set (OIS_HOME "${CMAKE_SOURCE_DIR}/Library/Dependencies/Source/ois")
 
 
-
+#for find CEGUI
 set (CEGUI_SOURCE "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include;${CMAKE_BINARY_DIR}/Library/Cegui/cegui/include")
 
 set (CEGUI_BUILD "${CMAKE_BINARY_DIR}/lib")
@@ -65,7 +65,7 @@ find_package(OIS)
 find_package(Ogre)
 
 
-#add_subdirectory(Engine)
+add_subdirectory(Engine)
 
 add_subdirectory(Sample)
 #add_subdirectory(Projet)
