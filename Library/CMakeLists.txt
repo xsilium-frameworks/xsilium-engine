@@ -5,7 +5,7 @@ add_subdirectory(Bullet)
 find_package(Boost)
 add_subdirectory(Ogre)
 
-find_package(Ogre)
+find_package(OGRE)
 
 set(FREETYPE_H_PATH_ft2build ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Source/freetype/include)
 

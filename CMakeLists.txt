@@ -62,7 +62,7 @@ add_subdirectory(Library)
 
 
 find_package(OIS)
-find_package(Ogre)
+find_package(OGRE)
 
 
 add_subdirectory(Engine)
