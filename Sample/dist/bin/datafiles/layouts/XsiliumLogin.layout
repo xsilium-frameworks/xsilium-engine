@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="DefaultWindow" name="DefaultWindow" >
+        <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property name="Font" value="DejaVuSans-10" />
+        <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        <Window type="AlfiskoSkin/FrameWindow" name="FrameWindow" >
+            <Property name="Area" value="{{0,448},{0,135},{0,902},{0,453}}" />
+            <Property name="Text" value="Identification" />
+            <Window type="AlfiskoSkin/Label" name="lblUsername" >
+                <Property name="Area" value="{{0,-11},{0,13},{1,-214},{1,-231}}" />
+                <Property name="Text" value="Nom d&apos;utilisateur" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="AlfiskoSkin/Label" name="lblPassword" >
+                <Property name="Area" value="{{0,-35},{0,100},{1,-240},{1,-144}}" />
+                <Property name="Text" value="Mot de passe" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="AlfiskoSkin/Editbox" name="edtbUsername" >
+                <Property name="Area" value="{{0,13},{0,42},{0,357},{0,92}}" />
+                <Property name="BlinkCaret" value="True" />
+            </Window>
+            <Window type="AlfiskoSkin/Editbox" name="edtbPassword" >
+                <Property name="Area" value="{{0,11},{0,128},{0,355},{0,178}}" />
+                <Property name="MaskText" value="True" />
+            </Window>
+            <Window type="AlfiskoSkin/Button" name="btnConnexion" >
+                <Property name="Area" value="{{0,240},{0,204},{0,420},{0,254}}" />
+                <Property name="Text" value="Connexion" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
