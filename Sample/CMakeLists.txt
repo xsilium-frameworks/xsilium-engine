@@ -1,35 +1,94 @@
 include_directories(${CMAKE_SOURCE_DIR}/Engine)
 
+
 set(CORE_SOURCE_FILES
-    FrameworkXsilium.cpp
-    BaseApplication.cpp    
+    main.cpp
+    AppStateManager.cpp
+    DotSceneLoader.cpp
+    GameState.cpp 
+    MenuState.cpp
+    OgreFramework.cpp
+    XsiliumApp.cpp    
 )
-
+ 
 set(CORE_HEADER_FILES
-    FrameworkXsilium.h
-    BaseApplication.h     
+    AppState.h
+    AppStateManager.h
+    DotSceneLoader.h 
+    GameState.h
+    MenuState.h 
+    rapidxml.h 
+    OgreFramework.h
+    XsiliumApp.h 
 )
-
 message ("CEGUI ${CEGUI_SOURCE}")
 
-include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${CEGUI_SOURCE})
+include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${OGRE_Terrain_INCLUDE_DIRS} ${CEGUI_SOURCE} )
 
 
 link_libraries(
 ${OGRE_LIBRARIES} 
+${OGRE_Terrain_LIBRARIES}
 ${OIS_LIBRARIES}
-${CEGUI_BUILD}/libCEGUIBase.so
+${CEGUI_BUILD}/libCEGUIBase.dylib
+${CEGUI_BUILD}/libCEGUIOgreRenderer.dylib
 pcre
 )
 
+    add_executable(XsiliumClient
+		   ${CORE_SOURCE_FILES}
+		   ${CORE_HEADER_FILES}
+                  )
 
-    ###########################################################################
-    #                   Dynamically Linked Executable
-    ###########################################################################
-    add_executable(test ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})
+
+if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/OgreFramework.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+
+set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE TRUE)
+
+set_target_properties(XsiliumClient PROPERTIES
+        LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
+      )
 
 
-#set_target_properties(test PROPERTIES
-#        LINK_FLAGS "-framework Cocoa -framework IOKit -framework Carbon"
-#    )
 
+set (XSILIUM_SAMPLE_CONTENTS_PATH
+		${CMAKE_CURRENT_BINARY_DIR}/XsiliumClient.app/Contents)
+
+add_custom_command(TARGET XsiliumClient POST_BUILD
+		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/Ogre.framework/ ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/Ogre.framework
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIBase.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIExpatParser.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
+		)
+# now cfg files
+add_custom_command(TARGET XsiliumClient POST_BUILD
+		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources
+		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/plugins.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/resources.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/datafiles/ ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/datafiles
+		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/ogre.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
+		)
+
+add_custom_command(TARGET XsiliumClient POST_BUILD
+		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins)
+add_custom_command(TARGET XsiliumClient POST_BUILD
+		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libRenderSystem_GL.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_PCZSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgrePaging.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgreTerrain.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
+			)
+
+
+endif()
