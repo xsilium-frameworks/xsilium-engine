@@ -13,7 +13,7 @@ if (UNIX)
 endif(UNIX)
 
 set(CORE_SOURCE_FILES
-    main.cpp
+    Main.cpp
     AppStateManager.cpp
     DotSceneLoader.cpp
     GameState.cpp
