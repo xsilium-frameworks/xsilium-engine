@@ -1,20 +1,29 @@
-#include "MenuState.h"
+#include "LoginState.h"
 #include "CEGUI/CEGUI.h"
 
 
 using namespace Ogre;
 
-MenuState::MenuState()
+LoginState::LoginState()
 {
     m_bQuit         = false;
     m_FrameEvent    = Ogre::FrameEvent();
 }
 
-void MenuState::enter()
+void LoginState::enter()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering MenuState...");
+    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering LoginState...");
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
-   CEGUI::Window *sheet = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumMenu");
+    CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumLogin");
+
+    CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
+    // attach this to the 'real' root
+    base->addChild(sheet);
+
+	CEGUI::Window *frame = sheet->getChild("CEGUIApp");
+	frame->activate();
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
     m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "MenuSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
@@ -29,38 +38,24 @@ void MenuState::enter()
 
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
-	/*
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->destroyAllWidgets();
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->showCursor();
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->createButton(OgreBites::TL_CENTER, "EnterBtn", "Enter GameState", 250);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->createButton(OgreBites::TL_CENTER, "ExitBtn", "Exit AdvancedOgreFramework", 250);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->createLabel(OgreBites::TL_TOP, "MenuLbl", "Menu mode", 250);
-*/
-
-	
     createScene();
 }
 
-void MenuState::createScene()
+void LoginState::createScene()
 {
 }
 
-void MenuState::exit()
+void LoginState::exit()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Leaving MenuState...");
+    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Leaving LoginState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         OgreFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
 
-//    OgreFramework::getSingletonPtr()->m_pTrayMgr->clearAllTrays();
-//    OgreFramework::getSingletonPtr()->m_pTrayMgr->destroyAllWidgets();
-//    OgreFramework::getSingletonPtr()->m_pTrayMgr->setListener(0);
 }
 
-bool MenuState::keyPressed(const OIS::KeyEvent &keyEventRef)
+bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
     if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
     {
@@ -82,7 +77,7 @@ bool MenuState::keyPressed(const OIS::KeyEvent &keyEventRef)
     return true;
 }
 
-bool MenuState::keyReleased(const OIS::KeyEvent &keyEventRef)
+bool LoginState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
     CEGUI::System::getSingleton().getDefaultGUIContext().
         injectKeyUp(static_cast<CEGUI::Key::Scan>(keyEventRef.key));
@@ -90,7 +85,7 @@ bool MenuState::keyReleased(const OIS::KeyEvent &keyEventRef)
     return true;
 }
 
-bool MenuState::mouseMoved(const OIS::MouseEvent &evt)
+bool LoginState::mouseMoved(const OIS::MouseEvent &evt)
 {
 	CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
 
@@ -99,21 +94,21 @@ bool MenuState::mouseMoved(const OIS::MouseEvent &evt)
     return true;
 }
 
-bool MenuState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
+bool LoginState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
 {
     CEGUI::System::getSingleton().getDefaultGUIContext().
         injectMouseButtonDown(convertOISButtonToCegui(id));
     return true;
 }
 
-bool MenuState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
+bool LoginState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
 {
     CEGUI::System::getSingleton().getDefaultGUIContext().
         injectMouseButtonUp(convertOISButtonToCegui(id));
     return true;
 }
 
-void MenuState::update(double timeSinceLastFrame)
+void LoginState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 
@@ -129,7 +124,7 @@ void MenuState::update(double timeSinceLastFrame)
     }
 }
 
-CEGUI::MouseButton MenuState::convertOISButtonToCegui(int buttonID)
+CEGUI::MouseButton LoginState::convertOISButtonToCegui(int buttonID)
 {
    using namespace OIS;
 
@@ -146,12 +141,6 @@ CEGUI::MouseButton MenuState::convertOISButtonToCegui(int buttonID)
     }
 }
 
-/*
-void MenuState::buttonHit(OgreBites::Button *button)
-{
-    if(button->getName() == "ExitBtn")
-        m_bQuit = true;
-    else if(button->getName() == "EnterBtn")
-        changeAppState(findByName("GameState"));
-}
-*/
+
+
+

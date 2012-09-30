@@ -1,36 +1,21 @@
 include_directories(${CMAKE_SOURCE_DIR}/Engine)
 
-if (UNIX)
-	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/bin/datafiles
-		DESTINATION ./
-		CONFIGURATIONS All
-	)
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
-		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
-		DESTINATION ./
-		CONFIGURATIONS All
-	)
-endif(UNIX)
 
 set(CORE_SOURCE_FILES
     main.cpp
     AppStateManager.cpp
     DotSceneLoader.cpp
-    GameState.cpp
-    LoginState.cpp 
+    GameState.cpp 
     MenuState.cpp
     OgreFramework.cpp
-    XsiliumApp.cpp
-    
-     
+    XsiliumApp.cpp    
 )
-
+ 
 set(CORE_HEADER_FILES
     AppState.h
     AppStateManager.h
     DotSceneLoader.h 
     GameState.h
-    LoginState.h
     MenuState.h 
     rapidxml.h 
     OgreFramework.h
@@ -45,13 +30,8 @@ link_libraries(
 ${OGRE_LIBRARIES} 
 ${OGRE_Terrain_LIBRARIES}
 ${OIS_LIBRARIES}
-${CEGUI_BUILD}/libCEGUIBase.so
-${CEGUI_BUILD}/libCEGUIOgreRenderer.so
-
-# Decommenter pour mac
-#{CEGUI_BUILD}/libCEGUIBase.dylib
-#{CEGUI_BUILD}/libCEGUIOgreRenderer.dylib
-
+${CEGUI_BUILD}/libCEGUIBase.lib
+${CEGUI_BUILD}/libCEGUIOgreRenderer.lib
 pcre
 )
 
@@ -59,7 +39,6 @@ pcre
 		   ${CORE_SOURCE_FILES}
 		   ${CORE_HEADER_FILES}
                   )
-
 
 
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)

@@ -1,7 +1,5 @@
 #include "OgreFramework.h"
-#ifdef __APPLE__
-#include "OSX/macUtils.h"
-#endif
+
 using namespace Ogre;
 
 template<> OgreFramework* Ogre::Singleton<OgreFramework>::msSingleton = 0;
@@ -34,30 +32,19 @@ OgreFramework::~OgreFramework()
 
 bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListener, OIS::MouseListener *pMouseListener)
 {
-    std::string mResourcePath ;
-    
-#ifdef __APPLE__
-    mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
-#else
-    mResourcePath = "";
-#endif
-    
-    
     Ogre::LogManager* logMgr = new Ogre::LogManager();
 
     m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
     m_pLog->setDebugOutputEnabled(true);
 
-    m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg","ogre.log");
-    
-    
+    m_pRoot = new Ogre::Root();
 
     if(!m_pRoot->showConfigDialog())
         return false;
     m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
 
     m_pViewport = m_pRenderWnd->addViewport(0);
-    m_pViewport->setBackgroundColour(ColourValue(0.5f, 0.5f, 0.5f, 1.0f));
+    m_pViewport->setBackgroundColour(ColourValue(0.0f, 0.0f, 0.0f, 1.0f));
 
     m_pViewport->setCamera(0);
 
@@ -87,9 +74,10 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
 
     Ogre::String secName, typeName, archName;
     Ogre::ConfigFile cf;
-    cf.load(mResourcePath + "resources.cfg");
+    cf.load("resources.cfg");
 
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+
     while (seci.hasMoreElements())
     {
         secName = seci.peekNextKey();
@@ -99,25 +87,14 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
         {
             typeName = i->first;
             archName = i->second;
-            
-#ifdef __APPLE__
-            if (!Ogre::StringUtil::startsWith(archName, "/", false)) // only adjust relative dirs
-                archName = Ogre::String(Ogre::macBundlePath() + "/" + archName);
-#endif
-            
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
         }
     }
+
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-    
+
     initialiseDefaultResourceGroups();
-    
     setupCEGUI();
-
-//    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-//    m_pTrayMgr = new OgreBites::SdkTrayManager("AOFTrayMgr", m_pRenderWnd, m_pMouse, 0);
-
 
     m_pTimer = new Ogre::Timer();
     m_pTimer->reset();
