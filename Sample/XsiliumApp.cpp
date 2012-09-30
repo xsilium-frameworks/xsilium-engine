@@ -1,5 +1,6 @@
 #include "XsiliumApp.h"
 
+#include "LoginState.h"
 #include "MenuState.h"
 #include "GameState.h"
 //#include "PauseState.h"
@@ -25,9 +26,10 @@ void XsiliumApp::startXsilium()
 
 	m_pAppStateManager = new AppStateManager();
 
+	LoginState::create(m_pAppStateManager, "LoginState");
 	MenuState::create(m_pAppStateManager, "MenuState");
 	GameState::create(m_pAppStateManager, "GameState");
 //    PauseState::create(m_pAppStateManager, "PauseState");
 
-	m_pAppStateManager->start(m_pAppStateManager->findByName("MenuState"));
+	m_pAppStateManager->start(m_pAppStateManager->findByName("LoginState"));
 }

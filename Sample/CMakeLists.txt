@@ -1,21 +1,36 @@
 include_directories(${CMAKE_SOURCE_DIR}/Engine)
 
+if (UNIX)
+	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/bin/datafiles
+		DESTINATION ./
+		CONFIGURATIONS All
+	)
+	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
+		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
+		DESTINATION ./
+		CONFIGURATIONS All
+	)
+endif(UNIX)
 
 set(CORE_SOURCE_FILES
-    main.cpp
+    Main.cpp
     AppStateManager.cpp
     DotSceneLoader.cpp
-    GameState.cpp 
+    GameState.cpp
+    LoginState.cpp 
     MenuState.cpp
     OgreFramework.cpp
-    XsiliumApp.cpp    
+    XsiliumApp.cpp
+    
+     
 )
- 
+
 set(CORE_HEADER_FILES
     AppState.h
     AppStateManager.h
     DotSceneLoader.h 
     GameState.h
+    LoginState.h
     MenuState.h 
     rapidxml.h 
     OgreFramework.h
@@ -104,6 +119,5 @@ add_custom_command(TARGET XsiliumClient POST_BUILD
 		add_custom_command(TARGET XsiliumClient POST_BUILD
 			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgreTerrain.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
 			)
-
 
 endif()
