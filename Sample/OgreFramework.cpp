@@ -45,10 +45,10 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     
     Ogre::LogManager* logMgr = new Ogre::LogManager();
 
-    m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
+    m_pLog = Ogre::LogManager::getSingleton().createLog(mResourcePath + "OgreLogfile.log", true, true, false);
     m_pLog->setDebugOutputEnabled(true);
 
-    m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg","ogre.log");
+    m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg",mResourcePath + "ogre.log");
     
     
 
@@ -123,7 +123,6 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     m_pTimer->reset();
 
     m_pRenderWnd->setActive(true);
-
     return true;
 }
 
@@ -133,8 +132,7 @@ void OgreFramework::initialiseDefaultResourceGroups()
 {
 
 	mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-
-
+    
     // set the default resource groups to be used
     CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
     CEGUI::Font::setDefaultResourceGroup("Fonts");

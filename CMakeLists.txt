@@ -54,16 +54,15 @@ set (OIS_HOME "${CMAKE_SOURCE_DIR}/Library/Dependencies/Source/ois")
 
 
 #for find CEGUI
-set (CEGUI_SOURCE "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include;${CMAKE_BINARY_DIR}/Library/Cegui/cegui/include")
-
-set (CEGUI_BUILD "${CMAKE_BINARY_DIR}/lib")
+set (CEGUI_SOURCE "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/")
+set (CEGUI_BUILD "${CMAKE_BINARY_DIR}/")
 
 add_subdirectory(Library)
 
 
 find_package(OIS)
 find_package(OGRE)
-
+find_package(CEGUI)
 
 add_subdirectory(Engine)
 

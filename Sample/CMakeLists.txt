@@ -21,17 +21,16 @@ set(CORE_HEADER_FILES
     OgreFramework.h
     XsiliumApp.h 
 )
-message ("CEGUI ${CEGUI_SOURCE}")
+message ("CEGUI ${CEGUI_INCLUDE_DIR}")
 
-include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${OGRE_Terrain_INCLUDE_DIRS} ${CEGUI_SOURCE} )
+include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${OGRE_Terrain_INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR} )
 
 
 link_libraries(
 ${OGRE_LIBRARIES} 
 ${OGRE_Terrain_LIBRARIES}
 ${OIS_LIBRARIES}
-${CEGUI_BUILD}/libCEGUIBase.dylib
-${CEGUI_BUILD}/libCEGUIOgreRenderer.dylib
+${CEGUI_LIBRARY}
 pcre
 )
 
@@ -84,8 +83,24 @@ add_custom_command(TARGET XsiliumClient POST_BUILD
 			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_PCZSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgrePaging.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_ParticleFX.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_BSPSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_CgProgramManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_BSPSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_OctreeZone.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
+			)
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_OctreeSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
+			)
+
 		add_custom_command(TARGET XsiliumClient POST_BUILD
 			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgreTerrain.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
 			)
