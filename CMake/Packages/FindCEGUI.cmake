@@ -98,7 +98,7 @@ FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_DEBUG
 
 # Newer versions of CEGUI have the renderer for OGRE shipped with them
   # Find CEGUI OGRE Renderer headers
-  FIND_PATH(CEGUI_OGRE_RENDERER_INCLUDE_DIR CEGUIOgreRenderer.h
+  FIND_PATH(CEGUI_OGRE_RENDERER_INCLUDE_DIR Renderer.h
     PATHS
       ${CEGUI_HOME}
       $ENV{CEGUIOGRERENDERERDIR}
