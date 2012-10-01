@@ -15,7 +15,7 @@ set(CMAKE_MODULE_PATH
 "${CMAKE_SOURCE_DIR}/CMake"
 "${CMAKE_SOURCE_DIR}/CMake/Packages"
 "${CMAKE_SOURCE_DIR}/CMake/Utils"
- ${CMAKE_MODULE_PATH}
+ ${CMAKE_MODULE_PATH} 
 
 )
 
@@ -60,9 +60,9 @@ set (CEGUI_BUILD "${CMAKE_BINARY_DIR}/")
 add_subdirectory(Library)
 
 
-find_package(OIS)
-find_package(OGRE)
-find_package(CEGUI)
+find_package(OIS QUIET)
+find_package(OGRE QUIET)
+find_package(CEGUI QUIET)
 
 add_subdirectory(Engine)
 
