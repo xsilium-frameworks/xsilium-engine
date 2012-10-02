@@ -3,7 +3,10 @@ add_subdirectory(Enet)
 add_subdirectory(Bullet)
 
 find_package(Boost)
+
 add_subdirectory(Ogre)
+
+add_dependencies( OgreMain FreeImage freetype OIS pcre zlib zziplib)
 
 find_package(OGRE)
 
@@ -21,3 +24,7 @@ set(OGRE_LIB "${OGRE_LIBRARIES}")
 
 
 add_subdirectory(Cegui)
+
+add_dependencies( CEGUIBase OgreMain )
+
+
