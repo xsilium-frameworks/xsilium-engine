@@ -66,6 +66,9 @@ find_package(CEGUI QUIET)
 
 add_subdirectory(Engine)
 
+add_dependencies( XsiliumEngine CEGUIBase OgreMain )
+
 add_subdirectory(Sample)
 #add_subdirectory(Projet)
 
+add_dependencies(XsiliumClient XsiliumEngine )
