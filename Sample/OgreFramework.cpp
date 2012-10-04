@@ -1,4 +1,5 @@
 #include "OgreFramework.h"
+#include "Interface.h"
 #ifdef __APPLE__
 #include "OSX/macUtils.h"
 #endif
@@ -18,7 +19,6 @@ OgreFramework::OgreFramework()
     m_pInputMgr			= 0;
     m_pKeyboard			= 0;
     m_pMouse			= 0;
-    //    m_pTrayMgr          = 0;
     
     
 }
@@ -26,8 +26,7 @@ OgreFramework::OgreFramework()
 OgreFramework::~OgreFramework()
 {
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Extinction OGRE...");
-    //    if(m_pTrayMgr)      delete m_pTrayMgr;
-    //
+
     if(m_pInputMgr)		OIS::InputManager::destroyInputSystem(m_pInputMgr);
     if(m_pRoot)			delete m_pRoot;
 }
@@ -111,13 +110,14 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-    initialiseDefaultResourceGroups();
+
+    // Calling methods from Interface class into the engine
+    Interface cegui;
+    cegui.initialiseDefaultResourceGroups();
+    cegui.setupCEGUI();
     
-    setupCEGUI();
-    
-    //    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-    
-    //    m_pTrayMgr = new OgreBites::SdkTrayManager("AOFTrayMgr", m_pRenderWnd, m_pMouse, 0);
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
     
     
     m_pTimer = new Ogre::Timer();
@@ -128,7 +128,7 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     return true;
 }
 
-
+/*
 void OgreFramework::initialiseDefaultResourceGroups()
 
 {
@@ -156,30 +156,16 @@ void OgreFramework::setupCEGUI()
     CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
     
 }
-
+*/
 bool OgreFramework::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
     if(m_pKeyboard->isKeyDown(OIS::KC_SYSRQ))
     {
-        //        m_pRenderWnd->writeContentsToTimestampedFile("AOF_Screenshot_", ".jpg");
         return true;
     }
     
     if(m_pKeyboard->isKeyDown(OIS::KC_O))
     {
-        
-		/*
-         if(m_pTrayMgr->isLogoVisible())
-         {
-         m_pTrayMgr->hideFrameStats();
-         m_pTrayMgr->hideLogo();
-         }
-         else
-         {
-         m_pTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-         m_pTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
-         }
-         */
     }
     
     return true;
