@@ -25,6 +25,19 @@ set(OGRE_LIB "${OGRE_LIBRARIES}")
 
 add_subdirectory(Cegui)
 
-add_dependencies( CEGUIBase OgreMain )
+add_dependencies( CEGUIBase
+ OgreMain 
+ RenderSystem_GL 
+ Plugin_CgProgramManager 
+ Plugin_OctreeSceneManager 
+ Plugin_BSPSceneManager 
+ Plugin_ParticleFX
+ Plugin_PCZSceneManager
+ Plugin_OctreeZone
+ OgrePaging
+ OgreTerrain
+ OgreRTShaderSystem
+ 
+ )
 
 
