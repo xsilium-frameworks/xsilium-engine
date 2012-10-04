@@ -14,26 +14,25 @@ void LoginState::enter()
 {
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering LoginState...");
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
-
     CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumLogin");
 
     CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
     // attach this to the 'real' root
+    sheet->activate();
     base->addChild(sheet);
-
-	CEGUI::Window *frame = sheet->getChild("CEGUIApp");
-	frame->activate();
+    
+//	CEGUI::Window *frame = sheet->getChild("CEGUIApp");
+//	frame->activate();
 
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
-    m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "LoginSceneMgr");
+    m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "MenuSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
 
     m_pCamera = m_pSceneMgr->createCamera("MenuCam");
-    m_pCamera->setPosition(Vector3(0, 50, 100));
+    m_pCamera->setPosition(Vector3(0, 25, -50));
     m_pCamera->lookAt(Vector3(0, 0, 0));
     m_pCamera->setNearClipDistance(1);
-
 
     m_pCamera->setAspectRatio(Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualWidth()) /
         Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
@@ -45,9 +44,6 @@ void LoginState::enter()
 
 void LoginState::createScene()
 {
-    ParticleSystem* ps;
-    ps = m_pSceneMgr->createParticleSystem("Nimbus", "Xsilium/GreenyNimbus");
-    		m_pSceneMgr->getRootSceneNode()->attachObject(ps);
 }
 
 void LoginState::exit()
