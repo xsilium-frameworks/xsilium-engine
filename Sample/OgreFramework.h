@@ -4,12 +4,10 @@
 #include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
-//#include <OgreOverlay.h>
-//#include <OgreOverlayElement.h>
-//#include <OgreOverlayManager.h>
 
-#include <CEGUI/CEGUI.h>
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
+
+//#include <CEGUI/CEGUI.h>
+//#include <CEGUI/RendererModules/Ogre/Renderer.h>
 
 #include <OgreParticleSystem.h>
 
@@ -25,7 +23,6 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-//#include <SdkTrays.h>
 
 class OgreFramework : public Ogre::Singleton<OgreFramework>, OIS::KeyListener, OIS::MouseListener
 {
@@ -58,9 +55,9 @@ public:
 
 
 protected:
-	CEGUI::OgreRenderer* mRenderer;
-    void initialiseDefaultResourceGroups();
-    void setupCEGUI();
+//	CEGUI::OgreRenderer* mRenderer;
+//    void initialiseDefaultResourceGroups();
+//    void setupCEGUI();
 
 
 
