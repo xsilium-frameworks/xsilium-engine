@@ -110,6 +110,7 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     }
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
     initialiseDefaultResourceGroups();
     
     setupCEGUI();
