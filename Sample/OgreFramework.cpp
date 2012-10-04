@@ -1,14 +1,10 @@
 #include "OgreFramework.h"
-#include "Interface.h"
-#ifdef __APPLE__
-#include "OSX/macUtils.h"
-#endif
+
 using namespace Ogre;
 
 template<> OgreFramework* Ogre::Singleton<OgreFramework>::msSingleton = 0;
 
 OgreFramework::OgreFramework()
-: mRenderer(0)
 {
     m_pRoot				= 0;
     m_pRenderWnd		= 0;

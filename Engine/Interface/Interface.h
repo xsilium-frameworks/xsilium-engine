@@ -4,17 +4,18 @@
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 
-class Interface : public Ogre::Singleton<OgreFramework>
+class Interface
 {
 
 public:
 	Interface();
 	~Interface();
 
-protected:
+	void initialiseDefaultResourceGroups();
+	void setupCEGUI();
+
+private:
 	CEGUI::OgreRenderer* mRenderer;
-    void initialiseDefaultResourceGroups();
-    void setupCEGUI();
 
 };
 

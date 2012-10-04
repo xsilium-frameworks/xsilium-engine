@@ -2,6 +2,7 @@
 #define APP_STATE_H
 
 #include "OgreFramework.h"
+#include "CEGUI/CEGUI.h"
 
 class AppState;
 

@@ -46,6 +46,7 @@ ${OGRE_LIBRARIES}
 ${OGRE_Terrain_LIBRARIES}
 ${OIS_LIBRARIES}
 ${CEGUI_LIBRARY}
+XsiliumEngine
 pcre
 )
 
