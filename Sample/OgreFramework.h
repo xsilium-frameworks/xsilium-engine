@@ -5,6 +5,10 @@
 #include <OgreEntity.h>
 #include <OgreLogManager.h>
 
+#ifdef __APPLE__
+#include "OSX/macUtils.h"
+#endif
+
 
 //#include <CEGUI/CEGUI.h>
 //#include <CEGUI/RendererModules/Ogre/Renderer.h>
@@ -22,6 +26,8 @@
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <OISMouse.h>
+
+#include "Interface/Interface.h"
 
 
 class OgreFramework : public Ogre::Singleton<OgreFramework>, OIS::KeyListener, OIS::MouseListener

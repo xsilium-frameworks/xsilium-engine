@@ -1,5 +1,4 @@
 #include "LoginState.h"
-#include "CEGUI/CEGUI.h"
 
 
 using namespace Ogre;
