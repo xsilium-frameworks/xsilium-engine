@@ -17,7 +17,7 @@ set(CMAKE_MODULE_PATH
 "${CMAKE_SOURCE_DIR}/CMake/Utils"
  ${CMAKE_MODULE_PATH} 
 
-)
+) 
 
 if (WIN32)
   # look for DirectX which is needed by OIS
@@ -66,7 +66,13 @@ find_package(CEGUI QUIET)
 
 add_subdirectory(Engine)
 
-add_dependencies( XsiliumEngine CEGUIBase OgreMain )
+add_dependencies( XsiliumEngine
+ CEGUIBase 
+ CEGUIOgreRenderer 
+ CEGUIFreeImageImageCodec
+ CEGUILibXMLParser
+
+   )
 
 add_subdirectory(Sample)
 #add_subdirectory(Projet)
