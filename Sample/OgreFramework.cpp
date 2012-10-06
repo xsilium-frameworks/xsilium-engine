@@ -11,12 +11,9 @@ OgreFramework::OgreFramework()
     m_pViewport			= 0;
     m_pLog				= 0;
     m_pTimer			= 0;
-    
     m_pInputMgr			= 0;
     m_pKeyboard			= 0;
     m_pMouse			= 0;
-    
-    
 }
 
 OgreFramework::~OgreFramework()
@@ -46,8 +43,7 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg","ogre.log");
     
     
-    
-    if(!m_pRoot->showConfigDialog())
+      if(!m_pRoot->showConfigDialog())
         return false;
     m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
     
@@ -114,45 +110,13 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-    
-    
     m_pTimer = new Ogre::Timer();
     m_pTimer->reset();
-    
     m_pRenderWnd->setActive(true);
     
     return true;
 }
 
-/*
-void OgreFramework::initialiseDefaultResourceGroups()
-
-{
-    
-	mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-    
-    
-    // set the default resource groups to be used
-    CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-    CEGUI::Font::setDefaultResourceGroup("Fonts");
-    CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-    CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
-    CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-    CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
-    CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
-    // setup default group for validation schemas
-    CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
-    if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
-        parser->setProperty("SchemaDefaultResourceGroup", "schemas");
-}
-
-void OgreFramework::setupCEGUI()
-{
-    CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
-    
-}
-*/
 bool OgreFramework::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
     if(m_pKeyboard->isKeyDown(OIS::KC_SYSRQ))

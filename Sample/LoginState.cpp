@@ -23,6 +23,15 @@ void LoginState::enter()
 	CEGUI::Window *frame = sheet->getChild("CEGUIApp");
 	frame->activate();
 
+	sheet->getChild("CEGUIApp/edtUsername")->
+	        subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&LoginState::handleSubmit, this));
+
+
+	sheet->getChild("CEGUIApp/btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,
+			CEGUI::Event::Subscriber(&LoginState::PushConnexion, this));
+
+
+
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
     m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "LoginSceneMgr");
@@ -56,6 +65,9 @@ void LoginState::exit()
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         OgreFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
+
+    CEGUI::WindowManager::getSingleton().destroyAllWindows();
+
 
 }
 
@@ -128,6 +140,23 @@ void LoginState::update(double timeSinceLastFrame)
     }
 }
 
+
+bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
+		{
+			OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
+			changeAppState(findByName("GameState"));
+			return true;
+		}
+
+bool LoginState::handleSubmit(const CEGUI::EventArgs&)
+{
+
+	CEGUI::String valueUsername = fldUsername->getText();
+
+    return true;
+}
+
+
 CEGUI::MouseButton LoginState::convertOISButtonToCegui(int buttonID)
 {
    using namespace OIS;
@@ -143,6 +172,8 @@ CEGUI::MouseButton LoginState::convertOISButtonToCegui(int buttonID)
     default:
         return CEGUI::LeftButton;
     }
+
+
 }
 
 

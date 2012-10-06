@@ -18,6 +18,10 @@ GameState::GameState()
 void GameState::enter()
 {
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering GameState...");
+    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+
+    CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumGame");
+
 
     m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
@@ -124,6 +128,11 @@ bool GameState::keyPressed(const OIS::KeyEvent &keyEventRef)
     if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
     {
 //        pushAppState(findByName("PauseState"));
+        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
+        {
+            m_bQuit = true;
+            return true;
+        }
         return true;
     }
 
@@ -166,14 +175,10 @@ bool GameState::keyReleased(const OIS::KeyEvent &keyEventRef)
 
 bool GameState::mouseMoved(const OIS::MouseEvent &evt)
 {
-//    if(OgreFramework::getSingletonPtr()->m_pTrayMgr->injectMouseMove(evt)) return true;
+	CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
 
-    if(m_bRMouseDown)
-    {
-        m_pCamera->yaw(Degree(evt.state.X.rel * -0.1f));
-        m_pCamera->pitch(Degree(evt.state.Y.rel * -0.1f));
-    }
-
+	   ctx.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
+	   ctx.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
     return true;
 }
 
