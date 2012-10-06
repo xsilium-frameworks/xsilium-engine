@@ -22,6 +22,13 @@ void GameState::enter()
 
     CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumGame");
 
+    CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
+        // attach this to the 'real' root
+        base->addChild(sheet);
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
+
+//    d_console = new Console();
 
     m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
@@ -76,54 +83,11 @@ void GameState::exit()
 
 void GameState::createScene()
 {
-    m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
-
-    DotSceneLoader* pDotSceneLoader = new DotSceneLoader();
-//    pDotSceneLoader->parseDotScene("CubeScene.xml", "General", m_pSceneMgr, m_pSceneMgr->getRootSceneNode());
-    delete pDotSceneLoader;
-
-//    m_pSceneMgr->getEntity("Cube01")->setQueryFlags(CUBE_MASK);
-//    m_pSceneMgr->getEntity("Cube02")->setQueryFlags(CUBE_MASK);
-//    m_pSceneMgr->getEntity("Cube03")->setQueryFlags(CUBE_MASK);
-
-//    m_pOgreHeadEntity = m_pSceneMgr->createEntity("OgreHeadEntity", "ogrehead.mesh");
-//    m_pOgreHeadEntity->setQueryFlags(OGRE_HEAD_MASK);
-//    m_pOgreHeadNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode");
-//    m_pOgreHeadNode->attachObject(m_pOgreHeadEntity);
-//    m_pOgreHeadNode->setPosition(Vector3(0, 0, -25));
-
-//    m_pOgreHeadMat = m_pOgreHeadEntity->getSubEntity(1)->getMaterial();
-//    m_pOgreHeadMatHigh = m_pOgreHeadMat->clone("OgreHeadMatHigh");
-//    m_pOgreHeadMatHigh->getTechnique(0)->getPass(0)->setAmbient(1, 0, 0);
-//    m_pOgreHeadMatHigh->getTechnique(0)->getPass(0)->setDiffuse(1, 0, 0, 0);
 }
 
 bool GameState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-    if(m_bSettingsMode == true)
-    {
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_S))
-        {
 
-		/*
-		OgreBites::SelectMenu* pMenu = (OgreBites::SelectMenu*)OgreFramework::getSingletonPtr()->m_pTrayMgr->getWidget("ChatModeSelMenu");
-            if(pMenu->getSelectionIndex() + 1 < (int)pMenu->getNumItems())
-                pMenu->selectItem(pMenu->getSelectionIndex() + 1);
-		*/
-
-        }
-
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_W))
-        {
-
-			/*
-            OgreBites::SelectMenu* pMenu = (OgreBites::SelectMenu*)OgreFramework::getSingletonPtr()->m_pTrayMgr->getWidget("ChatModeSelMenu");
-            if(pMenu->getSelectionIndex() - 1 >= 0)
-                pMenu->selectItem(pMenu->getSelectionIndex() - 1);
-
-			*/
-        }
-    }
 
     if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
     {
@@ -135,36 +99,20 @@ bool GameState::keyPressed(const OIS::KeyEvent &keyEventRef)
         }
         return true;
     }
+    CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
-    if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_I))
-    {
-//        if(m_pDetailsPanel->getTrayLocation() == OgreBites::TL_NONE)
-//        {
-//           OgreFramework::getSingletonPtr()->m_pTrayMgr->moveWidgetToTray(m_pDetailsPanel, OgreBites::TL_TOPLEFT, 0);
-//            m_pDetailsPanel->show();
-//        }
-//        else
-//        {
-//            OgreFramework::getSingletonPtr()->m_pTrayMgr->removeWidgetFromTray(m_pDetailsPanel);
-//            m_pDetailsPanel->hide();
-//        }
-    }
 
-    if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_TAB))
-    {
-        m_bSettingsMode = !m_bSettingsMode;
-        return true;
-    }
+     // do event injection
+     CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
 
-    if(m_bSettingsMode && OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_RETURN) ||
-        OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_NUMPADENTER))
-    {
-    }
+     // key down
+     ctx.injectKeyDown(static_cast<CEGUI::Key::Scan>(keyEventRef.key));
 
-    if(!m_bSettingsMode || (m_bSettingsMode && !OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_O)))
-        OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
+     // now character
+     ctx.injectChar(keyEventRef.text);
+    OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
 
-    return true;
+
 }
 
 bool GameState::keyReleased(const OIS::KeyEvent &keyEventRef)
@@ -179,6 +127,7 @@ bool GameState::mouseMoved(const OIS::MouseEvent &evt)
 
 	   ctx.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
 	   ctx.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+
     return true;
 }
 
@@ -198,89 +147,42 @@ bool GameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
         m_bRMouseDown = true;
     }
 	*/
+    CEGUI::System::getSingleton().getDefaultGUIContext().
+        injectMouseButtonDown(convertOISButtonToCegui(id));
 	
     return true;
 }
 
 bool GameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
 {
- 
-	/*
-	if(OgreFramework::getSingletonPtr()->m_pTrayMgr->injectMouseUp(evt, id)) return true;
-
-    if(id == OIS::MB_Left)
-    {
-        m_bLMouseDown = false;
-    }
-    else if(id == OIS::MB_Right)
-    {
-        m_bRMouseDown = false;
-    }
-	*/
-
+    CEGUI::System::getSingleton().getDefaultGUIContext().
+        injectMouseButtonUp(convertOISButtonToCegui(id));
     return true;
 }
 
 void GameState::onLeftPressed(const OIS::MouseEvent &evt)
 {
-    if(m_pCurrentObject)
-    {
-        m_pCurrentObject->showBoundingBox(false);
-//        m_pCurrentEntity->getSubEntity(1)->setMaterial(m_pOgreHeadMat);
-    }
-
-    Ogre::Ray mouseRay = m_pCamera->getCameraToViewportRay(OgreFramework::getSingletonPtr()->m_pMouse->getMouseState().X.abs / float(evt.state.width),
-        OgreFramework::getSingletonPtr()->m_pMouse->getMouseState().Y.abs / float(evt.state.height));
-    m_pRSQ->setRay(mouseRay);
-    m_pRSQ->setSortByDistance(true);
-
-    Ogre::RaySceneQueryResult &result = m_pRSQ->execute();
-    Ogre::RaySceneQueryResult::iterator itr;
-
-    for(itr = result.begin(); itr != result.end(); itr++)
-    {
-        if(itr->movable)
-        {
-            OgreFramework::getSingletonPtr()->m_pLog->logMessage("MovableName: " + itr->movable->getName());
-            m_pCurrentObject = m_pSceneMgr->getEntity(itr->movable->getName())->getParentSceneNode();
-            OgreFramework::getSingletonPtr()->m_pLog->logMessage("ObjName " + m_pCurrentObject->getName());
-            m_pCurrentObject->showBoundingBox(true);
-            m_pCurrentEntity = m_pSceneMgr->getEntity(itr->movable->getName());
-//            m_pCurrentEntity->getSubEntity(1)->setMaterial(m_pOgreHeadMatHigh);
-            break;
-        }
-    }
 }
 
 void GameState::moveCamera()
 {
-    if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_LSHIFT))
-        m_pCamera->moveRelative(m_TranslateVector);
-    m_pCamera->moveRelative(m_TranslateVector / 10);
+
 }
 
 void GameState::getInput()
 {
-    if(m_bSettingsMode == false)
-    {
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_A))
-            m_TranslateVector.x = -m_MoveScale;
 
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_D))
-            m_TranslateVector.x = m_MoveScale;
-
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_W))
-            m_TranslateVector.z = -m_MoveScale;
-
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_S))
-            m_TranslateVector.z = m_MoveScale;
-    }
 }
 
 void GameState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 //    OgreFramework::getSingletonPtr()->m_pTrayMgr->frameRenderingQueued(m_FrameEvent);
+
+    CEGUI::System& gui_system(CEGUI::System::getSingleton());
+
+    gui_system.injectTimePulse(timeSinceLastFrame);
+    gui_system.getDefaultGUIContext().injectTimePulse(timeSinceLastFrame);
 
     if(m_bQuit == true)
     {
@@ -318,51 +220,150 @@ void GameState::update(double timeSinceLastFrame)
     moveCamera();
 }
 
-/*
-void GameState::buildGUI()
+
+CEGUI::MouseButton GameState::convertOISButtonToCegui(int buttonID)
 {
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->createLabel(OgreBites::TL_TOP, "GameLbl", "Game mode", 250);
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->showCursor();
+   using namespace OIS;
 
-    Ogre::StringVector items;
-    items.push_back("cam.pX");
-    items.push_back("cam.pY");
-    items.push_back("cam.pZ");
-    items.push_back("cam.oW");
-    items.push_back("cam.oX");
-    items.push_back("cam.oY");
-    items.push_back("cam.oZ");
-    items.push_back("Mode");
-
-    m_pDetailsPanel = OgreFramework::getSingletonPtr()->m_pTrayMgr->createParamsPanel(OgreBites::TL_TOPLEFT, "DetailsPanel", 200, items);
-    m_pDetailsPanel->show();
-
-    Ogre::String infoText = "[TAB] - Switch input mode\n\n[W] - Forward / Mode up\n[S] - Backwards/ Mode down\n[A] - Left\n";
-    infoText.append("[D] - Right\n\nPress [SHIFT] to move faster\n\n[O] - Toggle FPS / logo\n");
-    infoText.append("[Print] - Take screenshot\n\n[ESC] - Exit");
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->createTextBox(OgreBites::TL_RIGHT, "InfoPanel", infoText, 300, 220);
-
-    Ogre::StringVector chatModes;
-    chatModes.push_back("Solid mode");
-    chatModes.push_back("Wireframe mode");
-    chatModes.push_back("Point mode");
-    OgreFramework::getSingletonPtr()->m_pTrayMgr->createLongSelectMenu(OgreBites::TL_TOPRIGHT, "ChatModeSelMenu", "ChatMode", 200, 3, chatModes);
-}
-*/
-
-/*
-void GameState::itemSelected(OgreBites::SelectMenu* menu)
-{
-    switch(menu->getSelectionIndex())
+   switch (buttonID)
     {
-    case 0:
-        m_pCamera->setPolygonMode(Ogre::PM_SOLID);break;
-    case 1:
-        m_pCamera->setPolygonMode(Ogre::PM_WIREFRAME);break;
-    case 2:
-        m_pCamera->setPolygonMode(Ogre::PM_POINTS);break;
+   case OIS::MB_Left:
+        return CEGUI::LeftButton;
+   case OIS::MB_Right:
+        return CEGUI::RightButton;
+   case OIS::MB_Middle:
+        return CEGUI::MiddleButton;
+    default:
+        return CEGUI::LeftButton;
     }
 }
-*/
+
+
+//Console class
+// these must match the IDs assigned in the layout
+const unsigned int Console::SubmitButtonID = 1;
+const unsigned int Console::EntryBoxID     = 2;
+const unsigned int Console::HistoryID      = 3;
+
+
+Console::Console(CEGUI::Window* parent) :
+    d_root(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("XsiliumConsole.layout")),
+    d_historyPos(0)
+{
+    using namespace CEGUI;
+
+    // we will destroy the console box windows ourselves
+    d_root->setDestroyedByParent(false);
+
+    // Do events wire-up
+    d_root->subscribeEvent(Window::EventKeyDown, Event::Subscriber(&Console::handleKeyDown, this));
+
+    d_root->getChild(SubmitButtonID)->
+        subscribeEvent(PushButton::EventClicked, Event::Subscriber(&Console::handleSubmit, this));
+
+    d_root->getChild(EntryBoxID)->
+        subscribeEvent(Editbox::EventTextAccepted, Event::Subscriber(&Console::handleSubmit, this));
+
+    // decide where to attach the console main window
+    parent = parent ? parent : CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
+
+    // attach this window if parent is valid
+    if (parent)
+        parent->addChild(d_root);
+}
+
+Console::~Console()
+{
+    // destroy the windows that we loaded earlier
+    CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
+}
+
+void Console::toggleVisibility()
+{
+    d_root->isVisible() ? d_root->hide() : d_root->show();
+}
+
+bool Console::isVisible() const
+{
+    return d_root->isEffectiveVisible();
+}
+
+bool Console::handleSubmit(const CEGUI::EventArgs&)
+{
+    using namespace CEGUI;
+
+    // get the text entry editbox
+    Editbox* editbox = static_cast<Editbox*>(d_root->getChild(EntryBoxID));
+    // get text out of the editbox
+    CEGUI::String edit_text(editbox->getText());
+
+    // if the string is not empty
+    if (!edit_text.empty())
+    {
+        // add this entry to the command history buffer
+        d_history.push_back(edit_text);
+        // reset history position
+        d_historyPos = d_history.size();
+        // append newline to this entry
+        edit_text += '\n';
+        // get history window
+        MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild(HistoryID));
+        // append new text to history output
+        history->setText(history->getText() + edit_text);
+        // scroll to bottom of history output
+        history->setCaretIndex(static_cast<size_t>(-1));
+        // erase text in text entry box.
+        editbox->setText("");
+    }
+
+    // re-activate the text entry box
+    editbox->activate();
+
+    return true;
+}
+
+bool Console::handleKeyDown(const CEGUI::EventArgs& args)
+{
+    using namespace CEGUI;
+
+    // get the text entry editbox
+    Editbox* editbox = static_cast<Editbox*>(d_root->getChild(EntryBoxID));
+
+    switch (static_cast<const KeyEventArgs&>(args).scancode)
+    {
+    case Key::ArrowUp:
+        d_historyPos = ceguimax(d_historyPos - 1, -1);
+        if (d_historyPos >= 0)
+        {
+            editbox->setText(d_history[d_historyPos]);
+            editbox->setCaretIndex(static_cast<size_t>(-1));
+        }
+        else
+        {
+            editbox->setText("");
+        }
+
+        editbox->activate();
+        break;
+
+    case Key::ArrowDown:
+        d_historyPos = ceguimin(d_historyPos + 1, static_cast<int>(d_history.size()));
+        if (d_historyPos < static_cast<int>(d_history.size()))
+        {
+            editbox->setText(d_history[d_historyPos]);
+            editbox->setCaretIndex(static_cast<size_t>(-1));
+        }
+        else
+        {
+            editbox->setText("");
+        }
+
+        editbox->activate();
+        break;
+
+    default:
+        return false;
+    }
+
+    return true;
+}

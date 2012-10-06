@@ -69,6 +69,38 @@ private:
 	Ogre::Entity*				m_pCurrentEntity;
 	bool						m_bLMouseDown, m_bRMouseDown;
 	bool						m_bSettingsMode;
+
+protected:
+
+    // convert an OIS mouse button into a CEGUI mouse button
+    CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
+//    Console* d_console;
 };
+
+class Console
+{
+public:
+    Console(CEGUI::Window* parent = 0);
+    ~Console();
+
+    void toggleVisibility();
+    bool isVisible() const;
+
+private:
+    // these must match the IDs assigned in the layout
+    static const unsigned int SubmitButtonID;
+    static const unsigned int EntryBoxID;
+    static const unsigned int HistoryID;
+
+    bool handleSubmit(const CEGUI::EventArgs& args);
+    bool handleKeyDown(const CEGUI::EventArgs& args);
+
+    CEGUI::Window* d_root;
+    int d_historyPos;
+    std::vector<CEGUI::String> d_history;
+
+
+};
+
 
 #endif
