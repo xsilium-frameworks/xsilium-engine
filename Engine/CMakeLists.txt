@@ -14,20 +14,33 @@ set( Interface_S
 ./Interface/Interface.cpp
 )
 
+set( Network_H
+./Network/NetworkListener.h
+./Network/NetworkManager.h
+)
+
+set( Network_S
+./Network/NetworkManager.cpp
+)
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
+${Network_S}
 )
 
 set (CORE_HEADER_FILES 
 ${InputManager_H}
 ${Interface_H}
+${Network_H}
 )
 
 
 include_directories(
 InputManager/
 Interface/
+Network/
+Singleton/
 )
 
 include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR})

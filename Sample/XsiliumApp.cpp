@@ -22,7 +22,7 @@ void XsiliumApp::startXsilium()
 	if(!OgreFramework::getSingletonPtr()->initOgre("Xsilium Client", 0, 0))
 		return;
 
-	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Xsilium initilias�!");
+	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Xsilium initiliasee!");
 
 	m_pAppStateManager = new AppStateManager();
 
