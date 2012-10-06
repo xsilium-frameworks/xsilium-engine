@@ -48,6 +48,8 @@ void LoginState::enter()
 
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
+    fldUsername = sheet->getChild("CEGUIApp/edtUsername");
+
     createScene();
 }
 
@@ -150,8 +152,9 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 
 bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 {
+	CEGUI::String valueUsername =  fldUsername->getText();
 
-	CEGUI::String valueUsername = fldUsername->getText();
+	printf("test %s \n",valueUsername.c_str());
 
     return true;
 }
