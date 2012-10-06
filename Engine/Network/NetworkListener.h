@@ -8,6 +8,7 @@
 
 #ifndef NETWORKLISTENER_H_
 #define NETWORKLISTENER_H_
+#include <stdio.h>
 
 class NetworkListener
 {
