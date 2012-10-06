@@ -14,6 +14,8 @@ public:
 	void createScene();
 	void exit();
 
+	bool PushConnexion(const CEGUI::EventArgs &e);
+
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
@@ -28,8 +30,11 @@ public:
 
 private:
 	bool m_bQuit;
+	bool handleSubmit(const CEGUI::EventArgs& args);
 
 protected:
+	CEGUI::Window* fldUsername;
+
     // convert an OIS mouse button into a CEGUI mouse button
     CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
 };
