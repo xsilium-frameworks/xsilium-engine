@@ -146,16 +146,15 @@ void LoginState::update(double timeSinceLastFrame)
 bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 		{
 			OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
+			CEGUI::String valueUsername =  fldUsername->getText();
+
+			printf("username: %s \n",valueUsername.c_str());
 			changeAppState(findByName("GameState"));
 			return true;
 		}
 
 bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 {
-	CEGUI::String valueUsername =  fldUsername->getText();
-
-	printf("test %s \n",valueUsername.c_str());
-
     return true;
 }
 
