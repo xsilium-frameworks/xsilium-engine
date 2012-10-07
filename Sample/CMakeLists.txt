@@ -21,7 +21,7 @@ set(CORE_SOURCE_FILES
     MenuState.cpp
     OgreFramework.cpp
     XsiliumApp.cpp
-    
+    Console/Console.cpp
      
 )
 
@@ -35,10 +35,17 @@ set(CORE_HEADER_FILES
     rapidxml.h 
     OgreFramework.h
     XsiliumApp.h 
+    Console/Console.h
 )
 message ("CEGUI ${CEGUI_INCLUDE_DIR}")
 
-include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${OGRE_Terrain_INCLUDE_DIRS} ${CEGUI_INCLUDE_DIR} ${CEGUI_OGRE_RENDERER_INCLUDE_DIR} )
+include_directories(
+${OGRE_INCLUDE_DIRS} 
+${OIS_INCLUDE_DIR} 
+${OGRE_Terrain_INCLUDE_DIRS} 
+${CEGUI_INCLUDE_DIR} 
+${CEGUI_OGRE_RENDERER_INCLUDE_DIR}
+Console )
 
 
 link_libraries(
