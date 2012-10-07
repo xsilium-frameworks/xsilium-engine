@@ -1,16 +1,17 @@
 #include <Console.h>
 //Console class
-// these must match the IDs assigned in the layout
-const unsigned int Console::SubmitButtonID = 1;
-const unsigned int Console::EntryBoxID     = 2;
-const unsigned int Console::HistoryID      = 3;
 
 
 Console::Console(CEGUI::Window* parent) :
-    d_root(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("XsiliumConsole.layout")),
     d_historyPos(0)
 {
     using namespace CEGUI;
+
+    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+
+    parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
+
+    d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
 
     // we will destroy the console box windows ourselves
     d_root->setDestroyedByParent(false);
@@ -18,18 +19,17 @@ Console::Console(CEGUI::Window* parent) :
     // Do events wire-up
     d_root->subscribeEvent(CEGUI::Window::EventKeyDown, Event::Subscriber(&Console::handleKeyDown, this));
 
-    d_root->getChild(SubmitButtonID)->
+    d_root->getChild("Console/Button")->
         subscribeEvent(PushButton::EventClicked, Event::Subscriber(&Console::handleSubmit, this));
 
-    d_root->getChild(EntryBoxID)->
+    d_root->getChild("Console/Editbox")->
         subscribeEvent(Editbox::EventTextAccepted, Event::Subscriber(&Console::handleSubmit, this));
 
-    // decide where to attach the console main window
-    parent = parent ? parent : CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-
     // attach this window if parent is valid
-    if (parent)
-        parent->addChild(d_root);
+    parent->addChild(d_root);
+
+    d_root->show();
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
 }
 
 Console::~Console()
@@ -53,7 +53,7 @@ bool Console::handleSubmit(const CEGUI::EventArgs&)
     using namespace CEGUI;
 
     // get the text entry editbox
-    Editbox* editbox = static_cast<Editbox*>(d_root->getChild(EntryBoxID));
+    Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Console/Buffer"));
     // get text out of the editbox
     CEGUI::String edit_text(editbox->getText());
 

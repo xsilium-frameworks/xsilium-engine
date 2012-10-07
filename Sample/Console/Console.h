@@ -1,6 +1,8 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
+#include "CEGUI/CEGUI.h"
+
 class Console
 {
 public:
@@ -12,9 +14,9 @@ public:
 
 private:
     // these must match the IDs assigned in the layout
-    static const unsigned int SubmitButtonID;
-    static const unsigned int EntryBoxID;
-    static const unsigned int HistoryID;
+    static const unsigned int SubmitButtonID = 1;
+    static const unsigned int EntryBoxID = 2;
+    static const unsigned int HistoryID = 3;
 
     bool handleSubmit(const CEGUI::EventArgs& args);
     bool handleKeyDown(const CEGUI::EventArgs& args);

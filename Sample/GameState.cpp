@@ -18,17 +18,9 @@ GameState::GameState()
 void GameState::enter()
 {
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering GameState...");
-    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
-
-    CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumGame");
-
-    CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
-        // attach this to the 'real' root
-        base->addChild(sheet);
-
-    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
     Console d_console = Console();
+
 
     m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
