@@ -16,12 +16,6 @@ public:
     bool handleKeyDown(const CEGUI::EventArgs& args);
 
 private:
-    // these must match the IDs assigned in the layout
-    static const unsigned int SubmitButtonID = 1;
-    static const unsigned int EntryBoxID = 2;
-    static const unsigned int HistoryID = 3;
-
-
 
     CEGUI::Window* d_root;
     int d_historyPos;
