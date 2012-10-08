@@ -37,7 +37,6 @@ set(CORE_HEADER_FILES
     XsiliumApp.h 
     Console/Console.h
 )
-message ("CEGUI ${CEGUI_INCLUDE_DIR}")
 
 include_directories(
 ${OGRE_INCLUDE_DIRS} 
@@ -45,6 +44,7 @@ ${OIS_INCLUDE_DIR}
 ${OGRE_Terrain_INCLUDE_DIRS} 
 ${CEGUI_INCLUDE_DIR} 
 ${CEGUI_OGRE_RENDERER_INCLUDE_DIR}
+${OGRE_PAGED_INCLUDE_DIR}
 Console )
 
 
@@ -53,6 +53,7 @@ ${OGRE_LIBRARIES}
 ${OGRE_Terrain_LIBRARIES}
 ${OIS_LIBRARIES}
 ${CEGUI_LIBRARY}
+${OGRE_PAGED_LIBRARY}
 XsiliumEngine
 pcre
 )
