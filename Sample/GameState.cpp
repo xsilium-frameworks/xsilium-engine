@@ -17,9 +17,32 @@ GameState::GameState()
 
 void GameState::enter()
 {
+    using namespace CEGUI;
+
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering GameState...");
 
-    Console d_console = Console();
+    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+
+    CEGUI::Window* parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
+
+    CEGUI::Window* d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
+
+    Console * d_console = new Console(d_root);
+
+    // we will destroy the console box windows ourselves
+    d_root->setDestroyedByParent(false);
+
+        // Do events wire-up
+    d_root->subscribeEvent(CEGUI::Window::EventKeyDown, Event::Subscriber(&Console::handleKeyDown, d_console));
+
+    d_root->getChild("Console/Button")->
+            subscribeEvent(PushButton::EventClicked, Event::Subscriber(&Console::handleSubmit, d_console));
+
+    d_root->getChild("Console/Editbox")->
+            subscribeEvent(Editbox::EventTextAccepted, Event::Subscriber(&Console::handleSubmit, d_console));
+
+        // attach this window if parent is valid
+    parent->addChild(d_root);
 
 
     m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
@@ -29,8 +52,8 @@ void GameState::enter()
 //    m_pRSQ->setQueryMask(OGRE_HEAD_MASK);
 
     m_pCamera = m_pSceneMgr->createCamera("GameCamera");
-    m_pCamera->setPosition(Vector3(5, 60, 60));
-    m_pCamera->lookAt(Vector3(5, 20, 0));
+    m_pCamera->setPosition(Ogre::Vector3(5, 60, 60));
+    m_pCamera->lookAt(Ogre::Vector3(5, 20, 0));
     m_pCamera->setNearClipDistance(5);
 
     m_pCamera->setAspectRatio(Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualWidth()) /
@@ -40,6 +63,8 @@ void GameState::enter()
     m_pCurrentObject = 0;
 
 //    buildGUI();
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
 
     createScene();
 }

@@ -364,7 +364,7 @@ void DotSceneLoader::processGrassLayers(rapidxml::xml_node<>* XMLNode)
 
     //Create a GrassLoader object
     mGrassLoaderHandle = new GrassLoader(mPGHandle);
-    mGrassLoaderHandle->setVisibilityFlags(mTerrainGlobalOptions->getVisibilityFlags());
+  //  mGrassLoaderHandle->setVisibilityFlags(mTerrainGlobalOptions->getVisibilityFlags());
 
     //Assign the "grassLoader" to be used to load geometry for the PagedGrass instance
     mPGHandle->setPageLoader(mGrassLoaderHandle);
@@ -387,8 +387,8 @@ void DotSceneLoader::processGrassLayers(rapidxml::xml_node<>* XMLNode)
     {
         // grassLayer
         gLayer = mGrassLoaderHandle->addLayer(pElement->first_attribute("material")->value());
-        gLayer->setId(Ogre::StringConverter::parseInt(pElement->first_attribute("id")->value()));
-        gLayer->setEnabled(Ogre::StringConverter::parseBool(pElement->first_attribute("enabled")->value()));
+//        gLayer->setId(Ogre::StringConverter::parseInt(pElement->first_attribute("id")->value()));
+//        gLayer->setEnabled(Ogre::StringConverter::parseBool(pElement->first_attribute("enabled")->value()));
         gLayer->setMaxSlope(Ogre::StringConverter::parseReal(pElement->first_attribute("maxSlope")->value()));
         gLayer->setLightingEnabled(Ogre::StringConverter::parseBool(pElement->first_attribute("lighting")->value()));
 

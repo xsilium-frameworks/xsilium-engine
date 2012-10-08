@@ -2,40 +2,14 @@
 //Console class
 
 
-Console::Console(CEGUI::Window* parent) :
+Console::Console(CEGUI::Window* d_root) :
     d_historyPos(0)
 {
-    using namespace CEGUI;
-
-    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
-
-    parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
-
-    d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
-
-    // we will destroy the console box windows ourselves
-    d_root->setDestroyedByParent(false);
-
-    // Do events wire-up
-    d_root->subscribeEvent(CEGUI::Window::EventKeyDown, Event::Subscriber(&Console::handleKeyDown, this));
-
-    d_root->getChild("Console/Button")->
-        subscribeEvent(PushButton::EventClicked, Event::Subscriber(&Console::handleSubmit, this));
-
-    d_root->getChild("Console/Editbox")->
-        subscribeEvent(Editbox::EventTextAccepted, Event::Subscriber(&Console::handleSubmit, this));
-
-    // attach this window if parent is valid
-    parent->addChild(d_root);
-
-    d_root->show();
-    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
+	this->d_root = d_root ;
 }
 
 Console::~Console()
 {
-    // destroy the windows that we loaded earlier
-    CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
 }
 
 void Console::toggleVisibility()
@@ -53,7 +27,7 @@ bool Console::handleSubmit(const CEGUI::EventArgs&)
     using namespace CEGUI;
 
     // get the text entry editbox
-    Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Console/Buffer"));
+    Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Console/Editbox"));
     // get text out of the editbox
     CEGUI::String edit_text(editbox->getText());
 
@@ -67,7 +41,7 @@ bool Console::handleSubmit(const CEGUI::EventArgs&)
         // append newline to this entry
         edit_text += '\n';
         // get history window
-        MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild(HistoryID));
+        MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/Buffer"));
         // append new text to history output
         history->setText(history->getText() + edit_text);
         // scroll to bottom of history output
@@ -87,7 +61,7 @@ bool Console::handleKeyDown(const CEGUI::EventArgs& args)
     using namespace CEGUI;
 
     // get the text entry editbox
-    Editbox* editbox = static_cast<Editbox*>(d_root->getChild(EntryBoxID));
+    Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Console/Editbox"));
 
     switch (static_cast<const KeyEventArgs&>(args).scancode)
     {

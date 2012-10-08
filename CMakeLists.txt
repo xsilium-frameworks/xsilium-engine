@@ -57,12 +57,17 @@ set (OIS_HOME "${CMAKE_SOURCE_DIR}/Library/Dependencies/Source/ois")
 set (CEGUI_SOURCE "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/")
 set (CEGUI_BUILD "${CMAKE_BINARY_DIR}/")
 
+#for find Ogre_Paged
+set (OGRE_PAGED_SOURCE "${CMAKE_SOURCE_DIR}/Library/OgrePaged/")
+set (OGRE_PAGED_BUILD "${CMAKE_BINARY_DIR}/Library/OgrePaged/")
+
 add_subdirectory(Library)
 
 
 find_package(OIS QUIET)
 find_package(OGRE QUIET)
 find_package(CEGUI QUIET)
+find_package(OGREPAGED QUIET)
 
 add_subdirectory(Engine)
 
