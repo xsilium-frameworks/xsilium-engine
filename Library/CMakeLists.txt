@@ -21,7 +21,7 @@ include_directories(${PCRE_H_PATH})
 set(OGRE_H_PATH "${OGRE_INCLUDE_DIRS}")
 set(OGRE_LIB "${OGRE_LIBRARIES}")
 
-
+add_subdirectory(OgrePaged)
 
 add_subdirectory(Cegui)
 
@@ -37,7 +37,7 @@ add_dependencies( CEGUIBase
  OgrePaging
  OgreTerrain
  OgreRTShaderSystem
- 
+ PagedGeometry
  )
 
 
