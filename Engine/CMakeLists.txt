@@ -48,6 +48,7 @@ include_directories(${OGRE_INCLUDE_DIRS} ${OIS_INCLUDE_DIR} ${CEGUI_INCLUDE_DIR}
 link_libraries(
 ${OGRE_LIBRARIES} 
 ${OIS_LIBRARIES}
+${CEGUI_LIBRARY}
 )
 
 add_library(XsiliumEngine ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})
