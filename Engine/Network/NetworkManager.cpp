@@ -9,12 +9,15 @@
 #include "NetworkManager.h"
 
 NetworkManager::NetworkManager() {
-	// TODO Auto-generated constructor stub
-
+	enet_initialize();
+	endThread = false;
+	peer = NULL;
+	createConnexion();
 }
 
 NetworkManager::~NetworkManager() {
-	// TODO Auto-generated destructor stub
+
+	listOfListener.clear();
 }
 
 void NetworkManager::createConnexion()
@@ -45,7 +48,7 @@ bool NetworkManager::connexionToHost(std::string url,int port)
 	    /* Wait up to 5 seconds for the connection attempt to succeed. */
 	    if (enet_host_service (client, &eventClient, 5000) > 0 && eventClient.type == ENET_EVENT_TYPE_CONNECT)
 	    {
-	        printf ("Connection to %s:%d succeeded.",url.c_str(),port);
+	        printf ("Connection to %s:%d succeeded. \n",url.c_str(),port);
 	        pthread_create(&thread,NULL,NetworkManager::threadConnexion,(void *)this);
 	        return true;
 	    }
@@ -55,7 +58,7 @@ bool NetworkManager::connexionToHost(std::string url,int port)
 	        /* received. Reset the peer in the event the 5 seconds   */
 	        /* had run out without any significant event.            */
 	        enet_peer_reset (peer);
-	        printf ("Connection to %s:%d failed.",url.c_str(),port);
+	        printf ("Connection to %s:%d failed.\n",url.c_str(),port);
 	        return false ;
 	    }
 }
@@ -81,14 +84,17 @@ void* NetworkManager::threadConnexion(void* arguments)
 
 	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 1000) >= 0 ) && (networkManager->endThread == false )  )
 	{
-		networkManager->callBack(networkManager->eventClient.type);
-
-		if (networkManager->eventClient.type == ENET_EVENT_TYPE_RECEIVE )
+		if(networkManager->eventClient.type >0)
 		{
-			/* One could just use enet_host_service() instead. */
-			enet_host_flush (networkManager->client);
-			/* Clean up the packet now that we're done using it. */
-			enet_packet_destroy (networkManager->eventClient.packet);
+			networkManager->callBack(networkManager->eventClient.type);
+
+			if (networkManager->eventClient.type == ENET_EVENT_TYPE_RECEIVE )
+			{
+				/* One could just use enet_host_service() instead. */
+				enet_host_flush (networkManager->client);
+				/* Clean up the packet now that we're done using it. */
+				enet_packet_destroy (networkManager->eventClient.packet);
+			}
 		}
 
 	}
@@ -127,7 +133,7 @@ bool NetworkManager::disconnexion()
 
 }
 
-void NetworkManager::addNetworkListener( NetworkListener * networkListener, const std::string& instanceName ) {
+void NetworkManager::addNetworkListener( NetworkListener * networkListener, std::string instanceName ) {
 	// Check for duplicate items
     listener = listOfListener.find( instanceName );
     if( listener == listOfListener.end() ) {
@@ -142,4 +148,12 @@ bool NetworkManager::callBack(int event) {
 			listener->second->updateNetwork(event,packet);
 	}
     return true;
+}
+
+void NetworkManager::removeNetworkListener(std::string instanceName ) {
+    // Check if item exists
+    listener = listOfListener.find( instanceName );
+    if( listener != listOfListener.end() ) {
+    	listOfListener.erase( listener );
+    }
 }

@@ -12,6 +12,8 @@ public:
     void toggleVisibility();
     bool isVisible() const;
 
+    bool setMessage(CEGUI::String message);
+
     bool handleSubmit(const CEGUI::EventArgs& args);
     bool handleKeyDown(const CEGUI::EventArgs& args);
 

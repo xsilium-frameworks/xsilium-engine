@@ -48,9 +48,12 @@ void LoginState::enter()
 
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
-    fldUsername = sheet->getChild("CEGUIApp/edtUsername");
+    fldUsername = sheet->getChild("CEGUIApp");
+    auth = Authentification::getInstance();
 
     createScene();
+
+    auth->InitialisationAuth();
 }
 
 void LoginState::createScene()
@@ -147,9 +150,8 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 		{
 			OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
 			CEGUI::String valueUsername =  fldUsername->getText();
-
-			printf("username: %s \n",valueUsername.c_str());
-			changeAppState(findByName("GameState"));
+			auth->setLoginPwd(fldUsername->getChild("edtUsername")->getText().c_str(),fldUsername->getChild("edtPassword")->getText().c_str());
+			//changeAppState(findByName("GameState"));
 			return true;
 		}
 
