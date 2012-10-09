@@ -22,7 +22,7 @@ set(CORE_SOURCE_FILES
     OgreFramework.cpp
     XsiliumApp.cpp
     Console/Console.cpp
-     
+    Authentification/Authentification.cpp
 )
 
 set(CORE_HEADER_FILES
@@ -36,6 +36,7 @@ set(CORE_HEADER_FILES
     OgreFramework.h
     XsiliumApp.h 
     Console/Console.h
+    Authentification/Authentification.h
 )
 
 include_directories(
@@ -45,7 +46,9 @@ ${OGRE_Terrain_INCLUDE_DIRS}
 ${CEGUI_INCLUDE_DIR} 
 ${CEGUI_OGRE_RENDERER_INCLUDE_DIR}
 ${OGRE_PAGED_INCLUDE_DIR}
-Console )
+Console 
+Authentification
+)
 
 
 link_libraries(

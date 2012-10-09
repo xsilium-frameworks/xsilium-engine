@@ -2,6 +2,7 @@
 #define LOGIN_STATE_H
 
 #include "AppState.h"
+#include "Authentification/Authentification.h"
 
 class LoginState : public AppState
 {
@@ -34,6 +35,7 @@ private:
 
 protected:
 	CEGUI::Window* fldUsername;
+	Authentification * auth;
 
     // convert an OIS mouse button into a CEGUI mouse button
     CEGUI::MouseButton convertOISButtonToCegui(int buttonID);

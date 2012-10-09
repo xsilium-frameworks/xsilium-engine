@@ -22,6 +22,26 @@ bool Console::isVisible() const
     return d_root->isEffectiveVisible();
 }
 
+bool Console::setMessage(CEGUI::String message)
+{
+	using namespace CEGUI;
+
+	 // add this entry to the command history buffer
+	 d_history.push_back(message);
+     // reset history position
+     d_historyPos = d_history.size();
+     // append newline to this entry
+     message += '\n';
+     // get history window
+     MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/Buffer"));
+     // append new text to history output
+     history->setText(history->getText() + message);
+     // scroll to bottom of history output
+     history->setCaretIndex(static_cast<size_t>(-1));
+
+	return true;
+}
+
 bool Console::handleSubmit(const CEGUI::EventArgs&)
 {
     using namespace CEGUI;
@@ -34,18 +54,7 @@ bool Console::handleSubmit(const CEGUI::EventArgs&)
     // if the string is not empty
     if (!edit_text.empty())
     {
-        // add this entry to the command history buffer
-        d_history.push_back(edit_text);
-        // reset history position
-        d_historyPos = d_history.size();
-        // append newline to this entry
-        edit_text += '\n';
-        // get history window
-        MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/Buffer"));
-        // append new text to history output
-        history->setText(history->getText() + edit_text);
-        // scroll to bottom of history output
-        history->setCaretIndex(static_cast<size_t>(-1));
+        setMessage(edit_text);
         // erase text in text entry box.
         editbox->setText("");
     }

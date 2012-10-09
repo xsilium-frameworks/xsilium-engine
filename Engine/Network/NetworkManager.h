@@ -14,7 +14,7 @@
 #include <string>
 
 #include <enet/enet.h>
-#include "Singleton.h"
+#include "Singleton/Singleton.h"
 #include "NetworkListener.h"
 
 /*
@@ -36,7 +36,8 @@ public:
 
     bool callBack(int event);
 
-    void addNetworkListener( NetworkListener * networkListener, const std::string& instanceName );
+    void addNetworkListener( NetworkListener * networkListener, std::string instanceName );
+    void removeNetworkListener(std::string instanceName );
 
 protected:
 	static void * threadConnexion(void * arguments);
