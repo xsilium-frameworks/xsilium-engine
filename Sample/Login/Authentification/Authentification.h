@@ -15,7 +15,7 @@
 #include "Network/NetworkListener.h"
 #include "Singleton/Singleton.h"
 #include <sstream>
-
+#include <cstring>
 
 struct cClient
 	{
