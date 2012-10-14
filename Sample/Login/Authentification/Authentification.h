@@ -25,7 +25,7 @@ struct cClient
 	    uint8_t   country[4];
 	    const char * login;
 	    const char * password;
-	    bool sendpassword;
+	    uint8_t etape;
 	};
 
 enum Opcode
