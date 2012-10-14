@@ -12,7 +12,7 @@ Authentification::Authentification() {
 	networkManager = NetworkManager::getInstance();
 	networkManager->addNetworkListener(this,"Authentification");
 
-	client.sendpassword = false;
+	client.etape = 1;
 
 
 }
@@ -26,7 +26,7 @@ bool Authentification::InitialisationAuth()
 
 	if (networkManager->disconnexion())
 	{
-		networkManager->connexionToHost("127.0.0.1",60000);
+		networkManager->connexionToHost("85.25.251.97",60000);
 		return true;
 	}
 	else
@@ -47,14 +47,16 @@ void Authentification::handleReturn(ENetEvent * packet)
 
 	printf("key : %d \n",data->key);
 
-	client.sendpassword = true;
-
 	sendAuthentification();
 }
 
 bool Authentification::sendAuthentification()
 {
-	if (!client.sendpassword)
+	int returnErreur;
+
+	switch(client.etape)
+	{
+	case 1:
 	{
 		sAuthLogonChallenge_C message;
 		message.cmd = XSILIUM_AUTH;
@@ -63,19 +65,27 @@ bool Authentification::sendAuthentification()
 		message.login_len = std::strlen(client.login);
 		std::stringstream convert (client.login);
 		convert>> std::hex >> message.login;
-
-		return networkManager->sendToHost( (const char *)&message,sizeof(message));
+		returnErreur =  networkManager->sendToHost( (const char *)&message,sizeof(message));
+		break;
 	}
-	else
+	case 2:
 	{
-		sAuthLogonProof_C message;
-		message.cmd = XSILIUM_AUTH;
-		message.opcode = ID_SEND_REPONSE;
-		std::stringstream convert (client.password);
-		convert>> std::hex >> message.A;
-
-		return networkManager->sendToHost( (const char *)&message,sizeof(message));
+		sAuthLogonProof_C message2;
+		message2.cmd = XSILIUM_AUTH;
+		message2.opcode = ID_SEND_REPONSE;
+		std::stringstream convert2 (client.password);
+		convert2>> std::hex >> message2.A;
+		returnErreur =  networkManager->sendToHost( (const char *)&message2,sizeof(message2));
+		break;
 	}
+	case 3:
+	{
+		returnErreur = -1;
+		break;
+	}
+	}
+
+	return returnErreur;
 }
 
 
@@ -89,5 +99,20 @@ void Authentification::setLoginPwd(const char * user,const char * password)
 
 void Authentification::updateNetwork(int event ,ENetEvent * packet)
 {
-	handleReturn(packet);
+	switch(event)
+	{
+	case ENET_EVENT_TYPE_CONNECT:
+		break;
+	case ENET_EVENT_TYPE_RECEIVE:
+		if ((uint8_t)packet->packet->data[0] == XSILIUM_AUTH)
+		{
+			printf("message recu %d \n",(uint8_t)packet->packet->data[1]);
+			//handleReturn(packet);
+		}
+		break;
+	case ENET_EVENT_TYPE_DISCONNECT:
+		break;
+	default:
+		break;
+	}
 }
