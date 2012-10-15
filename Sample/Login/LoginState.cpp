@@ -16,7 +16,7 @@ void LoginState::enter()
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering LoginState...");
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
-    CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "");
+    CEGUI::Window* base = winMgr.createWindow("DefaultWindow");
 
     CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
     // attach this to the 'real' root
@@ -163,8 +163,12 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 			//changeAppState(findByName("GameState"));
 			if (root->isChild("PopUp") && (!authtest))
 			    {
-			        root->getChild("PopUp")->setVisible("true");
-			        root->getChild("PopUp/lblMessage")->setText("Authentification fail");
+			    root->getChild("LoginForm")->setAlpha(0.5);
+			    root->getChild("LoginForm")->setDisabled(true);
+				root->getChild("PopUp")->setVisible("true");
+				root->getChild("PopUp")->activate();
+			    root->getChild("PopUp")->setAlwaysOnTop(true);
+			        root->getChild("PopUp/lblMessage")->setText("Authentification failed");
 			    }
 
 			return true;
