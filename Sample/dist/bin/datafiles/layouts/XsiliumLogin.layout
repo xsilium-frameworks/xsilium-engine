@@ -2,7 +2,7 @@
 
 <GUILayout version="4" >
     <Window type="DefaultWindow" name="DefaultWindow" >
-        <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property name="Area" value="{{0,1},{0,-1},{1,1},{1,-1}}" />
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
         <Window type="AlfiskoSkin/FrameWindow" name="LoginForm" >
             <Property name="Area" value="{{0,-57.75},{0,-7.5},{0,457.75},{0,387.5}}" />
@@ -50,6 +50,8 @@
         <Window type="AlfiskoSkin/FrameWindow" name="PopUp" >
             <Property name="Area" value="{{0,0},{0,0},{0,347},{0,167}}" />
             <Property name="Visible" value="False" />
+            <Property name="VerticalAlignment" value="Centre" />
+            <Property name="HorizontalAlignment" value="Centre" />
             <Window type="AlfiskoSkin/Label" name="lblMessage" >
                 <Property name="Area" value="{{0,0},{0,0},{1,0},{1,-49}}" />
                 <Property name="Text" value="message" />
