@@ -22,6 +22,7 @@ set(CORE_SOURCE_FILES
     OgreFramework.cpp
     XsiliumApp.cpp
     Console/Console.cpp
+    Login/DialogSystem.cpp
     Login/Authentification/Authentification.cpp
 )
 
@@ -36,6 +37,7 @@ set(CORE_HEADER_FILES
     OgreFramework.h
     XsiliumApp.h 
     Console/Console.h
+    Login/DialogSystem.h
     Login/Authentification/Authentification.h
 )
 
@@ -67,7 +69,7 @@ pcre
 		   ${CORE_HEADER_FILES}
                   )
 
-
+message ("${CEGUI_LIBRARY}")
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
 
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/OgreFramework.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")

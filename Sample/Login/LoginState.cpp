@@ -1,4 +1,5 @@
 #include "LoginState.h"
+#include "DialogSystem.h"
 
 
 using namespace Ogre;
