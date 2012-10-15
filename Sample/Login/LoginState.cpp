@@ -1,5 +1,5 @@
 #include "LoginState.h"
-#include "DialogSystem.h"
+//#include "DialogSystem.h"
 
 
 using namespace Ogre;
@@ -8,6 +8,7 @@ LoginState::LoginState()
 {
     m_bQuit         = false;
     m_FrameEvent    = Ogre::FrameEvent();
+    authtest = false;
 }
 
 void LoginState::enter()
@@ -15,20 +16,25 @@ void LoginState::enter()
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering LoginState...");
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
-    CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "CEGUIApp/XsiliumLogin");
+    CEGUI::Window* base = winMgr.createWindow("DefaultWindow", "");
 
     CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
     // attach this to the 'real' root
     base->addChild(sheet);
 
-	CEGUI::Window *frame = sheet->getChild("CEGUIApp");
-	frame->activate();
+	CEGUI::Window *frame = sheet->getChild("LoginForm");
 
-	sheet->getChild("CEGUIApp/edtUsername")->
+	CEGUI::Window *pop = sheet->getChild("PopUp");
+//	pop->setVisible(true);
+//	pop->setAlwaysOnTop(true);
+
+	//frame->activate();
+    sheet->getChild("LoginForm/edtUsername")->activate();
+	sheet->getChild("LoginForm/edtUsername")->
 	        subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&LoginState::handleSubmit, this));
 
 
-	sheet->getChild("CEGUIApp/btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,
+	sheet->getChild("LoginForm/btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,
 			CEGUI::Event::Subscriber(&LoginState::PushConnexion, this));
 
 
@@ -49,7 +55,8 @@ void LoginState::enter()
 
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
-    fldUsername = sheet->getChild("CEGUIApp");
+    fldUsername = sheet->getChild("LoginForm");
+
     auth = Authentification::getInstance();
 
     createScene();
@@ -149,10 +156,17 @@ void LoginState::update(double timeSinceLastFrame)
 
 bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 		{
+	CEGUI::Window* root = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 			OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
 			CEGUI::String valueUsername =  fldUsername->getText();
 			auth->setLoginPwd(fldUsername->getChild("edtUsername")->getText().c_str(),fldUsername->getChild("edtPassword")->getText().c_str());
 			//changeAppState(findByName("GameState"));
+			if (root->isChild("PopUp") && (!authtest))
+			    {
+			        root->getChild("PopUp")->setVisible("true");
+			        root->getChild("PopUp/lblMessage")->setText("Authentification fail");
+			    }
+
 			return true;
 		}
 

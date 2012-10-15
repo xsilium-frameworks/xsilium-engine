@@ -14,6 +14,7 @@ public:
 	void enter();
 	void createScene();
 	void exit();
+	bool authtest;
 
 	bool PushConnexion(const CEGUI::EventArgs &e);
 
@@ -35,6 +36,7 @@ private:
 
 protected:
 	CEGUI::Window* fldUsername;
+	CEGUI::Window* popupDialog;
 	Authentification * auth;
 
     // convert an OIS mouse button into a CEGUI mouse button
