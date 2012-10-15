@@ -4,7 +4,7 @@
     <Window type="DefaultWindow" name="DefaultWindow" >
         <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
-        <Window type="AlfiskoSkin/FrameWindow" name="CEGUIApp" >
+        <Window type="AlfiskoSkin/FrameWindow" name="LoginForm" >
             <Property name="Area" value="{{0,-57.75},{0,-7.5},{0,457.75},{0,387.5}}" />
             <Property name="Font" value="DejaVuSans-10" />
             <Property name="Text" value="Identification" />
@@ -45,6 +45,21 @@
                 <Property name="Text" value="Mot de passe" />
                 <Property name="MaxSize" value="{{1,0},{1,0}}" />
                 <Property name="HorzFormatting" value="LeftAligned" />
+            </Window>
+        </Window>
+        <Window type="AlfiskoSkin/FrameWindow" name="PopUp" >
+            <Property name="Area" value="{{0,0},{0,0},{0,347},{0,167}}" />
+            <Property name="Visible" value="False" />
+            <Window type="AlfiskoSkin/Label" name="lblMessage" >
+                <Property name="Area" value="{{0,0},{0,0},{1,0},{1,-49}}" />
+                <Property name="Text" value="message" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+            <Window type="AlfiskoSkin/Button" name="Button" >
+                <Property name="Area" value="{{0,0},{0,0},{0,91},{0,37}}" />
+                <Property name="Text" value="ok" />
+                <Property name="VerticalAlignment" value="Bottom" />
+                <Property name="HorizontalAlignment" value="Centre" />
             </Window>
         </Window>
     </Window>
