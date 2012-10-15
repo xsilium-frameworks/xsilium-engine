@@ -25,8 +25,11 @@ void LoginState::enter()
 	CEGUI::Window *frame = sheet->getChild("LoginForm");
 
 	CEGUI::Window *pop = sheet->getChild("PopUp");
-//	pop->setVisible(true);
-//	pop->setAlwaysOnTop(true);
+
+	sheet->getChild("PopUp")->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked,
+				CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
+
+
 
 	//frame->activate();
     sheet->getChild("LoginForm/edtUsername")->activate();
@@ -164,7 +167,7 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 			if (root->isChild("PopUp") && (!authtest))
 			    {
 			    root->getChild("LoginForm")->setAlpha(0.5);
-			    root->getChild("LoginForm")->setDisabled(true);
+			   // root->getChild("LoginForm")->setDisabled(true);
 				root->getChild("PopUp")->setVisible("true");
 				root->getChild("PopUp")->activate();
 			    root->getChild("PopUp")->setAlwaysOnTop(true);
@@ -173,6 +176,15 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 
 			return true;
 		}
+
+bool LoginState::CloseButton(const CEGUI::EventArgs &e)
+{
+	CEGUI::Window* root = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
+	root->getChild("PopUp")->setVisible(false);
+	root->getChild("LoginForm")->setAlpha(1.0);
+	root->getChild("LoginForm/edtUsername")->activate();
+
+}
 
 bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 {

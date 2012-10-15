@@ -17,6 +17,7 @@ public:
 	bool authtest;
 
 	bool PushConnexion(const CEGUI::EventArgs &e);
+	bool CloseButton(const CEGUI::EventArgs &e);
 
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
