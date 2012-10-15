@@ -29,7 +29,8 @@ void LoginState::enter()
 	sheet->getChild("PopUp")->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked,
 				CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
 
-
+	sheet->getChild("PopUp/Button")->subscribeEvent(CEGUI::PushButton::EventClicked,
+				CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
 
 	//frame->activate();
     sheet->getChild("LoginForm/edtUsername")->activate();
@@ -164,10 +165,11 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 			CEGUI::String valueUsername =  fldUsername->getText();
 			auth->setLoginPwd(fldUsername->getChild("edtUsername")->getText().c_str(),fldUsername->getChild("edtPassword")->getText().c_str());
 			//changeAppState(findByName("GameState"));
+
+			//popup condition
 			if (root->isChild("PopUp") && (!authtest))
 			    {
 			    root->getChild("LoginForm")->setAlpha(0.5);
-			   // root->getChild("LoginForm")->setDisabled(true);
 				root->getChild("PopUp")->setVisible("true");
 				root->getChild("PopUp")->activate();
 			    root->getChild("PopUp")->setAlwaysOnTop(true);
