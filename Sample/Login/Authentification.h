@@ -13,9 +13,11 @@
 //#include "Opcode/opcode.h"
 #include "Network/NetworkManager.h"
 #include "Network/NetworkListener.h"
-#include "Singleton/Singleton.h"
 #include <sstream>
 #include <cstring>
+#include "UI/LoginState.h"
+
+class LoginState;
 
 struct cClient
 	{
@@ -53,16 +55,13 @@ enum typerequete
 /*
  *
  */
-class Authentification : public Singleton<Authentification> , public NetworkListener {
-
-	friend class Singleton<Authentification>;
-
+class Authentification : public NetworkListener {
 
 public:
 	Authentification();
 	virtual ~Authentification();
 
-	bool InitialisationAuth();
+	void InitialisationAuth();
 
 	void handleReturn(ENetEvent * packet);
 
@@ -73,8 +72,11 @@ public:
 
 	void setLoginPwd(const char * user,const char * password);
 
+	void setLogin(LoginState *login);
+
 private:
 	NetworkManager * networkManager;
+	LoginState * loginState;
 	ENetEvent eventAuth;
 	cClient client;
 
