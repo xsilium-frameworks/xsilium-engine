@@ -29,10 +29,10 @@ public:
 	virtual ~NetworkManager();
 
 	void createConnexion();
-	bool connexionToHost(std::string url,int port);
+	int connexionToHost(std::string url,int port);
 	bool sendToHost(const char * message,int sizeOfMessage);
 
-	bool disconnexion();
+	void disconnexion();
 
     bool callBack(int event);
 

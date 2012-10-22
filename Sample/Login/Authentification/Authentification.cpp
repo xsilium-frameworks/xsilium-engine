@@ -23,17 +23,8 @@ Authentification::~Authentification() {
 
 bool Authentification::InitialisationAuth()
 {
-
-	if (networkManager->disconnexion())
-	{
-		networkManager->connexionToHost("85.25.251.97",60000);
-		return true;
-	}
-	else
-	{
-		//erreur
-		return false;
-	}
+	networkManager->disconnexion();
+	return networkManager->connexionToHost("85.25.251.97",60000);
 }
 
 void Authentification::handleReturn(ENetEvent * packet)
@@ -101,13 +92,17 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 {
 	switch(event)
 	{
-	case ENET_EVENT_TYPE_CONNECT:
-		break;
 	case ENET_EVENT_TYPE_RECEIVE:
 		if ((uint8_t)packet->packet->data[0] == XSILIUM_AUTH)
 		{
+
 			printf("message recu %d \n",(uint8_t)packet->packet->data[1]);
-			//handleReturn(packet);
+
+			if ((uint8_t)packet->packet->data[1] == 3)
+			{
+				client.etape = 2;
+				handleReturn(packet);
+			}
 		}
 		break;
 	case ENET_EVENT_TYPE_DISCONNECT:
