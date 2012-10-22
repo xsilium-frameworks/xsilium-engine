@@ -8,7 +8,9 @@ LoginState::LoginState()
 {
     m_bQuit         = false;
     m_FrameEvent    = Ogre::FrameEvent();
-    authtest = false;
+    auth = new Authentification();
+    auth->setLogin(this);
+
 }
 
 void LoginState::enter()
@@ -22,24 +24,19 @@ void LoginState::enter()
     // attach this to the 'real' root
     base->addChild(sheet);
 
-	CEGUI::Window *frame = sheet->getChild("LoginForm");
+	frame = sheet->getChild("LoginForm");
 
-	CEGUI::Window *pop = sheet->getChild("PopUp");
+	popupLogin = sheet->getChild("PopUp");
 
-	sheet->getChild("PopUp")->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked,
-				CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
+	popupLogin->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked,CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
 
-	sheet->getChild("PopUp/Button")->subscribeEvent(CEGUI::PushButton::EventClicked,
-				CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
+	popupLogin->getChild("Button")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
 
-	//frame->activate();
-    sheet->getChild("LoginForm/edtUsername")->activate();
-	sheet->getChild("LoginForm/edtUsername")->
-	        subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&LoginState::handleSubmit, this));
+	frame->getChild("edtUsername")->activate();
+	frame->getChild("edtUsername")->subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&LoginState::handleSubmit, this));
 
 
-	sheet->getChild("LoginForm/btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,
-			CEGUI::Event::Subscriber(&LoginState::PushConnexion, this));
+	frame->getChild("btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&LoginState::PushConnexion, this));
 
 
 
@@ -59,10 +56,6 @@ void LoginState::enter()
 
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
-    fldUsername = sheet->getChild("LoginForm");
-
-    auth = Authentification::getInstance();
-
     createScene();
 
     auth->InitialisationAuth();
@@ -77,6 +70,7 @@ void LoginState::createScene()
 
 void LoginState::exit()
 {
+	delete auth;
     OgreFramework::getSingletonPtr()->m_pLog->logMessage("Leaving LoginState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
@@ -159,38 +153,36 @@ void LoginState::update(double timeSinceLastFrame)
 
 
 bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
-		{
-	CEGUI::Window* root = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-			OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
-			CEGUI::String valueUsername =  fldUsername->getText();
-			auth->setLoginPwd(fldUsername->getChild("edtUsername")->getText().c_str(),fldUsername->getChild("edtPassword")->getText().c_str());
-			//changeAppState(findByName("GameState"));
+{
+	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
 
-			//popup condition
-			if (root->isChild("PopUp") && (!authtest))
-			    {
-			    root->getChild("LoginForm")->setAlpha(0.5);
-				root->getChild("PopUp")->setVisible("true");
-				root->getChild("PopUp")->activate();
-			    root->getChild("PopUp")->setAlwaysOnTop(true);
-			        root->getChild("PopUp/lblMessage")->setText("Authentification failed");
-			    }
-
-			return true;
-		}
+	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
+	return true;
+}
 
 bool LoginState::CloseButton(const CEGUI::EventArgs &e)
 {
-	CEGUI::Window* root = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-	root->getChild("PopUp")->setVisible(false);
-	root->getChild("LoginForm")->setAlpha(1.0);
-	root->getChild("LoginForm/edtUsername")->activate();
+	popupLogin->setVisible(false);
+	frame->setAlpha(1.0);
+	frame->getChild("edtUsername")->activate();
+	return true;
 
 }
 
 bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 {
     return true;
+}
+
+void LoginState::setMessage(int message)
+{
+	frame->setAlpha(0.5);
+	popupLogin->setVisible("true");
+	popupLogin->activate();
+	popupLogin->setAlwaysOnTop(true);
+
+
+	popupLogin->getChild("lblMessage")->setText("erreur");
 }
 
 
@@ -212,6 +204,7 @@ CEGUI::MouseButton LoginState::convertOISButtonToCegui(int buttonID)
 
 
 }
+
 
 
 

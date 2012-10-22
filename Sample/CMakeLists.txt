@@ -17,12 +17,12 @@ set(CORE_SOURCE_FILES
     AppStateManager.cpp
     DotSceneLoader.cpp
     GameState.cpp
-    Login/LoginState.cpp 
+    Login/UI/LoginState.cpp 
     MenuState.cpp
     OgreFramework.cpp
     XsiliumApp.cpp
     Console/Console.cpp
-    Login/Authentification/Authentification.cpp
+    Login/Authentification.cpp
 )
 
 set(CORE_HEADER_FILES
@@ -30,13 +30,13 @@ set(CORE_HEADER_FILES
     AppStateManager.h
     DotSceneLoader.h 
     GameState.h
-    Login/LoginState.h
+    Login/UI/LoginState.h
     MenuState.h 
     rapidxml.h 
     OgreFramework.h
     XsiliumApp.h 
     Console/Console.h
-    Login/Authentification/Authentification.h
+    Login/Authentification.h
 )
 
 include_directories(
