@@ -29,7 +29,7 @@ void NetworkManager::createConnexion()
 	                14400 / 8 /* 56K modem with 14 Kbps upstream bandwidth */);
 }
 
-bool NetworkManager::connexionToHost(std::string url,int port)
+int NetworkManager::connexionToHost(std::string url,int port)
 {
 	/* Connect to some.server.net:1234. */
 	    enet_address_set_host (& address,url.c_str());
@@ -42,7 +42,7 @@ bool NetworkManager::connexionToHost(std::string url,int port)
 	    {
 	       fprintf (stderr,
 	                "No available peers for initiating an ENet connection.\n");
-	       exit (EXIT_FAILURE);
+	       return -1;
 	    }
 
 	    /* Wait up to 5 seconds for the connection attempt to succeed. */
@@ -59,7 +59,7 @@ bool NetworkManager::connexionToHost(std::string url,int port)
 	        /* had run out without any significant event.            */
 	        enet_peer_reset (peer);
 	        printf ("Connection to %s:%d failed.\n",url.c_str(),port);
-	        return false ;
+	        return -2 ;
 	    }
 }
 
@@ -101,7 +101,7 @@ void* NetworkManager::threadConnexion(void* arguments)
 	return NULL;
 }
 
-bool NetworkManager::disconnexion()
+void NetworkManager::disconnexion()
 {
 	if(peer != NULL)
 	{
@@ -128,8 +128,6 @@ bool NetworkManager::disconnexion()
 
 		enet_peer_reset (peer);
 	}
-
-	return true;
 
 }
 
