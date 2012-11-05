@@ -28,8 +28,13 @@ void Authentification::InitialisationAuth()
 	int messageErreur = networkManager->connexionToHost("85.25.251.97",60000);
 	if( messageErreur < 0)
 	{
-		loginState->setMessage(0);
+		login->setMessage(0);
 	}
+}
+
+void Authentification::setLogin(LoginState *login)
+{
+	this->login = login;
 }
 
 void Authentification::handleReturn(ENetEvent * packet)
@@ -108,7 +113,9 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 				handleReturn(packet);
 			}
 			else
-				loginState->setMessage(0);
+			{
+				login->setMessage(0);
+			}
 		}
 		break;
 	case ENET_EVENT_TYPE_DISCONNECT:
@@ -116,9 +123,4 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 	default:
 		break;
 	}
-}
-
-void Authentification::setLogin(LoginState * loginState)
-{
-	this->loginState = loginState;
 }

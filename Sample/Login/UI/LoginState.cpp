@@ -9,7 +9,6 @@ LoginState::LoginState()
     m_bQuit         = false;
     m_FrameEvent    = Ogre::FrameEvent();
     auth = new Authentification();
-    auth->setLogin(this);
 
 }
 
@@ -58,6 +57,7 @@ void LoginState::enter()
 
     createScene();
 
+    auth->setLogin(this);
     auth->InitialisationAuth();
 }
 
@@ -176,13 +176,15 @@ bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 
 void LoginState::setMessage(int message)
 {
-	frame->setAlpha(0.5);
-	popupLogin->setVisible("true");
-	popupLogin->activate();
-	popupLogin->setAlwaysOnTop(true);
+
+	printf("test %d \n",message);
+	//frame->setAlpha(0.5);
+	//popupLogin->setVisible("true");
+	//popupLogin->activate();
+	//popupLogin->setAlwaysOnTop(true);
 
 
-	popupLogin->getChild("lblMessage")->setText("erreur");
+	//popupLogin->getChild("lblMessage")->setText("erreur");
 }
 
 

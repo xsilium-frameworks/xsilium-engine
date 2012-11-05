@@ -83,6 +83,5 @@ add_dependencies( XsiliumEngine
    )
 
 add_subdirectory(Sample)
-#add_subdirectory(Projet)
 
 add_dependencies(XsiliumClient XsiliumEngine )

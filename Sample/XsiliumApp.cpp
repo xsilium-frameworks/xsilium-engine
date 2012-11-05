@@ -24,7 +24,7 @@ void XsiliumApp::startXsilium()
 
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Xsilium initiliasee!");
 
-	m_pAppStateManager = new AppStateManager();
+	m_pAppStateManager = AppStateManager::getInstance();
 
 	LoginState::create(m_pAppStateManager, "LoginState");
 	MenuState::create(m_pAppStateManager, "MenuState");
