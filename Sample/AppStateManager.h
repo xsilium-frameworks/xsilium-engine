@@ -2,9 +2,12 @@
 #define APP_STATE_MANAGER_H
 
 #include "AppState.h"
+#include "Singleton/Singleton.h"
 
-class AppStateManager : public AppStateListener
-{
+class AppStateManager : public AppStateListener,public Singleton<AppStateManager> {
+
+	friend class Singleton<AppStateManager>;
+
 public:
 	typedef struct
 	{

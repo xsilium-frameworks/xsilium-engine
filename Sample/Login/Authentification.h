@@ -76,7 +76,7 @@ public:
 
 private:
 	NetworkManager * networkManager;
-	LoginState * loginState;
+	LoginState *login;
 	ENetEvent eventAuth;
 	cClient client;
 
