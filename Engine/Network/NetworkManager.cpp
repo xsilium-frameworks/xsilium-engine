@@ -13,11 +13,17 @@ NetworkManager::NetworkManager() {
 	endThread = false;
 	peer = NULL;
 	createConnexion();
+	isConnectedflag = false;
 }
 
 NetworkManager::~NetworkManager() {
 
 	listOfListener.clear();
+}
+
+bool NetworkManager::isConnected()
+{
+	return isConnectedflag;
 }
 
 void NetworkManager::createConnexion()
@@ -42,7 +48,7 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	    {
 	       fprintf (stderr,
 	                "No available peers for initiating an ENet connection.\n");
-	       return -1;
+	       return 1;
 	    }
 
 	    /* Wait up to 5 seconds for the connection attempt to succeed. */
@@ -50,7 +56,8 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	    {
 	        printf ("Connection to %s:%d succeeded. \n",url.c_str(),port);
 	        pthread_create(&thread,NULL,NetworkManager::threadConnexion,(void *)this);
-	        return true;
+	        isConnectedflag = true;
+	        return 0;
 	    }
 	    else
 	    {
@@ -59,7 +66,7 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	        /* had run out without any significant event.            */
 	        enet_peer_reset (peer);
 	        printf ("Connection to %s:%d failed.\n",url.c_str(),port);
-	        return -2 ;
+	        return 2 ;
 	    }
 }
 
@@ -127,6 +134,7 @@ void NetworkManager::disconnexion()
 		}
 
 		enet_peer_reset (peer);
+		isConnectedflag = false;
 	}
 
 }

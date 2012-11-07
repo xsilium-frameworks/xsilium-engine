@@ -69,9 +69,6 @@ find_package(OGRE QUIET)
 find_package(CEGUI QUIET)
 find_package(OGREPAGED QUIET)
 
-
-message ("test ${OGRE_PAGED_LIBRARY}")
-
 add_subdirectory(Engine)
 
 add_dependencies( XsiliumEngine
@@ -82,6 +79,6 @@ add_dependencies( XsiliumEngine
 
    )
 
-add_subdirectory(Sample)
+add_subdirectory(Client)
 
 add_dependencies(XsiliumClient XsiliumEngine )

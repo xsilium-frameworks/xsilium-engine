@@ -39,6 +39,7 @@ public:
     void addNetworkListener( NetworkListener * networkListener, std::string instanceName );
     void removeNetworkListener(std::string instanceName );
 
+    bool isConnected();
 protected:
 	static void * threadConnexion(void * arguments);
 
@@ -51,6 +52,7 @@ private:
 		ENetEvent eventClient;
 		ENetEvent * packet;
 		ENetPeer *peer;
+		bool isConnectedflag;
 
 
 	    std::map<std::string,NetworkListener *> listOfListener ;
