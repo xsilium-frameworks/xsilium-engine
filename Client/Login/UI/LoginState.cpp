@@ -9,6 +9,7 @@ LoginState::LoginState()
     m_bQuit         = false;
     m_FrameEvent    = Ogre::FrameEvent();
     auth = new Authentification();
+    messageFlag = false;
 
 }
 
@@ -149,6 +150,14 @@ void LoginState::update(double timeSinceLastFrame)
         shutdown();
         return;
     }
+
+    if ((messageFlag == true) && (!popupLogin->isActive()))
+    {
+    	frame->setAlpha(0.5);
+    	popupLogin->setVisible("true");
+    	popupLogin->activate();
+    	popupLogin->setAlwaysOnTop(true);
+    }
 }
 
 
@@ -162,6 +171,7 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 
 bool LoginState::CloseButton(const CEGUI::EventArgs &e)
 {
+	messageFlag = false;
 	popupLogin->setVisible(false);
 	frame->setAlpha(1.0);
 	frame->getChild("edtUsername")->activate();
@@ -176,15 +186,11 @@ bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 
 void LoginState::setMessage(int message)
 {
-
-	printf("test %d \n",message);
-	//frame->setAlpha(0.5);
-	//popupLogin->setVisible("true");
-	//popupLogin->activate();
-	//popupLogin->setAlwaysOnTop(true);
-
-
-	//popupLogin->getChild("lblMessage")->setText("erreur");
+	if (messageFlag == false)
+	{
+		messageFlag = true;
+		popupLogin->getChild("lblMessage")->setText(listOfMessage[0]);
+	}
 }
 
 

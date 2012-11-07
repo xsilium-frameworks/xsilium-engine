@@ -10,7 +10,7 @@
 #define AUTHENTIFICATION_H_
 
 #include "StructurePacket/StructurePacket.h"
-//#include "Opcode/opcode.h"
+#include "Shared/Network/opcode.h"
 #include "Network/NetworkManager.h"
 #include "Network/NetworkListener.h"
 #include <sstream>
@@ -29,21 +29,6 @@ struct cClient
 	    const char * password;
 	    uint8_t etape;
 	};
-
-enum Opcode
-{
-	ID_CONNEXION = 0,
-	ID_DECONEXION,
-    ID_SEND_USER,
-    ID_SEND_CHALLENGE,
-    ID_SEND_REPONSE,
-    ID_SEND_VALIDATION,
-    ID_GET_ROYAUME,
-    ID_SEND_ROYAUME,
-    ID_CONNECTION_BANNED,
-    ID_INVALID_PASSWORD,
-    ID_COMPTE_BANNIE
-};
 
 enum typerequete
 {

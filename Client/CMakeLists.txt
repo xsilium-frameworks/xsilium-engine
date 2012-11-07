@@ -37,6 +37,7 @@ set(CORE_HEADER_FILES
     XsiliumApp.h 
     Console/Console.h
     Login/Authentification.h
+    Login/ListOfMessage/ListOfMessage.h
 )
 
 include_directories(

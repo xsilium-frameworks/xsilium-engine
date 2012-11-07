@@ -23,12 +23,15 @@ Authentification::~Authentification() {
 
 void Authentification::InitialisationAuth()
 {
-	networkManager->disconnexion();
+	if (networkManager->isConnected())
+	{
+		networkManager->disconnexion();
+	}
 
 	int messageErreur = networkManager->connexionToHost("85.25.251.97",60000);
-	if( messageErreur < 0)
+	if( messageErreur > 0)
 	{
-		login->setMessage(0);
+		login->setMessage(messageErreur);
 	}
 }
 
@@ -114,7 +117,7 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 			}
 			else
 			{
-				login->setMessage(0);
+				login->setMessage((int)packet->packet->data[1]);
 			}
 		}
 		break;

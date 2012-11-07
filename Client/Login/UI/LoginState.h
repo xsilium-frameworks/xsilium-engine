@@ -4,6 +4,7 @@
 #include "AppState.h"
 #include "Authentification.h"
 #include "string.h"
+#include "ListOfMessage/ListOfMessage.h"
 
 class Authentification;
 
@@ -35,11 +36,12 @@ public:
 	void setMessage(int message);
 private:
 	bool m_bQuit;
-
-protected:
 	CEGUI::Window* frame;
 	CEGUI::Window* popupLogin;
 	Authentification * auth;
+	bool messageFlag;
+
+protected:
 
     // convert an OIS mouse button into a CEGUI mouse button
     CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
