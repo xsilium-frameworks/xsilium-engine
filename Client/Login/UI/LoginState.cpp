@@ -57,9 +57,9 @@ void LoginState::enter()
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
     createScene();
-
-    auth->setLogin(this);
     auth->InitialisationAuth();
+    auth->setLogin(this);
+
 }
 
 void LoginState::createScene()
@@ -165,6 +165,8 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 {
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
 
+
+
 	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 	return true;
 }
@@ -189,7 +191,81 @@ void LoginState::setMessage(int message)
 	if (messageFlag == false)
 	{
 		messageFlag = true;
-		popupLogin->getChild("lblMessage")->setText("erreur");
+		switch (message)
+		    {
+		        case 0:
+		        	popupLogin->getChild("lblMessage")->setText("Identification réussie");
+		            break;
+
+		        case 1:
+		        	popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
+		            break;
+
+		        case 2:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
+		            break;
+
+		        case 3:
+		        	popupLogin->getChild("lblMessage")->setText("Vérification de sécurité");
+		            break;
+
+		        case 4:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie de sécurité");
+		            break;
+
+		        case 5:
+		        	popupLogin->getChild("lblMessage")->setText("Envois de validation");
+		            break;
+
+		        case 6:
+		        	popupLogin->getChild("lblMessage")->setText("Réception des royaumes");
+		            break;
+
+		        case 7:
+		     		popupLogin->getChild("lblMessage")->setText("Demande de royaume");
+		     		break;
+
+		        case 8:
+		        	popupLogin->getChild("lblMessage")->setText("Connexion bannie");
+		        	break;
+
+		        case 9:
+		        	popupLogin->getChild("lblMessage")->setText("Compte banni");
+		        	break;
+
+		        case 10:
+		        	popupLogin->getChild("lblMessage")->setText("Mauvais mot de passe");
+		        	break;
+
+		        case 11:
+		        	popupLogin->getChild("lblMessage")->setText("Compte innexistant");
+		        	break;
+
+		        case 12:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
+		        	break;
+
+		        case 13:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
+		        	break;
+
+		        case 14:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
+		        	break;
+
+		        case 15:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
+		        	break;
+
+		        case 16:
+		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
+		        	break;
+
+		        default:
+		        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
+
+		            break;
+		    }
 	}
 }
 
