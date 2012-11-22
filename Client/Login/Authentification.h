@@ -10,7 +10,7 @@
 #define AUTHENTIFICATION_H_
 
 #include "StructurePacket/StructurePacket.h"
-#include "Shared/Network/opcode.h"
+#include "Shared/Network/Opcode.h"
 #include "Network/NetworkManager.h"
 #include "Network/NetworkListener.h"
 #include <sstream>
@@ -29,12 +29,6 @@ struct cClient
 	    const char * password;
 	    uint8_t etape;
 	};
-
-enum typerequete
-{
-   XSILIUM_AUTH = 0,
-   XSILIUM_ALL
-};
 
 
 /*

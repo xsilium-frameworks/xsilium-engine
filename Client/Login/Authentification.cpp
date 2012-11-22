@@ -31,6 +31,7 @@ void Authentification::InitialisationAuth()
 	int messageErreur = networkManager->connexionToHost("127.0.0.1",60000);
 	if( messageErreur > 0)
 	{
+		printf("test %d \n",messageErreur);
 		login->setMessage(messageErreur);
 	}
 }
@@ -110,7 +111,7 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 		{
 			printf("message recu %d \n",(uint8_t)packet->packet->data[1]);
 
-			if ((uint8_t)packet->packet->data[1] == 3)
+			if ((uint8_t)packet->packet->data[1] == ID_SEND_CHALLENGE)
 			{
 				client.etape = 2;
 				handleReturn(packet);

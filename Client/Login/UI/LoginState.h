@@ -4,7 +4,7 @@
 #include "AppState.h"
 #include "Authentification.h"
 #include "string.h"
-//#include "ListOfMessage/ListOfMessage.h"
+#include "ListOfMessage/ListOfMessage.h"
 
 class Authentification;
 
