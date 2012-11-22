@@ -12,7 +12,7 @@
 
 #include "Shared/Network/opcode.h"
 
-std::string listOfMessage[ID_OPCOD_MAX] = { "Votre Compte est Banni"};
+//std::string listOfMessage[ID_OPCOD_MAX] = { "Votre Compte est Banni"};
 
 
 

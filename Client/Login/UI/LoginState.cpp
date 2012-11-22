@@ -189,7 +189,7 @@ void LoginState::setMessage(int message)
 	if (messageFlag == false)
 	{
 		messageFlag = true;
-		popupLogin->getChild("lblMessage")->setText(listOfMessage[0]);
+		popupLogin->getChild("lblMessage")->setText("erreur");
 	}
 }
 
