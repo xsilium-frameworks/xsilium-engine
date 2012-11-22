@@ -57,9 +57,10 @@ void LoginState::enter()
     OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
     createScene();
-    auth->InitialisationAuth();
     auth->setLogin(this);
 
+
+    auth->InitialisationAuth();
 }
 
 void LoginState::createScene()
@@ -165,8 +166,6 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 {
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
 
-
-
 	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 	return true;
 }
@@ -193,11 +192,14 @@ void LoginState::setMessage(int message)
 		messageFlag = true;
 		switch (message)
 		    {
-		        case 0:
-		        	popupLogin->getChild("lblMessage")->setText("Identification réussie");
+				case 1:
+					popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
+					break;
+		        case 2:
+		        	popupLogin->getChild("lblMessage")->setText("Impossible de se connecter au serveur");
 		            break;
 
-		        case 1:
+		        /*case 1:
 		        	popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
 		            break;
 
@@ -259,7 +261,7 @@ void LoginState::setMessage(int message)
 
 		        case 16:
 		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		        	break;
+		        	break;*/
 
 		        default:
 		        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
