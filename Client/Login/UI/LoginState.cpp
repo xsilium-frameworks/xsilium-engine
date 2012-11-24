@@ -185,89 +185,58 @@ bool LoginState::handleSubmit(const CEGUI::EventArgs&)
     return true;
 }
 
-void LoginState::setMessage(int message)
+void LoginState::setMessage(int typeMessage ,int message)
 {
 	if (messageFlag == false)
 	{
 		messageFlag = true;
-		switch (message)
-		    {
-				case 1:
-					popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
-					break;
-		        case 2:
-		        	popupLogin->getChild("lblMessage")->setText("Impossible de se connecter au serveur");
-		            break;
+		switch (typeMessage)
+		{
+		case 0:
+			switch (message)
+					    {
+							case 1:
+								popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
+								break;
+					        case 2:
+					        	popupLogin->getChild("lblMessage")->setText("Impossible de se connecter au serveur");
+					            break;
 
-		        /*case 1:
-		        	popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
-		            break;
+					        case 3:
+					        	popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
+					            break;
 
-		        case 2:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		            break;
+					        default:
+					        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
 
-		        case 3:
-		        	popupLogin->getChild("lblMessage")->setText("Vérification de sécurité");
-		            break;
+					            break;
+					    }
+			break;
+		case 1:
+			switch (message)
+								    {
+										case ID_INVALID_ACCOUNT_OR_PASSWORD:
+											popupLogin->getChild("lblMessage")->setText("Le login ou le mot de passe est incorrecte .");
+											break;
+								        case ID_CONNECTION_BANNED:
+								        	popupLogin->getChild("lblMessage")->setText("Votre IP a ete banni .\n Il est imposible de se connecter .");
+								            break;
 
-		        case 4:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie de sécurité");
-		            break;
+								        case ID_COMPTE_BANNIE:
+								        	popupLogin->getChild("lblMessage")->setText("Votre Compte a ete banni . \n Il est impossible de se connecter .");
+								            break;
+								        case ID_SEND_VALIDATION:
+								        	popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
+								        	break;
 
-		        case 5:
-		        	popupLogin->getChild("lblMessage")->setText("Envois de validation");
-		            break;
+								        default:
+								        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
 
-		        case 6:
-		        	popupLogin->getChild("lblMessage")->setText("Réception des royaumes");
-		            break;
+								            break;
+								    }
+			break;
+		}
 
-		        case 7:
-		     		popupLogin->getChild("lblMessage")->setText("Demande de royaume");
-		     		break;
-
-		        case 8:
-		        	popupLogin->getChild("lblMessage")->setText("Connexion bannie");
-		        	break;
-
-		        case 9:
-		        	popupLogin->getChild("lblMessage")->setText("Compte banni");
-		        	break;
-
-		        case 10:
-		        	popupLogin->getChild("lblMessage")->setText("Mauvais mot de passe");
-		        	break;
-
-		        case 11:
-		        	popupLogin->getChild("lblMessage")->setText("Compte innexistant");
-		        	break;
-
-		        case 12:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		        	break;
-
-		        case 13:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		        	break;
-
-		        case 14:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		        	break;
-
-		        case 15:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		        	break;
-
-		        case 16:
-		        	popupLogin->getChild("lblMessage")->setText("Envoie du nom utilisateur");
-		        	break;*/
-
-		        default:
-		        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
-
-		            break;
-		    }
 	}
 }
 

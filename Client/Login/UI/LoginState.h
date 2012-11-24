@@ -33,7 +33,7 @@ public:
 	void update(double timeSinceLastFrame);
 
 
-	void setMessage(int message);
+	void setMessage(int typeMessage,int message);
 private:
 	bool m_bQuit;
 	CEGUI::Window* frame;

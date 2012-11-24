@@ -42,7 +42,7 @@ public:
 
 	void InitialisationAuth();
 
-	void handleReturn(ENetEvent * packet);
+	void handleEtapeDeux(ENetEvent * packet);
 
 	bool sendAuthentification();
 
