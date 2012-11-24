@@ -11,10 +11,6 @@ Authentification::Authentification() {
 
 	networkManager = NetworkManager::getInstance();
 	networkManager->addNetworkListener(this,"Authentification");
-
-	client.etape = 1;
-
-
 }
 
 Authentification::~Authentification() {
@@ -31,8 +27,8 @@ void Authentification::InitialisationAuth()
 	int messageErreur = networkManager->connexionToHost("127.0.0.1",60000);
 	if( messageErreur > 0)
 	{
-		printf("test %d \n",messageErreur);
-		login->setMessage(messageErreur);
+		printf("erreur de connection: %d \n",messageErreur);
+		login->setMessage(0,messageErreur);
 	}
 }
 
@@ -41,7 +37,7 @@ void Authentification::setLogin(LoginState *login)
 	this->login = login;
 }
 
-void Authentification::handleReturn(ENetEvent * packet)
+void Authentification::handleEtapeDeux(ENetEvent * packet)
 {
 	if (packet->packet->dataLength < sizeof(sAuthLogonChallenge_S))
 	{
@@ -52,17 +48,16 @@ void Authentification::handleReturn(ENetEvent * packet)
 
 	printf("key : %d \n",data->key);
 
-	sendAuthentification();
+	sAuthLogonProof_C message2;
+	message2.cmd = XSILIUM_AUTH;
+	message2.opcode = ID_SEND_REPONSE;
+	std::stringstream convert2 (client.password);
+	convert2>> std::hex >> message2.A;
+	networkManager->sendToHost( (const char *)&message2,sizeof(message2));
 }
 
 bool Authentification::sendAuthentification()
 {
-	int returnErreur;
-
-	switch(client.etape)
-	{
-	case 1:
-	{
 		sAuthLogonChallenge_C message;
 		message.cmd = XSILIUM_AUTH;
 		message.opcode = ID_SEND_USER;
@@ -70,32 +65,16 @@ bool Authentification::sendAuthentification()
 		message.login_len = std::strlen(client.login);
 		std::stringstream convert (client.login);
 		convert>> std::hex >> message.login;
-		returnErreur =  networkManager->sendToHost( (const char *)&message,sizeof(message));
-		break;
-	}
-	case 2:
-	{
-		sAuthLogonProof_C message2;
-		message2.cmd = XSILIUM_AUTH;
-		message2.opcode = ID_SEND_REPONSE;
-		std::stringstream convert2 (client.password);
-		convert2>> std::hex >> message2.A;
-		returnErreur =  networkManager->sendToHost( (const char *)&message2,sizeof(message2));
-		break;
-	}
-	case 3:
-	{
-		returnErreur = -1;
-		break;
-	}
-	}
-
-	return returnErreur;
+		return networkManager->sendToHost( (const char *)&message,sizeof(message));
 }
 
 
 void Authentification::setLoginPwd(const char * user,const char * password)
 {
+	/*if (strcmp(user,client.login) == 0)
+	{
+		client.etape = 1;
+	}*/
 	client.login = user;
 	client.password = password;
 
@@ -111,18 +90,35 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 		{
 			printf("message recu %d \n",(uint8_t)packet->packet->data[1]);
 
-			if ((uint8_t)packet->packet->data[1] == ID_SEND_CHALLENGE)
+			switch((uint8_t)packet->packet->data[1])
 			{
+			case ID_SEND_CHALLENGE :
 				client.etape = 2;
-				handleReturn(packet);
-			}
-			else
-			{
-				login->setMessage((int)packet->packet->data[1]);
+				handleEtapeDeux(packet);
+				break;
+			case ID_INVALID_ACCOUNT_OR_PASSWORD:
+				login->setMessage(1,ID_INVALID_ACCOUNT_OR_PASSWORD);
+				break;
+			case ID_SEND_VALIDATION :
+				login->setMessage(1,ID_SEND_VALIDATION);
+				break;
+			case ID_CONNECTION_BANNED:
+				login->setMessage(1,ID_CONNECTION_BANNED);
+				networkManager->disconnexion();
+				break;
+			case ID_COMPTE_BANNIE:
+				login->setMessage(1,ID_COMPTE_BANNIE);
+				networkManager->disconnexion();
+				break;
+
+			default:
+				break;
+
 			}
 		}
 		break;
 	case ENET_EVENT_TYPE_DISCONNECT:
+		login->setMessage(0,3);
 		break;
 	default:
 		break;
