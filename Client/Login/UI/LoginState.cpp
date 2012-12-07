@@ -87,13 +87,11 @@ void LoginState::exit()
 
 bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-    /*if(inputManager->getKeyboard()->isKeyDown(OIS::KC_ESCAPE))
+    if(inputManager->getKeyboard()->isKeyDown(OIS::KC_ESCAPE))
     {
         m_bQuit = true;
         return true;
-    }*/
-
-    CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(keyEventRef.text);
+    }
 
     return true;
 }
