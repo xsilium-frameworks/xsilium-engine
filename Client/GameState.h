@@ -33,16 +33,8 @@ public:
 
 	void moveCamera();
 	void getInput();
+
 //    void buildGUI();
-
-	bool keyPressed(const OIS::KeyEvent &keyEventRef);
-	bool keyReleased(const OIS::KeyEvent &keyEventRef);
-
-	bool mouseMoved(const OIS::MouseEvent &arg);
-	bool mousePressed(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-	bool mouseReleased(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
-
-	void onLeftPressed(const OIS::MouseEvent &evt);
 //    void itemSelected(OgreBites::SelectMenu* menu);
 
 	void update(double timeSinceLastFrame);
@@ -71,11 +63,6 @@ private:
 	Ogre::Entity*				m_pCurrentEntity;
 	bool						m_bLMouseDown, m_bRMouseDown;
 	bool						m_bSettingsMode;
-
-protected:
-
-    // convert an OIS mouse button into a CEGUI mouse button
-    CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
 
 };
 

@@ -8,7 +8,7 @@
 
 class Authentification;
 
-class LoginState : public AppState
+class LoginState : public OIS::KeyListener,public AppState
 {
 public:
     LoginState();
@@ -26,10 +26,6 @@ public:
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
-	bool mouseMoved(const OIS::MouseEvent &evt);
-	bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
-	bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
-
 	void update(double timeSinceLastFrame);
 
 
@@ -39,12 +35,8 @@ private:
 	CEGUI::Window* frame;
 	CEGUI::Window* popupLogin;
 	Authentification * auth;
+	InputManager * inputManager;
 	bool messageFlag;
-
-protected:
-
-    // convert an OIS mouse button into a CEGUI mouse button
-    CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
 };
 
 

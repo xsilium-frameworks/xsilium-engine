@@ -7,15 +7,18 @@ using namespace Ogre;
 LoginState::LoginState()
 {
     m_bQuit         = false;
+    inputManager = InputManager::getSingletonPtr();
     m_FrameEvent    = Ogre::FrameEvent();
     auth = new Authentification();
     messageFlag = false;
+
+    inputManager->addKeyListener(this,"Login");
 
 }
 
 void LoginState::enter()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering LoginState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Entering LoginState...");
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
     CEGUI::Window* base = winMgr.createWindow("DefaultWindow");
@@ -42,7 +45,7 @@ void LoginState::enter()
 
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
-    m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "LoginSceneMgr");
+    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "LoginSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
 
     m_pCamera = m_pSceneMgr->createCamera("MenuCam");
@@ -51,16 +54,14 @@ void LoginState::enter()
     m_pCamera->setNearClipDistance(1);
 
 
-    m_pCamera->setAspectRatio(Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualWidth()) /
-        Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
+    m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) /
+        Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
 
-    OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
+    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
 
     createScene();
+
     auth->setLogin(this);
-
-
-    auth->InitialisationAuth();
 }
 
 void LoginState::createScene()
@@ -73,11 +74,11 @@ void LoginState::createScene()
 void LoginState::exit()
 {
 	delete auth;
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Leaving LoginState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving LoginState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
-        OgreFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
+        XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
 
     CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
@@ -86,55 +87,19 @@ void LoginState::exit()
 
 bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-    if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
+    if(inputManager->getKeyboard()->isKeyDown(OIS::KC_ESCAPE))
     {
         m_bQuit = true;
         return true;
     }
-    CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
+    CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(keyEventRef.text);
 
-     // do event injection
-     CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-     // key down
-     ctx.injectKeyDown(static_cast<CEGUI::Key::Scan>(keyEventRef.key));
-
-     // now character
-     ctx.injectChar(keyEventRef.text);
-    OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
     return true;
 }
-
 bool LoginState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
-    CEGUI::System::getSingleton().getDefaultGUIContext().
-        injectKeyUp(static_cast<CEGUI::Key::Scan>(keyEventRef.key));
-    OgreFramework::getSingletonPtr()->keyReleased(keyEventRef);
-    return true;
-}
-
-bool LoginState::mouseMoved(const OIS::MouseEvent &evt)
-{
-	CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-	   ctx.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
-	   ctx.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
-    return true;
-}
-
-bool LoginState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
-{
-    CEGUI::System::getSingleton().getDefaultGUIContext().
-        injectMouseButtonDown(convertOISButtonToCegui(id));
-    return true;
-}
-
-bool LoginState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
-{
-    CEGUI::System::getSingleton().getDefaultGUIContext().
-        injectMouseButtonUp(convertOISButtonToCegui(id));
-    return true;
+	return true;
 }
 
 void LoginState::update(double timeSinceLastFrame)
@@ -164,7 +129,9 @@ void LoginState::update(double timeSinceLastFrame)
 
 bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 {
-	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Click PushConnexion!!!");
+	XsiliumFramework::getInstance()->m_pLog->logMessage("Click PushConnexion!!!");
+
+	auth->InitialisationAuth();
 
 	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 	return true;
@@ -239,27 +206,6 @@ void LoginState::setMessage(int typeMessage ,int message)
 
 	}
 }
-
-
-CEGUI::MouseButton LoginState::convertOISButtonToCegui(int buttonID)
-{
-   using namespace OIS;
-
-   switch (buttonID)
-    {
-   case OIS::MB_Left:
-        return CEGUI::LeftButton;
-   case OIS::MB_Right:
-        return CEGUI::RightButton;
-   case OIS::MB_Middle:
-        return CEGUI::MiddleButton;
-    default:
-        return CEGUI::LeftButton;
-    }
-
-
-}
-
 
 
 

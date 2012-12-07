@@ -19,7 +19,7 @@ void GameState::enter()
 {
     using namespace CEGUI;
 
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Entering GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Entering GameState...");
 
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
@@ -45,7 +45,7 @@ void GameState::enter()
     parent->addChild(d_root);
 
 
-    m_pSceneMgr = OgreFramework::getSingletonPtr()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
+    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
 
     m_pRSQ = m_pSceneMgr->createRayQuery(Ray());
@@ -56,10 +56,10 @@ void GameState::enter()
     m_pCamera->lookAt(Ogre::Vector3(5, 20, 0));
     m_pCamera->setNearClipDistance(5);
 
-    m_pCamera->setAspectRatio(Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualWidth()) /
-        Real(OgreFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
+    m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) /
+        Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
 
-    OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
+    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
     m_pCurrentObject = 0;
 
 //    buildGUI();
@@ -72,7 +72,7 @@ void GameState::enter()
 /*
 bool GameState::pause()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Pausing GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Pausing GameState...");
 
     return true;
 }
@@ -80,104 +80,25 @@ bool GameState::pause()
 
 void GameState::resume()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Resuming GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Resuming GameState...");
 
 //    buildGUI();
 
-    OgreFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
+    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
     m_bQuit = false;
 }
 
 void GameState::exit()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Leaving GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving GameState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     m_pSceneMgr->destroyQuery(m_pRSQ);
     if(m_pSceneMgr)
-        OgreFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
+        XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
 }
 
 void GameState::createScene()
-{
-}
-
-bool GameState::keyPressed(const OIS::KeyEvent &keyEventRef)
-{
-
-
-    if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
-    {
-//        pushAppState(findByName("PauseState"));
-        if(OgreFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
-        {
-            m_bQuit = true;
-            return true;
-        }
-        return true;
-    }
-    CEGUI::System& gui_system(CEGUI::System::getSingleton());
-
-
-     // do event injection
-     CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-     // key down
-     ctx.injectKeyDown(static_cast<CEGUI::Key::Scan>(keyEventRef.key));
-
-     // now character
-     ctx.injectChar(keyEventRef.text);
-    OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
-
-
-}
-
-bool GameState::keyReleased(const OIS::KeyEvent &keyEventRef)
-{
-    OgreFramework::getSingletonPtr()->keyPressed(keyEventRef);
-    return true;
-}
-
-bool GameState::mouseMoved(const OIS::MouseEvent &evt)
-{
-	CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-	   ctx.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
-	   ctx.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
-
-    return true;
-}
-
-bool GameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
-{
-
-	/*
-	if(OgreFramework::getSingletonPtr()->m_pTrayMgr->injectMouseDown(evt, id)) return true;
-
-    if(id == OIS::MB_Left)
-    {
-        onLeftPressed(evt);
-        m_bLMouseDown = true;
-    }
-    else if(id == OIS::MB_Right)
-    {
-        m_bRMouseDown = true;
-    }
-	*/
-    CEGUI::System::getSingleton().getDefaultGUIContext().
-        injectMouseButtonDown(convertOISButtonToCegui(id));
-	
-    return true;
-}
-
-bool GameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
-{
-    CEGUI::System::getSingleton().getDefaultGUIContext().
-        injectMouseButtonUp(convertOISButtonToCegui(id));
-    return true;
-}
-
-void GameState::onLeftPressed(const OIS::MouseEvent &evt)
 {
 }
 
@@ -194,7 +115,7 @@ void GameState::getInput()
 void GameState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
-//    OgreFramework::getSingletonPtr()->m_pTrayMgr->frameRenderingQueued(m_FrameEvent);
+//    XsiliumFramework::getInstance()->m_pTrayMgr->frameRenderingQueued(m_FrameEvent);
 
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
@@ -207,7 +128,7 @@ void GameState::update(double timeSinceLastFrame)
         return;
     }
 
-//    if(!OgreFramework::getSingletonPtr()->m_pTrayMgr->isDialogVisible())
+//    if(!XsiliumFramework::getInstance()->m_pTrayMgr->isDialogVisible())
     {
 
 		/*
@@ -235,24 +156,6 @@ void GameState::update(double timeSinceLastFrame)
 
     getInput();
     moveCamera();
-}
-
-
-CEGUI::MouseButton GameState::convertOISButtonToCegui(int buttonID)
-{
-   using namespace OIS;
-
-   switch (buttonID)
-    {
-   case OIS::MB_Left:
-        return CEGUI::LeftButton;
-   case OIS::MB_Right:
-        return CEGUI::RightButton;
-   case OIS::MB_Middle:
-        return CEGUI::MiddleButton;
-    default:
-        return CEGUI::LeftButton;
-    }
 }
 
 

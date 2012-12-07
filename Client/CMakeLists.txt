@@ -19,7 +19,6 @@ set(CORE_SOURCE_FILES
     GameState.cpp
     Login/UI/LoginState.cpp 
     MenuState.cpp
-    OgreFramework.cpp
     XsiliumApp.cpp
     Console/Console.cpp
     Login/Authentification.cpp
@@ -33,7 +32,6 @@ set(CORE_HEADER_FILES
     Login/UI/LoginState.h
     MenuState.h 
     rapidxml.h 
-    OgreFramework.h
     XsiliumApp.h 
     Console/Console.h
     Login/Authentification.h
