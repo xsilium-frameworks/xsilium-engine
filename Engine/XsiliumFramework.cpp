@@ -1,33 +1,29 @@
-#include "OgreFramework.h"
+#include "XsiliumFramework.h"
 
 using namespace Ogre;
 
-template<> OgreFramework* Ogre::Singleton<OgreFramework>::msSingleton = 0;
-
-OgreFramework::OgreFramework()
+XsiliumFramework::XsiliumFramework()
 {
     m_pRoot				= 0;
     m_pRenderWnd		= 0;
     m_pViewport			= 0;
     m_pLog				= 0;
     m_pTimer			= 0;
-    m_pInputMgr			= 0;
-    m_pKeyboard			= 0;
-    m_pMouse			= 0;
+    inputManager 		= 0;
 }
 
-OgreFramework::~OgreFramework()
+XsiliumFramework::~XsiliumFramework()
 {
-    OgreFramework::getSingletonPtr()->m_pLog->logMessage("Extinction OGRE...");
-
-    if(m_pInputMgr)		OIS::InputManager::destroyInputSystem(m_pInputMgr);
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Extinction OGRE...");
     if(m_pRoot)			delete m_pRoot;
 }
 
-bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListener, OIS::MouseListener *pMouseListener)
+bool XsiliumFramework::initOgre(Ogre::String wndTitle)
 {
     std::string mResourcePath ;
     
+    inputManager = InputManager::getSingletonPtr();
+
 #ifdef __APPLE__
     mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
 #else
@@ -47,34 +43,16 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
         return false;
     m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
     
+    inputManager->initialise(m_pRenderWnd);
+
+
     m_pViewport = m_pRenderWnd->addViewport(0);
     m_pViewport->setBackgroundColour(ColourValue(0.5f, 0.5f, 0.5f, 1.0f));
     
     m_pViewport->setCamera(0);
     
     size_t hWnd = 0;
-    OIS::ParamList paramList;
     m_pRenderWnd->getCustomAttribute("WINDOW", &hWnd);
-    
-    paramList.insert(OIS::ParamList::value_type("WINDOW", Ogre::StringConverter::toString(hWnd)));
-    
-    m_pInputMgr = OIS::InputManager::createInputSystem(paramList);
-    
-    m_pKeyboard = static_cast<OIS::Keyboard*>(m_pInputMgr->createInputObject(OIS::OISKeyboard, true));
-    m_pMouse = static_cast<OIS::Mouse*>(m_pInputMgr->createInputObject(OIS::OISMouse, true));
-    
-    m_pMouse->getMouseState().height = m_pRenderWnd->getHeight();
-    m_pMouse->getMouseState().width	 = m_pRenderWnd->getWidth();
-    
-    if(pKeyListener == 0)
-        m_pKeyboard->setEventCallback(this);
-    else
-        m_pKeyboard->setEventCallback(pKeyListener);
-    
-    if(pMouseListener == 0)
-        m_pMouse->setEventCallback(this);
-    else
-        m_pMouse->setEventCallback(pMouseListener);
     
     Ogre::String secName, typeName, archName;
     Ogre::ConfigFile cf;
@@ -117,40 +95,6 @@ bool OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
     return true;
 }
 
-bool OgreFramework::keyPressed(const OIS::KeyEvent &keyEventRef)
-{
-    if(m_pKeyboard->isKeyDown(OIS::KC_SYSRQ))
-    {
-        return true;
-    }
-    
-    if(m_pKeyboard->isKeyDown(OIS::KC_O))
-    {
-    }
-    
-    return true;
-}
-
-bool OgreFramework::keyReleased(const OIS::KeyEvent &keyEventRef)
-{
-    return true;
-}
-
-bool OgreFramework::mouseMoved(const OIS::MouseEvent &evt)
-{
-    return true;
-}
-
-bool OgreFramework::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
-{
-    return true;
-}
-
-bool OgreFramework::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
-{
-    return true;
-}
-
-void OgreFramework::updateOgre(double timeSinceLastFrame)
+void XsiliumFramework::updateOgre(double timeSinceLastFrame)
 {
 }

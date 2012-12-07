@@ -1,8 +1,8 @@
 #ifndef APP_STATE_H
 #define APP_STATE_H
 
-#include "OgreFramework.h"
-#include "CEGUI/CEGUI.h"
+#include "XsiliumFramework.h"
+#include "InputManager/InputManager.h"
 
 class AppState;
 
@@ -23,7 +23,7 @@ public:
     virtual void        popAllAndPushAppState(AppState* state) = 0;
 };
 
-class AppState : public OIS::KeyListener, public OIS::MouseListener//, public OgreBites::SdkTrayListener
+class AppState
 {
 public:
 	static void create(AppStateListener* parent, const Ogre::String name){};

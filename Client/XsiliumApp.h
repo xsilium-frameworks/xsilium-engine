@@ -1,7 +1,7 @@
 #ifndef OGRE_XSILIUM_H
 #define OGRE_XSILIUM_H
 
-#include "OgreFramework.h"
+#include "XsiliumFramework.h"
 #include "AppStateManager.h"
 
 class XsiliumApp

@@ -269,6 +269,9 @@ int InputManager::getNumOfJoysticks( void ) {
 bool InputManager::keyPressed( const OIS::KeyEvent &e ) {
     itKeyListener    = mKeyListeners.begin();
     itKeyListenerEnd = mKeyListeners.end();
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key));
+
     for(; itKeyListener != itKeyListenerEnd; ++itKeyListener ) {
         itKeyListener->second->keyPressed( e );
     }
@@ -279,9 +282,15 @@ bool InputManager::keyPressed( const OIS::KeyEvent &e ) {
 bool InputManager::keyReleased( const OIS::KeyEvent &e ) {
     itKeyListener    = mKeyListeners.begin();
     itKeyListenerEnd = mKeyListeners.end();
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyUp(static_cast<CEGUI::Key::Scan>(e.key));
+
+
     for(; itKeyListener != itKeyListenerEnd; ++itKeyListener ) {
         itKeyListener->second->keyReleased( e );
     }
+
+
 
     return true;
 }
@@ -289,6 +298,12 @@ bool InputManager::keyReleased( const OIS::KeyEvent &e ) {
 bool InputManager::mouseMoved( const OIS::MouseEvent &e ) {
     itMouseListener    = mMouseListeners.begin();
     itMouseListenerEnd = mMouseListeners.end();
+
+    CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
+
+    ctx.injectMouseMove(e.state.X.rel, e.state.Y.rel);
+    ctx.injectMouseWheelChange(e.state.Z.rel / 120.0f);
+
     for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
         itMouseListener->second->mouseMoved( e );
     }
@@ -299,6 +314,9 @@ bool InputManager::mouseMoved( const OIS::MouseEvent &e ) {
 bool InputManager::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
     itMouseListener    = mMouseListeners.begin();
     itMouseListenerEnd = mMouseListeners.end();
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(convertOISButtonToCegui(id));
+
     for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
         itMouseListener->second->mousePressed( e, id );
     }
@@ -309,6 +327,9 @@ bool InputManager::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id
 bool InputManager::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
     itMouseListener    = mMouseListeners.begin();
     itMouseListenerEnd = mMouseListeners.end();
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(convertOISButtonToCegui(id));
+
     for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
         itMouseListener->second->mouseReleased( e, id );
     }
@@ -372,4 +393,23 @@ InputManager* InputManager::getSingletonPtr( void ) {
     }
 
     return mInputManager;
+}
+
+CEGUI::MouseButton InputManager::convertOISButtonToCegui(int buttonID)
+{
+   using namespace OIS;
+
+   switch (buttonID)
+    {
+   case OIS::MB_Left:
+        return CEGUI::LeftButton;
+   case OIS::MB_Right:
+        return CEGUI::RightButton;
+   case OIS::MB_Middle:
+        return CEGUI::MiddleButton;
+    default:
+        return CEGUI::LeftButton;
+    }
+
+
 }

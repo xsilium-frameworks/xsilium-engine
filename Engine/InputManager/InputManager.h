@@ -6,9 +6,14 @@
 #include <OISJoyStick.h>
 #include <OISInputManager.h>
 
+#include "CEGUI/CEGUI.h"
+#include "Singleton/Singleton.h"
+
 #include <OgreRenderWindow.h>
 
-class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener {
+class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener
+{
+
 public:
     virtual ~InputManager( void );
 
@@ -41,6 +46,11 @@ public:
     int getNumOfJoysticks( void );
 
     static InputManager* getSingletonPtr( void );
+
+protected:
+    // convert an OIS mouse button into a CEGUI mouse button
+    CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
+
 private:
     InputManager( void );
     InputManager( const InputManager& ) { }

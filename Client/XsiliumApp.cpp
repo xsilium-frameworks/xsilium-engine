@@ -13,16 +13,15 @@ XsiliumApp::XsiliumApp()
 XsiliumApp::~XsiliumApp()
 {
 	delete m_pAppStateManager;
-    delete OgreFramework::getSingletonPtr();
+    XsiliumFramework::DestroyInstance();
 }
 
 void XsiliumApp::startXsilium()
 {
-	new OgreFramework();
-	if(!OgreFramework::getSingletonPtr()->initOgre("Xsilium Client", 0, 0))
+	if(!XsiliumFramework::getInstance()->initOgre("Xsilium Client"))
 		return;
 
-	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Xsilium initiliasee!");
+	XsiliumFramework::getInstance()->m_pLog->logMessage("Xsilium initiliasee!");
 
 	m_pAppStateManager = AppStateManager::getInstance();
 

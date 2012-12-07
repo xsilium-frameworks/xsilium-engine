@@ -23,16 +23,26 @@ set( Network_S
 ./Network/NetworkManager.cpp
 )
 
+set( XsiliumEngine_H
+./XsiliumFramework.h
+)
+
+set( XsiliumEngine_S
+./XsiliumFramework.cpp
+)
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
 ${Network_S}
+${XsiliumEngine_S}
 )
 
 set (CORE_HEADER_FILES 
 ${InputManager_H}
 ${Interface_H}
 ${Network_H}
+${XsiliumEngine_H}
 )
 
 

@@ -36,6 +36,7 @@ protected:
 	std::vector<AppState*>		m_ActiveStateStack;
 	std::vector<state_info>		m_States;
 	bool						m_bShutdown;
+	InputManager * inputManager;
 };
 
 #endif
