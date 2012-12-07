@@ -25,8 +25,6 @@ AppStateManager::~AppStateManager()
         m_States.pop_back();
 	}
 
-    delete inputManager;
-
 }
 
 void AppStateManager::manageAppState(Ogre::String stateName, AppState* state)

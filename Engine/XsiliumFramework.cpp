@@ -16,6 +16,7 @@ XsiliumFramework::~XsiliumFramework()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Extinction OGRE...");
     if(m_pRoot)			delete m_pRoot;
+    if(inputManager) delete inputManager;
 }
 
 bool XsiliumFramework::initOgre(Ogre::String wndTitle)
