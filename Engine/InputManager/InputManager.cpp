@@ -270,9 +270,10 @@ bool InputManager::keyPressed( const OIS::KeyEvent &e ) {
     itKeyListener    = mKeyListeners.begin();
     itKeyListenerEnd = mKeyListeners.end();
 
-    printf("TEST\n");
-
     CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key));
+
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(e.text);
 
     for(; itKeyListener != itKeyListenerEnd; ++itKeyListener ) {
         itKeyListener->second->keyPressed( e );
