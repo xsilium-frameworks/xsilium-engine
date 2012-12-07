@@ -28,6 +28,8 @@ class AppState
 public:
 	static void create(AppStateListener* parent, const Ogre::String name){};
 
+	virtual ~AppState(){};
+
 	void destroy(){delete this;}
 
 	virtual void enter() = 0;
@@ -38,7 +40,6 @@ public:
 
 protected:
 	AppState(){};
-
 	AppState*	findByName(Ogre::String stateName){return m_pParent->findByName(stateName);}
 	void		changeAppState(AppState* state){m_pParent->changeAppState(state);}
 	bool		pushAppState(AppState* state){return m_pParent->pushAppState(state);}

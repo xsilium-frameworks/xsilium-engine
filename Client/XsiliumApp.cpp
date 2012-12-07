@@ -26,8 +26,8 @@ void XsiliumApp::startXsilium()
 	m_pAppStateManager = AppStateManager::getInstance();
 
 	LoginState::create(m_pAppStateManager, "LoginState");
-	MenuState::create(m_pAppStateManager, "MenuState");
-	GameState::create(m_pAppStateManager, "GameState");
+//	MenuState::create(m_pAppStateManager, "MenuState");
+//	GameState::create(m_pAppStateManager, "GameState");
 //    PauseState::create(m_pAppStateManager, "PauseState");
 
 	m_pAppStateManager->start(m_pAppStateManager->findByName("LoginState"));
