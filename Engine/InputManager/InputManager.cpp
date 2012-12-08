@@ -88,12 +88,8 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
             mMouse->setEventCallback( this );
 
             // Get window size
-            unsigned int width, height, depth;
-            int left, top;
-            renderWindow->getMetrics( width, height, depth, left, top );
-
-            // Set mouse region
-            this->setWindowExtents( width, height );
+            mMouse->getMouseState().height = renderWindow->getHeight();
+            mMouse->getMouseState().width   = renderWindow->getWidth();
         }
 
         // If possible create all joysticks in buffered mode
