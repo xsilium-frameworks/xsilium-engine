@@ -24,7 +24,7 @@ void Authentification::InitialisationAuth()
 		networkManager->disconnexion();
 	}
 
-	int messageErreur = networkManager->connexionToHost("127.0.0.1",60000);
+	int messageErreur = networkManager->connexionToHost("85.25.251.97",60000);
 	if( messageErreur > 0)
 	{
 		printf("erreur de connection: %d \n",messageErreur);
