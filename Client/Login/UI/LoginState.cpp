@@ -202,6 +202,7 @@ void LoginState::setMessage(int typeMessage ,int message)
 								            break;
 								        case ID_SEND_VALIDATION:
 								        	popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
+								        	changeAppState(findByName("GameState"));
 								        	break;
 
 								        default:
