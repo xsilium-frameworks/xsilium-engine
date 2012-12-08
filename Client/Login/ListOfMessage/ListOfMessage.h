@@ -10,7 +10,7 @@
 #define LISTOFMESSAGE_H_
 #include <string.h>
 
-#include "Shared/Network/opcode.h"
+#include "Shared/Network/Opcode.h"
 
 //std::string listOfMessage[ID_OPCOD_MAX] = { "Votre Compte est Banni"};
 
