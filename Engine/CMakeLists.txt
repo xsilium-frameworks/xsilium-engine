@@ -31,11 +31,21 @@ set( XsiliumEngine_S
 ./XsiliumFramework.cpp
 )
 
+set( GameState_H
+./GameState/GameStateManager.h
+./GameState/GameState.h
+)
+
+set( GameState_S
+./GameState/GameStateManager.cpp
+)
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
 ${Network_S}
 ${XsiliumEngine_S}
+${GameState_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -43,6 +53,7 @@ ${InputManager_H}
 ${Interface_H}
 ${Network_H}
 ${XsiliumEngine_H}
+${GameState_H}
 )
 
 
