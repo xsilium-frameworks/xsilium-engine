@@ -78,10 +78,11 @@ void LoginState::exit()
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving LoginState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
+
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
-
-    CEGUI::WindowManager::getSingleton().destroyAllWindows();
+    XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
+//    CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
 }
