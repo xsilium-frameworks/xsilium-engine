@@ -24,6 +24,7 @@ void LoginState::enter()
     CEGUI::Window* base = winMgr.createWindow("DefaultWindow");
 
     CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
+
     // attach this to the 'real' root
     base->addChild(sheet);
 
