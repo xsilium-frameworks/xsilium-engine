@@ -41,7 +41,7 @@ InputManager::~InputManager( void ) {
 }
 
 void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
-    if( !mInputSystem ) {
+	if( !mInputSystem ) {
         // Setup basic variables
         OIS::ParamList paramList;    
         size_t windowHnd = 0;
@@ -51,12 +51,27 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
 #if defined OIS_WIN32_PLATFORM
         renderWindow->getCustomAttribute( "HWND", &windowHnd );
 #elif defined OIS_LINUX_PLATFORM
-        renderWindow->getCustomAttribute( "GLXWINDOW", &windowHnd );
+        renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
 #endif
 
         // Fill parameter list
         windowHndStr << (unsigned int) windowHnd;
         paramList.insert( std::make_pair( std::string( "WINDOW" ), windowHndStr.str() ) );
+
+
+        // insert the following lines right before calling mInputSystem = OIS::InputManager::createInputSystem( paramList );
+#if defined OIS_WIN32_PLATFORM
+        paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND" )));
+        paramList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+        paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
+        paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
+#elif defined OIS_LINUX_PLATFORM
+        paramList.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
+        paramList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+        paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
+        paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+#endif
+
 
         // Create inputsystem
         mInputSystem = OIS::InputManager::createInputSystem( paramList );
