@@ -19,16 +19,14 @@ Authentification::~Authentification() {
 
 void Authentification::InitialisationAuth()
 {
-	if (networkManager->isConnected())
+	if (!networkManager->isConnected())
 	{
-		networkManager->disconnexion();
-	}
-
-	int messageErreur = networkManager->connexionToHost("127.0.0.1",60000);
-	if( messageErreur > 0)
-	{
-		printf("erreur de connection: %d \n",messageErreur);
-		login->setMessage(0,messageErreur);
+		int messageErreur = networkManager->connexionToHost("85.25.251.97",60000);
+		if( messageErreur > 0)
+		{
+			printf("erreur de connection: %d \n",messageErreur);
+			login->setMessage(0,messageErreur);
+		}
 	}
 }
 
@@ -71,7 +69,8 @@ bool Authentification::sendAuthentification()
 
 void Authentification::setLoginPwd(const char * user,const char * password)
 {
-	/*if (strcmp(user,client.login) == 0)
+	InitialisationAuth();
+	/*if (std::strcmp(user,client.login) == 0)
 	{
 		client.etape = 1;
 	}*/
