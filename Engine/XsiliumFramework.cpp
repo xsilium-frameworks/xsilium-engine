@@ -22,7 +22,7 @@ XsiliumFramework::~XsiliumFramework()
 bool XsiliumFramework::initOgre(Ogre::String wndTitle)
 {
     std::string mResourcePath ;
-    
+
     inputManager = InputManager::getSingletonPtr();
 
 #ifdef __APPLE__
