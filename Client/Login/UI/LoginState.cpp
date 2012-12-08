@@ -87,11 +87,22 @@ void LoginState::exit()
 
 bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-    if(inputManager->getKeyboard()->isKeyDown(OIS::KC_ESCAPE))
-    {
-        m_bQuit = true;
-        return true;
-    }
+	switch(keyEventRef.key)
+	{
+	case OIS::KC_ESCAPE:
+		m_bQuit = true;
+
+		break;
+
+	case OIS::KC_TAB:
+		frame->getChild("edtPassword")->activate();
+		break;
+	case OIS::KC_RETURN:
+		auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
+		break;
+	default:
+		break;
+	}
 
     return true;
 }
