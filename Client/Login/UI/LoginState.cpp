@@ -129,8 +129,6 @@ bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 {
 	XsiliumFramework::getInstance()->m_pLog->logMessage("Click PushConnexion!!!");
 
-	auth->InitialisationAuth();
-
 	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 	return true;
 }
