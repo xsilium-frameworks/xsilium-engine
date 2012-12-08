@@ -16,6 +16,7 @@
 #include <sstream>
 #include <cstring>
 #include "UI/LoginState.h"
+#include "AppStateManager.h"
 
 class LoginState;
 

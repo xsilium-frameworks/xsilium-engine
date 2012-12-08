@@ -1,19 +1,19 @@
 #ifndef LOGIN_STATE_H
 #define LOGIN_STATE_H
 
-#include "AppState.h"
+#include "GameState/GameState.h"
 #include "Authentification.h"
 #include "string.h"
 #include "ListOfMessage/ListOfMessage.h"
 
 class Authentification;
 
-class LoginState : public OIS::KeyListener,public AppState
+class LoginState : public OIS::KeyListener,public GameState
 {
 public:
     LoginState();
 
-	DECLARE_APPSTATE_CLASS(LoginState)
+    DECLARE_GAMESTATE_CLASS(LoginState)
 
 	void enter();
 	void createScene();

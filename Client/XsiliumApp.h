@@ -2,7 +2,7 @@
 #define OGRE_XSILIUM_H
 
 #include "XsiliumFramework.h"
-#include "AppStateManager.h"
+#include "GameState/GameStateManager.h"
 
 class XsiliumApp
 {
@@ -13,7 +13,7 @@ public:
 	void startXsilium();
 
 private:
-	AppStateManager*	m_pAppStateManager;
+	GameStateManager*	m_pGameStateManager;
 };
 
 #endif

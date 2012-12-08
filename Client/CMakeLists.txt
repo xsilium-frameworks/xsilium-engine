@@ -14,7 +14,6 @@ endif(UNIX)
 
 set(CORE_SOURCE_FILES
     main.cpp
-    AppStateManager.cpp
     DotSceneLoader.cpp
     GameState.cpp
     Login/UI/LoginState.cpp 
@@ -25,8 +24,6 @@ set(CORE_SOURCE_FILES
 )
 
 set(CORE_HEADER_FILES
-    AppState.h
-    AppStateManager.h
     DotSceneLoader.h 
     GameState.h
     Login/UI/LoginState.h
