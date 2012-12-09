@@ -4,6 +4,9 @@
 #include "XsiliumFramework.h"
 #include "GameState/GameStateManager.h"
 
+#include "UI/LoginState.h"
+#include "Game/JeuxState.h"
+
 class XsiliumApp
 {
 public:

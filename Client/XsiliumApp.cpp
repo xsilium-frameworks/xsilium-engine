@@ -1,12 +1,8 @@
 #include "XsiliumApp.h"
 
-#include "UI/LoginState.h"
-#include "MenuState.h"
-#include "GameState.h"
-
 XsiliumApp::XsiliumApp()
 {
-	m_pGameStateManager = 0;
+	m_pGameStateManager = new GameStateManager();;
 }
 
 XsiliumApp::~XsiliumApp()
@@ -22,11 +18,10 @@ void XsiliumApp::startXsilium()
 
 	XsiliumFramework::getInstance()->m_pLog->logMessage("Xsilium initiliasee!");
 
-	m_pGameStateManager = new GameStateManager();
+	LoginState::create(m_pGameStateManager,"LoginState");
 
-	LoginState::create(m_pGameStateManager, "LoginState");
-//	MenuState::create(m_pAppStateManager, "MenuState");
-	GameState::create(m_pGameStateManager, "GameState");
+//	MenuState::Create(m_pAppStateManager, "MenuState");
+	JeuxState::create(m_pGameStateManager, "JeuxState");
 //    PauseState::create(m_pAppStateManager, "PauseState");
 
 	m_pGameStateManager->start(m_pGameStateManager->findByName("LoginState"));

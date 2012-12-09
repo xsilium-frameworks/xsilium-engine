@@ -15,24 +15,22 @@ endif(UNIX)
 set(CORE_SOURCE_FILES
     main.cpp
     DotSceneLoader.cpp
-    GameState.cpp
     Login/UI/LoginState.cpp 
-    MenuState.cpp
     XsiliumApp.cpp
     Console/Console.cpp
     Login/Authentification.cpp
+    Game/JeuxState.cpp
 )
 
 set(CORE_HEADER_FILES
     DotSceneLoader.h 
-    GameState.h
     Login/UI/LoginState.h
-    MenuState.h 
     rapidxml.h 
     XsiliumApp.h 
     Console/Console.h
     Login/Authentification.h
     Login/ListOfMessage/ListOfMessage.h
+    Game/JeuxState.h
 )
 
 include_directories(

@@ -1,25 +1,27 @@
-#include "GameState.h"
+#include "JeuxState.h"
 
 using namespace Ogre;
 
-GameState::GameState()
+JeuxState::JeuxState()
 {
     m_MoveSpeed			= 0.1f;
     m_RotateSpeed		= 0.3f;
 
-    m_bLMouseDown       = false;
-    m_bRMouseDown       = false;
     m_bQuit             = false;
     m_bSettingsMode     = false;
 
-//    m_pDetailsPanel		= 0;
+    inputManager = InputManager::getSingletonPtr();
+
+
 }
 
-void GameState::enter()
+void JeuxState::enter()
 {
     using namespace CEGUI;
 
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Entering GameState...");
+    inputManager->addKeyListener(this,"Game");
+
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Entering JeuxState...");
 
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
@@ -69,18 +71,18 @@ void GameState::enter()
     createScene();
 }
 
-/*
-bool GameState::pause()
+
+bool JeuxState::pause()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Pausing GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Pausing JeuxState...");
 
     return true;
 }
-*/
 
-void GameState::resume()
+
+void JeuxState::resume()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Resuming GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Resuming JeuxState...");
 
 //    buildGUI();
 
@@ -88,31 +90,33 @@ void GameState::resume()
     m_bQuit = false;
 }
 
-void GameState::exit()
+void JeuxState::exit()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving GameState...");
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     m_pSceneMgr->destroyQuery(m_pRSQ);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
+
+    inputManager->removeKeyListener(this);
 }
 
-void GameState::createScene()
+void JeuxState::createScene()
 {
 }
 
-void GameState::moveCamera()
-{
-
-}
-
-void GameState::getInput()
+void JeuxState::moveCamera()
 {
 
 }
 
-void GameState::update(double timeSinceLastFrame)
+void JeuxState::getInput()
+{
+
+}
+
+void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 //    XsiliumFramework::getInstance()->m_pTrayMgr->frameRenderingQueued(m_FrameEvent);
@@ -124,7 +128,7 @@ void GameState::update(double timeSinceLastFrame)
 
     if(m_bQuit == true)
     {
-        popAppState();
+        popGameState();
         return;
     }
 
@@ -156,6 +160,25 @@ void GameState::update(double timeSinceLastFrame)
 
     getInput();
     moveCamera();
+}
+
+bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
+{
+	switch(keyEventRef.key)
+	{
+	case OIS::KC_ESCAPE:
+		m_bQuit = true;
+
+		break;
+	default:
+		break;
+	}
+
+    return true;
+}
+bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
+{
+	return true;
 }
 
 

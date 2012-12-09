@@ -1,7 +1,7 @@
-#ifndef GAME_STATE_H
-#define GAME_STATE_H
+#ifndef JEUX_STATE_H
+#define JEUX_STATE_H
 
-#include "AppState.h"
+#include "GameState/GameState.h"
 
 #include "DotSceneLoader.h"
 
@@ -10,25 +10,17 @@
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
 
-/*
-enum QueryFlags
-{
-	OGRE_HEAD_MASK	= 1<<0,
-    CUBE_MASK		= 1<<1
-};
-*/
-
-class GameState : public AppState
+class JeuxState :public OIS::KeyListener,public GameState
 {
 public:
-	GameState();
+	JeuxState();
 
-	DECLARE_APPSTATE_CLASS(GameState)
+	DECLARE_GAMESTATE_CLASS(JeuxState)
 
 	void enter();
 	void createScene();
 	void exit();
-//	bool pause();
+	bool pause();
 	void resume();
 
 	void moveCamera();
@@ -39,16 +31,10 @@ public:
 
 	void update(double timeSinceLastFrame);
 
+	bool keyPressed(const OIS::KeyEvent &keyEventRef);
+	bool keyReleased(const OIS::KeyEvent &keyEventRef);
+
 private:
-
-/*
-	Ogre::SceneNode*			m_pOgreHeadNode;
-	Ogre::Entity*				m_pOgreHeadEntity;
-	Ogre::MaterialPtr			m_pOgreHeadMat;
-	Ogre::MaterialPtr			m_pOgreHeadMatHigh;
-
-    OgreBites::ParamsPanel*		m_pDetailsPanel;
-*/
 
 	bool						m_bQuit;
 
@@ -61,8 +47,9 @@ private:
 	Ogre::RaySceneQuery*		m_pRSQ;
 	Ogre::SceneNode*			m_pCurrentObject;
 	Ogre::Entity*				m_pCurrentEntity;
-	bool						m_bLMouseDown, m_bRMouseDown;
 	bool						m_bSettingsMode;
+
+	InputManager * inputManager;
 
 };
 
