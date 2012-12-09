@@ -1,182 +1,178 @@
-/*
- * \file GameStateManager.cpp
- *
- *  Created on: \date 8 déc. 2012
- *      Author: \author joda
- *  \brief :
- */
+#include "GameStateManager.h"
 
-#include "GameState/GameStateManager.h"
+#include <Ogre.h>
 
 GameStateManager::GameStateManager()
 {
-	mShutdown = false;
-	inputManager = InputManager::getSingletonPtr();
+	m_bShutdown = false;
+    inputManager = InputManager::getSingletonPtr();
 }
 
-/** Cleans up the game states before the instance dies. */
 GameStateManager::~GameStateManager()
 {
-    // clean up all the states on the stack
-    while (!mStateStack.empty())
-    {
-        cleanup(mStateStack.back());
-        mStateStack.back()->exit();
-        mStateStack.pop_back();
-    }
+	state_info si;
 
-    // destroy the game states
-    while(!mStates.empty())
-    {
-        mStates.back().state->destroy();
-        mStates.pop_back();
-    }
+    while(!m_ActiveStateStack.empty())
+	{
+		m_ActiveStateStack.back()->exit();
+		m_ActiveStateStack.pop_back();
+	}
+
+	while(!m_States.empty())
+	{
+		si = m_States.back();
+        si.state->destroy();
+        m_States.pop_back();
+	}
+
 }
 
-/** Store a game state to manage. */
-void GameStateManager::ManageGameState(Ogre::String state_name,GameState *state)
+void GameStateManager::manageGameState(Ogre::String stateName, GameState* state)
 {
-    state_info new_state_info;
-    new_state_info.name=state_name;
-    new_state_info.state=state;
-    mStates.push_back(new_state_info);
+	try
+	{
+		state_info new_state_info;
+		new_state_info.name = stateName;
+		new_state_info.state = state;
+		m_States.push_back(new_state_info);
+	}
+	catch(std::exception& e)
+	{
+		delete state;
+		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR, "Erreur de gestion d'un nouveau Ètat\n" + Ogre::String(e.what()), "GameStateManager.cpp (39)");
+	}
 }
 
-/** Find a game state by name.
-    @Remarks returns 0 on failure.*/
-GameState *GameStateManager::findByName(Ogre::String state_name)
+GameState* GameStateManager::findByName(Ogre::String stateName)
 {
-    std::vector<state_info>::iterator itr;
+	std::vector<state_info>::iterator itr;
 
-    for(itr=mStates.begin();itr!=mStates.end();itr++)
-    {
-        if(itr->name==state_name)
-            return itr->state;
-    }
+	for(itr=m_States.begin();itr!=m_States.end();itr++)
+	{
+		if(itr->name==stateName)
+			return itr->state;
+	}
 
-    return 0;
+	return 0;
 }
 
-/**  Start game state. This is used to start the game state
-     manager functioning with a particular state.
-     This function also does the main game loop and
-     takes care of the Windows message pump.*/
-void GameStateManager::start(GameState *state)
+void GameStateManager::start(GameState* state)
 {
-    changeGameState(state);
+	changeGameState(state);
 
 	int timeSinceLastFrame = 1;
 	int startTime = 0;
 
-    while (!mShutdown)
-    {
+	while(!m_bShutdown)
+	{
+		if(XsiliumFramework::getInstance()->m_pRenderWnd->isClosed())m_bShutdown = true;
 
-    	if(XsiliumFramework::getInstance()->m_pRenderWnd->isClosed())
-    		mShutdown = true;
+		Ogre::WindowEventUtilities::messagePump();
 
-    	Ogre::WindowEventUtilities::messagePump();
+		if(XsiliumFramework::getInstance()->m_pRenderWnd->isActive())
+		{
+			startTime = XsiliumFramework::getInstance()->m_pTimer->getMillisecondsCPU();
 
-    	if(XsiliumFramework::getInstance()->m_pRenderWnd->isActive())
-    	{
-    		startTime = XsiliumFramework::getInstance()->m_pTimer->getMillisecondsCPU();
+			inputManager->capture();
 
-    		inputManager->capture();
+			m_ActiveStateStack.back()->update(timeSinceLastFrame);
 
-    		mStateStack.back()->update(timeSinceLastFrame);
+			XsiliumFramework::getInstance()->updateOgre(timeSinceLastFrame);
+			XsiliumFramework::getInstance()->m_pRoot->renderOneFrame();
 
-    		XsiliumFramework::getInstance()->updateOgre(timeSinceLastFrame);
-    		XsiliumFramework::getInstance()->m_pRoot->renderOneFrame();
+			timeSinceLastFrame = XsiliumFramework::getInstance()->m_pTimer->getMillisecondsCPU() - startTime;
+		}
+		else
+		{
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+            Sleep(1000);
+#else
+            sleep(1);
+#endif
+		}
+	}
 
-    		timeSinceLastFrame = XsiliumFramework::getInstance()->m_pTimer->getMillisecondsCPU() - startTime;
-    	}
-    	else
-    	{
-    		#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    	        Sleep(1000);
-    		#else
-    	        sleep(1);
-    	    #endif
-            XsiliumFramework::getInstance()->m_pRoot->renderOneFrame();
-    	}
-    }
+	XsiliumFramework::getInstance()->m_pLog->logMessage("Sortie de la boucle principale");
 }
 
-/** Change to a game state.  This replaces the current game state
-    with a new game state.  The current game state ends before
-    the new begins. */
 void GameStateManager::changeGameState(GameState* state)
 {
-    // cleanup the current game state
-    if ( !mStateStack.empty() )
-    {
-        cleanup(mStateStack.back());
-        mStateStack.back()->exit();
-        mStateStack.pop_back();
-    }
+	if(!m_ActiveStateStack.empty())
+	{
+		m_ActiveStateStack.back()->exit();
+		m_ActiveStateStack.pop_back();
+	}
 
-    // store and init the new game state
-    mStateStack.push_back(state);
-    init(state);
-    mStateStack.back()->enter();
+	m_ActiveStateStack.push_back(state);
+	init(state);
+	m_ActiveStateStack.back()->enter();
 }
 
-/** Push a game state onto the stack. This pauses the current game state
-    and begins a new game state. If the current game state refuses to
-    be paused, this will return false. */
 bool GameStateManager::pushGameState(GameState* state)
 {
-    // pause current game state
-    if ( !mStateStack.empty() )
-    {
-        if(!mStateStack.back()->pause())
-            return false;
-        cleanup(mStateStack.back());
-    }
+	if(!m_ActiveStateStack.empty())
+	{
+		if(!m_ActiveStateStack.back()->pause())
+			return false;
+	}
 
-    // store and init the new state
-    mStateStack.push_back(state);
-    init(state);
-    mStateStack.back()->enter();
+	m_ActiveStateStack.push_back(state);
+	init(state);
+	m_ActiveStateStack.back()->enter();
 
-    return true;
+	return true;
 }
 
-/** Pop a game state off the stack. This destroys the current game state
-    and returns control to the previous game state. */
-void GameStateManager::popGameState(void)
+void GameStateManager::popGameState()
 {
-    // cleanup the current game state
-    if ( !mStateStack.empty() )
-    {
-        cleanup(mStateStack.back());
-        mStateStack.back()->exit();
-        mStateStack.pop_back();
-    }
+	if(!m_ActiveStateStack.empty())
+	{
+		m_ActiveStateStack.back()->exit();
+		m_ActiveStateStack.pop_back();
+	}
 
-    // resume previous game state or quit if there isn't one
-    if ( !mStateStack.empty() )
-    {
-        init(mStateStack.back());
-        mStateStack.back()->resume();
-    }
+	if(!m_ActiveStateStack.empty())
+	{
+		init(m_ActiveStateStack.back());
+		m_ActiveStateStack.back()->resume();
+	}
     else
-    	Shutdown();
+		shutdown();
 }
 
-/** Special case function to shutdown the system. */
-void GameStateManager::Shutdown()
+void GameStateManager::popAllAndPushGameState(GameState* state)
 {
-    mShutdown=true;
+    while(!m_ActiveStateStack.empty())
+    {
+        m_ActiveStateStack.back()->exit();
+        m_ActiveStateStack.pop_back();
+    }
+
+    pushGameState(state);
 }
 
-/** This initializes a game state to receive the events. */
-void GameStateManager::init(GameState *state)
+
+void GameStateManager::pauseGameState()
 {
-	XsiliumFramework::getInstance()->m_pRoot->addFrameListener(state);
+	if(!m_ActiveStateStack.empty())
+	{
+		m_ActiveStateStack.back()->pause();
+	}
+
+	if(m_ActiveStateStack.size() > 2)
+	{
+		init(m_ActiveStateStack.at(m_ActiveStateStack.size() - 2));
+		m_ActiveStateStack.at(m_ActiveStateStack.size() - 2)->resume();
+	}
 }
 
-/** This removes event handling from a previous game state. */
-void GameStateManager::cleanup(GameState *state)
+
+void GameStateManager::shutdown()
 {
-	XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(state);
+	m_bShutdown = true;
+}
+
+void GameStateManager::init(GameState* state)
+{
+	XsiliumFramework::getInstance()->m_pRenderWnd->resetStatistics();
 }

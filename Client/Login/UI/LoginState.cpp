@@ -11,13 +11,14 @@ LoginState::LoginState()
     auth = new Authentification();
     messageFlag = false;
 
-    inputManager->addKeyListener(this,"Login");
-
 }
 
 void LoginState::enter()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Entering LoginState...");
+
+    inputManager->addKeyListener(this,"Login");
+
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
     CEGUI::Window* base = winMgr.createWindow("DefaultWindow");
@@ -73,14 +74,18 @@ void LoginState::createScene()
 
 void LoginState::exit()
 {
-	delete auth;
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving LoginState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
 
+    inputManager->removeKeyListener(this);
+
+
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
     XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
+
+	delete auth;
 //    CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
@@ -202,7 +207,7 @@ void LoginState::setMessage(int typeMessage ,int message)
 								            break;
 								        case ID_SEND_VALIDATION:
 								        	popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
-								        	changeAppState(findByName("GameState"));
+								        	changeGameState(findByName("JeuxState"));
 								        	break;
 
 								        default:

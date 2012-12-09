@@ -1,123 +1,65 @@
-/*
- * \file GameState.h
- *
- *  Created on: \date 8 dŽc. 2012
- *      Author: \author joda
- *  \brief :
- */
-
-#ifndef GAMESTATE_H_
-#define GAMESTATE_H_
+#ifndef GAME_STATE_H
+#define GAME_STATE_H
 
 #include "XsiliumFramework.h"
 #include "InputManager/InputManager.h"
-
-
-typedef struct
-{
-    Ogre::Root *ogre;
-    Ogre::RenderWindow *rwindow;
-} device_info;
 
 class GameState;
 
 class GameStateListener
 {
 public:
-    /** Constructor */
-    GameStateListener(void) {};
+	GameStateListener(){};
+	virtual ~GameStateListener(){};
 
-    /** Virtual Deconstructor */
-    virtual ~GameStateListener(void) {};
+	virtual void manageGameState(Ogre::String stateName, GameState* state) = 0;
 
-    /** Store a game state to manage. */
-    virtual void ManageGameState(Ogre::String state_name,GameState*state)=0;
-
-    /** Find a state by name. */
-    virtual GameState *findByName(Ogre::String state_name)=0;
-
-    /** Request a change to state. */
-    virtual void changeGameState(GameState *state)=0;
-
-    /** Push state onto the stack. */
-    virtual bool pushGameState(GameState* state)=0;
-
-    /** Pop a game state off the stack. */
-    virtual void popGameState()=0;
-
-    /** Cause a shutdown. */
-    virtual void Shutdown()=0;
-
+	virtual GameState*	findByName(Ogre::String stateName) = 0;
+	virtual void		changeGameState(GameState *state) = 0;
+	virtual bool		pushGameState(GameState* state) = 0;
+	virtual void		popGameState() = 0;
+	virtual void		pauseGameState() = 0;
+	virtual void		shutdown() = 0;
+    virtual void        popAllAndPushGameState(GameState* state) = 0;
 };
 
-/** \class GameState
-    Inherit this class to make a game state capable
-    of being mananged by the game state manager.
-    Be sure to use DECLARE_GAMESTATE_CLASS(class)
-    in your public section.
-*/
-class GameState: public Ogre::FrameListener
+class GameState
 {
 public:
-    /** Do not inherit this directly! Use DECLARE_GAMESTATE_CLASS (class) to do it for you. */
-    static void Create(GameStateListener *parent, const Ogre::String name) {};
+	static void create(GameStateListener* parent, const Ogre::String name){};
 
-    /** Destroy self. */
-    void destroy(void)
-    { delete this; }
+	virtual ~GameState(){};
 
-    /** Inherit to supply game state enter code. */
-    virtual void enter(void)=0;
-    /** Inherit to supply state exit code. */
-    virtual void exit(void)=0;
-    /** Inherit to supply pause code. Inherit only if this game state can be paused.
-        Return true for successful pause, or false to deny pause. */
-    virtual bool pause(void)
-    { return false; }
-    /** Inherit to supply resume code. Inherit only if this game state can be paused. */
-    virtual void resume(void) {};
+	void destroy(){delete this;}
 
-    virtual void update(double timeSinceLastFrame) = 0;
+	virtual void enter() = 0;
+	virtual void exit() = 0;
+	virtual bool pause(){return true;}
+	virtual void resume(){};
+	virtual void update(double timeSinceLastFrame) = 0;
 
 protected:
-    /** Constructor: This should be a private member of an inherited class. */
-    GameState(void) {};
-    /** Destructor: This should be a private member of an inherited class. */
-    virtual ~GameState(void) {};
+	GameState(){};
+	GameState*	findByName(Ogre::String stateName){return m_pParent->findByName(stateName);}
+	void		changeGameState(GameState* state){m_pParent->changeGameState(state);}
+	bool		pushGameState(GameState* state){return m_pParent->pushGameState(state);}
+	void		popGameState(){m_pParent->popGameState();}
+	void		shutdown(){m_pParent->shutdown();}
+    void        popAllAndPushGameState(GameState* state){m_pParent->popAllAndPushGameState(state);}
 
-    /** Find a state by its name. */
-    GameState *findByName(Ogre::String state_name)
-    { return parent->findByName(state_name); }
+	GameStateListener*			m_pParent;
 
-    /** Request a change to game state. */
-    void changeGameState(GameState *state)
-    { parent->changeGameState(state); }
-
-    /** Push game state onto the stack. */
-    bool pushGameState(GameState* state)
-    { return parent->pushGameState(state); }
-
-    /** Pop a game state off the stack. */
-    void popGameState(void)
-    { parent->popGameState(); }
-
-    /** Cause a shutdown. */
-    void Shutdown(void)
-    { parent->Shutdown(); }
-
-    /** Stores the GameStateManager which is managing this state. */
-    GameStateListener *parent;
-    /** Keeps a method of device interaction. */
-    device_info *mDevice;
+	Ogre::Camera*				m_pCamera;
+	Ogre::SceneManager*			m_pSceneMgr;
+    Ogre::FrameEvent            m_FrameEvent;
 };
 
-#define DECLARE_GAMESTATE_CLASS(T) 									\
-void Create(GameStateListener *parent,const Ogre::String name)    	\
-{                        											\
-	T *myGameState=new T();                    						\
-	myGameState->parent=parent;                						\
-	parent->ManageGameState(name,myGameState);        				\
-} 																	\
+#define DECLARE_GAMESTATE_CLASS(T)										\
+static void create(GameStateListener* parent, const Ogre::String name)	\
+{																		\
+	T* myGameState = new T();											\
+	myGameState->m_pParent = parent;										\
+	parent->manageGameState(name, myGameState);							\
+}
 
-
-#endif /* GAMESTATE_H_ */
+#endif
