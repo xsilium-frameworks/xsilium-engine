@@ -36,6 +36,7 @@ private:
 	bool m_bQuit;
 	CEGUI::Window* frame;
 	CEGUI::Window* popupLogin;
+	CEGUI::Window* popupProg;
 	Authentification * auth;
 	InputManager * inputManager;
 	bool messageFlag;
