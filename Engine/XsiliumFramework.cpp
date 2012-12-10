@@ -40,8 +40,11 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg","ogre.log");
     
     
-      if(!m_pRoot->showConfigDialog())
-        return false;
+    if (!m_pRoot->restoreConfig())
+    {
+    	if(!m_pRoot->showConfigDialog())
+    		return false;
+    }
     m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
     
     inputManager->initialise(m_pRenderWnd);

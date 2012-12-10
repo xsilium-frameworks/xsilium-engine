@@ -99,7 +99,8 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 				login->setMessage(1,ID_INVALID_ACCOUNT_OR_PASSWORD);
 				break;
 			case ID_SEND_VALIDATION :
-				login->setMessage(1,ID_SEND_VALIDATION);
+				login->setProgression(4);
+				//login->setMessage(1,ID_SEND_VALIDATION);
 				break;
 			case ID_CONNECTION_BANNED:
 				login->setMessage(1,ID_CONNECTION_BANNED);
