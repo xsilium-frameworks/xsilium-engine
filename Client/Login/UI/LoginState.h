@@ -30,6 +30,8 @@ public:
 
 
 	void setMessage(int typeMessage,int message);
+
+	void setProgression(int progression);
 private:
 	bool m_bQuit;
 	CEGUI::Window* frame;
@@ -37,6 +39,7 @@ private:
 	Authentification * auth;
 	InputManager * inputManager;
 	bool messageFlag;
+	int progression;
 };
 
 

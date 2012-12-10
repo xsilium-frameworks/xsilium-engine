@@ -10,6 +10,7 @@ LoginState::LoginState()
     m_FrameEvent    = Ogre::FrameEvent();
     auth = new Authentification();
     messageFlag = false;
+    progression = 0;
 
 }
 
@@ -139,6 +140,10 @@ void LoginState::update(double timeSinceLastFrame)
     	popupLogin->activate();
     	popupLogin->setAlwaysOnTop(true);
     }
+    if(progression == 4)
+    {
+    	changeGameState(findByName("JeuxState"));
+    }
 }
 
 
@@ -207,7 +212,6 @@ void LoginState::setMessage(int typeMessage ,int message)
 								            break;
 								        case ID_SEND_VALIDATION:
 								        	popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
-								        	changeGameState(findByName("JeuxState"));
 								        	break;
 
 								        default:
@@ -221,6 +225,9 @@ void LoginState::setMessage(int typeMessage ,int message)
 	}
 }
 
-
+void LoginState::setProgression(int progression)
+{
+	this->progression = progression;
+}
 
 
