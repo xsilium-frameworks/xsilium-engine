@@ -14,7 +14,6 @@ endif(UNIX)
 
 set(CORE_SOURCE_FILES
     main.cpp
-    DotSceneLoader.cpp
     Login/UI/LoginState.cpp 
     XsiliumApp.cpp
     Console/Console.cpp
@@ -23,9 +22,7 @@ set(CORE_SOURCE_FILES
 )
 
 set(CORE_HEADER_FILES
-    DotSceneLoader.h 
     Login/UI/LoginState.h
-    rapidxml.h 
     XsiliumApp.h 
     Console/Console.h
     Login/Authentification.h
