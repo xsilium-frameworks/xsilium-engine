@@ -3,6 +3,12 @@
 using namespace Ogre;
 
 JeuxState::JeuxState()
+:    m_Loader(0),
+     m_TerrainImported(true),
+     m_SceneFile(Ogre::StringUtil::BLANK),
+//   m_HelpInfo(Ogre::StringUtil::BLANK),
+     m_Fly(false),
+     m_FallVelocity(0)
 {
     m_MoveSpeed			= 0.1f;
     m_RotateSpeed		= 0.3f;
@@ -12,7 +18,15 @@ JeuxState::JeuxState()
 
     inputManager = InputManager::getSingletonPtr();
 
+    mCamNames.clear();
 
+//    m_HelpInfo = Ogre::String("Use [W][A][S][D] keys for movement.\nKeys [1]-[9] to switch between cameras.\n[0] toggles SceneNode debug visuals.\n\nPress [C] to toggle clamp to terrain (gravity).\n\n[G] toggles the detail panel.\n[R] cycles polygonModes (Solid/Wireframe/Points).\n[T] cycles various filtering.\n\n\nPress [ESC] to quit.");
+
+}
+
+JeuxState::~JeuxState(void)
+{
+	delete m_Loader;
 }
 
 void JeuxState::enter()
