@@ -71,7 +71,7 @@
             <Property name="CloseButtonEnabled" value="False" />
             <Property name="HorizontalAlignment" value="Centre" />
             <Window type="AlfiskoSkin/ProgressBar" name="ProgressBar" >
-                <Property name="Area" value="{{0,0},{0,0},{0,418},{0,50}}" />
+                <Property name="Area" value="{{0,0},{0,5},{0,418},{0,19}}" />
                 <Property name="StepSize" value="0.01" />
                 <Property name="CurrentProgress" value="0.01" />
                 <Property name="HorizontalAlignment" value="Centre" />

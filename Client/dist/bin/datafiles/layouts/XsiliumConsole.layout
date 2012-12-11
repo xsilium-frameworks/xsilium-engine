@@ -5,23 +5,27 @@
         <Property name="Area" value="{{0,2},{0,-1},{1,2},{1,-1}}" />
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
         <Window type="AlfiskoSkin/FrameWindow" name="Console" >
-            <Property name="Area" value="{{0,154},{0,113},{0,732},{0,494}}" />
+            <Property name="Area" value="{{0,0},{0,0},{0,399},{0,381}}" />
             <Property name="Text" value="Console" />
+            <Property name="Alpha" value="0.7" />
+            <Property name="VerticalAlignment" value="Bottom" />
             <Window type="AlfiskoSkin/MultiLineEditbox" name="Buffer" >
                 <Property name="ID" value="3" />
-                <Property name="Area" value="{{0,3},{0,3},{0,558},{0,278}}" />
+                <Property name="Area" value="{{0,0},{0,0},{0,383},{0,275}}" />
                 <Property name="Text" >
 </Property>
                 <Property name="ReadOnly" value="True" />
+                <Property name="HorizontalAlignment" value="Centre" />
             </Window>
             <Window type="AlfiskoSkin/Editbox" name="Editbox" >
                 <Property name="ID" value="2" />
-                <Property name="Area" value="{{0,2},{0,284},{0,424},{0,334}}" />
+                <Property name="Area" value="{{0,2},{0,284},{0,230},{0,334}}" />
                 <Property name="BlinkCaret" value="True" />
+                <Property name="BlinkCaretTimeout" value="150" />
             </Window>
             <Window type="AlfiskoSkin/Button" name="Button" >
                 <Property name="ID" value="1" />
-                <Property name="Area" value="{{0,438},{0,286},{0,560},{0,336}}" />
+                <Property name="Area" value="{{0,250},{0,285},{0,372},{0,335}}" />
                 <Property name="Text" value="Envois" />
             </Window>
         </Window>
