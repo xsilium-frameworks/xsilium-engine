@@ -33,6 +33,8 @@ void LoginState::enter()
 
 	popupLogin = sheet->getChild("PopUp");
 
+	popupProg = sheet->getChild("PopUpLoading");
+
 	popupLogin->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked,CEGUI::Event::Subscriber(&LoginState::CloseButton, this));
 
 	popupLogin->getChild("Button")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&LoginState::CloseButton, this));

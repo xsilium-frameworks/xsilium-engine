@@ -72,6 +72,7 @@ include_directories(
 ${OGRE_INCLUDE_DIRS} 
 ${OIS_INCLUDE_DIR} 
 ${CEGUI_INCLUDE_DIR}
+${ENET_INCLUDE_DIR}
 .
 )
 
