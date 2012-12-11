@@ -40,12 +40,22 @@ set( GameState_S
 ./GameState/GameStateManager.cpp
 )
 
+set( SceneLoader_S
+./DotSceneLoader.cpp
+)
+
+set( SceneLoader_H
+./DotSceneLoader.h
+./rapidxml.h
+)
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
 ${Network_S}
 ${XsiliumEngine_S}
 ${GameState_S}
+${SceneLoader_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -54,11 +64,14 @@ ${Interface_H}
 ${Network_H}
 ${XsiliumEngine_H}
 ${GameState_H}
+${SceneLoader_H}
 )
 
 
 include_directories(
-${OGRE_INCLUDE_DIRS} 
+${OGRE_INCLUDE_DIRS}
+${OGRE_Terrain_INCLUDE_DIRS}
+${OGRE_PAGED_INCLUDE_DIR}  
 ${OIS_INCLUDE_DIR} 
 ${CEGUI_INCLUDE_DIR}
 ${ENET_INCLUDE_DIR}
@@ -66,7 +79,9 @@ ${ENET_INCLUDE_DIR}
 )
 
 link_libraries(
-${OGRE_LIBRARIES} 
+${OGRE_LIBRARIES}
+${OGRE_Terrain_LIBRARIES}
+${OGRE_PAGED_LIBRARY} 
 ${OIS_LIBRARIES}
 ${CEGUI_LIBRARY}
 enet
