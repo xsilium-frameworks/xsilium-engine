@@ -22,6 +22,9 @@
 
 #include "Interface/Interface.h"
 
+#include <SdkTrays.h>
+#include <SdkCameraMan.h>
+
 
 class XsiliumFramework : public Singleton<XsiliumFramework> {
 
