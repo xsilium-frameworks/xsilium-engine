@@ -40,22 +40,12 @@ set( GameState_S
 ./GameState/GameStateManager.cpp
 )
 
-set( SceneLoader_S
-./DotSceneLoader.cpp
-)
-
-set( SceneLoader_H
-./DotSceneLoader.h
-./rapidxml.h
-)
-
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
 ${Network_S}
 ${XsiliumEngine_S}
 ${GameState_S}
-${SceneLoader_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -64,7 +54,6 @@ ${Interface_H}
 ${Network_H}
 ${XsiliumEngine_H}
 ${GameState_H}
-${SceneLoader_H}
 )
 
 
