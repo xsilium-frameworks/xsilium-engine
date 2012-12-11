@@ -1,6 +1,14 @@
 #include "JeuxState.h"
+#include "DotSceneLoader.h"
+#include "PagedGeometry.h"
+#include "GrassLoader.h"
+#include "BatchPage.h"
+#include "ImpostorPage.h"
+#include "TreeLoader3D.h"
 
 using namespace Ogre;
+
+using namespace Forests;
 
 JeuxState::JeuxState()
 :    m_Loader(0),
