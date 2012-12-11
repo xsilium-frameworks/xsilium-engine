@@ -41,6 +41,7 @@ private:
 	InputManager * inputManager;
 	bool messageFlag;
 	int progression;
+	int progressionOld;
 };
 
 
