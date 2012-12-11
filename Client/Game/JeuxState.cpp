@@ -118,6 +118,53 @@ void JeuxState::exit()
 
 void JeuxState::createScene()
 {
+    m_Loader = new DotSceneLoader();
+    m_Loader->parseDotScene(m_SceneFile, "General", m_pSceneMgr);
+
+    // Get rid of the initial camera
+    m_pSceneMgr->destroyCamera(m_pCamera);
+
+    // Loop through all cameras and grab their name and set their debug representation
+    Ogre::SceneManager::CameraIterator cameras = m_pSceneMgr->getCameraIterator();
+    while (cameras.hasMoreElements())
+    {
+        Ogre::Camera* camera = cameras.getNext();
+        mCamNames.push_back(camera->getName());
+        Ogre::Entity* debugEnt = m_pSceneMgr->createEntity(camera->getName() + Ogre::String("_debug"), "scbCamera.mesh");
+
+        try{
+            Ogre::SceneNode* sNode = m_pSceneMgr->getSceneNode(camera->getName());
+            sNode->attachObject(debugEnt);
+            sNode->scale(0.5, 0.5, 0.5);
+        }catch (...){
+            Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(camera->getName());
+            pNode->setPosition(camera->getPosition());
+            pNode->setOrientation(camera->getOrientation());
+
+            pNode->attachObject(debugEnt);
+            pNode->scale(0.5, 0.5, 0.5);
+        }
+    }
+    // Grab the first available camera, for now
+    Ogre::String cameraName = mCamNames[0];
+    try
+    {
+        m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
+        m_Window->getViewport(0)->setCamera(m_ActiveCamera);
+        mCameraMan->setCamera(m_ActiveCamera);
+        m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
+
+        for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
+        {
+            m_Loader->mPGHandles[ij]->setCamera(m_ActiveCamera);
+        }
+
+    }
+    catch (Ogre::Exception& e)
+    {
+        Ogre::LogManager::getSingleton().logMessage("SampleApp::createScene : setting the active camera to (\"" +
+            cameraName + ") failed: " + e.getFullDescription());
+    }
 }
 
 void JeuxState::moveCamera()

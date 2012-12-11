@@ -102,7 +102,7 @@
         Ogre::ColourValue parseColour(rapidxml::xml_node<>* XMLNode);
 
 
-        Ogre::SceneManager *mSceneMgr;
+        Ogre::SceneManager *m_pSceneMgr;
         Ogre::SceneNode *mAttachNode;
         Ogre::String m_sGroupName;
         Ogre::String m_sPrependNode;
