@@ -27,6 +27,10 @@ void Authentification::InitialisationAuth()
 			printf("erreur de connection: %d \n",messageErreur);
 			login->setMessage(0,messageErreur);
 		}
+		else
+		{
+			login->setProgression(2);
+		}
 	}
 }
 
@@ -93,6 +97,7 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 			{
 			case ID_SEND_CHALLENGE :
 				client.etape = 2;
+				login->setProgression(3);
 				handleEtapeDeux(packet);
 				break;
 			case ID_INVALID_ACCOUNT_OR_PASSWORD:

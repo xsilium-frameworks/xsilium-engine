@@ -46,15 +46,12 @@ int NetworkManager::connexionToHost(std::string url,int port)
 
 	    if (peer == NULL)
 	    {
-	       fprintf (stderr,
-	                "No available peers for initiating an ENet connection.\n");
 	       return 1;
 	    }
 
 	    /* Wait up to 5 seconds for the connection attempt to succeed. */
 	    if (enet_host_service (client, &eventClient, 5000) > 0 && eventClient.type == ENET_EVENT_TYPE_CONNECT)
 	    {
-	        printf ("Connection to %s:%d succeeded. \n",url.c_str(),port);
 	        pthread_create(&thread,NULL,NetworkManager::threadConnexion,(void *)this);
 	        isConnectedflag = true;
 	        return 0;
@@ -65,7 +62,6 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	        /* received. Reset the peer in the event the 5 seconds   */
 	        /* had run out without any significant event.            */
 	        enet_peer_reset (peer);
-	        printf ("Connection to %s:%d failed.\n",url.c_str(),port);
 	        return 2 ;
 	    }
 }

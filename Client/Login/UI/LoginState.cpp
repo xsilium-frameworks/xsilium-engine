@@ -11,6 +11,7 @@ LoginState::LoginState()
     auth = new Authentification();
     messageFlag = false;
     progression = 0;
+    progressionOld = 0;
 
 }
 
@@ -46,6 +47,9 @@ void LoginState::enter()
 	frame->getChild("btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&LoginState::PushConnexion, this));
 
 
+	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
+	progressBar->setProgress(0.25);
+	progressBar->setStepSize(0.25);
 
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
@@ -107,6 +111,10 @@ bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
 		frame->getChild("edtPassword")->activate();
 		break;
 	case OIS::KC_RETURN:
+		frame->setAlpha(0.5);
+		popupProg->setVisible("true");
+		popupProg->activate();
+		popupProg->setAlwaysOnTop(true);
 		auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 		break;
 	default:
@@ -137,22 +145,34 @@ void LoginState::update(double timeSinceLastFrame)
 
     if ((messageFlag == true) && (!popupLogin->isActive()))
     {
-    	frame->setAlpha(0.5);
+    	popupProg->setVisible(false);
+    	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
+    	progressBar->setProgress(0.25);
     	popupLogin->setVisible("true");
     	popupLogin->activate();
     	popupLogin->setAlwaysOnTop(true);
     }
-    if(progression == 4)
-    {
-    	changeGameState(findByName("JeuxState"));
-    }
+
+	if (progressionOld < progression)
+	{
+		CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
+		progressBar->step();
+	    if(progression == 4)
+	    {
+	    	sleep(2);
+	    	changeGameState(findByName("JeuxState"));
+	    }
+	    progressionOld = progression;
+	}
 }
 
 
 bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 {
-	XsiliumFramework::getInstance()->m_pLog->logMessage("Click PushConnexion!!!");
-
+	frame->setAlpha(0.5);
+	popupProg->setVisible("true");
+	popupProg->activate();
+	popupProg->setAlwaysOnTop(true);
 	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 	return true;
 }
@@ -229,6 +249,7 @@ void LoginState::setMessage(int typeMessage ,int message)
 
 void LoginState::setProgression(int progression)
 {
+	progressionOld = this->progression ;
 	this->progression = progression;
 }
 
