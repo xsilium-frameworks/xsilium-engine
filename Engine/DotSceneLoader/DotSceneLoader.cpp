@@ -32,8 +32,8 @@ DotSceneLoader::DotSceneLoader() : m_pSceneMgr(0), mTerrainGroup(0)
 
 DotSceneLoader::~DotSceneLoader()
 {
-    if(mGrassLoaderHandle)
-        delete mGrassLoaderHandle;
+    //if(mGrassLoaderHandle)
+       // delete mGrassLoaderHandle;
 
     std::vector<Forests::PagedGeometry *>::iterator it = mPGHandles.begin();
     while(it != mPGHandles.end())
@@ -90,6 +90,7 @@ void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::St
     // Grab the scene node
     XMLRoot = XMLDoc.first_node("scene");
 
+
     // Validate the File
     if( getAttrib(XMLRoot, "formatVersion", "") == "")
     {
@@ -115,6 +116,7 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
     Ogre::String version = getAttrib(XMLRoot, "formatVersion", "unknown");
 
     Ogre::String message = "[DotSceneLoader] Parsing dotScene file with version " + version;
+
     if(XMLRoot->first_attribute("ID"))
         message += ", id " + Ogre::String(XMLRoot->first_attribute("ID")->value());
     if(XMLRoot->first_attribute("sceneManager"))
@@ -123,6 +125,7 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
         message += ", min. Ogre version " + Ogre::String(XMLRoot->first_attribute("minOgreVersion")->value());
     if(XMLRoot->first_attribute("author"))
         message += ", author " + Ogre::String(XMLRoot->first_attribute("author")->value());
+
 
     Ogre::LogManager::getSingleton().logMessage(message);
 
@@ -255,7 +258,6 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
     pElement = XMLNode->first_node("colourAmbient");
     if(pElement)
         m_pSceneMgr->setAmbientLight(parseColour(pElement));
-
     // Process colourBackground (?)
     //! @todo Set the background colour of all viewports (RenderWindow has to be provided then)
     pElement = XMLNode->first_node("colourBackground");

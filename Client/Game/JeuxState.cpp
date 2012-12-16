@@ -1,5 +1,4 @@
 #include "JeuxState.h"
-#include "DotSceneLoader.h"
 #include "PagedGeometry.h"
 #include "GrassLoader.h"
 #include "BatchPage.h"
@@ -27,8 +26,6 @@ JeuxState::JeuxState()
     inputManager = InputManager::getSingletonPtr();
 
     mCamNames.clear();
-
-//    m_HelpInfo = Ogre::String("Use [W][A][S][D] keys for movement.\nKeys [1]-[9] to switch between cameras.\n[0] toggles SceneNode debug visuals.\n\nPress [C] to toggle clamp to terrain (gravity).\n\n[G] toggles the detail panel.\n[R] cycles polygonModes (Solid/Wireframe/Points).\n[T] cycles various filtering.\n\n\nPress [ESC] to quit.");
 
 }
 
@@ -68,24 +65,6 @@ void JeuxState::enter()
         // attach this window if parent is valid
     parent->addChild(d_root);
 
-
-    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
-
-    m_pRSQ = m_pSceneMgr->createRayQuery(Ray());
-//    m_pRSQ->setQueryMask(OGRE_HEAD_MASK);
-
-    m_pCamera = m_pSceneMgr->createCamera("GameCamera");
-    m_pCamera->setPosition(Ogre::Vector3(5, 60, 60));
-    m_pCamera->lookAt(Ogre::Vector3(5, 20, 0));
-    m_pCamera->setNearClipDistance(5);
-
-    m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) /
-        Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
-
-    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
-    m_pCurrentObject = 0;
-
 //    buildGUI();
 
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
@@ -116,21 +95,23 @@ void JeuxState::exit()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
-    m_pSceneMgr->destroyCamera(m_pCamera);
-    m_pSceneMgr->destroyQuery(m_pRSQ);
+    //m_pSceneMgr->destroyCamera(m_pCamera);
+    //m_pSceneMgr->destroyQuery(m_pRSQ);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
+
 
     inputManager->removeKeyListener(this);
 }
 
 void JeuxState::createScene()
 {
-    m_Loader = new DotSceneLoader();
-    m_Loader->parseDotScene(m_SceneFile, "General", m_pSceneMgr);
+    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
+    m_pCurrentObject = 0;
 
-    // Get rid of the initial camera
-    m_pSceneMgr->destroyCamera(m_pCamera);
+    m_Loader = new DotSceneLoader();
+    m_Loader->parseDotScene("world/xsiliumSceneBase.scene", "General", m_pSceneMgr);
+
 
     // Loop through all cameras and grab their name and set their debug representation
     Ogre::SceneManager::CameraIterator cameras = m_pSceneMgr->getCameraIterator();
@@ -153,19 +134,21 @@ void JeuxState::createScene()
             pNode->scale(0.5, 0.5, 0.5);
         }
     }
+
     // Grab the first available camera, for now
     Ogre::String cameraName = mCamNames[0];
     try
     {
         m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
-        m_Window->getViewport(0)->setCamera(m_ActiveCamera);
-        mCameraMan->setCamera(m_ActiveCamera);
-        m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
+        XsiliumFramework::getInstance()->m_pViewport->setCamera(m_ActiveCamera);
+        //m_Window->getViewport(0)->setCamera(m_ActiveCamera);
+       // mCameraMan->setCamera(m_ActiveCamera);
+       // m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
-        for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
+        /*for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
         {
             m_Loader->mPGHandles[ij]->setCamera(m_ActiveCamera);
-        }
+        }*/
 
     }
     catch (Ogre::Exception& e)
@@ -173,6 +156,8 @@ void JeuxState::createScene()
         Ogre::LogManager::getSingleton().logMessage("SampleApp::createScene : setting the active camera to (\"" +
             cameraName + ") failed: " + e.getFullDescription());
     }
+
+
 }
 
 void JeuxState::moveCamera()
