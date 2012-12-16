@@ -140,15 +140,14 @@ void JeuxState::createScene()
     try
     {
         m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
-        XsiliumFramework::getInstance()->m_pViewport->setCamera(m_ActiveCamera);
-        m_Window->getViewport(0)->setCamera(m_ActiveCamera);
+        XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_ActiveCamera);
        // mCameraMan->setCamera(m_ActiveCamera);
-       // m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
+        m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
-        /*for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
+        for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
         {
             m_Loader->mPGHandles[ij]->setCamera(m_ActiveCamera);
-        }*/
+        }
 
     }
     catch (Ogre::Exception& e)
@@ -173,7 +172,52 @@ void JeuxState::getInput()
 void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
-//    XsiliumFramework::getInstance()->m_pTrayMgr->frameRenderingQueued(m_FrameEvent);
+
+    /*
+    if (!m_Loader->getTerrainGroup())
+            return ;
+
+    if (!m_Fly)
+        {
+            // clamp to terrain
+            Ogre::Vector3 camPos = m_ActiveCamera->getPosition();
+            Ogre::Ray ray;
+            ray.setOrigin(Ogre::Vector3(camPos.x, 10000, camPos.z));
+            ray.setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+
+            Ogre::TerrainGroup::RayResult rayResult = m_Loader->getTerrainGroup()->rayIntersects(ray);
+            Ogre::Real distanceAboveTerrain = 1.4f;
+            Ogre::Real fallSpeed = 200;
+            Ogre::Real newy = camPos.y;
+            if (rayResult.hit)
+            {
+                if (camPos.y > rayResult.position.y + distanceAboveTerrain)
+                {
+                    m_FallVelocity += timeSinceLastFrame * 10;
+                    m_FallVelocity = std::min(m_FallVelocity, fallSpeed);
+                    newy = camPos.y - m_FallVelocity * timeSinceLastFrame;
+
+                }
+                newy = std::max(rayResult.position.y + distanceAboveTerrain, newy);
+                m_ActiveCamera->setPosition(camPos.x, newy, camPos.z);
+            }
+        }
+
+        if (!m_Loader->getTerrainGroup()->isDerivedDataUpdateInProgress())
+        {
+            if (m_TerrainImported)
+            {
+                m_Loader->getTerrainGroup()->saveAllTerrains(true);
+                m_TerrainImported = false;
+            }
+        }
+
+        for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
+        {
+            m_Loader->mPGHandles[ij]->update();
+        }
+	*/
+
 
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
