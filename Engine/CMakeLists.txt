@@ -41,12 +41,12 @@ set( GameState_S
 )
 
 set( SceneLoader_S
-./DotSceneLoader.cpp
+./DotSceneLoader/DotSceneLoader.cpp
 )
 
 set( SceneLoader_H
-./DotSceneLoader.h
-./rapidxml.h
+./DotSceneLoader/DotSceneLoader.h
+./DotSceneLoader/rapidxml.h
 )
 
 set (CORE_SOURCE_FILES 

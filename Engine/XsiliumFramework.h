@@ -25,7 +25,7 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
-#include "DotSceneLoader.h"
+#include "DotSceneLoader/DotSceneLoader.h"
 
 
 class XsiliumFramework : public Singleton<XsiliumFramework> {

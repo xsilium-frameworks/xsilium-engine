@@ -11,8 +11,6 @@
 #include <OgreTerrainGroup.h>
 #include <OgreImage.h>
 
-#include "DotSceneLoader.h"
-
 class DotSceneLoader;
 
 namespace Forests

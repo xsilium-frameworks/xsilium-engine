@@ -95,33 +95,6 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     m_pTimer = new Ogre::Timer();
     m_pTimer->reset();
     m_pRenderWnd->setActive(true);
-    
-
-    rapidxml::xml_document<> XMLDoc;    // character type defaults to char
-    rapidxml::xml_node<>* XMLRoot;
-
-    std::ifstream fp;
-    fp.open("SampleAppConfig.xml", std::ios::in | std::ios::binary);
-    Ogre::DataStreamPtr stream(OGRE_NEW Ogre::FileStreamDataStream("SampleAppConfig.xml", &fp, false));
-    char* sampleAppConfig = strdup(stream->getAsString().c_str());
-    XMLDoc.parse<0>(sampleAppConfig);
-    XMLRoot = XMLDoc.first_node("SampleApp");
-
-    Ogre::String projectDir = Ogre::String(XMLRoot->first_attribute("projectDir")->value());
-    m_SceneFile = Ogre::String(XMLRoot->first_attribute("scene")->value());
-
-    // add sample project directory to the resource paths
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-        "../" + projectDir, "FileSystem", "General");
-
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-        "../" + projectDir + "/SampleScene2", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-        "../" + projectDir + "/Materials", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-        "../" + projectDir + "/Models", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-        "../" + projectDir + "/Terrain", "FileSystem", "General");
 
     return true;
 }
