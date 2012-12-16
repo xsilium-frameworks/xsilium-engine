@@ -49,7 +49,6 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     
     inputManager->initialise(m_pRenderWnd);
 
-    m_Window = m_pRoot->initialise(true, "Scene Loader");
     m_pViewport = m_pRenderWnd->addViewport(0);
     m_pViewport->setBackgroundColour(ColourValue(0.5f, 0.5f, 0.5f, 1.0f));
     
