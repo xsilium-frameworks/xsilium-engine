@@ -50,6 +50,9 @@ private:
 	XsiliumFramework(const XsiliumFramework&);
 	XsiliumFramework& operator= (const XsiliumFramework&);
     Ogre::String m_SceneFile;
+
+protected:
+	Ogre::RenderWindow* 		m_Window;
 };
 
 #endif

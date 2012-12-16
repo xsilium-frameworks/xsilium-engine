@@ -141,7 +141,7 @@ void JeuxState::createScene()
     {
         m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
         XsiliumFramework::getInstance()->m_pViewport->setCamera(m_ActiveCamera);
-        //m_Window->getViewport(0)->setCamera(m_ActiveCamera);
+        m_Window->getViewport(0)->setCamera(m_ActiveCamera);
        // mCameraMan->setCamera(m_ActiveCamera);
        // m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
