@@ -25,6 +25,8 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+#include "DotSceneLoader.h"
+
 
 class XsiliumFramework : public Singleton<XsiliumFramework> {
 
@@ -47,6 +49,7 @@ public:
 private:
 	XsiliumFramework(const XsiliumFramework&);
 	XsiliumFramework& operator= (const XsiliumFramework&);
+    Ogre::String m_SceneFile;
 };
 
 #endif
