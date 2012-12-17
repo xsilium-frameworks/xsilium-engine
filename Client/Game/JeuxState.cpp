@@ -141,7 +141,6 @@ void JeuxState::createScene()
     {
         m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
         XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_ActiveCamera);
-       // mCameraMan->setCamera(m_ActiveCamera);
         m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
         for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
@@ -161,44 +160,11 @@ void JeuxState::createScene()
 
 void JeuxState::moveCamera()
 {
-    if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_LSHIFT))
-        m_pCamera->moveRelative(m_TranslateVector);
-    m_pCamera->moveRelative(m_TranslateVector / 10);
 }
 
 void JeuxState::getInput()
 {
-	   if(m_bSettingsMode == false)
-	    {
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_A))
-	            m_TranslateVector.x = -m_MoveScale;
 
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_D))
-	            m_TranslateVector.x = m_MoveScale;
-
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_W))
-	            m_TranslateVector.z = -m_MoveScale;
-
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_S))
-	            m_TranslateVector.z = m_MoveScale;
-
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_Q))
-	            m_TranslateVector.y = -m_MoveScale;
-
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_E))
-	            m_TranslateVector.y = m_MoveScale;
-
-	        //camera roll
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_Z))
-	            m_pCamera->roll(Angle(-m_MoveScale));
-
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_X))
-	            m_pCamera->roll(Angle(m_MoveScale));
-
-	        //reset roll
-	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_C))
-	            m_pCamera->roll(-(m_pCamera->getRealOrientation().getRoll()));
-	    }
 }
 
 void JeuxState::update(double timeSinceLastFrame)
@@ -262,34 +228,11 @@ void JeuxState::update(double timeSinceLastFrame)
         return;
     }
 
-//    if(!XsiliumFramework::getInstance()->m_pTrayMgr->isDialogVisible())
-    {
-
-		/*
-		if(m_pDetailsPanel->isVisible())
-        {
-            m_pDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(m_pCamera->getDerivedPosition().x));
-            m_pDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(m_pCamera->getDerivedPosition().y));
-            m_pDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(m_pCamera->getDerivedPosition().z));
-            m_pDetailsPanel->setParamValue(3, Ogre::StringConverter::toString(m_pCamera->getDerivedOrientation().w));
-            m_pDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(m_pCamera->getDerivedOrientation().x));
-            m_pDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(m_pCamera->getDerivedOrientation().y));
-            m_pDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(m_pCamera->getDerivedOrientation().z));
-            if(m_bSettingsMode)
-                m_pDetailsPanel->setParamValue(7, "Buffered Input");
-            else
-                m_pDetailsPanel->setParamValue(7, "Un-Buffered Input");
-        }
-		*/
-    }
-
     m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
     m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
 
-    m_TranslateVector = Vector3::ZERO;
+    m_ActiveCamera->moveRelative(m_TranslateVector / 10);
 
-    getInput();
-    moveCamera();
 }
 
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -298,7 +241,45 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 	{
 	case OIS::KC_ESCAPE:
 		m_bQuit = true;
-
+		break;
+	case OIS::KC_A:
+		if(m_bSettingsMode == false)
+			m_TranslateVector.x = -m_MoveScale;
+		break;
+	case OIS::KC_D:
+		if(m_bSettingsMode == false)
+			m_TranslateVector.x = m_MoveScale;
+		break;
+	case OIS::KC_W:
+		if(m_bSettingsMode == false)
+			 m_TranslateVector.z = -m_MoveScale;
+		break;
+	case OIS::KC_S:
+		if(m_bSettingsMode == false)
+			m_TranslateVector.z = m_MoveScale;
+		break;
+	case OIS::KC_Q:
+		if(m_bSettingsMode == false)
+			m_TranslateVector.y = -m_MoveScale;
+		break;
+	case OIS::KC_E:
+		if(m_bSettingsMode == false)
+			m_TranslateVector.y = m_MoveScale;
+		break;
+	case OIS::KC_Z:
+		if(m_bSettingsMode == false)
+			m_ActiveCamera->roll(Angle(-m_MoveScale));
+		break;
+	case OIS::KC_X:
+		if(m_bSettingsMode == false)
+			m_ActiveCamera->roll(Angle(m_MoveScale));
+		break;
+	case OIS::KC_C:
+		if(m_bSettingsMode == false)
+			m_ActiveCamera->roll(-(m_ActiveCamera->getRealOrientation().getRoll()));
+		break;
+	case OIS::KC_LSHIFT:
+		m_ActiveCamera->moveRelative(m_TranslateVector);
 		break;
 	default:
 		break;
