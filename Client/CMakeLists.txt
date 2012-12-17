@@ -62,12 +62,12 @@ pcre
 message ("${CEGUI_LIBRARY}")
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
 
-set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/OgreFramework.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/OgreFramework.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++ ")
 
 set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE TRUE)
 
 set_target_properties(XsiliumClient PROPERTIES
-        LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
+        LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo "
       )
 
 
