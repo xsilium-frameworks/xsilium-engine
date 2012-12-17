@@ -161,12 +161,44 @@ void JeuxState::createScene()
 
 void JeuxState::moveCamera()
 {
-
+    if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_LSHIFT))
+        m_pCamera->moveRelative(m_TranslateVector);
+    m_pCamera->moveRelative(m_TranslateVector / 10);
 }
 
 void JeuxState::getInput()
 {
+	   if(m_bSettingsMode == false)
+	    {
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_A))
+	            m_TranslateVector.x = -m_MoveScale;
 
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_D))
+	            m_TranslateVector.x = m_MoveScale;
+
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_W))
+	            m_TranslateVector.z = -m_MoveScale;
+
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_S))
+	            m_TranslateVector.z = m_MoveScale;
+
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_Q))
+	            m_TranslateVector.y = -m_MoveScale;
+
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_E))
+	            m_TranslateVector.y = m_MoveScale;
+
+	        //camera roll
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_Z))
+	            m_pCamera->roll(Angle(-m_MoveScale));
+
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_X))
+	            m_pCamera->roll(Angle(m_MoveScale));
+
+	        //reset roll
+	        if(InputManager::getSingletonPtr()->mKeyboard->isKeyDown(OIS::KC_C))
+	            m_pCamera->roll(-(m_pCamera->getRealOrientation().getRoll()));
+	    }
 }
 
 void JeuxState::update(double timeSinceLastFrame)
