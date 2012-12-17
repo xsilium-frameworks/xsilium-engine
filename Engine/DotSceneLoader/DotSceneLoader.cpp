@@ -279,6 +279,8 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
     int compositeMapDistance = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningCompositeMapDistance")->value());
     int maxPixelError = Ogre::StringConverter::parseInt(XMLNode->first_attribute("tuningMaxPixelError")->value());
 
+
+
     Ogre::Vector3 lightdir(0, -0.3, 0.75);
     lightdir.normalise();
     Ogre::Light* l = m_pSceneMgr->createLight("tstLight");
@@ -295,6 +297,7 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
     mTerrainGlobalOptions->setCompositeMapDiffuse(l->getDiffuseColour());
 
     m_pSceneMgr->destroyLight("tstLight");
+
 
     mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
     mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);

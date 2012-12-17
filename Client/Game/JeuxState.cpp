@@ -110,7 +110,7 @@ void JeuxState::createScene()
     m_pCurrentObject = 0;
 
     m_Loader = new DotSceneLoader();
-    m_Loader->parseDotScene("world/xsiliumSceneBase.scene", "General", m_pSceneMgr);
+    m_Loader->parseDotScene("world/xsiliumSceneBase.xml", "General", m_pSceneMgr);
 
 
     // Loop through all cameras and grab their name and set their debug representation
@@ -173,7 +173,7 @@ void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 
-    /*
+
     if (!m_Loader->getTerrainGroup())
             return ;
 
@@ -216,7 +216,7 @@ void JeuxState::update(double timeSinceLastFrame)
         {
             m_Loader->mPGHandles[ij]->update();
         }
-	*/
+
 
 
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
