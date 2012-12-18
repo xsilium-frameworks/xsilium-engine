@@ -34,9 +34,6 @@ public:
 	bool pause();
 	void resume();
 
-	void moveCamera();
-	void getInput();
-
 //    void buildGUI();
 //    void itemSelected(OgreBites::SelectMenu* menu);
 
@@ -78,6 +75,7 @@ private:
     float* 						mPGLayerData[4];
     Ogre::Image 				mPGDensityMap;
     Ogre::Rect 					mPGDirtyRect;
+    OgreBites::SdkCameraMan * 				mCameraMan;
 
 };
 

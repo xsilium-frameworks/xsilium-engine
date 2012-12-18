@@ -23,7 +23,6 @@
 #include "Interface/Interface.h"
 
 #include <SdkTrays.h>
-#include <SdkCameraMan.h>
 
 #include "DotSceneLoader/DotSceneLoader.h"
 

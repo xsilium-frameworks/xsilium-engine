@@ -4,6 +4,7 @@
 #include "XsiliumFramework.h"
 #include "InputManager/InputManager.h"
 #include "DotSceneLoader/DotSceneLoader.h"
+#include "Camera/SdkCameraMan.h"
 
 class GameState;
 

@@ -49,6 +49,10 @@ set( SceneLoader_H
 ./DotSceneLoader/rapidxml.h
 )
 
+set( Camera_H
+./Camera/SdkCameraMan.h
+)
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
@@ -65,6 +69,7 @@ ${Network_H}
 ${XsiliumEngine_H}
 ${GameState_H}
 ${SceneLoader_H}
+${Camera_H}
 )
 
 
