@@ -31,6 +31,8 @@ JeuxState::JeuxState()
 
 JeuxState::~JeuxState(void)
 {
+	delete mCameraMan;
+	mCameraMan = 0;
 	delete m_Loader;
 }
 
@@ -141,6 +143,7 @@ void JeuxState::createScene()
     {
         m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
         XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_ActiveCamera);
+        mCameraMan = new OgreBites::SdkCameraMan(m_ActiveCamera);
         m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
         for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
@@ -155,15 +158,6 @@ void JeuxState::createScene()
             cameraName + ") failed: " + e.getFullDescription());
     }
 
-
-}
-
-void JeuxState::moveCamera()
-{
-}
-
-void JeuxState::getInput()
-{
 
 }
 
@@ -231,7 +225,7 @@ void JeuxState::update(double timeSinceLastFrame)
     m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
     m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
 
-    m_ActiveCamera->moveRelative(m_TranslateVector / 10);
+    mCameraMan->frameRenderingQueued(m_FrameEvent);
 
 }
 
@@ -242,53 +236,17 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 	case OIS::KC_ESCAPE:
 		m_bQuit = true;
 		break;
-	case OIS::KC_A:
-		if(m_bSettingsMode == false)
-			m_TranslateVector.x = -m_MoveScale;
-		break;
-	case OIS::KC_D:
-		if(m_bSettingsMode == false)
-			m_TranslateVector.x = m_MoveScale;
-		break;
-	case OIS::KC_W:
-		if(m_bSettingsMode == false)
-			 m_TranslateVector.z = -m_MoveScale;
-		break;
-	case OIS::KC_S:
-		if(m_bSettingsMode == false)
-			m_TranslateVector.z = m_MoveScale;
-		break;
-	case OIS::KC_Q:
-		if(m_bSettingsMode == false)
-			m_TranslateVector.y = -m_MoveScale;
-		break;
-	case OIS::KC_E:
-		if(m_bSettingsMode == false)
-			m_TranslateVector.y = m_MoveScale;
-		break;
-	case OIS::KC_Z:
-		if(m_bSettingsMode == false)
-			m_ActiveCamera->roll(Angle(-m_MoveScale));
-		break;
-	case OIS::KC_X:
-		if(m_bSettingsMode == false)
-			m_ActiveCamera->roll(Angle(m_MoveScale));
-		break;
-	case OIS::KC_C:
-		if(m_bSettingsMode == false)
-			m_ActiveCamera->roll(-(m_ActiveCamera->getRealOrientation().getRoll()));
-		break;
-	case OIS::KC_LSHIFT:
-		m_ActiveCamera->moveRelative(m_TranslateVector);
-		break;
 	default:
 		break;
 	}
+
+	mCameraMan->injectKeyDown(keyEventRef);
 
     return true;
 }
 bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
+	mCameraMan->injectKeyUp(keyEventRef);
 	return true;
 }
 
