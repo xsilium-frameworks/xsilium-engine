@@ -2,7 +2,7 @@
 
 XsiliumApp::XsiliumApp()
 {
-	m_pGameStateManager = new GameStateManager();;
+	m_pGameStateManager = new GameStateManager();
 }
 
 XsiliumApp::~XsiliumApp()
