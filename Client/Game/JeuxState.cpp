@@ -40,7 +40,8 @@ void JeuxState::enter()
 {
     using namespace CEGUI;
 
-    inputManager->addKeyListener(this,"Game");
+    inputManager->addKeyListener(this,"Game1");
+    inputManager->addMouseListener(this,"Game2");
 
     XsiliumFramework::getInstance()->m_pLog->logMessage("Entering JeuxState...");
 
@@ -104,6 +105,7 @@ void JeuxState::exit()
 
 
     inputManager->removeKeyListener(this);
+    inputManager->removeMouseListener(this);
 }
 
 void JeuxState::createScene()
@@ -144,6 +146,8 @@ void JeuxState::createScene()
         m_ActiveCamera = m_pSceneMgr->getCamera(cameraName);
         XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_ActiveCamera);
         mCameraMan = new OgreBites::SdkCameraMan(m_ActiveCamera);
+        mCameraMan->setTopSpeed(0.3f);
+        //mCameraMan->setStyle(OgreBites::CS_MANUAL);
         m_pSceneMgr->getEntity(m_ActiveCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
         for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
@@ -165,35 +169,32 @@ void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 
-
-    if (!m_Loader->getTerrainGroup())
+    // if terrain is not loaded return
+        if (!m_Loader->getTerrainGroup())
             return ;
+    // clamp to terrain
+    Ogre::Vector3 camPos = m_ActiveCamera->getPosition();
+    Ogre::Ray ray;
+    ray.setOrigin(Ogre::Vector3(camPos.x, 10000, camPos.z));
+    ray.setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
 
-    if (!m_Fly)
+    Ogre::TerrainGroup::RayResult rayResult = m_Loader->getTerrainGroup()->rayIntersects(ray);
+    Ogre::Real distanceAboveTerrain = 1.0f;
+    Ogre::Real fallSpeed = 0;
+    Ogre::Real newy = camPos.y;
+    if (rayResult.hit)
+    {
+    	if (camPos.y > rayResult.position.y + distanceAboveTerrain)
         {
-            // clamp to terrain
-            Ogre::Vector3 camPos = m_ActiveCamera->getPosition();
-            Ogre::Ray ray;
-            ray.setOrigin(Ogre::Vector3(camPos.x, 10000, camPos.z));
-            ray.setDirection(Ogre::Vector3::NEGATIVE_UNIT_Y);
+    		m_FallVelocity += timeSinceLastFrame * 10;
+            m_FallVelocity = std::min(m_FallVelocity, fallSpeed);
+            newy = camPos.y - m_FallVelocity * timeSinceLastFrame;
 
-            Ogre::TerrainGroup::RayResult rayResult = m_Loader->getTerrainGroup()->rayIntersects(ray);
-            Ogre::Real distanceAboveTerrain = 1.4f;
-            Ogre::Real fallSpeed = 200;
-            Ogre::Real newy = camPos.y;
-            if (rayResult.hit)
-            {
-                if (camPos.y > rayResult.position.y + distanceAboveTerrain)
-                {
-                    m_FallVelocity += timeSinceLastFrame * 10;
-                    m_FallVelocity = std::min(m_FallVelocity, fallSpeed);
-                    newy = camPos.y - m_FallVelocity * timeSinceLastFrame;
-
-                }
-                newy = std::max(rayResult.position.y + distanceAboveTerrain, newy);
-                m_ActiveCamera->setPosition(camPos.x, newy, camPos.z);
-            }
         }
+        newy = std::max(rayResult.position.y + distanceAboveTerrain, newy);
+        m_ActiveCamera->setPosition(camPos.x, newy, camPos.z);
+    }
+
 
         if (!m_Loader->getTerrainGroup()->isDerivedDataUpdateInProgress())
         {
@@ -222,9 +223,6 @@ void JeuxState::update(double timeSinceLastFrame)
         return;
     }
 
-    m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
-    m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
-
     mCameraMan->frameRenderingQueued(m_FrameEvent);
 
 }
@@ -239,14 +237,28 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 	default:
 		break;
 	}
-
 	mCameraMan->injectKeyDown(keyEventRef);
-
     return true;
 }
 bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
 	mCameraMan->injectKeyUp(keyEventRef);
+	return true;
+}
+
+bool JeuxState::mouseMoved( const OIS::MouseEvent &event )
+{
+	mCameraMan->injectMouseMove(event);
+	return true;
+}
+bool JeuxState::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
+{
+	mCameraMan->injectMouseDown(event,id);
+	return true;
+}
+bool JeuxState::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
+{
+	mCameraMan->injectMouseUp(event,id);
 	return true;
 }
 
