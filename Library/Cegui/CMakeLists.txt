@@ -320,6 +320,7 @@ endif()
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/cegui/include
     ${CMAKE_CURRENT_SOURCE_DIR}/cegui/include
+    ${XSILIUM_INCLUDE}
 )
 
 

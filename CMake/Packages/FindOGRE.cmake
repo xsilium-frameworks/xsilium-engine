@@ -69,7 +69,7 @@ else ()
 endif ()
 
 
-if(APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+if(APPLE)
 	set(OGRE_LIBRARY_NAMES "Ogre${OGRE_LIB_SUFFIX}")
 else()
     set(OGRE_LIBRARY_NAMES "OgreMain${OGRE_LIB_SUFFIX}")
@@ -99,7 +99,6 @@ set(OGRE_PREFIX_PATH
   ${OGRE_HOME} ${OGRE_SDK} ${ENV_OGRE_HOME} ${ENV_OGRE_SDK}
   ${OGRE_PREFIX_GUESSES}
 )
-
 create_search_paths(OGRE)
 # If both OGRE_BUILD and OGRE_SOURCE are set, prepare to find Ogre in a build dir
 set(OGRE_PREFIX_SOURCE ${OGRE_SOURCE} ${ENV_OGRE_SOURCE})
@@ -146,12 +145,12 @@ endforeach (comp)
 set(OGRE_PREFIX_WATCH ${OGRE_PREFIX_PATH} ${OGRE_PREFIX_SOURCE} ${OGRE_PREFIX_BUILD})
 clear_if_changed(OGRE_PREFIX_WATCH ${OGRE_RESET_VARS})
 
-if(NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-	# try to locate Ogre via pkg-config
-	use_pkgconfig(OGRE_PKGC "OGRE${OGRE_LIB_SUFFIX}")
+# try to locate Ogre via pkg-config
+use_pkgconfig(OGRE_PKGC "OGRE${OGRE_LIB_SUFFIX}")
 
-	# try to find framework on OSX
-	findpkg_framework(OGRE)
+if(NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+  # try to find framework on OSX
+  findpkg_framework(OGRE)
 else()
 	set(OGRE_LIBRARY_FWK "")
 endif()

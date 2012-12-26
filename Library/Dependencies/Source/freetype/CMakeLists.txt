@@ -1,77 +1,31 @@
-project(freetype)
+# ---------------------------------------------------------
+cmake_minimum_required(VERSION 2.6)
 
-set(freetype_SOURCES
-  #builds/win32/ftdebug.c
-	include/freetype/config/ftconfig.h
-	include/freetype/config/ftheader.h
-	include/freetype/config/ftmodule.h
-	include/freetype/config/ftoption.h
-	include/freetype/config/ftstdlib.h
-	include/freetype/freetype.h
-	include/freetype/ftadvanc.h
-	include/freetype/ftbbox.h
-	include/freetype/ftbdf.h
-	include/freetype/ftbitmap.h
-    include/freetype/ftbzip2.h
-	include/freetype/ftcache.h
-	include/freetype/ftchapters.h
-	include/freetype/ftcid.h
-	include/freetype/fterrdef.h
-	include/freetype/fterrors.h
-	include/freetype/ftgasp.h
-	include/freetype/ftglyph.h
-	include/freetype/ftgxval.h
-	include/freetype/ftgzip.h
-	include/freetype/ftimage.h
-	include/freetype/ftincrem.h
-	include/freetype/ftlcdfil.h
-	include/freetype/ftlist.h
-	include/freetype/ftlzw.h
-	include/freetype/ftmac.h
-	include/freetype/ftmm.h
-	include/freetype/ftmodapi.h
-	include/freetype/ftmoderr.h
-	include/freetype/ftotval.h
-	include/freetype/ftoutln.h
-	include/freetype/ftpfr.h
-	include/freetype/ftrender.h
-	include/freetype/ftsizes.h
-	include/freetype/ftsnames.h
-	include/freetype/ftstroke.h
-	include/freetype/ftsynth.h
-	include/freetype/ftsystem.h
-	include/freetype/fttrigon.h
-	include/freetype/fttypes.h
-	include/freetype/ftwinfnt.h
-	include/freetype/ftxf86.h
-	include/freetype/t1tables.h
-	include/freetype/ttnameid.h
-	include/freetype/tttables.h
-	include/freetype/tttags.h
-	include/freetype/ttunpat.h
-	include/ft2build.h
+
+set(FREETYPE_SRC 
 	src/autofit/autofit.c
+	src/bdf/bdf.c
+	src/cff/cff.c
 	src/base/ftbase.c
 	src/base/ftbbox.c
+	src/base/ftbdf.c
 	src/base/ftbitmap.c
-	src/base/ftfstype.c
+	src/cache/ftcache.c
 	src/base/ftgasp.c
 	src/base/ftglyph.c
+	src/base/ftgxval.c
+	src/gzip/ftgzip.c
 	src/base/ftinit.c
+	src/lzw/ftlzw.c
 	src/base/ftmm.c
+	src/base/ftotval.c
 	src/base/ftpfr.c
 	src/base/ftstroke.c
 	src/base/ftsynth.c
 	src/base/ftsystem.c
 	src/base/fttype1.c
 	src/base/ftwinfnt.c
-	src/bdf/bdf.c
-    src/bzip2/ftbzip2.c
-	src/cache/ftcache.c
-	src/cff/cff.c
-	src/cid/type1cid.c
-	src/gzip/ftgzip.c
-	src/lzw/ftlzw.c
+	src/base/ftxf86.c
 	src/pcf/pcf.c
 	src/pfr/pfr.c
 	src/psaux/psaux.c
@@ -82,27 +36,26 @@ set(freetype_SOURCES
 	src/smooth/smooth.c
 	src/truetype/truetype.c
 	src/type1/type1.c
+	src/cid/type1cid.c
 	src/type42/type42.c
 	src/winfonts/winfnt.c
 )
 
-include_directories(include)
-add_definitions(-DFT2_BUILD_LIBRARY)
-add_library(freetype STATIC ${freetype_SOURCES})
-install_dep(freetype include)
-if (OGREDEPS_INSTALL_DEV)
-  install(DIRECTORY include/ DESTINATION include)
-endif ()
+if (WIN32)
+	set(FREETYPE_PLATFORM
+		win32/ftdebug.c
+		)
+endif (WIN32)
 
-if (APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
-  add_definitions(-DHAVE_QUICKDRAW_CARBON=0 -DHAVE_QUICKDRAW_TOOLBOX=0 -DHAVE_ATS=0 -DHAVE_FSREF=0 -DHAVE_FSSPEC=0 -DDARWIN_NO_CARBON=1 -DFT_CONFIG_OPTION_NO_ASSEMBLER=1)
+## TODO TEST OTHER PLATFORMS
 
-  set_target_properties(freetype PROPERTIES XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "4.0")
-  set_target_properties(freetype PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
+if (APPLE AND XSILIUM_BUILD_IPHONE)
+	add_definitions(-DDARWIN_NO_CARBON)
 endif()
 
-set(FREETYPE_FT2BUILD_INCLUDE_DIR "${freetype_SOURCE_DIR}/include" CACHE PATH "" FORCE)
-set(FREETYPE_INCLUDE_DIR "${freetype_SOURCE_DIR}/include/freetype" CACHE PATH "" FORCE)
-set(FREETYPE_LIBRARY_DBG "freetype" CACHE STRING "" FORCE)
-set(FREETYPE_LIBRARY_REL "freetype" CACHE STRING "" FORCE)
-mark_as_advanced(FREETYPE_FT2BUILD_INCLUDE_DIR FREETYPE_INCLUDE_DIR FREETYPE_LIBRARY_DBG FREETYPE_LIBRARY_REL)
+
+include_directories(include)
+add_definitions(-DFT2_BUILD_LIBRARY)
+add_library(${XSILIUM_FREETYPE_TARGET} ${FREETYPE_SRC} ${FREETYPE_PLATFORM})
+
+config_target_if_iphone_build(${XSILIUM_FREETYPE_TARGET} TRUE)

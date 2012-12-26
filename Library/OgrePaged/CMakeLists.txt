@@ -13,19 +13,11 @@ INCLUDE(CheckIncludeFileCXX)
 INCLUDE(CheckCCompilerFlag)
 INCLUDE(CheckCSourceCompiles)
 
-
 # define the project
 project(PagedGeometry)
 
 # build static libs by default
 SET(BUILD_SHARED_LIBS OFF)
-
-# setup paths
-SET(RUNTIME_OUTPUT_DIRECTORY "${PagedGeometry_BINARY_DIR}/bin/")
-SET(LIBRARY_OUTPUT_DIRECTORY "${PagedGeometry_BINARY_DIR}/lib/")
-SET(ARCHIVE_OUTPUT_DIRECTORY "${PagedGeometry_BINARY_DIR}/lib/")
-SET(EXECUTABLE_OUTPUT_PATH   ${RUNTIME_OUTPUT_DIRECTORY})
-SET(LIBRARY_OUTPUT_PATH      ${LIBRARY_OUTPUT_DIRECTORY})
 
 # fix executable paths for windows
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
@@ -116,30 +108,3 @@ ENDIF()
 
 # now add the directories
 add_subdirectory(source)
-
-
-
-# cpack
-set(CPACK_PACKAGE_DESCRIPTION "PagedGeometry")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The PagedGeometry engine is an add-on to Ogre which provides highly optimized methods for rendering massive amounts of small meshes, covering a possibly infinite area.")
-set(CPACK_PACKAGE_NAME "pagedgeometry")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "pagedgeometry")
-set(CPACK_PACKAGE_CONTACT "support@rigsofrods.com")
-set(CPACK_PACKAGE_VENDOR "support@rigsofrods.com")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/zlib.txt")
-
-SET(CPACK_GENERATOR ZIP)
-IF(UNIX)
-  SET(CPACK_GENERATOR ${CPACK_GENERATOR};STGZ;TGZ)
-ENDIF(UNIX)
-IF(LINUX)
-SET(CPACK_GENERATOR ${CPACK_GENERATOR};DEB;RPM)
-ENDIF(LINUX)
-IF(MSVC)
-  SET(CPACK_GENERATOR ${CPACK_GENERATOR};NSIS)
-ENDIF(MSVC)
-IF(APPLE)
-  SET(CPACK_GENERATOR ${CPACK_GENERATOR};PackageMaker)
-ENDIF(APPLE)
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${LIB_VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
-include(CPack)

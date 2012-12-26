@@ -1,4 +1,6 @@
-project(zziplib)
+# ---------------------------------------------------------
+cmake_minimum_required(VERSION 2.6)
+
 
 set(zziplib_SOURCES
   zzip/autoconf.h
@@ -39,22 +41,15 @@ set(zziplib_SOURCES
 )
 
 # need zlib includes
-include_directories(../zlib)
+include_directories(${XSILIUM_ZLIB_INCLUDE})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if (WIN32)
   add_definitions(-D_MSC_VER)
 endif ()
 
-add_library(zziplib STATIC ${zziplib_SOURCES})
-install_dep(zziplib include/zzip zzip/_config.h zzip/conf.h zzip/types.h zzip/zzip.h zzip/plugin.h zzip/_msvc.h)
+add_library(${XSILIUM_ZZIP_TARGET} STATIC ${zziplib_SOURCES})
+config_target_if_iphone_build(${XSILIUM_ZZIP_TARGET} TRUE)
 
-if (APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
-  set_target_properties(zziplib PROPERTIES XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "4.0")
-  set_target_properties(zziplib PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
-endif()
 
-set(ZZip_INCLUDE_DIR "${zziplib_SOURCE_DIR}" CACHE PATH "" FORCE)
-set(ZZip_LIBRARY_DBG "zziplib" CACHE STRING "" FORCE)
-set(ZZip_LIBRARY_REL "zziplib" CACHE STRING "" FORCE)
-mark_as_advanced(ZZip_INCLUDE_DIR ZZip_LIBRARY_DBG ZZip_LIBRARY_REL)
+

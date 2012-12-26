@@ -1,84 +1,102 @@
+# ---------------------------------------------------------
+cmake_minimum_required(VERSION 2.6)
 
+#SET(CMAKE_SUPPRESS_REGENERATION  1)
+#SET(CMAKE_USE_RELATIVE_PATHS 1)
+#SET(INTERNAL_CREATE_DISTRIBUTABLE_MSVC_PROJECTFILES 1)
 
-if (APPLE AND NOT ANDROID)
-  cmake_minimum_required(VERSION 2.8.7)
-  SET(CMAKE_SIZEOF_VOID_P 4)
-else()
-  cmake_minimum_required(VERSION 2.6)
-endif ()
+project(XSILIUM)
+SET(XSILIUM 1.0)
+set(OGRE_STATIC TRUE)
 
+if(COMMAND cmake_policy)
+   cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
-project(Xsilium-engine)
-SET(VERSION 1.0)
-
-set(CMAKE_MODULE_PATH 
-"${CMAKE_SOURCE_DIR}/CMake"
-"${CMAKE_SOURCE_DIR}/CMake/Packages"
-"${CMAKE_SOURCE_DIR}/CMake/Utils"
- ${CMAKE_MODULE_PATH} 
-
-) 
-
-if (WIN32)
-  # look for DirectX which is needed by OIS
-  find_package(DirectX REQUIRED)
-  add_definitions(-DWINVER=0x0500)
-endif ()
-
-if (APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
-  # Set build variables
-  set(CMAKE_OSX_SYSROOT iphoneos)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "")
-  set(XCODE_ATTRIBUTE_SDKROOT iphoneos)
-  set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_BIT})
-elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-  # Set 10.5 as the base SDK by default
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.6)
-
-  if (NOT CMAKE_OSX_ARCHITECTURES)
-    set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_BIT})
-  endif()
-endif ()
-
-if (ANDROID)
-  SET(TargetPlatform "Android")
-  SET(OGRE_PLATFORM OGRE_PLATFORM_ANDROID)
+if (MSVC)
+	add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+	add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
+	add_definitions( -DNOMINMAX)
 endif()
 
-#for find Ogre
-set (OGRE_SOURCE "${CMAKE_SOURCE_DIR}/Library/Ogre")
-set (OGRE_BUILD "${CMAKE_BINARY_DIR}/Library/Ogre")
+if (XSILIUM_BUILD_IPHONE)    
+	add_definitions(-DARM_NEON_GCC_COMPATIBILITY=1)
+endif()
 
-#for find OIS
-set (OIS_HOME "${CMAKE_SOURCE_DIR}/Library/Dependencies/Source/ois")
+# ---------------------------------------------------------
+set(CMAKE_MODULE_PATH
+    ${XSILIUM_SOURCE_DIR}/CMake
+    ${XSILIUM_SOURCE_DIR}/CMake/Utils
+    ${XSILIUM_SOURCE_DIR}/CMake/Packages
+    ${XSILIUM_SOURCE_DIR}/CMake/Templates
+    )
+include(CMakeDependentOption)
+include(CheckCXXCompilerFlag)
+include(ConfigXsilium)
+include(ConfigIPhone)
+include(OgreAddTargets)
+
+configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
 
 
-#for find CEGUI
-set (CEGUI_SOURCE "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/")
-set (CEGUI_BUILD "${CMAKE_BINARY_DIR}/")
-
-#for find Ogre_Paged
-set (OGRE_PAGED_SOURCE "${CMAKE_SOURCE_DIR}/Library/OgrePaged/")
-set (OGRE_PAGED_BUILD "${CMAKE_BINARY_DIR}/Library/OgrePaged/")
-
-add_subdirectory(Library)
+set(XSILIUM_BULLET_LIBS BulletDynamics BulletCollision  LinearMath)	
+set(XSILIUM_BULLET_INCLUDE ${XSILIUM_SOURCE_DIR}/bullet/src)
+if (XSILIUM_COMPILE_SOFTBODY)
+	list(APPEND XSILIUM_BULLET_LIBS BulletSoftBody)
+endif()
 
 
-find_package(OIS QUIET)
-find_package(OGRE QUIET)
-find_package(CEGUI QUIET)
-find_package(OGREPAGED QUIET)
+#if (APPLE)
+#    if (${XCODE_VERSION} STRGREATER "4.0.0")
+#        set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
+#    endif()
+#endif()
 
-add_subdirectory(Engine)
 
-add_dependencies( XsiliumEngine
- CEGUIBase 
- CEGUIOgreRenderer 
- CEGUIFreeImageImageCodec
- CEGUILibXMLParser
+IF(MSVC)
 
-   )
+	#We statically link to reduce dependancies
+	FOREACH(flag_var    CMAKE_CXX_FLAGS 
+	                    CMAKE_CXX_FLAGS_DEBUG 
+	                    CMAKE_CXX_FLAGS_RELEASE 
+	                    CMAKE_CXX_FLAGS_MINSIZEREL 
+	                    CMAKE_CXX_FLAGS_RELWITHDEBINFO
+	                    CMAKE_C_FLAGS_DEBUG
+	                    CMAKE_C_FLAGS_RELEASE
+	                    CMAKE_C_FLAGS_MINSIZEREL 
+	                    CMAKE_C_FLAGS_RELWITHDEBINFO
+	                    )
+		IF(${flag_var} MATCHES "/MD")
+			STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MD")
+		IF(${flag_var} MATCHES "/MDd")
+			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MDd")
+	ENDFOREACH(flag_var)
 
-add_subdirectory(Client)
+ENDIF(MSVC)
 
-add_dependencies(XsiliumClient XsiliumEngine )
+
+# ---------------------------------------------------------
+# Common base paths
+set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
+                    ${XSILIUM_SOURCE_DIR}/Engine
+                    ${XSILIUM_DEP_INCLUDE}
+		    ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
+		    ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
+		    ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
+		    ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
+                    )
+
+set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain )
+
+
+subdirs(Library)
+subdirs(Engine)
+subdirs(Client)
+
+
+
+
+
+
