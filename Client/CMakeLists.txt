@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR}/Engine)
+include_directories(${XSILIUM_INCLUDE})
 
 if (UNIX)
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/bin/datafiles
@@ -45,13 +45,7 @@ Login
 
 
 link_libraries(
-${OGRE_LIBRARIES} 
-${OGRE_Terrain_LIBRARIES}
-${OIS_LIBRARIES}
-${CEGUI_LIBRARY}
-${OGRE_PAGED_LIBRARY}
-XsiliumEngine
-pcre
+${XSILIUM_LIB} 
 )
 
     add_executable(XsiliumClient

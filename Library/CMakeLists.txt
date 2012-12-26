@@ -1,43 +1,14 @@
-add_subdirectory(Dependencies)
-add_subdirectory(Enet)
-add_subdirectory(Bullet)
+# ---------------------------------------------------------
+cmake_minimum_required(VERSION 2.6)
 
-find_package(Boost)
-
-add_subdirectory(Ogre)
-
-add_dependencies( OgreMain FreeImage freetype OIS pcre zlib zziplib)
-
-find_package(OGRE)
-
-set(FREETYPE_H_PATH_ft2build ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Source/freetype/include)
-
-include_directories(${FREETYPE_H_PATH_ft2build})
-
-set(PCRE_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Source/pcre;${CMAKE_BINARY_DIR}/Library/Dependencies/Source/pcre")
-
-include_directories(${PCRE_H_PATH})
-
-set(OGRE_H_PATH "${OGRE_INCLUDE_DIRS}")
-set(OGRE_LIB "${OGRE_LIBRARIES}")
-
-add_subdirectory(OgrePaged)
-
-add_subdirectory(Cegui)
-
-add_dependencies( CEGUIBase
- OgreMain 
- RenderSystem_GL 
- Plugin_CgProgramManager 
- Plugin_OctreeSceneManager 
- Plugin_BSPSceneManager 
- Plugin_ParticleFX
- Plugin_PCZSceneManager
- Plugin_OctreeZone
- OgrePaging
- OgreTerrain
- OgreRTShaderSystem
- PagedGeometry
- )
+include(NoWarn)
+subdirs(Bullet)
+subdirs(Dependencies)
+subdirs(Enet)
+subdirs(Ogre)
+subdirs(OgrePaged)
+subdirs(Cegui)
+#subdirs(Hydrax)
+#subdirs(SkyX)
 
 

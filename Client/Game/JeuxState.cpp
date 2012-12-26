@@ -222,8 +222,12 @@ void JeuxState::update(double timeSinceLastFrame)
         popGameState();
         return;
     }
+    m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
+    m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
 
-    mCameraMan->frameRenderingQueued(m_FrameEvent);
+
+    m_ActiveCamera->moveRelative(m_TranslateVector / 10);
+    //mCameraMan->frameRenderingQueued(m_FrameEvent);
 
 }
 
@@ -233,6 +237,9 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 	{
 	case OIS::KC_ESCAPE:
 		m_bQuit = true;
+		break;
+	case OIS::KC_Z:
+			 m_TranslateVector.z = -m_MoveScale;
 		break;
 	default:
 		break;

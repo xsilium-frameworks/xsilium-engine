@@ -10,6 +10,7 @@ Console::Console(CEGUI::Window* d_root) :
 
 Console::~Console()
 {
+
 }
 
 void Console::toggleVisibility()
