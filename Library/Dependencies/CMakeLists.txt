@@ -6,7 +6,7 @@ SET(Dependencies 1.0)
 
 include(NoWarn)
 subdirs(Source/ois)
-subdirs(Source/FreeType)
+subdirs(Source/freetype)
 subdirs(Source/zlib)
 
 if (XSILIUM_USE_STATIC_FREEIMAGE)
