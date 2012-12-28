@@ -268,7 +268,7 @@ macro (configure_xsilium ROOT OGREPATH)
 		include(TemplateCompiler)
 	endif()
 	
-	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/FreeType/include)
+	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/freetype/include)
 	set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/zziplib)
 	set(XSILIUM_OIS_INCLUDE ${XSILIUM_DEP_DIR}/ois/includes)
 	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Terrain/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
