@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project(XSILIUM)
 SET(XSILIUM 1.0)
-set(OGRE_STATIC TRUE)
+set(OGRE_STATIC FALSE)
 
 if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW)
