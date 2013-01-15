@@ -648,7 +648,7 @@ add_definitions(-DOGRE_NONCLIENT_BUILD -DFREEIMAGE_LIB -D_MT -D_USRDLL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/nedmalloc)
 
 set(LIBRARIES
-  ${FREETYPE_LIBRARIES}
+  ${XSILIUM_FREETYPE_TARGET}
   ${PLATFORM_LIBS}
 )
 
@@ -659,7 +659,7 @@ endif ()
 if (OGRE_CONFIG_ENABLE_FREEIMAGE)
   list(APPEND HEADER_FILES include/OgreFreeImageCodec.h)
   list(APPEND SOURCE_FILES src/OgreFreeImageCodec.cpp)
-  list(APPEND LIBRARIES    "${FreeImage_LIBRARIES}")
+  list(APPEND LIBRARIES    "${XSILIUM_FREEIMAGE_TARGET}")
 endif()
 
 if (OGRE_CONFIG_ENABLE_DDS)

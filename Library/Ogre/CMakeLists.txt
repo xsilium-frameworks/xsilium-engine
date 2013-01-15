@@ -156,7 +156,7 @@ include(OgreGetVersion)
 ogre_get_version(${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h)
 message(STATUS "Configuring OGRE ${OGRE_VERSION}")
 
-configure_file(${OgreLite_SOURCE_DIR}/Settings/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/include/OgreBuildSettings.h)
+configure_file(${OGRE_TEMPLATES_DIR}/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/include/OgreBuildSettings.h)
 
 # Configure version file for use by scripts
 #configure_file("${OGRE_TEMPLATES_DIR}/version.txt.in" "${OGRE_BINARY_DIR}/version.txt" @ONLY)

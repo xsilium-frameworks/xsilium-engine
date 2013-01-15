@@ -26,7 +26,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	  set(CMAKE_BUILD_TYPE "MinSizeRel" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
 	endif ()
 
-	set(XSILIUM_INSTALL_PREFIX ${ROOT}/Bin)
+	set(XSILIUM_INSTALL_PREFIX ${ROOT})
 	
 	option(XSILIUM_COMPILE_SWIG				"Enable compile time SWIG generation."  OFF)
 	option(XSILIUM_COMPILE_OGRE_SCRIPTS		"Automatically convert Blender TX to Ogre (.material, .font, .overlay... etc)" ON)
@@ -43,7 +43,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_COMPILE_SOFTBODY			"Eanble / Disable Bullet Softbody build" OFF)
 	option(XSILIUM_USE_NNODE				"Use Logic Node(It's Nodal Logic, not Blender LogicBrick)" OFF)
 	option(XSILIUM_USE_PARTICLE				"Use Paritcle" ON)
-	option(XSILIUM_COMPILE_OGRE_COMPONENTS	"Eanble compile additional Ogre components (RTShader, Terrain, Paging, ... etc)" OFF)
+	option(XSILIUM_COMPILE_OGRE_COMPONENTS	"Eanble compile additional Ogre components (RTShader, Terrain, Paging, ... etc)" ON)
 	option(XSILIUM_USE_RTSHADER_SYSTEM		"Eanble shader system instead of fixed piped functions." OFF)
 	option(XSILIUM_USE_COMPOSITOR			"Enable post effect by compositor (Bloom, BlackAndWhite, HDR, ...)" OFF)
 	option(XSILIUM_USE_COMPOSITOR_TEX		"Add Compositor texture resources (NightVision, HeatVision, ...)" OFF)
@@ -91,6 +91,13 @@ macro (configure_xsilium ROOT OGREPATH)
 		#option(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM "Build Ogre RTShaderSystem Compoment" OFF)
 		option(OGRE_BUILD_COMPONENT_PROPERTY "Build Ogre Property Compoment(Required boost)" OFF)
 	endif()
+
+
+	set(OGRE_BUILD_PLUGIN_OCTREE TRUE CACHE BOOL "Forcing Plugins" )
+	set(OGRE_BUILD_PLUGIN_BSP TRUE CACHE BOOL "Forcing Plugins" )
+	set(OGRE_BUILD_PLUGIN_PFX TRUE CACHE BOOL "Forcing Plugins" )
+	set(OGRE_BUILD_PLUGIN_PCZ TRUE CACHE BOOL "Forcing Plugins" )
+	
 	
 	set(XSILIUM_ZZIP_TARGET ZZipLib)
 	set(XSILIUM_FREETYPE_TARGET freetype)
