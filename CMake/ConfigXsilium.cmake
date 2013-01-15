@@ -104,7 +104,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(XSILIUM_OIS_TARGET OIS)
 	
 	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
-	set(OGRE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/Bin)
+	set(OGRE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
 	set(OGRELITE_SOURCE_DIR ${OGREPATH})
 	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
