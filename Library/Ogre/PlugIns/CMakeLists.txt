@@ -10,6 +10,7 @@
 # Configure Plugins build
 
 if (OGRE_BUILD_PLUGIN_OCTREE)
+  message("test")
   add_subdirectory(OctreeSceneManager)
 endif (OGRE_BUILD_PLUGIN_OCTREE)
 
