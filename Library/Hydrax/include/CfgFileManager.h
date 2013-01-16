@@ -156,7 +156,7 @@ namespace Hydrax
 			@param Find String to find
 			@return true if it's contained, false if not
 		 */
-		static bool _isStringInList(const std::vector<Ogre::String> &List, const Ogre::String &Find);
+		static bool _isStringInList(const Ogre::StringVector &List, const Ogre::String &Find);
 
 	private:
 		/** Save a string in file
@@ -203,7 +203,7 @@ namespace Hydrax
 		    @return true if it's the same version, false if not.
 		 */
 		const bool _checkVersion(Ogre::ConfigFile& CfgFile) const;
-		    
+
 		/// Hydrax parent pointer
 		Hydrax* mHydrax;
 	};

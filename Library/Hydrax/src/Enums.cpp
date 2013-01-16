@@ -22,7 +22,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "Enums.h"
+#include <Enums.h>
 
 namespace Hydrax
 {

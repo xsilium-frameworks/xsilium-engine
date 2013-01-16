@@ -1,10 +1,8 @@
 /*
 --------------------------------------------------------------------------------
-This source file is part of Hydrax.
-Visit ---
-
-Copyright (C) 2008 Xavier Verguín González <xavierverguin@hotmail.com>
-                                           <xavyiy@gmail.com>
+This source file is part of sssHydrax.
+sssHydrax is a modified version of Hydrax (Copyright (C) 2008 Xavier Verguín González)
+to adapt it to SonSilentSea.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,12 +17,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
+
+Author: Jose Luis Cercós Pita
 --------------------------------------------------------------------------------
 */
 
-#include "GodRaysManager.h"
+#include <GodRaysManager.h>
 
-#include "Hydrax.h"
+#include <Hydrax.h>
 
 #define _def_GodRays_Projector_Camera_Name "_Hydrax_GodRays_Projector_Camera"
 #define _def_GodRays_ManualObject_Name     "_Hydrax_GodRays_ManualObject"
@@ -38,7 +38,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #define _def_GodRaysDepth_Shader_VP_Name "_Hydrax_GodRaysDepth_VP"
 #define _def_GodRaysDepth_Shader_FP_Name "_Hydrax_GodRaysDepth_FP"
 
-const Ogre::Matrix4 
+const Ogre::Matrix4
       PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE(
                0.5,    0,    0,  0.5,
                0,   -0.5,    0,  0.5,
@@ -48,20 +48,20 @@ const Ogre::Matrix4
 namespace Hydrax
 {
 	GodRaysManager::GodRaysManager(Hydrax *h)
-		: mHydrax(h)
-		, mCreated(false)
+		: mCreated(false)
 		, mManualGodRays(0)
 		, mProjectorCamera(0)
 		, mProjectorSN(0)
 		, mPerlin(0)
-		, mSimulationSpeed(5.0f)
-		, mNumberOfRays(100)
-		, mRaysSize(0.03f)
-		, mObjectsIntersections(false)
 		, mNoiseDerivation(3)
 		, mNoisePositionMultiplier(50)
 		, mNoiseYNormalMultiplier(10)
 		, mNoiseNormalMultiplier(0.175)
+		, mSimulationSpeed(5.0f)
+		, mNumberOfRays(100)
+		, mRaysSize(0.03f)
+		, mObjectsIntersections(false)
+		, mHydrax(h)
 	{
 		for (int k = 0; k < 2; k++)
 		{
@@ -127,7 +127,7 @@ namespace Hydrax
 
 	void GodRaysManager::_createGodRays()
     {
-		mManualGodRays = mHydrax->getSceneManager()->createManualObject(_def_GodRays_ManualObject_Name); 
+		mManualGodRays = mHydrax->getSceneManager()->createManualObject(_def_GodRays_ManualObject_Name);
 		mManualGodRays->setDynamic(true);
 		mManualGodRays->setVisible(mHydrax->_isCurrentFrameUnderwater());
 
@@ -239,7 +239,7 @@ namespace Hydrax
 		Ogre::Real Dis, RayLength;
 
 		// Rays are modeled as piramids, 12 vertex each ray
-		//        
+		//
 		//       // 0\\
 		//      /|    | |
 		//      ||    | |
@@ -302,9 +302,9 @@ namespace Hydrax
 			XCoord -= sqrt_NumberOfRays;
 		}
 
-		Ogre::Vector2 RayPos = 
+		Ogre::Vector2 RayPos =
 			Ogre::Vector2( // X coord
-			              static_cast<int>(XCoord), 
+			              static_cast<int>(XCoord),
 						  // Y coord
 						  static_cast<int>((RayNumber+sqrt_NumberOfRays)/sqrt_NumberOfRays)-1);
 
@@ -314,7 +314,7 @@ namespace Hydrax
 
 		Ogre::Vector2 Position = RayPos*mNoisePositionMultiplier + Ogre::Vector2(mProjectorSN->getPosition().x, mProjectorSN->getPosition().z);
 
-		Ogre::Vector3 
+		Ogre::Vector3
 			m_x = Ogre::Vector3(Position.x-mNoiseDerivation, mPerlin->getValue(Position.x-mNoiseDerivation,0), 0),
 			p_x = Ogre::Vector3(Position.x+mNoiseDerivation, mPerlin->getValue(Position.x+mNoiseDerivation,0), 0),
 			m_y = Ogre::Vector3(0, mPerlin->getValue(0,Position.y-mNoiseDerivation), Position.y-mNoiseDerivation),
@@ -369,9 +369,9 @@ namespace Hydrax
 		VP_Parameters = mMaterials[0]->getTechnique(0)->getPass(0)->getVertexProgramParameters();
 		FP_Parameters = mMaterials[0]->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 
-		Ogre::Matrix4 TexViewProj = 
-			PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE * 
-			mProjectorCamera->getProjectionMatrixWithRSDepth() * 
+		Ogre::Matrix4 TexViewProj =
+			PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE *
+			mProjectorCamera->getProjectionMatrixWithRSDepth() *
 			mProjectorCamera->getViewMatrix();
 
 		VP_Parameters->setNamedConstant("uTexViewProj", TexViewProj);
@@ -421,7 +421,17 @@ namespace Hydrax
 	{
 		Ogre::String VertexProgramData, FragmentProgramData;
 		Ogre::GpuProgramParametersSharedPtr VP_Parameters, FP_Parameters;
-		Ogre::String EntryPoints[2]     = {"main_vp", "main_fp"};
+        Ogre::String EntryPoints[2];
+        if(mHydrax->getShaderMode() == MaterialManager::SM_GLSL)
+        {
+            EntryPoints[0] = Ogre::String("main");
+            EntryPoints[1] = Ogre::String("main");
+        }
+        else
+        {
+            EntryPoints[0] = Ogre::String("main_vp");
+            EntryPoints[1] = Ogre::String("main_fp");
+        }
 		Ogre::String GpuProgramsData[2]; Ogre::String GpuProgramNames[2];
 		MaterialManager *mMaterialManager = mHydrax->getMaterialManager();
 
@@ -477,7 +487,38 @@ namespace Hydrax
 			break;
 
 			case MaterialManager::SM_GLSL:
-			{}
+			{
+				VertexProgramData += Ogre::String( "\n" );
+                    // UNIFORMS
+                    if (mObjectsIntersections)
+                    {
+                        VertexProgramData += Ogre::String(
+                        "uniform mat4 uWorld;\n") +
+                        "uniform mat4 uTexViewProj;\n";
+                    }
+                    // IN
+                    // OUT
+                    if (mObjectsIntersections)
+                    {
+                        VertexProgramData += Ogre::String(
+                        "varying vec3 Position_;\n") +
+                        "varying vec4 ProjUV;\n";
+                    }
+                    // main function
+                    VertexProgramData += Ogre::String(
+					"void main()\n") +
+					"{\n" +
+                        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n";
+                        if (mObjectsIntersections)
+                        {
+                            VertexProgramData += Ogre::String(
+                            "vec4 wPos = uWorld * gl_Vertex);\n")+
+                            "Position_  = wPos.xyz;\n"+
+                            "ProjUV     = uTexViewProj * wPos;\n";
+                        }
+                    VertexProgramData +=
+					"}\n";
+			}
 			break;
 		}
 
@@ -525,10 +566,50 @@ namespace Hydrax
 			break;
 
 			case MaterialManager::SM_GLSL:
-			{}
+			{
+				if (mObjectsIntersections)
+                    FragmentProgramData += Ogre::String( "\n" ) +
+                    // UNIFORMS
+                    "uniform vec3      uLightPosition;\n"+
+                    "uniform float     uLightFarClipDistance;\n" +
+                    "uniform sampler2D uDepthMap;\n" +
+                    // IN
+                    "varying vec3 Position_;\n" +
+                    "varying vec4 ProjUV;\n" +
+                    // OUT
+                    // main function
+				    "void main()\n" +
+					"{\n" +
+					    "ProjUV /= ProjUV.w;\n" +
+						"float Depth  = texture2D(uDepthMap,  ProjUV.xy).x;\n" +
+						"if(Depth < clamp( length(Position_-uLightPosition) / uLightFarClipDistance ), 0.0, 1.0)\n" +
+						"{\n"+
+						    "gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n"+
+						"}\n"+
+						"else\n"+
+						"{\n"+
+							"gl_FragColor = vec4(vec3(" + GB[NumberOfDepthChannels] + ") * 0.1, 1.0);\n"+
+						"}\n"+
+					"}\n";
+				else
+				FragmentProgramData += Ogre::String( "\n" ) +
+                    // UNIFORMS
+                    "uniform vec3      uLightPosition;\n"+
+                    "uniform float     uLightFarClipDistance;\n" +
+                    "uniform sampler2D uDepthMap;\n" +
+                    // IN
+                    "varying vec3 Position_;\n" +
+                    "varying vec4 ProjUV;\n" +
+                    // OUT
+                    // main function
+				    "void main()\n" +
+					"{\n" +
+						"gl_FragColor = vec4(vec3(" + GB[NumberOfDepthChannels] + ") * 0.1, 1.0);\n"+
+					"}\n";
+			}
 			break;
 		}
-		
+
 		// Build our material
 		mMaterials[0] = Ogre::MaterialManager::getSingleton().
 			create(_def_GodRays_Material_Name,
@@ -550,16 +631,19 @@ namespace Hydrax
 		VP_Parameters = GR_Technique0_Pass0->getVertexProgramParameters();
 		FP_Parameters = GR_Technique0_Pass0->getFragmentProgramParameters();
 
-		VP_Parameters->setNamedAutoConstant("uWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        if(mHydrax->getShaderMode() != MaterialManager::SM_GLSL)
+        {
+            VP_Parameters->setNamedAutoConstant("uWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        }
 
 		if (!mObjectsIntersections)
 		{
 			return;
 		}
 
-		Ogre::Matrix4 TexViewProj = 
-			PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE * 
-			mProjectorCamera->getProjectionMatrixWithRSDepth() * 
+		Ogre::Matrix4 TexViewProj =
+			PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE *
+			mProjectorCamera->getProjectionMatrixWithRSDepth() *
 			mProjectorCamera->getViewMatrix();
 
 		VP_Parameters->setNamedAutoConstant("uWorld", Ogre::GpuProgramParameters::ACT_WORLD_MATRIX);
@@ -568,6 +652,12 @@ namespace Hydrax
 		FP_Parameters->setNamedConstant("uLightPosition", mProjectorSN->getPosition());
 		FP_Parameters->setNamedConstant("uLightFarClipDistance", mProjectorCamera->getFarClipDistance());
 
+		int GLSLTextUnit = 0;
+        if(mHydrax->getShaderMode() == MaterialManager::SM_GLSL)
+        {
+            FP_Parameters->setNamedConstant("uDepthMap", GLSLTextUnit);
+            GLSLTextUnit++;
+        }
 		GR_Technique0_Pass0->createTextureUnitState(_def_GodRays_Depth_Map)->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 		GR_Technique0_Pass0->getTextureUnitState(0)->setTextureName(_def_GodRays_Depth_Map);
 
@@ -603,7 +693,21 @@ namespace Hydrax
 			break;
 
 			case MaterialManager::SM_GLSL:
-			{}
+			{
+				VertexProgramData += Ogre::String( "\n" ) +
+                    // UNIFORMS
+                    "uniform mat4 uWorld;\n" +
+                    // IN
+                    // OUT
+                    "varying vec3 Position_;\n" +
+                    // main function
+					"void main()\n" +
+					"{\n" +
+                        "gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"+
+                        "vec4 wPos = uWorld * gl_Vertex;\n"+
+                        "Position_  = wPos.xyz;\n"+
+					"}\n";
+            }
 			break;
 		}
 
@@ -631,7 +735,21 @@ namespace Hydrax
 			break;
 
 			case MaterialManager::SM_GLSL:
-			{}
+			{
+				VertexProgramData += Ogre::String( "\n" ) +
+                    // UNIFORMS
+                    "uniform vec3  uLightPosition;\n" +
+                    "uniform float uLightFarClipDistance;\n" +
+                    // IN
+                    "varying vec3 Position_;\n" +
+                    // OUT
+                    // main function
+					"void main()\n" +
+					"{\n" +
+					    "float depth = clamp( length(Position_-uLightPosition) / uLightFarClipDistance , 0.0, 1.0);\n"+
+						"gl_FragColor = vec4(depth, 0.0, 0.0, 0.0);\n"+
+					"}\n";
+            }
 			break;
 		}
 
@@ -655,7 +773,10 @@ namespace Hydrax
 		VP_Parameters = GRD_Technique0_Pass0->getVertexProgramParameters();
 		FP_Parameters = GRD_Technique0_Pass0->getFragmentProgramParameters();
 
-		VP_Parameters->setNamedAutoConstant("uWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        if(mHydrax->getShaderMode() != MaterialManager::SM_GLSL)
+        {
+            VP_Parameters->setNamedAutoConstant("uWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        }
 		VP_Parameters->setNamedAutoConstant("uWorld", Ogre::GpuProgramParameters::ACT_WORLD_MATRIX);
 
 		FP_Parameters->setNamedConstant("uLightPosition", mProjectorSN->getPosition());
@@ -667,7 +788,7 @@ namespace Hydrax
 		if (!Ogre::MaterialManager::getSingleton().resourceExists(_def_GodRaysDepth_Material_Name))
 		{
 			HydraxLOG("GodRaysManager::addDepthTechnique(...) Objects intersection must be enabled and Hydrax::create() already called, skipping...");
-		
+
 			return;
 		}
 
@@ -683,9 +804,12 @@ namespace Hydrax
 		Ogre::GpuProgramParametersSharedPtr VP_Parameters = DM_Technique_Pass0->getVertexProgramParameters();
 		Ogre::GpuProgramParametersSharedPtr FP_Parameters = DM_Technique_Pass0->getFragmentProgramParameters();
 
-		VP_Parameters->setNamedAutoConstant("uWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        if(mHydrax->getShaderMode() != MaterialManager::SM_GLSL)
+        {
+            VP_Parameters->setNamedAutoConstant("uWorldViewProj", Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+        }
 		VP_Parameters->setNamedAutoConstant("uWorld", Ogre::GpuProgramParameters::ACT_WORLD_MATRIX);
-		
+
 		FP_Parameters->setNamedConstant("uLightPosition", mProjectorSN->getPosition());
 		FP_Parameters->setNamedConstant("uLightFarClipDistance", mProjectorCamera->getFarClipDistance());
 
@@ -722,8 +846,8 @@ namespace Hydrax
 			              HYDRAX_RESOURCE_GROUP,
                           Ogre::TEX_TYPE_2D,
 						  // 256*256 must be sufficient
-                          256, 
-						  256, 
+                          256,
+						  256,
 						  0,
 						  // Only one channel
 						  Ogre::PF_L8,
@@ -731,7 +855,7 @@ namespace Hydrax
 
         Ogre::RenderTarget* RT_Texture = mProjectorRTT->getBuffer()->getRenderTarget();
 		RT_Texture->setAutoUpdated(false);
-	
+
         Ogre::Viewport *RT_Texture_Viewport = RT_Texture->addViewport(mProjectorCamera);
         RT_Texture_Viewport->setClearEveryFrame(true);
 		RT_Texture_Viewport->setMaterialScheme("HydraxGodRaysDepth");

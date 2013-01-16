@@ -22,9 +22,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "GPUNormalMapManager.h"
+#include <GPUNormalMapManager.h>
 
-#include "Hydrax.h"
+#include <Hydrax.h>
 
 namespace Hydrax
 {
