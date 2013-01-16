@@ -9,6 +9,22 @@ project(XSILIUM)
 SET(XSILIUM 1.0)
 set(OGRE_STATIC FALSE)
 
+# Fix x64 issues on Linux
+include(CheckTypeSize)
+CHECK_TYPE_SIZE("void*" XSILIUM_PTR_SIZE BUILTIN_TYPES_ONLY)
+if (XSILIUM_PTR_SIZE EQUAL 8)
+  set(XSILIUM_PLATFORM_X64 TRUE)
+else ()
+  set(XSILIUM_PLATFORM_X64 FALSE)
+endif ()
+
+# Add -fPIC flag to x64 GCC builds
+if (CMAKE_COMPILER_IS_GNUCXX AND NOT MINGW)
+  if (XSILIUM_PLATFORM_X64 AND NOT APPLE)
+    add_definitions(-fPIC)
+  endif ()
+endif ()
+
 if(COMMAND cmake_policy)
    cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)

@@ -20,10 +20,7 @@ set(OGRE_LIB_TYPE         SHARED)
 SET(OGRE_BINARY_DIR       ${XSILIUM_BINARY_DIR})
 SET(OGRE_SOURCE_DIR       ${OgreLite_SOURCE_DIR})
 
-# Fix x64 issues on Linux
-if(OGRE_PLATFORM_X64 AND NOT APPLE)
-	add_definitions(-fPIC)
-endif() 
+ 
 
 if (XSILIUM_USE_PARTICLE)
 	set(OGRE_BUILD_PLUGIN_PFX        TRUE)
