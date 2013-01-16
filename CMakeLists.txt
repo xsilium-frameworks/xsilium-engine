@@ -102,9 +102,11 @@ set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
 		    ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
 		    ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
 		    ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
+		   ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
+		   ${XSILIUM_SOURCE_DIR}/Library/SkyX/include
                     )
 
-set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain )
+set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax )
 
 
 subdirs(Library)

@@ -254,7 +254,7 @@ namespace SkyX
 			}
 		}
 
-		mMoonMaterial->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("uMoonPhase", Ogre::Vector3(radius, center + 0.5f, mMoonHaloStrength));
+		 mMoonMaterial->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("uMoonPhase", Ogre::Vector3(radius, center + 0.5f, mMoonHaloStrength));
 
 		halo1.z *= mMoonHaloIntensity;
 		halo2.z *= mMoonHaloIntensity;

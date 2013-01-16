@@ -22,9 +22,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "CfgFileManager.h"
+#include <CfgFileManager.h>
 
-#include "Hydrax.h"
+#include <Hydrax.h>
 
 namespace Hydrax
 {
@@ -39,9 +39,9 @@ namespace Hydrax
 
 	const bool CfgFileManager::load(const Ogre::String& File) const
 	{
-		std::pair<bool, Ogre::ConfigFile> CfgFileResult; 
+		std::pair<bool, Ogre::ConfigFile> CfgFileResult;
 		_loadCfgFile(File, CfgFileResult);
-	
+
 		if (!CfgFileResult.first)
 		{
 			return false;
@@ -85,7 +85,7 @@ namespace Hydrax
 
 	const bool CfgFileManager::save(const Ogre::String& File, const Ogre::String& Path) const
 	{
-		Ogre::String Data = 
+		Ogre::String Data =
 			"#Hydrax cfg file.\n\n";
 
 		Data += "#Hydrax version field\n";
@@ -98,7 +98,7 @@ namespace Hydrax
 		Data += _getCfgString("ShaderMode",             static_cast<int>(mHydrax->getShaderMode()));
 		Data += _getCfgString("FullReflectionDistance", mHydrax->getFullReflectionDistance());
 		Data += _getCfgString("GlobalTransparency",     mHydrax->getGlobalTransparency());
-		Data += _getCfgString("NormalDistortion",       mHydrax->getNormalDistortion()); 
+		Data += _getCfgString("NormalDistortion",       mHydrax->getNormalDistortion());
 		Data += _getCfgString("WaterColor",             mHydrax->getWaterColor()); Data += "\n";
 
 		Data += "#Components field\n";
@@ -143,7 +143,7 @@ namespace Hydrax
 		Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Path, "FileSystem", HYDRAX_RESOURCE_GROUP);
 
 		HydraxLOG(File + " saved in " + Path + " .");
-		
+
 		return true;
 	}
 
@@ -198,7 +198,7 @@ namespace Hydrax
 		Ogre::String Cmpnts = "Components=";
 
 		std::pair<bool, Ogre::String> Cmp[8] = {
-			std::pair<bool, Ogre::String>(mHydrax->isComponent(HYDRAX_COMPONENT_SUN),                    "Sun"), 
+			std::pair<bool, Ogre::String>(mHydrax->isComponent(HYDRAX_COMPONENT_SUN),                    "Sun"),
 			std::pair<bool, Ogre::String>(mHydrax->isComponent(HYDRAX_COMPONENT_FOAM),                   "Foam"),
 		    std::pair<bool, Ogre::String>(mHydrax->isComponent(HYDRAX_COMPONENT_DEPTH),                  "Depth"),
 		    std::pair<bool, Ogre::String>(mHydrax->isComponent(HYDRAX_COMPONENT_SMOOTH),                 "Smooth"),
@@ -257,6 +257,7 @@ namespace Hydrax
 		{
 			Cmpnts += "#Depth parameters\n";
 			Cmpnts += _getCfgString("DepthLimit", mHydrax->getDepthLimit()); Cmpnts += "\n";
+			Cmpnts += _getCfgString("DistLimit", mHydrax->getDistLimit()); Cmpnts += "\n";
 		}
 		// Smooth transitions parameters
 		if (Cmp[3].first)
@@ -277,17 +278,17 @@ namespace Hydrax
 		{
 			Cmpnts += "#God rays parameters\n";
 			Cmpnts += _getCfgString("GodRaysExposure",      mHydrax->getGodRaysExposure());
-			Cmpnts += _getCfgString("GodRaysIntensity",     mHydrax->getGodRaysIntensity()); 
+			Cmpnts += _getCfgString("GodRaysIntensity",     mHydrax->getGodRaysIntensity());
 			Cmpnts += _getCfgString("GodRaysSpeed",         mHydrax->getGodRaysManager()->getSimulationSpeed());
-			Cmpnts += _getCfgString("GodRaysNumberOfRays",  mHydrax->getGodRaysManager()->getNumberOfRays()); 
-			Cmpnts += _getCfgString("GodRaysRaysSize",      mHydrax->getGodRaysManager()->getRaysSize()); 
+			Cmpnts += _getCfgString("GodRaysNumberOfRays",  mHydrax->getGodRaysManager()->getNumberOfRays());
+			Cmpnts += _getCfgString("GodRaysRaysSize",      mHydrax->getGodRaysManager()->getRaysSize());
 			Cmpnts += _getCfgString("GodRaysIntersections", mHydrax->getGodRaysManager()->areObjectsIntersectionsEnabled()); Cmpnts += "\n";
 		}
 
 		return Cmpnts;
 	}
 
-	bool CfgFileManager::_isStringInList(const std::vector<Ogre::String> &List, const Ogre::String &Find)
+	bool CfgFileManager::_isStringInList(const Ogre::StringVector &List, const Ogre::String &Find)
 	{
 		for (unsigned int k = 0; k < List.size(); k++)
 		{
@@ -302,7 +303,7 @@ namespace Hydrax
 
 	const void CfgFileManager::_loadComponentsSettings(Ogre::ConfigFile& CfgFile) const
 	{
-		std::vector<Ogre::String> Cmpnts = Ogre::StringUtil::split(CfgFile.getSetting("Components"), "|");
+		Ogre::StringVector Cmpnts = Ogre::StringUtil::split(CfgFile.getSetting("Components"), "|");
 
 		HydraxComponent ComponentsToLoad[8] = {
 			HYDRAX_COMPONENTS_NONE,HYDRAX_COMPONENTS_NONE,HYDRAX_COMPONENTS_NONE,HYDRAX_COMPONENTS_NONE,
@@ -344,7 +345,7 @@ namespace Hydrax
 		mHydrax->setComponents(static_cast<HydraxComponent>(
 			ComponentsToLoad[0] | ComponentsToLoad[1] | ComponentsToLoad[2] | ComponentsToLoad[3] |
 			ComponentsToLoad[4] | ComponentsToLoad[5] | ComponentsToLoad[6] | ComponentsToLoad[7]));
-		
+
 		if (_isStringInList(Cmpnts, "Sun"))
 		{
 			mHydrax->setSunPosition(_getVector3Value(CfgFile,"SunPosition"));
@@ -364,6 +365,7 @@ namespace Hydrax
 		if (_isStringInList(Cmpnts, "Depth"))
 		{
 			mHydrax->setDepthLimit(_getFloatValue(CfgFile,"DepthLimit"));
+			mHydrax->setDistLimit(_getFloatValue(CfgFile,"DistLimit"));
 		}
 
 		if (_isStringInList(Cmpnts, "Smooth"))

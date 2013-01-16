@@ -26,9 +26,9 @@ http://graphics.cs.lth.se/theses/projects/projgrid/
 --------------------------------------------------------------------------------
 */
 
-#include "Perlin.h"
+#include <Noise/Perlin/Perlin.h>
 
-#include "../../Hydrax.h"
+#include <Hydrax.h>
 
 #define _def_PackedNoise true
 

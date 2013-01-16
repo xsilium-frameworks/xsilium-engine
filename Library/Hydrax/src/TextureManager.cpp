@@ -22,9 +22,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "TextureManager.h"
+#include <TextureManager.h>
 
-#include "Hydrax.h"
+#include <Hydrax.h>
 
 namespace Hydrax
 {

@@ -8,7 +8,7 @@ subdirs(Enet)
 subdirs(Ogre)
 subdirs(OgrePaged)
 subdirs(Cegui)
-#subdirs(Hydrax)
-#subdirs(SkyX)
+subdirs(Hydrax)
+subdirs(SkyX)
 
 

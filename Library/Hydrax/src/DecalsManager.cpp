@@ -22,9 +22,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "DecalsManager.h"
+#include <DecalsManager.h>
 
-#include "Hydrax.h"
+#include <Hydrax.h>
 
 namespace Hydrax
 {

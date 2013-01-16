@@ -22,7 +22,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "Help.h"
+#include <Help.h>
 
 namespace Hydrax
 {

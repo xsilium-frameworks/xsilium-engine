@@ -28,7 +28,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 #pragma warning (disable:4355) // 'this' : used in base member initializer list
 
 /// Include external headers
-#include <OGRE/Ogre.h>
+#include <Ogre.h> // MSkyx : Removed "OGRE\" from prefix.
 
 /// Define the dll export qualifier if compiling for Windows
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

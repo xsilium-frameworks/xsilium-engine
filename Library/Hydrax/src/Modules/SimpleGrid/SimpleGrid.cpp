@@ -22,7 +22,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include "SimpleGrid.h"
+#include <Modules/SimpleGrid/SimpleGrid.h>
 
 namespace Hydrax{namespace Module
 {
@@ -100,7 +100,7 @@ namespace Hydrax{namespace Module
 
 				Ogre::String MaterialNameTmp = mHydrax->getMesh()->getMaterialName();
 				mHydrax->getMesh()->remove();
-				
+
 				mHydrax->getMesh()->setOptions(getMeshOptions());
 				mHydrax->getMesh()->setMaterialName(MaterialNameTmp);
 				mHydrax->getMesh()->create();
@@ -145,9 +145,9 @@ namespace Hydrax{namespace Module
 					}
 				}
 			}
-			
+
 			return;
-		} 
+		}
 
 		mOptions = Options;
 	}
@@ -161,7 +161,7 @@ namespace Hydrax{namespace Module
 		int v, u;
 		if (getNormalMode() == MaterialManager::NM_VERTEX)
 		{
-			mVertices = new Mesh::POS_NORM_VERTEX[mOptions.Complexity*mOptions.Complexity];	
+			mVertices = new Mesh::POS_NORM_VERTEX[mOptions.Complexity*mOptions.Complexity];
 			Mesh::POS_NORM_VERTEX* Vertices = static_cast<Mesh::POS_NORM_VERTEX*>(mVertices);
 
 			for(v=0; v<mOptions.Complexity; v++)
@@ -189,7 +189,7 @@ namespace Hydrax{namespace Module
 		}
 		else if (getNormalMode() == MaterialManager::NM_RTT)
 		{
-			mVertices = new Mesh::POS_VERTEX[mOptions.Complexity*mOptions.Complexity];	
+			mVertices = new Mesh::POS_VERTEX[mOptions.Complexity*mOptions.Complexity];
 			Mesh::POS_VERTEX* Vertices = static_cast<Mesh::POS_VERTEX*>(mVertices);
 
 			for(v=0; v<mOptions.Complexity; v++)
@@ -219,10 +219,12 @@ namespace Hydrax{namespace Module
 			if (getNormalMode() == MaterialManager::NM_VERTEX)
 			{
 				delete [] static_cast<Mesh::POS_NORM_VERTEX*>(mVertices);
+				mVertices = 0;
 			}
 			else if (getNormalMode() == MaterialManager::NM_RTT)
 			{
 				delete [] static_cast<Mesh::POS_VERTEX*>(mVertices);
+				mVertices = 0;
 			}
 		}
 
@@ -302,7 +304,11 @@ namespace Hydrax{namespace Module
 			// RTT normals calculation needs world-space coords
 			Ogre::Vector3 p = Ogre::Vector3(0,0,0);
 		    Ogre::Matrix4 mWorldMatrix;
-		    mHydrax->getMesh()->getEntity()->getParentSceneNode()->getWorldTransforms(&mWorldMatrix);
+#if OGRE_VERSION_MAJOR >= 1 && OGRE_VERSION_MINOR >= 7
+            mWorldMatrix = mHydrax->getMesh()->getEntity()->getParentSceneNode()->_getFullTransform();
+#else
+            mHydrax->getMesh()->getEntity()->getParentSceneNode()->getWorldTransforms(&mWorldMatrix);
+#endif
 
 			for(int i = 0; i < mOptions.Complexity*mOptions.Complexity; i++)
 			{
@@ -327,14 +333,14 @@ namespace Hydrax{namespace Module
 				for(v=1; v<(mOptions.Complexity-1); v++)
 				{
 					for(u=1; u<(mOptions.Complexity-1); u++)
-					{				
-						Vertices[v*mOptions.Complexity + u].y =	
+					{
+						Vertices[v*mOptions.Complexity + u].y =
 							 0.2f *
 							(Vertices[v    *mOptions.Complexity + u    ].y +
-							 Vertices[v    *mOptions.Complexity + (u+1)].y + 
-							 Vertices[v    *mOptions.Complexity + (u-1)].y + 
-							 Vertices[(v+1)*mOptions.Complexity + u    ].y + 
-							 Vertices[(v-1)*mOptions.Complexity + u    ].y);															
+							 Vertices[v    *mOptions.Complexity + (u+1)].y +
+							 Vertices[v    *mOptions.Complexity + (u-1)].y +
+							 Vertices[(v+1)*mOptions.Complexity + u    ].y +
+							 Vertices[(v-1)*mOptions.Complexity + u    ].y);
 					}
 				}
 			}
@@ -345,19 +351,19 @@ namespace Hydrax{namespace Module
 				for(v=1; v<(mOptions.Complexity-1); v++)
 				{
 					for(u=1; u<(mOptions.Complexity-1); u++)
-					{				
-						Vertices[v*mOptions.Complexity + u].y =	
+					{
+						Vertices[v*mOptions.Complexity + u].y =
 							 0.2f *
 							(Vertices[v    *mOptions.Complexity + u    ].y +
-							 Vertices[v    *mOptions.Complexity + (u+1)].y + 
-							 Vertices[v    *mOptions.Complexity + (u-1)].y + 
-							 Vertices[(v+1)*mOptions.Complexity + u    ].y + 
-							 Vertices[(v-1)*mOptions.Complexity + u    ].y);															
+							 Vertices[v    *mOptions.Complexity + (u+1)].y +
+							 Vertices[v    *mOptions.Complexity + (u-1)].y +
+							 Vertices[(v+1)*mOptions.Complexity + u    ].y +
+							 Vertices[(v-1)*mOptions.Complexity + u    ].y);
 					}
 				}
 			}
 		}
-		
+
 		// Update normals
 		_calculeNormals();
 
@@ -386,7 +392,7 @@ namespace Hydrax{namespace Module
 			{
 				vec1 = Ogre::Vector3(
 					Vertices[v*mOptions.Complexity + u + 1].x-Vertices[v*mOptions.Complexity + u - 1].x,
-					Vertices[v*mOptions.Complexity + u + 1].y-Vertices[v*mOptions.Complexity + u - 1].y, 
+					Vertices[v*mOptions.Complexity + u + 1].y-Vertices[v*mOptions.Complexity + u - 1].y,
 					Vertices[v*mOptions.Complexity + u + 1].z-Vertices[v*mOptions.Complexity + u - 1].z);
 
 				vec2 = Ogre::Vector3(
