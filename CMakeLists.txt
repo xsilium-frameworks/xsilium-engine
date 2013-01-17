@@ -62,13 +62,6 @@ if (XSILIUM_COMPILE_SOFTBODY)
 endif()
 
 
-#if (APPLE)
-#    if (${XCODE_VERSION} STRGREATER "4.0.0")
-#        set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "4.2")
-#    endif()
-#endif()
-
-
 IF(MSVC)
 
 	#We statically link to reduce dependancies
@@ -92,6 +85,9 @@ IF(MSVC)
 
 ENDIF(MSVC)
 
+#add boost
+include_directories("${XSILIUM_SOURCE_DIR}/Library/Boost")
+
 
 # ---------------------------------------------------------
 # Common base paths
@@ -99,11 +95,12 @@ set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
                     ${XSILIUM_SOURCE_DIR}/Engine
                     ${XSILIUM_DEP_INCLUDE}
 		    ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
-		    ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
-		    ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
-		    ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
-		   ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
-		   ${XSILIUM_SOURCE_DIR}/Library/SkyX/include
+		     ${XSILIUM_SOURCE_DIR}/Library/Boost
+		     ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
+		     ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
+		     ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
+		     ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
+		     ${XSILIUM_SOURCE_DIR}/Library/SkyX/include
                     )
 
 set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax )
