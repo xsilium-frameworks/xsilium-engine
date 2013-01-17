@@ -98,6 +98,9 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(OGRE_BUILD_PLUGIN_PFX TRUE CACHE BOOL "Forcing Plugins" )
 	set(OGRE_BUILD_PLUGIN_PCZ TRUE CACHE BOOL "Forcing Plugins" )
 	set(OGRE_BUILD_PLUGIN_CG TRUE CACHE BOOL "Forcing Plugins" )
+
+
+	set(OGRE_USE_BOOST TRUE CACHE BOOL "Forcing use BOOST" ) 
 	
 	set(XSILIUM_ZZIP_TARGET ZZipLib)
 	set(XSILIUM_FREETYPE_TARGET freetype)

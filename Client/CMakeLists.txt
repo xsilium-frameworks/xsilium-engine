@@ -47,7 +47,6 @@ ${XSILIUM_LIB}
 		   ${CORE_HEADER_FILES}
                   )
 
-message ("${CEGUI_LIBRARY}")
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
 
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/OgreFramework.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++ ")
@@ -65,7 +64,7 @@ set (XSILIUM_SAMPLE_CONTENTS_PATH
 
 add_custom_command(TARGET XsiliumClient POST_BUILD
 		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks
-		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/Ogre.framework/ ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/Ogre.framework
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/Ogre.framework ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIBase.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIExpatParser.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
@@ -74,9 +73,10 @@ add_custom_command(TARGET XsiliumClient POST_BUILD
 # now cfg files
 add_custom_command(TARGET XsiliumClient POST_BUILD
 		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources
-		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/plugins.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/resources.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/datafiles/ ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/datafiles
+		#COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/plugins.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
+		#COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/resources.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/datafiles ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/datafiles
+	       COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Media ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/media
 		COMMAND cp ARGS -R ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/ogre.cfg ${XSILIUM_SAMPLE_CONTENTS_PATH}/Resources/
 		)
 
@@ -85,34 +85,31 @@ add_custom_command(TARGET XsiliumClient POST_BUILD
 add_custom_command(TARGET XsiliumClient POST_BUILD
 		COMMAND mkdir ARGS -p ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libRenderSystem_GL.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libRenderSystem_GL.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_PCZSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libPlugin_PCZSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_ParticleFX.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libPlugin_ParticleFX.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_BSPSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libPlugin_BSPSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_CgProgramManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libPlugin_BSPSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_BSPSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libPlugin_OctreeZone.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_OctreeZone.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libPlugin_OctreeSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libPlugin_OctreeSceneManager.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Plugins/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libOgreTerrain.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
 			)
 		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgreTerrain.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
-			)
-		add_custom_command(TARGET XsiliumClient POST_BUILD
-			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/Library/Ogre/lib/libOgrePaging.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
+			COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libOgrePaging.1.8.1.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Components/
 			) 
 
 endif()
