@@ -52,7 +52,7 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	    /* Wait up to 5 seconds for the connection attempt to succeed. */
 	    if (enet_host_service (client, &eventClient, 5000) > 0 && eventClient.type == ENET_EVENT_TYPE_CONNECT)
 	    {
-	        pthread_create(&thread,NULL,NetworkManager::threadConnexion,(void *)this);
+            thread = boost::thread(&NetworkManager::threadConnexion, (void *) this);
 	        isConnectedflag = true;
 	        return 0;
 	    }
@@ -109,7 +109,7 @@ void NetworkManager::disconnexion()
 	if(peer != NULL)
 	{
 		endThread = true;
-		pthread_join(thread, NULL);
+		thread.join();
 		enet_peer_disconnect (peer, 0);
 	    /* Allow up to 3 seconds for the disconnect to succeed
 	       and drop any packets received packets.

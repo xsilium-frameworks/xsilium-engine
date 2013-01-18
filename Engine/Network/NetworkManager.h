@@ -9,7 +9,7 @@
 #ifndef NETWORKMANAGER_H_
 #define NETWORKMANAGER_H_
 
-#include <pthread.h>
+#include <boost/thread/thread.hpp>
 #include <map>
 #include <string>
 
@@ -46,7 +46,7 @@ protected:
 private:
 		bool endThread;
 
-		pthread_t thread;
+		boost::thread thread;
 		ENetHost * client;
 		ENetAddress address;
 		ENetEvent eventClient;
