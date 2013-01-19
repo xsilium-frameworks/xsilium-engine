@@ -85,9 +85,6 @@ IF(MSVC)
 
 ENDIF(MSVC)
 
-#add boost
-include_directories("${XSILIUM_SOURCE_DIR}/Library/Boost")
-
 
 # ---------------------------------------------------------
 # Common base paths
@@ -103,7 +100,7 @@ set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
 		     ${XSILIUM_SOURCE_DIR}/Library/SkyX/include
                     )
 
-set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax )
+set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax ${Boost_LIBRARIES} )
 
 
 subdirs(Library)
