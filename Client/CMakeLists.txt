@@ -57,7 +57,7 @@ set_target_properties(XsiliumClient PROPERTIES
         LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo "
       )
 
-
+ 
 
 set (XSILIUM_SAMPLE_CONTENTS_PATH
 		${CMAKE_CURRENT_BINARY_DIR}/XsiliumClient.app/Contents)
