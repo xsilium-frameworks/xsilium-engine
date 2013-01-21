@@ -93,6 +93,7 @@ set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
                     ${XSILIUM_DEP_INCLUDE}
 		    ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
 		     ${XSILIUM_SOURCE_DIR}/Library/Boost
+			 ${XSILIUM_SOURCE_DIR}/Library/Enet
 		     ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
 		     ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
 		     ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
