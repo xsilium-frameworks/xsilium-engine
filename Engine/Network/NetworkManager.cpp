@@ -6,7 +6,7 @@
  *  \brief :
  */
 
-#include "NetworkManager.h"
+#include "Network/NetworkManager.h"
 
 NetworkManager::NetworkManager() {
 	enet_initialize();
