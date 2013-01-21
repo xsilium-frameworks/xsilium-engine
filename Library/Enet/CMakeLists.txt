@@ -11,7 +11,11 @@ set(enet_SOURCES
 include_directories(.)
 
 add_library(enet SHARED ${enet_SOURCES})
+if(MSVC)
+message("Microsoft visual studio")
+target_link_libraries( enet ws2_32 winmm)
 
+endif(MSVC)
 set(ENET_INCLUDE_DIR "${enet_SOURCE_DIR}" CACHE PATH "" FORCE)
 set(ENET_LIBRARY_DBG "enet" CACHE STRING "" FORCE)
 set(ENET_LIBRARY_REL "enet" CACHE STRING "" FORCE)
