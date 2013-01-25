@@ -34,6 +34,8 @@ public:
 	bool pause();
 	void resume();
 
+	void moveCamera();
+
 //    void buildGUI();
 //    void itemSelected(OgreBites::SelectMenu* menu);
 
@@ -67,19 +69,7 @@ private:
     void 						switchCamera(int idx);
     Ogre::TerrainGroup* 		mTerrainGroup;
     DotSceneLoader* 			m_Loader;
-    bool 						m_TerrainImported;
-    Ogre::String 				m_SceneFile;
- // Ogre::String 				mHelpInfo;
-    bool 						m_Fly;
-    Ogre::Real 					m_FallVelocity;
 
-    Forests::PagedGeometry* 	mPGHandle;				/** Handle to Forests::PagedGeometry object */
-    Forests::GrassLoader* 		mGrassLoaderHandle;     /** Handle to Forests::GrassLoader object */
-    Forests::GrassLayer* 		mPGLayers[4];
-    float* 						mPGLayerData[4];
-    Ogre::Image 				mPGDensityMap;
-    Ogre::Rect 					mPGDirtyRect;
-    OgreBites::SdkCameraMan * 				mCameraMan;
 
 };
 
