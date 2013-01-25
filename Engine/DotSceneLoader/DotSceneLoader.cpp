@@ -1,8 +1,8 @@
-#include "DotSceneLoader.hpp"
+#include "DotSceneLoader.h"
 #include <Ogre.h>
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
-#include <Terrain/OgreTerrainMaterialGeneratorA.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
+#include <OgreTerrainMaterialGeneratorA.h>
 
 #pragma warning(disable:4390)
 #pragma warning(disable:4305)

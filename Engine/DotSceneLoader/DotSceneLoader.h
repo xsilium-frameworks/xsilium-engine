@@ -12,7 +12,7 @@
 #include <OgreResourceGroupManager.h>
 #include <vector>
 
-#include "rapidxml.hpp"
+#include "rapidxml.h"
 
 //|||||||||||||||||||||||||||||||||||||||||||||||
 
