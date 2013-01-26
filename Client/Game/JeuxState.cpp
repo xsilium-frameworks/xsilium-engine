@@ -11,7 +11,7 @@ using namespace Forests;
 
 JeuxState::JeuxState()
 {
-    m_MoveSpeed			= 0.1f;
+    m_MoveSpeed			= 1.0f;
     m_RotateSpeed		= 0.3f;
 
     m_bQuit             = false;
@@ -152,30 +152,34 @@ void JeuxState::update(double timeSinceLastFrame)
     m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
     m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
 
+	m_TranslateVector = Ogre::Vector3::ZERO;
+
+    getInput();
     m_pCamera->moveRelative(m_TranslateVector / 10);
 
 }
 
+void JeuxState::getInput()
+{
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_A))
+            m_TranslateVector.x = -m_MoveScale;
+
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_D))
+            m_TranslateVector.x = m_MoveScale;
+
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_W))
+            m_TranslateVector.z = -m_MoveScale;
+
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_S))
+            m_TranslateVector.z = m_MoveScale;
+}
+
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-	m_TranslateVector = Ogre::Vector3::ZERO;
-
 	switch(keyEventRef.key)
 	{
 	case OIS::KC_ESCAPE:
 		m_bQuit = true;
-		break;
-	case OIS::KC_Z:
-			m_TranslateVector.z = -m_MoveScale;
-		break;
-	case OIS::KC_Q:
-			m_TranslateVector.x = -m_MoveScale;
-		break;
-	case OIS::KC_D:
-			m_TranslateVector.x = m_MoveScale;
-		break;
-	case OIS::KC_S:
-		m_TranslateVector.z = m_MoveScale;
 		break;
 	case OIS::KC_LSHIFT:
 			m_pCamera->moveRelative(m_TranslateVector);

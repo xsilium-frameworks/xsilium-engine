@@ -44,6 +44,8 @@ public:
 
 	void update(double timeSinceLastFrame);
 
+	void getInput();
+
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
