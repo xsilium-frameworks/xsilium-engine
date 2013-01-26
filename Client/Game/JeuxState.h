@@ -13,6 +13,12 @@
 
 class DotSceneLoader;
 
+enum QueryFlags
+{
+	OGRE_HEAD_MASK	= 1<<0,
+    CUBE_MASK		= 1<<1
+};
+
 namespace Forests
 {
     class PagedGeometry;
@@ -24,7 +30,6 @@ class JeuxState :public OIS::KeyListener,public OIS::MouseListener, public GameS
 {
 public:
 	JeuxState();
-	virtual ~JeuxState(void);
 
 	DECLARE_GAMESTATE_CLASS(JeuxState)
 
@@ -34,9 +39,7 @@ public:
 	bool pause();
 	void resume();
 
-	void moveCamera();
-
-//    void buildGUI();
+    void buildGUI();
 //    void itemSelected(OgreBites::SelectMenu* menu);
 
 	void update(double timeSinceLastFrame);

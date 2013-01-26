@@ -23,13 +23,70 @@ JeuxState::JeuxState()
 
 void JeuxState::enter()
 {
-    using namespace CEGUI;
-
     inputManager->addKeyListener(this,"Game1");
     inputManager->addMouseListener(this,"Game2");
 
+
     XsiliumFramework::getInstance()->m_pLog->logMessage("Entering JeuxState...");
 
+    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
+    m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
+
+    m_pRSQ = m_pSceneMgr->createRayQuery(Ray());
+    m_pRSQ->setQueryMask(OGRE_HEAD_MASK);
+
+
+
+    m_pCamera = m_pSceneMgr->createCamera("GameCamera");
+    m_pCamera->setPosition(Ogre::Vector3(5, 60, 60));
+    m_pCamera->lookAt(Ogre::Vector3(5, 20, 0));
+    m_pCamera->setNearClipDistance(5);
+
+    m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) / Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
+
+    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
+    m_pCurrentObject = 0;
+
+    buildGUI();
+
+    createScene();
+}
+
+
+bool JeuxState::pause()
+{
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Pausing JeuxState...");
+
+    return true;
+}
+
+
+void JeuxState::resume()
+{
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Resuming JeuxState...");
+
+    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
+    m_bQuit = false;
+}
+
+void JeuxState::exit()
+{
+    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
+
+    m_pSceneMgr->destroyCamera(m_pCamera);
+    m_pSceneMgr->destroyQuery(m_pRSQ);
+    if(m_pSceneMgr)
+        XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
+
+
+    inputManager->removeKeyListener(this);
+    inputManager->removeMouseListener(this);
+}
+
+void JeuxState::buildGUI()
+{
+
+	using namespace CEGUI;
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
     CEGUI::Window* parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
@@ -53,57 +110,18 @@ void JeuxState::enter()
         // attach this window if parent is valid
     parent->addChild(d_root);
 
-//    buildGUI();
-
     CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
-
-    createScene();
-}
-
-
-bool JeuxState::pause()
-{
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Pausing JeuxState...");
-
-    return true;
-}
-
-
-void JeuxState::resume()
-{
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Resuming JeuxState...");
-
-//    buildGUI();
-
-    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
-    m_bQuit = false;
-}
-
-void JeuxState::exit()
-{
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
-
-    //m_pSceneMgr->destroyCamera(m_pCamera);
-    //m_pSceneMgr->destroyQuery(m_pRSQ);
-    if(m_pSceneMgr)
-        XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
-
-
-    inputManager->removeKeyListener(this);
-    inputManager->removeMouseListener(this);
 }
 
 void JeuxState::createScene()
 {
-    m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
-
     DotSceneLoader* pDotSceneLoader = new DotSceneLoader();
     pDotSceneLoader->parseDotScene("CubeScene.xml", "General", m_pSceneMgr, m_pSceneMgr->getRootSceneNode());
     delete pDotSceneLoader;
 
-//    m_pSceneMgr->getEntity("Cube01")->setQueryFlags(CUBE_MASK);
-//    m_pSceneMgr->getEntity("Cube02")->setQueryFlags(CUBE_MASK);
-//    m_pSceneMgr->getEntity("Cube03")->setQueryFlags(CUBE_MASK);
+    m_pSceneMgr->getEntity("Cube01")->setQueryFlags(CUBE_MASK);
+    m_pSceneMgr->getEntity("Cube02")->setQueryFlags(CUBE_MASK);
+    m_pSceneMgr->getEntity("Cube03")->setQueryFlags(CUBE_MASK);
 
 //    m_pOgreHeadEntity = m_pSceneMgr->createEntity("OgreHeadEntity", "ogrehead.mesh");
 //    m_pOgreHeadEntity->setQueryFlags(OGRE_HEAD_MASK);
@@ -115,13 +133,6 @@ void JeuxState::createScene()
 //    m_pOgreHeadMatHigh = m_pOgreHeadMat->clone("OgreHeadMatHigh");
 //    m_pOgreHeadMatHigh->getTechnique(0)->getPass(0)->setAmbient(1, 0, 0);
 //    m_pOgreHeadMatHigh->getTechnique(0)->getPass(0)->setDiffuse(1, 0, 0, 0);
-}
-
-void JeuxState::moveCamera()
-{
-    if(XsiliumFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_LSHIFT))
-        m_pCamera->moveRelative(m_TranslateVector);
-    m_pCamera->moveRelative(m_TranslateVector / 10);
 }
 
 void JeuxState::update(double timeSinceLastFrame)
@@ -141,47 +152,54 @@ void JeuxState::update(double timeSinceLastFrame)
     m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
     m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
 
-    m_TranslateVector = Vector3::ZERO;
-
-    moveCamera();
+    m_pCamera->moveRelative(m_TranslateVector / 10);
 
 }
 
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
+	m_TranslateVector = Ogre::Vector3::ZERO;
+
 	switch(keyEventRef.key)
 	{
 	case OIS::KC_ESCAPE:
 		m_bQuit = true;
 		break;
 	case OIS::KC_Z:
-			 m_TranslateVector.z = -m_MoveScale;
+			m_TranslateVector.z = -m_MoveScale;
+		break;
+	case OIS::KC_Q:
+			m_TranslateVector.x = -m_MoveScale;
+		break;
+	case OIS::KC_D:
+			m_TranslateVector.x = m_MoveScale;
+		break;
+	case OIS::KC_S:
+		m_TranslateVector.z = m_MoveScale;
+		break;
+	case OIS::KC_LSHIFT:
+			m_pCamera->moveRelative(m_TranslateVector);
 		break;
 	default:
 		break;
 	}
-	mCameraMan->injectKeyDown(keyEventRef);
     return true;
 }
 bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
-	mCameraMan->injectKeyUp(keyEventRef);
 	return true;
 }
 
 bool JeuxState::mouseMoved( const OIS::MouseEvent &event )
 {
-	mCameraMan->injectMouseMove(event);
 	return true;
 }
 bool JeuxState::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
-	mCameraMan->injectMouseDown(event,id);
 	return true;
 }
 bool JeuxState::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
-	mCameraMan->injectMouseUp(event,id);
 	return true;
 }
 
