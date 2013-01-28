@@ -11,6 +11,8 @@
 
 #include "stdlib.h"
 
+namespace xsilium
+{
 template <typename Tsingleton>
 class Singleton
 {
@@ -41,8 +43,9 @@ private:
 
 
 };
+}
 template <typename Tsingleton>
-Tsingleton *Singleton<Tsingleton>::_singleton = NULL;
+Tsingleton *xsilium::Singleton<Tsingleton>::_singleton = NULL;
 
 
 #endif /* SINGLETON_H_ */

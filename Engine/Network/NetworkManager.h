@@ -20,9 +20,9 @@
 /*
  *
  */
-class NetworkManager : public Singleton<NetworkManager> {
+class NetworkManager : public xsilium::Singleton<NetworkManager> {
 
-	friend class Singleton<NetworkManager>;
+	friend class xsilium::Singleton<NetworkManager>;
 
 public:
 	NetworkManager();

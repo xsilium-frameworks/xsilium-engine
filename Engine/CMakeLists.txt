@@ -81,7 +81,7 @@ ${XSILIUM_INCLUDE}
 link_libraries(
 ${XSILIUM_LIB}
 ${CEGUI_LIBRARY}
-enet
+${ENET_LIBRARY_REL}
 )
 
 add_library(XsiliumEngine ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})

@@ -27,9 +27,9 @@
 #include "DotSceneLoader/DotSceneLoader.h"
 
 
-class XsiliumFramework : public Singleton<XsiliumFramework> {
+class XsiliumFramework : public xsilium::Singleton<XsiliumFramework> {
 
-	friend class Singleton<XsiliumFramework>;
+	friend class xsilium::Singleton<XsiliumFramework>;
 
 public:
 	XsiliumFramework();

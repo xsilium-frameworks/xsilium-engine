@@ -2,6 +2,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	#message(STATUS ${OGREPATH})
 	set(GNUSTEP_SYSTEM_ROOT $ENV{GNUSTEP_SYSTEM_ROOT})
 	
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${XSILIUM_BINARY_DIR}/lib)
+	
 	if(APPLE OR GNUSTEP_SYSTEM_ROOT)
 		if (WIN32 AND NOT CMAKE_COMPILER_IS_GNUCXX)
 			set(XSILIUM_USE_COCOA FALSE CACHE BOOL "Forcing remove Use Cocoa" FORCE)
@@ -464,6 +466,7 @@ macro (configure_xsilium ROOT OGREPATH)
 
 		endif()
 	endif(APPLE)
+
 
 endmacro(configure_xsilium)
 
