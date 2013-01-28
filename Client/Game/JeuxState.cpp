@@ -196,6 +196,9 @@ bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
 
 bool JeuxState::mouseMoved( const OIS::MouseEvent &event )
 {
+	        m_pCamera->yaw(Degree(event.state.X.rel * -0.1f));
+	        m_pCamera->pitch(Degree(event.state.Y.rel * -0.1f));
+
 	return true;
 }
 bool JeuxState::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
