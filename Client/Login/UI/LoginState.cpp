@@ -159,7 +159,7 @@ void LoginState::update(double timeSinceLastFrame)
 		progressBar->step();
 	    if(progression == 4)
 	    {
-	    	sleep(2);
+	    	Sleep(2);
 	    	changeGameState(findByName("JeuxState"));
 	    }
 	    progressionOld = progression;

@@ -10,7 +10,7 @@ set(enet_SOURCES
 
 include_directories(.)
 
-add_library(enet SHARED ${enet_SOURCES})
+add_library(enet STATIC ${enet_SOURCES})
 if(MSVC)
 message("Microsoft visual studio")
 target_link_libraries( enet ws2_32 winmm)
