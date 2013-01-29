@@ -15,7 +15,8 @@ JeuxState::JeuxState()
     m_RotateSpeed		= 0.3f;
 
     m_bQuit             = false;
-    m_bSettingsMode     = false;
+    m_bLMouseDown = false;
+    m_bRMouseDown = false;
 
     inputManager = InputManager::getSingletonPtr();
 }
@@ -77,6 +78,8 @@ void JeuxState::exit()
     m_pSceneMgr->destroyQuery(m_pRSQ);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
+
+    CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
     inputManager->removeKeyListener(this);
@@ -196,17 +199,36 @@ bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
 
 bool JeuxState::mouseMoved( const OIS::MouseEvent &event )
 {
-	        m_pCamera->yaw(Degree(event.state.X.rel * -0.1f));
-	        m_pCamera->pitch(Degree(event.state.Y.rel * -0.1f));
-
+	if(m_bLMouseDown)
+	{
+		m_pCamera->yaw(Degree(event.state.X.rel * -0.1f));
+	    m_pCamera->pitch(Degree(event.state.Y.rel * -0.1f));
+	}
 	return true;
 }
 bool JeuxState::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
+    if(id == OIS::MB_Left)
+    {
+        m_bLMouseDown = true;
+    }
+    else if(id == OIS::MB_Right)
+    {
+        m_bRMouseDown = true;
+    }
+
 	return true;
 }
 bool JeuxState::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
+    if(id == OIS::MB_Left)
+    {
+        m_bLMouseDown = false;
+    }
+    else if(id == OIS::MB_Right)
+    {
+        m_bRMouseDown = false;
+    }
 	return true;
 }
 
