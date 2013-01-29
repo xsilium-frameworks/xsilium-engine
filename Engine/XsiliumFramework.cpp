@@ -94,7 +94,3 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
 
     return true;
 }
-
-void XsiliumFramework::updateOgre(double timeSinceLastFrame)
-{
-}

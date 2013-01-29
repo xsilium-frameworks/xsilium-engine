@@ -36,7 +36,6 @@ public:
 	~XsiliumFramework();
 
 	bool initOgre(Ogre::String wndTitle);
-	void updateOgre(double timeSinceLastFrame);
 
 	Ogre::Root*					m_pRoot;
 	Ogre::RenderWindow*			m_pRenderWnd;

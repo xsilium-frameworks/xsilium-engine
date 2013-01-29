@@ -77,7 +77,6 @@ void GameStateManager::start(GameState* state)
 
 			m_ActiveStateStack.back()->update(timeSinceLastFrame);
 
-			XsiliumFramework::getInstance()->updateOgre(timeSinceLastFrame);
 			XsiliumFramework::getInstance()->m_pRoot->renderOneFrame();
 
 			timeSinceLastFrame = XsiliumFramework::getInstance()->m_pTimer->getMillisecondsCPU() - startTime;
