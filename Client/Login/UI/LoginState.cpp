@@ -93,7 +93,7 @@ void LoginState::exit()
     XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
 
 	delete auth;
-//    CEGUI::WindowManager::getSingleton().destroyAllWindows();
+    CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
 }

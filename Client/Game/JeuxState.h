@@ -66,7 +66,6 @@ private:
 	Ogre::RaySceneQuery*		m_pRSQ;
 	Ogre::SceneNode*			m_pCurrentObject;
 	Ogre::Entity*				m_pCurrentEntity;
-	bool						m_bSettingsMode;
 
 	InputManager * inputManager;
 
@@ -74,6 +73,8 @@ private:
     void 						switchCamera(int idx);
     Ogre::TerrainGroup* 		mTerrainGroup;
     DotSceneLoader* 			m_Loader;
+
+	bool						m_bLMouseDown, m_bRMouseDown;
 
 
 };
