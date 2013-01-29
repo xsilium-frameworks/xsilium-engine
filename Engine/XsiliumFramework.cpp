@@ -46,16 +46,13 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     		return false;
     }
     m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
-    
+
     inputManager->initialise(m_pRenderWnd);
 
     m_pViewport = m_pRenderWnd->addViewport(0);
     m_pViewport->setBackgroundColour(ColourValue(0.5f, 0.5f, 0.5f, 1.0f));
     
     m_pViewport->setCamera(0);
-    
-    size_t hWnd = 0;
-    m_pRenderWnd->getCustomAttribute("WINDOW", &hWnd);
     
     Ogre::String secName, typeName, archName;
     Ogre::ConfigFile cf;
