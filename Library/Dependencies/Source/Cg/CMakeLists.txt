@@ -21,7 +21,7 @@ if (WIN32)
   endif ()
 elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
   add_custom_target(Cg COMMAND 
-    unzip lib/Cg.framework.zip -d ${XSILIUM_BINARY_DIR}/../${XSILIUM_LIB_DIRECTORY}
+    unzip lib/Cg.framework.zip -d ${XSILIUM_BINARY_DIR}/lib
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Unzipping Cg framework" VERBATIM
   )
