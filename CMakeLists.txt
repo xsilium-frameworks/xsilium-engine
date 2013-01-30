@@ -91,18 +91,18 @@ ENDIF(MSVC)
 set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
                     ${XSILIUM_SOURCE_DIR}/Engine
                     ${XSILIUM_DEP_INCLUDE}
-		    ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
+		     ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
 		     ${XSILIUM_SOURCE_DIR}/Library/Boost
-			 ${XSILIUM_SOURCE_DIR}/Library/Enet
+		     ${XSILIUM_SOURCE_DIR}/Library/Enet
 		     ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
 		     ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
 		     ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
 		     ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
 		     ${XSILIUM_SOURCE_DIR}/Library/SkyX/include
+		    ${Cg_INCLUDE_DIR}
                     )
 
-set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax ${Boost_LIBRARIES} )
-
+set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax ${Boost_LIBRARIES} ${Cg_LIBRARY_REL} )
 
 subdirs(Library)
 subdirs(Engine)
