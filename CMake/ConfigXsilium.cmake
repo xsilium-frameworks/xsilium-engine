@@ -110,6 +110,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 
 	include_directories("${Boost_INCLUDE_DIRS}")
+
+	find_package(Cg QUIET)
 	
 	set(XSILIUM_ZZIP_TARGET ZZipLib)
 	set(XSILIUM_FREETYPE_TARGET freetype)
