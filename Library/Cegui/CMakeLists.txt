@@ -42,54 +42,15 @@ set( CEGUI_ABI_VERSION ${CEGUI_ABI_CURRENT}.${CEGUI_ABI_REVISION}.${CEGUI_ABI_AG
 # Check for libs and other packages we might use.
 ################################################################################
 # be sure to search the provided dependencies on Win32 and Mac OS X platforms
-if ((WIN32 OR APPLE) AND NOT CMAKE_PREFIX_PATH)
-    set (CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/dependencies" CACHE PATH "Path to dependencies")
-    # prefer the dylib deps in the dependencies over some other framework
-    set (CMAKE_FIND_FRAMEWORK LAST)
-endif()
 
 # Look for packages
-find_package(PCRE)
-find_package(Freetype)
-find_package(Minizip)
 if (NOT WIN32)
     find_package(Iconv REQUIRED)
 endif()
 
-find_package(OpenGL)
-find_package(GLEW)
-find_package(GLM)
-find_package(GLFW)
-find_package(DirectXSDK)
-find_package(D3DX11Effects)
-find_package(Irrlicht)
 find_package(Ogre)
-find_package(OIS)
-find_package(DirectFB)
-find_package(OpenGLES)
-
-find_package(EXPAT)
 find_package(XercesC)
-find_package(LibXml2)
-find_package(TinyXML)
-find_package(RapidXML)
-
-find_package(DevIL)
 find_package(FreeImage)
-find_package(SILLY)
-find_package(Corona)
-find_package(PVRTools)
-
-find_package(Lua51)
-find_package(TOLUAPP)
-find_package(PythonInterp)
-find_package(PythonLibs)
-find_package(Boost 1.49.0 COMPONENTS python)
-
-find_package(Doxygen)
-find_package(GTK2 COMPONENTS gtk)
-# set for consistency with other deps
-set (GTK2_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
 
 
 ################################################################################
@@ -120,24 +81,14 @@ option( CEGUI_HAS_PCRE_REGEX "Specifies whether to include PCRE regexp matching 
 option( CEGUI_HAS_MINIZIP_RESOURCE_PROVIDER "Specifies whether to build the minizip based resource provider" ${MINIZIP_FOUND} )
 option( CEGUI_HAS_DEFAULT_LOGGER "Specifies whether to build the DefaultLogger implementation" TRUE)
 
-option( CEGUI_BUILD_XMLPARSER_EXPAT "Specifies whether to build the Expat based XMLParser module" ${EXPAT_FOUND} )
-option( CEGUI_BUILD_XMLPARSER_XERCES "Specifies whether to build the Xerces-C++ based XMLParser module" ${XERCESC_FOUND} )
-option( CEGUI_BUILD_XMLPARSER_LIBXML2 "Specifies whether to build the libxml2 based XMLParser module" ${LIBXML2_FOUND} )
-option( CEGUI_BUILD_XMLPARSER_RAPIDXML "Specifies whether to build the RapidXML based XMLParser module" ${RAPIDXML_FOUND} )
-option( CEGUI_BUILD_XMLPARSER_TINYXML "Specifies whether to build the TinyXML based XMLParser module" ${TINYXML_FOUND} )
 
-option( CEGUI_BUILD_IMAGECODEC_SILLY "Specifies whether to build the SILLY based ImageCodec module" ${SILLY_FOUND} )
-option( CEGUI_BUILD_IMAGECODEC_DEVIL "Specifies whether to build the DevIL based ImageCodec module" ${IL_FOUND} )
+option( CEGUI_BUILD_XMLPARSER_XERCES "Specifies whether to build the Xerces-C++ based XMLParser module" ${XERCESC_FOUND} )
+
 option( CEGUI_BUILD_IMAGECODEC_FREEIMAGE "Specifies whether to build the FreeImage based ImageCodec module" ${FREEIMAGE_FOUND} )
-option( CEGUI_BUILD_IMAGECODEC_CORONA "Specifies whether to build the Corona based ImageCodec module" ${CORONA_FOUND} )
-option( CEGUI_BUILD_IMAGECODEC_STB "Specifies whether to build the STB based ImageCodec module" TRUE )
-option( CEGUI_BUILD_IMAGECODEC_TGA "Specifies whether to build the based TGA only ImageCodec module" TRUE )
-option( CEGUI_BUILD_IMAGECODEC_PVR "Specifies whether to build the PVR only ImageCodec module" ${PVRTOOLS_FOUND} )
 
 cegui_dependent_option( CEGUI_BUILD_RENDERER_OPENGL "Specifies whether to build the OpenGL renderer module" "OPENGL_FOUND;GLEW_FOUND" )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_OPENGL3 "Specifies whether to build the OpenGL 3+ (core profile) renderer module" "OPENGL_FOUND;GLM_FOUND;GLEW_FOUND")
 option( CEGUI_BUILD_RENDERER_OGRE "Specifies whether to build the Ogre renderer module" ${OGRE_FOUND} )
-option( CEGUI_BUILD_RENDERER_IRRLICHT "Specifies whether to build the Irrlicht renderer module" ${IRRLICHT_FOUND} )
 option( CEGUI_BUILD_RENDERER_DIRECTFB "Specifies whether to build the DirectFB renderer module" ${DIRECTFB_FOUND} )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D9 "Specifies whether to build the Direct3D 9 renderer module" "DIRECTXSDK_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 9" )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D10 "Specifies whether to build the Direct3D 10 renderer module" "DIRECTXSDK_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 10" )
@@ -157,27 +108,6 @@ set( CEGUI_BIDI_SUPPORT "0" CACHE STRING "Select whether bi-directional text is 
     1: Use integrated minibidi library.
     2: Use external fribidi library."
 )
-
-cegui_dependent_option( CEGUI_SAMPLES_USE_OPENGL "Specifies whether the sample applications will use the OpenGL renderer" "CEGUI_BUILD_RENDERER_OPENGL;GLFW_FOUND" )
-cegui_dependent_option( CEGUI_SAMPLES_USE_OPENGL3 "Specifies whether the sample applications will use the OpenGL 3 renderer" "CEGUI_BUILD_RENDERER_OPENGL3;GLFW_FOUND" )
-cegui_dependent_option( CEGUI_SAMPLES_USE_OGRE "Specifies whether the sample applications will use the Ogre renderer" "CEGUI_BUILD_RENDERER_OGRE;OIS_FOUND" )
-
-option( CEGUI_SAMPLES_USE_IRRLICHT "Specifies whether the sample applications will use the Irrlicht renderer" ${CEGUI_BUILD_RENDERER_IRRLICHT} )
-option( CEGUI_SAMPLES_USE_DIRECTFB "Specifies whether the sample applications will use the DirectFB renderer" ${CEGUI_BUILD_RENDERER_DIRECTFB} )
-option( CEGUI_SAMPLES_USE_DIRECT3D9 "Specifies whether the sample applications will use the Direct3D 9 renderer" ${CEGUI_BUILD_RENDERER_DIRECT3D9} )
-option( CEGUI_SAMPLES_USE_DIRECT3D10 "Specifies whether the sample applications will use the Direct3D 10 renderer" ${CEGUI_BUILD_RENDERER_DIRECT3D10} )
-option( CEGUI_SAMPLES_USE_DIRECT3D11 "Specifies whether the sample applications will use the Direct3D 11 renderer" ${CEGUI_BUILD_RENDERER_DIRECT3D11} )
-
-if (CEGUI_SAMPLES_USE_OPENGL OR CEGUI_SAMPLES_USE_OGRE OR CEGUI_SAMPLES_USE_IRRLICHT OR CEGUI_SAMPLES_USE_DIRECT3D9 OR CEGUI_SAMPLES_USE_DIRECT3D10 OR CEGUI_SAMPLES_USE_DIRECT3D11 OR CEGUI_SAMPLES_USE_DIRECTFB)
-    set (_CEGUI_SAMPLES_ENABLED_DEFAULT TRUE)
-else()
-    set (_CEGUI_SAMPLES_ENABLED_DEFAULT FALSE)
-endif()
-option( CEGUI_SAMPLES_ENABLED "Specifies whether to build the CEGUI sample applications" ${_CEGUI_SAMPLES_ENABLED_DEFAULT} )
-
-if (UNIX AND NOT APPLE AND NOT WIN32)
-    option( CEGUI_SAMPLES_USE_GTK2 "Specifies whether the sample applications will make use of the GTK2 UI for renderer selection." FALSE )
-endif()
 
 option( CEGUI_HAS_VERSION_SUFFIX "Specifies whether to append a version number to the name of output binaries." FALSE )
 set (CEGUI_VERSION_SUFFIX ${CEGUI_VERSION} CACHE STRING "Specifies the version suffix to be appended to the name of output binaries when CEGUI_HAS_VERSION_SUFFIX is enabled." )
@@ -263,21 +193,9 @@ set( CEGUI_COMMON_DIALOGS_LIBNAME CEGUICommonDialogs )
 # Select one of the XML parser modules to be the default, warning if none are
 # available.
 ################################################################################
-if (CEGUI_BUILD_XMLPARSER_EXPAT)
-    set( CEGUI_OPTION_DEFAULT_XMLPARSER "ExpatParser" CACHE STRING "Specifies the XMLParser module to use as the default" )
-    set( CEGUI_STATIC_XMLPARSER_MODULE ${CEGUI_EXPAT_PARSER_LIBNAME} CACHE STRING "Specifies xml parser library to link to samples in static builds." )
-elseif (CEGUI_BUILD_XMLPARSER_XERCES)
+if (CEGUI_BUILD_XMLPARSER_XERCES)
     set( CEGUI_OPTION_DEFAULT_XMLPARSER "XercesParser" CACHE STRING "Specifies the XMLParser module to use as the default" )
     set( CEGUI_STATIC_XMLPARSER_MODULE ${CEGUI_XERCES_PARSER_LIBNAME} CACHE STRING "Specifies xml parser library to link to samples in static builds." )
-elseif (CEGUI_BUILD_XMLPARSER_LIBXML2)
-    set( CEGUI_OPTION_DEFAULT_XMLPARSER "LibxmlParser" CACHE STRING "Specifies the XMLParser module to use as the default" )
-    set( CEGUI_STATIC_XMLPARSER_MODULE ${CEGUI_LIBXML2_PARSER_LIBNAME} CACHE STRING "Specifies xml parser library to link to samples in static builds." )
-elseif (CEGUI_BUILD_XMLPARSER_RAPIDXML)
-    set( CEGUI_OPTION_DEFAULT_XMLPARSER "RapidXMLParser" CACHE STRING "Specifies the XMLParser module to use as the default" )
-    set( CEGUI_STATIC_XMLPARSER_MODULE ${CEGUI_RAPIDXML_PARSER_LIBNAME} CACHE STRING "Specifies xml parser library to link to samples in static builds." )
-elseif (CEGUI_BUILD_XMLPARSER_TINYXML)
-    set( CEGUI_OPTION_DEFAULT_XMLPARSER "TinyXMLParser" CACHE STRING "Specifies the XMLParser module to use as the default" )
-    set( CEGUI_STATIC_XMLPARSER_MODULE ${CEGUI_TINYXML_PARSER_LIBNAME} CACHE STRING "Specifies xml parser library to link to samples in static builds." )
 else()
     message(WARNING "None of the XML parser modules are going to be built.
 You should ensure that CEGUI_OPTION_DEFAULT_XMLPARSER is set to something
@@ -289,24 +207,9 @@ endif()
 # Select one of the image codec modules to be the default, warning if none are
 # available.
 ################################################################################
-if (CEGUI_BUILD_IMAGECODEC_SILLY)
-    set( CEGUI_OPTION_DEFAULT_IMAGECODEC "SILLYImageCodec" CACHE STRING "Specifies the ImageCodec module to use as the default" )
-    set( CEGUI_STATIC_IMAGECODEC_MODULE ${CEGUI_SILLY_IMAGECODEC_LIBNAME} CACHE STRING "Specifies image codec library to link to samples in static builds." )
-elseif (CEGUI_BUILD_IMAGECODEC_DEVIL)
-    set( CEGUI_OPTION_DEFAULT_IMAGECODEC "DevILImageCodec" CACHE STRING "Specifies the ImageCodec module to use as the default" )
-    set( CEGUI_STATIC_IMAGECODEC_MODULE ${CEGUI_DEVIL_IMAGECODEC_LIBNAME} CACHE STRING "Specifies image codec library to link to samples in static builds." )
-elseif (CEGUI_BUILD_IMAGECODEC_FREEIMAGE)
+if (CEGUI_BUILD_IMAGECODEC_FREEIMAGE)
     set( CEGUI_OPTION_DEFAULT_IMAGECODEC "FreeImageImageCodec" CACHE STRING "Specifies the ImageCodec module to use as the default" )
     set( CEGUI_STATIC_IMAGECODEC_MODULE ${CEGUI_FREEIMAGE_IMAGECODEC_LIBNAME} CACHE STRING "Specifies image codec library to link to samples in static builds." )
-elseif (CEGUI_BUILD_IMAGECODEC_STB)
-    set( CEGUI_OPTION_DEFAULT_IMAGECODEC "STBImageCodec" CACHE STRING "Specifies the ImageCodec module to use as the default" )
-    set( CEGUI_STATIC_IMAGECODEC_MODULE ${CEGUI_STB_IMAGECODEC_LIBNAME} CACHE STRING "Specifies image codec library to link to samples in static builds." )
-elseif (CEGUI_BUILD_IMAGECODEC_CORONA)
-    set( CEGUI_OPTION_DEFAULT_IMAGECODEC "CoronaImageCodec" CACHE STRING "Specifies the ImageCodec module to use as the default" )
-    set( CEGUI_STATIC_IMAGECODEC_MODULE ${CEGUI_CORONA_IMAGECODEC_LIBNAME} CACHE STRING "Specifies image codec library to link to samples in static builds." )
-elseif (CEGUI_BUILD_IMAGECODEC_TGA)
-    set( CEGUI_OPTION_DEFAULT_IMAGECODEC "TGAImageCodec" CACHE STRING "Specifies the ImageCodec module to use as the default" )
-    set( CEGUI_STATIC_IMAGECODEC_MODULE ${CEGUI_TGA_IMAGECODEC_LIBNAME} CACHE STRING "Specifies image codec library to link to samples in static builds." )
 else()
 message(WARNING "None of the image codec modules are going to be built.
 You should ensure that CEGUI_OPTION_DEFAULT_IMAGECODEC is set to something
@@ -320,7 +223,7 @@ endif()
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/cegui/include
     ${CMAKE_CURRENT_SOURCE_DIR}/cegui/include
-    ${XSILIUM_INCLUDE}
+    ${XSILIUM_OGRE_INCLUDE}
 )
 
 

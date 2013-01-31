@@ -111,7 +111,7 @@ macro (configure_xsilium ROOT OGREPATH)
 
 	include_directories("${Boost_INCLUDE_DIRS}")
 
-	find_package(Cg QUIET)
+	find_package(Cg)
 	
 	set(XSILIUM_ZZIP_TARGET ZZipLib)
 	set(XSILIUM_FREETYPE_TARGET freetype)
@@ -132,7 +132,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 		if(ZLIB_FOUND)
 			set(XSILIUM_ZLIB_TARGET	${ZLIB_LIBRARY})
-			set(XSILIUM_FREEIMAGE_INCLUDE	${ZLIB_INCLUDE_DIR})
+			set(XSILIUM_ZLIB_INCLUDE	${ZLIB_INCLUDE_DIR})
 		else()
 			message("Zlib not found.")
 			message("Package is mandatory, please install it or enable static FreeImage compilation.")
@@ -155,6 +155,9 @@ macro (configure_xsilium ROOT OGREPATH)
 		set(XSILIUM_FREEIMAGE_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/Source)        
 		
 	endif()
+
+set (FREEIMAGE_H_PATH ${XSILIUM_FREEIMAGE_INCLUDE} )
+set (FREEIMAGE_LIB ${XSILIUM_FREEIMAGE_TARGET} )
 
 
 	if (APPLE)
@@ -293,6 +296,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/zziplib)
 	set(XSILIUM_OIS_INCLUDE ${XSILIUM_DEP_DIR}/ois/includes)
 	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Terrain/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
+	set(OGRE_H_PATH ${XSILIUM_OGRE_INCLUDE})
 
 	set(XSILIUM_DEP_INCLUDE
 #		${XSILIUM_FREEIMAGE_INCLUDE} Conflicts with OpenSteer includes and needed by Ogre, not XSILIUM
@@ -419,6 +423,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(XSILIUM_OGRE_LIBS 
 		OgreMain       
 	)    
+	set(OGRE_LIB ${XSILIUM_OGRE_LIBS})
 	
 	# ogre 1.8-compatability
 	#list(APPEND XSILIUM_OGRE_LIBS OgreTerrain)  
@@ -468,6 +473,7 @@ macro (configure_xsilium ROOT OGREPATH)
 
 		endif()
 	endif(APPLE)
+
 
 
 endmacro(configure_xsilium)

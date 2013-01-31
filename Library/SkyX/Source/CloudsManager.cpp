@@ -156,11 +156,8 @@ namespace SkyX
 			return;
 		}
 
-		if (mSkyX->getLightingMode() == SkyX::LM_LDR)
-		{
-			mCloudLayerPass->getFragmentProgramParameters()
-				->setNamedConstant("uExposure", mSkyX->getAtmosphereManager()->getOptions().Exposure);
-		}
+		mCloudLayerPass->getFragmentProgramParameters()
+			->setNamedConstant("uExposure", mSkyX->getAtmosphereManager()->getOptions().Exposure);
 		mCloudLayerPass->getFragmentProgramParameters()
 			->setNamedConstant("uTime", mSkyX->_getTimeOffset()*mOptions.TimeMultiplier);
 		/*
