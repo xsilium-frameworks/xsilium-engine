@@ -125,9 +125,8 @@ namespace SkyX
 			mGPUManager->setGpuProgramParameter(GPUManager::GPUP_FRAGMENT, "uG2", mOptions.G*mOptions.G, false);
 		}
 
-		if ((NewOptions.Exposure != mOptions.Exposure ||
-			ForceToUpdateAll) && 
-			(mSkyX->getLightingMode() == SkyX::LM_LDR))
+		if (NewOptions.Exposure != mOptions.Exposure ||
+			ForceToUpdateAll)
 		{
 			mOptions.Exposure = NewOptions.Exposure;
 

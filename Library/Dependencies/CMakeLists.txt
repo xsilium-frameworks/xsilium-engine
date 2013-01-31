@@ -16,7 +16,3 @@ endif()
 if (NOT XSILIUM_DISABLE_ZIP)
 	subdirs(Source/zziplib)
 endif()
-
-if(NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-    add_subdirectory(Source/Cg)
-endif ()

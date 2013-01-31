@@ -25,9 +25,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace SkyX { namespace VClouds
 {
-	Lightning::Lightning(Ogre::SceneManager* sm, Ogre::SceneNode* sn, const Ogre::Vector3& vor, const Ogre::Vector3& dir,
+	Lightning::Lightning(Ogre::SceneManager* sm, Ogre::SceneNode* sn, const Ogre::Vector3& orig, const Ogre::Vector3& dir, 
 		const Ogre::Real& l, const Ogre::uint32& d, const Ogre::uint32& rec, const Ogre::Real& tm, const Ogre::Real& wm, const Ogre::Vector2& b)
-		: mOrigin(vor)
+		: mOrigin(orig)
 		, mDirection(dir)
 		, mLength(l)
 		, mRealLength(0)
@@ -110,7 +110,7 @@ namespace SkyX { namespace VClouds
 			bb->setColour(Ogre::ColourValue(1,bounds.y,bounds.y));
 			bb->mDirection = -(mSegments.at(k).a-mSegments.at(k).b).normalisedCopy();
 		
-			width *= 1-(1.0f/(mRecursivity*mRecursivity))*(1.0f/mSegments.size());
+			width *= 1-(1.0f/(mRecursivity*mRecursivity+1.0f))*(1.0f/mSegments.size());
 		}
 
 		mBillboardSet->_updateBounds();

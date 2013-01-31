@@ -45,6 +45,11 @@ namespace SkyX { namespace VClouds
 
 	const float Ellipsoid::_getLength(const int &x, const int &y, const int &z) const
 	{
+		if (x == mX && y == mY && z == mZ)
+		{
+			return 0.0f;
+		}
+
 		//  x^2   y^2   z^2
 		//  /   + /   + /    = 1  (Ellipsoid ecuation)
 		//  a^2   b^2   c^2
