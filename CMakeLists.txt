@@ -104,6 +104,7 @@ set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
 
 set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax ${Boost_LIBRARIES} ${Cg_LIBRARY_REL} )
 
+
 subdirs(Library)
 subdirs(Engine)
 subdirs(Client)

@@ -8,6 +8,9 @@ include(NoWarn)
 subdirs(Source/ois)
 subdirs(Source/freetype)
 subdirs(Source/zlib)
+subdirs(Source/xerces-c)
+
+
 
 if (XSILIUM_USE_STATIC_FREEIMAGE)
 	subdirs(Source/FreeImage) 
