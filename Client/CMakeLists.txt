@@ -67,7 +67,7 @@ add_custom_command(TARGET XsiliumClient POST_BUILD
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/Ogre.framework ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIBase.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIExpatParser.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUIXercesParser.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND cp ARGS -R ${CMAKE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib ${XSILIUM_SAMPLE_CONTENTS_PATH}/Frameworks/
 		)
 # now cfg files
