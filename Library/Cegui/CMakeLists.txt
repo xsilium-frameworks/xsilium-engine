@@ -51,7 +51,7 @@ endif()
 find_package(Ogre)
 find_package(XercesC)
 find_package(FreeImage)
-find_package(freetype)
+find_package(Freetype)
 
 
 ################################################################################
