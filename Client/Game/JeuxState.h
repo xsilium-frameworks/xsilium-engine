@@ -71,7 +71,16 @@ private:
 
     std::vector<Ogre::String> 	mCamNames;
     void 						switchCamera(int idx);
+
+
     Ogre::TerrainGroup* 		mTerrainGroup;
+    Ogre::TerrainGlobalOptions* mTerrainGlobals;
+    bool 						mTerrainsImported;
+
+    void 						defineTerrain(long x, long y);
+    void 						initBlendMaps(Ogre::Terrain* terrain);
+    void 						configureTerrainDefaults(Ogre::Light* light);
+
     DotSceneLoader* 			m_Loader;
 
 	bool						m_bLMouseDown, m_bRMouseDown;
