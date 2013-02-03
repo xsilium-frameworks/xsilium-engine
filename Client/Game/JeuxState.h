@@ -13,12 +13,6 @@
 
 class DotSceneLoader;
 
-enum QueryFlags
-{
-	OGRE_HEAD_MASK	= 1<<0,
-    CUBE_MASK		= 1<<1
-};
-
 namespace Forests
 {
     class PagedGeometry;
@@ -63,10 +57,6 @@ private:
 	float						m_MoveScale;
 	Ogre::Degree				m_RotScale;
 
-	Ogre::RaySceneQuery*		m_pRSQ;
-	Ogre::SceneNode*			m_pCurrentObject;
-	Ogre::Entity*				m_pCurrentEntity;
-
 	InputManager * inputManager;
 
     std::vector<Ogre::String> 	mCamNames;
@@ -74,16 +64,19 @@ private:
 
 
     Ogre::TerrainGroup* 		mTerrainGroup;
-    Ogre::TerrainGlobalOptions* mTerrainGlobals;
-    bool 						mTerrainsImported;
-
-    void 						defineTerrain(long x, long y);
-    void 						initBlendMaps(Ogre::Terrain* terrain);
-    void 						configureTerrainDefaults(Ogre::Light* light);
+    bool 						m_TerrainImported;
+    Ogre::String 				m_SceneFile;
 
     DotSceneLoader* 			m_Loader;
 
 	bool						m_bLMouseDown, m_bRMouseDown;
+
+    Forests::PagedGeometry* 	mPGHandle;                         /** Handle to Forests::PagedGeometry object */
+    Forests::GrassLoader* 		mGrassLoaderHandle;                /** Handle to Forests::GrassLoader object */
+    Forests::GrassLayer* 		mPGLayers[4];
+    float* 						mPGLayerData[4];
+    Ogre::Image 				mPGDensityMap;
+    Ogre::Rect 					mPGDirtyRect;
 
 
 };

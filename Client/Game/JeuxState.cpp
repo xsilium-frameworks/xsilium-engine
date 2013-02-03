@@ -6,13 +6,12 @@
 #include "TreeLoader3D.h"
 
 using namespace Ogre;
-
 using namespace Forests;
 
 JeuxState::JeuxState()
-    :   mTerrainGlobals(0),
-      mTerrainGroup(0),
-      mTerrainsImported(false)
+    :    m_Loader(0),
+         m_TerrainImported(false),
+         m_SceneFile(Ogre::StringUtil::BLANK)
 {
     m_MoveSpeed			= 1.0f;
     m_RotateSpeed		= 0.3f;
@@ -33,27 +32,9 @@ void JeuxState::enter()
 
     XsiliumFramework::getInstance()->m_pLog->logMessage("Entering JeuxState...");
 
-    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
-    m_pSceneMgr->createLight("Light")->setPosition(75,75,75);
-
-    m_pRSQ = m_pSceneMgr->createRayQuery(Ray());
-    m_pRSQ->setQueryMask(OGRE_HEAD_MASK);
-
-
-
-    m_pCamera = m_pSceneMgr->createCamera("GameCamera");
-    m_pCamera->setPosition(Ogre::Vector3(1683, 50, 2116));
-    m_pCamera->lookAt(Ogre::Vector3(1963, 50, 1660));
-    m_pCamera->setNearClipDistance(0.1);
-
-    m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) / Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
-
-    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
-    m_pCurrentObject = 0;
+    createScene();
 
     buildGUI();
-
-    createScene();
 }
 
 
@@ -78,7 +59,6 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
     m_pSceneMgr->destroyCamera(m_pCamera);
-    m_pSceneMgr->destroyQuery(m_pRSQ);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
 
@@ -121,152 +101,54 @@ void JeuxState::buildGUI()
 
 void JeuxState::createScene()
 {
-    DotSceneLoader* pDotSceneLoader = new DotSceneLoader();
-    pDotSceneLoader->parseDotScene("CubeScene.xml", "General", m_pSceneMgr, m_pSceneMgr->getRootSceneNode());
-    delete pDotSceneLoader;
+	m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
-    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
-      lightdir.normalise();
+    m_Loader = new DotSceneLoader();
+    m_Loader->parseDotScene("SampleDotScene.scene", "General", m_pSceneMgr);
 
-      Ogre::Light* light = m_pSceneMgr->createLight("tstLight");
-      light->setType(Ogre::Light::LT_DIRECTIONAL);
-      light->setDirection(lightdir);
-      light->setDiffuseColour(Ogre::ColourValue::White);
-      light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+    // Loop through all cameras and grab their name and set their debug representation
+     Ogre::SceneManager::CameraIterator cameras = m_pSceneMgr->getCameraIterator();
+     while (cameras.hasMoreElements())
+     {
+         Ogre::Camera* camera = cameras.getNext();
+         mCamNames.push_back(camera->getName());
+         Ogre::Entity* debugEnt = m_pSceneMgr->createEntity(camera->getName() + Ogre::String("_debug"), "scbCamera.mesh");
 
-      m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+         try{
+             Ogre::SceneNode* sNode = m_pSceneMgr->getSceneNode(camera->getName());
+             sNode->attachObject(debugEnt);
+             sNode->scale(0.5, 0.5, 0.5);
+         }catch (...){
+             Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(camera->getName());
+             pNode->setPosition(camera->getPosition());
+             pNode->setOrientation(camera->getOrientation());
 
-//    m_pSceneMgr->getEntity("Cube01")->setQueryFlags(CUBE_MASK);
-//    m_pSceneMgr->getEntity("Cube02")->setQueryFlags(CUBE_MASK);
-//    m_pSceneMgr->getEntity("Cube03")->setQueryFlags(CUBE_MASK);
+             pNode->attachObject(debugEnt);
+             pNode->scale(0.5, 0.5, 0.5);
+         }
+     }
 
-//    m_pOgreHeadEntity = m_pSceneMgr->createEntity("OgreHeadEntity", "ogrehead.mesh");
-//    m_pOgreHeadEntity->setQueryFlags(OGRE_HEAD_MASK);
-//    m_pOgreHeadNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("OgreHeadNode");
-//    m_pOgreHeadNode->attachObject(m_pOgreHeadEntity);
-//    m_pOgreHeadNode->setPosition(Vector3(0, 0, -25));
+     // Grab the first available camera, for now
+     Ogre::String cameraName = mCamNames[0];
+     try
+     {
+         m_pCamera = m_pSceneMgr->getCamera(cameraName);
+         XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
+        // mCameraMan->setCamera(m_pCamera);
+         m_pSceneMgr->getEntity(m_pCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
-//    m_pOgreHeadMat = m_pOgreHeadEntity->getSubEntity(1)->getMaterial();
-//    m_pOgreHeadMatHigh = m_pOgreHeadMat->clone("OgreHeadMatHigh");
-//    m_pOgreHeadMatHigh->getTechnique(0)->getPass(0)->setAmbient(1, 0, 0);
-//    m_pOgreHeadMatHigh->getTechnique(0)->getPass(0)->setDiffuse(1, 0, 0, 0);
+         for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
+         {
+             m_Loader->mPGHandles[ij]->setCamera(m_pCamera);
+         }
 
-    mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
-
-        mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(m_pSceneMgr, Ogre::Terrain::ALIGN_X_Z, 513, 12000.0f);
-        mTerrainGroup->setFilenameConvention(Ogre::String("base-terrain"), Ogre::String("dat"));
-        mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
-
-        configureTerrainDefaults(light);
-
-        for (long x = 0; x <= 0; ++x)
-            for (long y = 0; y <= 0; ++y)
-                defineTerrain(x, y);
-
-        // sync load since we want everything in place when we start
-        mTerrainGroup->loadAllTerrains(true);
-
-        if (mTerrainsImported)
-        {
-            Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-            while(ti.hasMoreElements())
-            {
-                Ogre::Terrain* t = ti.getNext()->instance;
-                initBlendMaps(t);
-            }
-        }
-
-        mTerrainGroup->freeTemporaryResources();
+     }
+     catch (Ogre::Exception& e)
+     {
+         Ogre::LogManager::getSingleton().logMessage("SampleApp::createScene : setting the active camera to (\"" +
+             cameraName + ") failed: " + e.getFullDescription());
+     }
 }
-
-void getTerrainImage(bool flipX, bool flipY, Ogre::Image& img)
-{
-    img.load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    if (flipX)
-        img.flipAroundY();
-    if (flipY)
-        img.flipAroundX();
-}
-
-void JeuxState::defineTerrain(long x, long y)
-{
-    Ogre::String filename = mTerrainGroup->generateFilename(x, y);
-    if (Ogre::ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), filename))
-    {
-        mTerrainGroup->defineTerrain(x, y);
-    }
-    else
-    {
-        Ogre::Image img;
-        getTerrainImage(x % 2 != 0, y % 2 != 0, img);
-        mTerrainGroup->defineTerrain(x, y, &img);
-        mTerrainsImported = true;
-    }
-}
-
-void JeuxState::initBlendMaps(Ogre::Terrain* terrain)
-{
-    Ogre::TerrainLayerBlendMap* blendMap0 = terrain->getLayerBlendMap(1);
-    Ogre::TerrainLayerBlendMap* blendMap1 = terrain->getLayerBlendMap(2);
-    Ogre::Real minHeight0 = 70;
-    Ogre::Real fadeDist0 = 40;
-    Ogre::Real minHeight1 = 70;
-    Ogre::Real fadeDist1 = 15;
-    float* pBlend1 = blendMap1->getBlendPointer();
-    for (Ogre::uint16 y = 0; y < terrain->getLayerBlendMapSize(); ++y)
-    {
-        for (Ogre::uint16 x = 0; x < terrain->getLayerBlendMapSize(); ++x)
-        {
-            Ogre::Real tx, ty;
-
-            blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
-            Ogre::Real height = terrain->getHeightAtTerrainPosition(tx, ty);
-            Ogre::Real val = (height - minHeight0) / fadeDist0;
-            val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
-
-            val = (height - minHeight1) / fadeDist1;
-            val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
-            *pBlend1++ = val;
-        }
-    }
-    blendMap0->dirty();
-    blendMap1->dirty();
-    blendMap0->update();
-    blendMap1->update();
-}
-
-void JeuxState::configureTerrainDefaults(Ogre::Light* light)
-{
-    // Configure global
-    mTerrainGlobals->setMaxPixelError(8);
-    // testing composite map
-    mTerrainGlobals->setCompositeMapDistance(3000);
-
-    // Important to set these so that the terrain knows what to use for derived (non-realtime) data
-    mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
-    mTerrainGlobals->setCompositeMapAmbient(m_pSceneMgr->getAmbientLight());
-    mTerrainGlobals->setCompositeMapDiffuse(light->getDiffuseColour());
-
-    // Configure default import settings for if we use imported image
-    Ogre::Terrain::ImportData& defaultimp = mTerrainGroup->getDefaultImportSettings();
-    defaultimp.terrainSize = 513;
-    defaultimp.worldSize = 12000.0f;
-    defaultimp.inputScale = 600;
-    defaultimp.minBatchSize = 33;
-    defaultimp.maxBatchSize = 65;
-    // textures
-    defaultimp.layerList.resize(3);
-    defaultimp.layerList[0].worldSize = 100;
-    defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_diffusespecular.png");
-    defaultimp.layerList[0].textureNames.push_back("dirt_grayrocky_normalheight.png");
-    defaultimp.layerList[1].worldSize = 30;
-    defaultimp.layerList[1].textureNames.push_back("grass_green-01_diffusespecular.png");
-    defaultimp.layerList[1].textureNames.push_back("grass_green-01_normalheight.png");
-    defaultimp.layerList[2].worldSize = 200;
-    defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_diffusespecular.png");
-    defaultimp.layerList[2].textureNames.push_back("growth_weirdfungus-03_normalheight.png");
-}
-
 void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
