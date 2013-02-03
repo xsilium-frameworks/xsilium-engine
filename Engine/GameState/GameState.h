@@ -4,7 +4,6 @@
 #include "XsiliumFramework.h"
 #include "InputManager/InputManager.h"
 #include "DotSceneLoader/DotSceneLoader.h"
-#include "Camera/SdkCameraMan.h"
 
 class GameState;
 
@@ -52,17 +51,9 @@ protected:
 	GameStateListener*			m_pParent;
 
 	Ogre::Camera*				m_pCamera;
-	Ogre::Camera* 				m_ActiveCamera;
 	Ogre::SceneManager*			m_pSceneMgr;
     Ogre::FrameEvent            m_FrameEvent;
     Ogre::RenderWindow* 		m_Window;
-
-    // OgreBites
-    OgreBites::SdkTrayManager*  mTrayMgr;
-    OgreBites::SdkCameraMan* 	mCameraMan;         // basic camera controller
-    OgreBites::ParamsPanel* 	mDetailsPanel;      // sample details panel
-    bool 						mCursorWasVisible;  // was cursor visible before dialog appeared
-    bool 						mShutDown;
 };
 
 #define DECLARE_GAMESTATE_CLASS(T)										\
