@@ -21,6 +21,9 @@ JeuxState::JeuxState()
     m_bRMouseDown = false;
 
     inputManager = InputManager::getSingletonPtr();
+
+    mSkyX = 0;
+    mBasicController = 0;
 }
 
 
@@ -148,6 +151,10 @@ void JeuxState::createScene()
          Ogre::LogManager::getSingleton().logMessage("SampleApp::createScene : setting the active camera to (\"" +
              cameraName + ") failed: " + e.getFullDescription());
      }
+
+		mBasicController = new SkyX::BasicController();
+		mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
+		mSkyX->create();
 }
 void JeuxState::update(double timeSinceLastFrame)
 {
