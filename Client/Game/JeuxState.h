@@ -10,6 +10,7 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <OgreImage.h>
+#include "SkyX.h"
 
 class DotSceneLoader;
 
@@ -77,6 +78,9 @@ private:
     float* 						mPGLayerData[4];
     Ogre::Image 				mPGDensityMap;
     Ogre::Rect 					mPGDirtyRect;
+
+    SkyX::SkyX* mSkyX ;
+    SkyX::BasicController* mBasicController;
 
 
 };
