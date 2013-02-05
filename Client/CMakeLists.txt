@@ -39,7 +39,7 @@ Login
 
 
 link_libraries(
-${XSILIUM_LIB} 
+${XSILIUM_LIB} ${SKYX_LIBRARIES}
 )
 
     add_executable(XsiliumClient
