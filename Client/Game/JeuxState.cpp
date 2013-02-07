@@ -152,10 +152,12 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
-		mBasicController = new SkyX::BasicController();
+/*		mBasicController = new SkyX::BasicController();
 		mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
 		mSkyX->create();
+*/
 }
+
 void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
