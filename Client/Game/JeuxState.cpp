@@ -195,7 +195,21 @@ void JeuxState::getInput()
 
         if(inputManager->getKeyboard()->isKeyDown(OIS::KC_S))
             m_TranslateVector.z = m_MoveScale;
-
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_0))
+        {
+        	m_pCamera = m_pSceneMgr->getCamera("Camera#0");
+        	XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
+        }
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_1))
+        {
+        	m_pCamera = m_pSceneMgr->getCamera("Camera#1");
+        	XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
+        }
+        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_2))
+        {
+        	m_pCamera = m_pSceneMgr->getCamera("Camera#2");
+        	XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
+        }
 }
 
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
