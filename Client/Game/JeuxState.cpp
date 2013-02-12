@@ -107,7 +107,7 @@ void JeuxState::createScene()
 	m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
     m_Loader = new DotSceneLoader();
-    m_Loader->parseDotScene("SampleDotScene.scene", "General", m_pSceneMgr);
+    m_Loader->parseDotScene("test-terrain.scene", "General", m_pSceneMgr);
 
     // Loop through all cameras and grab their name and set their debug representation
      Ogre::SceneManager::CameraIterator cameras = m_pSceneMgr->getCameraIterator();
