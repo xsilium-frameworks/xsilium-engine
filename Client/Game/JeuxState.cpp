@@ -117,18 +117,12 @@ void JeuxState::createScene()
          mCamNames.push_back(camera->getName());
          Ogre::Entity* debugEnt = m_pSceneMgr->createEntity(camera->getName() + Ogre::String("_debug"), "scbCamera.mesh");
 
-         try{
-             Ogre::SceneNode* sNode = m_pSceneMgr->getSceneNode(camera->getName());
-             sNode->attachObject(debugEnt);
-             sNode->scale(0.5, 0.5, 0.5);
-         }catch (...){
              Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(camera->getName());
              pNode->setPosition(camera->getPosition());
              pNode->setOrientation(camera->getOrientation());
 
              pNode->attachObject(debugEnt);
              pNode->scale(0.5, 0.5, 0.5);
-         }
      }
 
      // Grab the first available camera, for now
@@ -152,10 +146,14 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
-/*		mBasicController = new SkyX::BasicController();
+	/*	mBasicController = new SkyX::BasicController();
 		mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
 		mSkyX->create();
-*/
+
+		mBasicController->setMoonPhase(0.75f);*/
+
+	//	mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
+
 }
 
 void JeuxState::update(double timeSinceLastFrame)
@@ -180,6 +178,8 @@ void JeuxState::update(double timeSinceLastFrame)
     getInput();
     m_pCamera->moveRelative(m_TranslateVector / 10);
 
+   // mSkyX->update(timeSinceLastFrame);
+
 }
 
 void JeuxState::getInput()
@@ -195,6 +195,7 @@ void JeuxState::getInput()
 
         if(inputManager->getKeyboard()->isKeyDown(OIS::KC_S))
             m_TranslateVector.z = m_MoveScale;
+
 }
 
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
