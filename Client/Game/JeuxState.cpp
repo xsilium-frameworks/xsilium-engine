@@ -210,7 +210,7 @@ void JeuxState::update(double timeSinceLastFrame)
 
 
 
-    mHydrax->update(e.timeSinceLastFrame);
+    mHydrax->update(m_FrameEvent.timeSinceLastFrame / 1000);
 
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
