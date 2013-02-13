@@ -208,6 +208,10 @@ void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 
+
+
+    mHydrax->update(e.timeSinceLastFrame);
+
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
     gui_system.injectTimePulse(timeSinceLastFrame);
