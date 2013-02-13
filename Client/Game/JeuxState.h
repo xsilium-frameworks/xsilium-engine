@@ -11,6 +11,9 @@
 #include <OgreTerrainGroup.h>
 #include <OgreImage.h>
 #include "SkyX.h"
+#include "Hydrax.h"
+#include "Noise/Perlin/Perlin.h"
+#include "Modules/ProjectedGrid/ProjectedGrid.h"
 
 class DotSceneLoader;
 
@@ -81,6 +84,7 @@ private:
 
     SkyX::SkyX* mSkyX ;
     SkyX::BasicController* mBasicController;
+    Hydrax::Hydrax *mHydrax;
 
 
 };

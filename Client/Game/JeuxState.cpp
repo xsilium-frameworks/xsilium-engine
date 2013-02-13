@@ -24,6 +24,7 @@ JeuxState::JeuxState()
 
     mSkyX = 0;
     mBasicController = 0;
+    mHydrax = 0;
 }
 
 
@@ -153,14 +154,43 @@ void JeuxState::createScene()
 		mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
 		mSkyX->create();
 
-		mBasicController->setMoonPhase(0.75f);
-		mSkyX->setTimeMultiplier(0.5f);
+		mBasicController->setMoonPhase(0.0f);
+		//mSkyX->setTimeMultiplier(0.5f);
 
 		XsiliumFramework::getInstance()->m_pRoot->addFrameListener(mSkyX);
 		XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
 
 
 		mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
+
+
+
+		mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0));
+
+
+		Hydrax::Module::ProjectedGrid *mModule
+					= new Hydrax::Module::ProjectedGrid(mHydrax,new Hydrax::Noise::Perlin(/*Generic one*/),
+					                                    Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+														// Normal mode
+														Hydrax::MaterialManager::NM_VERTEX,
+														// Projected grid options
+												        Hydrax::Module::ProjectedGrid::Options());
+
+				// Set our module
+				mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
+
+				// Load all parameters from config file
+				// Remarks: The config file must be in Hydrax resource group.
+				// All parameters can be set/updated directly by code(Like previous versions),
+				// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
+				//mHydrax->loadCfg("HydraxDemo.hdx");
+
+		        // Create water
+		        mHydrax->create();
+
+
+
+
 
 }
 
