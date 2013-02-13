@@ -65,6 +65,8 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(mSkyX);
     XsiliumFramework::getInstance()->m_pRenderWnd->removeListener(mSkyX);
 
+    delete mHydrax;
+
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
@@ -155,7 +157,7 @@ void JeuxState::createScene()
 		mSkyX->create();
 
 		mBasicController->setMoonPhase(0.0f);
-		//mSkyX->setTimeMultiplier(0.5f);
+		mSkyX->setTimeMultiplier(0.2f);
 
 		XsiliumFramework::getInstance()->m_pRoot->addFrameListener(mSkyX);
 		XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
@@ -183,7 +185,15 @@ void JeuxState::createScene()
 				// Remarks: The config file must be in Hydrax resource group.
 				// All parameters can be set/updated directly by code(Like previous versions),
 				// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
-				//mHydrax->loadCfg("HydraxDemo.hdx");
+				mHydrax->loadCfg("HydraxDemo.hdx");
+
+
+				if (XsiliumFramework::getInstance()->m_pRoot->getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
+					mHydrax->setShaderMode( Hydrax::MaterialManager::SM_GLSL);
+				else
+					mHydrax->setShaderMode( Hydrax::MaterialManager::SM_HLSL);
+
+
 
 		        // Create water
 		        mHydrax->create();
