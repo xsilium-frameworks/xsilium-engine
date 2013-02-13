@@ -84,7 +84,7 @@ private:
 
     SkyX::SkyX* mSkyX ;
     SkyX::BasicController* mBasicController;
-    Hydrax::Hydrax *mHydrax;
+    Hydrax::Hydrax* mHydrax;
 
 
 };
