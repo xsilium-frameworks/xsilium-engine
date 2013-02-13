@@ -61,6 +61,9 @@ void JeuxState::exit()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
+    XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(mSkyX);
+    XsiliumFramework::getInstance()->m_pRenderWnd->removeListener(mSkyX);
+
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
@@ -146,13 +149,18 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
-	/*	mBasicController = new SkyX::BasicController();
+		mBasicController = new SkyX::BasicController();
 		mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
 		mSkyX->create();
 
-		mBasicController->setMoonPhase(0.75f);*/
+		mBasicController->setMoonPhase(0.75f);
+		mSkyX->setTimeMultiplier(0.5f);
 
-	//	mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
+		XsiliumFramework::getInstance()->m_pRoot->addFrameListener(mSkyX);
+		XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
+
+
+		mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
 
 }
 
@@ -177,8 +185,6 @@ void JeuxState::update(double timeSinceLastFrame)
 
     getInput();
     m_pCamera->moveRelative(m_TranslateVector / 10);
-
-   // mSkyX->update(timeSinceLastFrame);
 
 }
 
