@@ -49,9 +49,10 @@ GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c) {
 
 GestionnaireMeteo::~GestionnaireMeteo() {
 
+	XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(this);
+	XsiliumFramework::getInstance()->m_pRenderWnd->removeListener(mSkyX);
 	delete mSkyX;
 	delete mHydrax ;
-	XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(this);
 }
 
 bool GestionnaireMeteo::frameStarted(const Ogre::FrameEvent& evt)
