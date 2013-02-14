@@ -39,7 +39,7 @@ void GameStateManager::manageGameState(Ogre::String stateName, GameState* state)
 	catch(std::exception& e)
 	{
 		delete state;
-		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR, "Erreur de gestion d'un nouveau état\n" + Ogre::String(e.what()), "GameStateManager.cpp (39)");
+		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR, "Erreur de gestion d'un nouveau ï¿½tat\n" + Ogre::String(e.what()), "GameStateManager.cpp (39)");
 	}
 }
 
@@ -76,6 +76,7 @@ void GameStateManager::start(GameState* state)
 			inputManager->capture();
 
 			m_ActiveStateStack.back()->update(timeSinceLastFrame);
+			//m_ActiveStateStack.back()->frameStarted(e);
 
 			XsiliumFramework::getInstance()->m_pRoot->renderOneFrame();
 
@@ -92,6 +93,11 @@ void GameStateManager::start(GameState* state)
 	}
 
 	XsiliumFramework::getInstance()->m_pLog->logMessage("Sortie de la boucle principale");
+}
+
+bool GameStateManager::frameStarted(const Ogre::FrameEvent& evt)
+{
+  return m_ActiveStateStack.back()->frameStarted(evt);
 }
 
 void GameStateManager::changeGameState(GameState* state)

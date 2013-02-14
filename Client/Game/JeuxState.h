@@ -41,6 +41,7 @@ public:
 //    void itemSelected(OgreBites::SelectMenu* menu);
 
 	void update(double timeSinceLastFrame);
+	virtual bool frameStarted(const Ogre::FrameEvent &evt);
 
 	void getInput();
 

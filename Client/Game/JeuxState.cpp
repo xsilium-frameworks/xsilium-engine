@@ -197,11 +197,12 @@ void JeuxState::createScene()
 
 		        // Create water
 		        mHydrax->create();
+}
 
-
-
-
-
+bool JeuxState::frameStarted(const FrameEvent &evt)
+{
+	mHydrax->update(evt.timeSinceLastFrame);
+	return true;
 }
 
 void JeuxState::update(double timeSinceLastFrame)
@@ -210,7 +211,7 @@ void JeuxState::update(double timeSinceLastFrame)
 
 
 
-    mHydrax->update(m_FrameEvent.timeSinceLastFrame / 1000);
+   // mHydrax->update(m_FrameEvent.timeSinceLastFrame / 1000);
 
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 

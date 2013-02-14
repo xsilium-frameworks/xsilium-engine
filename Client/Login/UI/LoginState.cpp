@@ -166,6 +166,11 @@ void LoginState::update(double timeSinceLastFrame)
 	}
 }
 
+bool LoginState::frameStarted(const FrameEvent& evt)
+{
+    return true;
+}
+
 
 bool LoginState::PushConnexion(const CEGUI::EventArgs &e)
 {
