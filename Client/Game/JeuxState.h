@@ -10,10 +10,15 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <OgreImage.h>
-#include "SkyX.h"
-#include "Hydrax.h"
-#include "Noise/Perlin/Perlin.h"
-#include "Modules/ProjectedGrid/ProjectedGrid.h"
+
+
+#include "PagedGeometry.h"
+#include "GrassLoader.h"
+#include "BatchPage.h"
+#include "ImpostorPage.h"
+#include "TreeLoader3D.h"
+
+#include "GestionnaireMeteo/GestionnaireMeteo.h"
 
 class DotSceneLoader;
 
@@ -41,7 +46,6 @@ public:
 //    void itemSelected(OgreBites::SelectMenu* menu);
 
 	void update(double timeSinceLastFrame);
-	virtual bool frameStarted(const Ogre::FrameEvent &evt);
 
 	void getInput();
 
@@ -83,9 +87,7 @@ private:
     Ogre::Image 				mPGDensityMap;
     Ogre::Rect 					mPGDirtyRect;
 
-    SkyX::SkyX* mSkyX ;
-    SkyX::BasicController* mBasicController;
-    Hydrax::Hydrax* mHydrax;
+    GestionnaireMeteo* gestionnaireMeteo;
 
 
 };

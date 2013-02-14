@@ -38,7 +38,6 @@ public:
 	virtual bool pause(){return true;}
 	virtual void resume(){};
 	virtual void update(double timeSinceLastFrame) = 0;
-	virtual bool frameStarted(const Ogre::FrameEvent& evt) = 0;
 
 protected:
 	GameState(){};

@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include "Singleton/Singleton.h"
 
-class GameStateManager : public GameStateListener, public Ogre::FrameListener{
+class GameStateManager : public GameStateListener{
 
 public:
 	typedef struct
@@ -27,7 +27,7 @@ public:
 	void pauseGameState();
 	void shutdown();
     void popAllAndPushGameState(GameState* state);
-    bool frameStarted(const Ogre::FrameEvent& evt);
+
 
 protected:
 	void init(GameState *state);
@@ -36,7 +36,6 @@ protected:
 	std::vector<state_info>		m_States;
 	bool						m_bShutdown;
 	InputManager* 				inputManager;
-	Ogre::Root* mRoot;
 
 };
 

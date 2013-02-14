@@ -18,6 +18,7 @@ set(CORE_SOURCE_FILES
     XsiliumApp.cpp
     Console/Console.cpp
     Login/Authentification.cpp
+    Game/GestionnaireMeteo/GestionnaireMeteo.cpp
     Game/JeuxState.cpp
 )
 
@@ -27,6 +28,7 @@ set(CORE_HEADER_FILES
     Console/Console.h
     Login/Authentification.h
     Login/ListOfMessage/ListOfMessage.h
+    Game/GestionnaireMeteo/GestionnaireMeteo.h
     Game/JeuxState.h
 )
 
@@ -34,6 +36,7 @@ include_directories(
 ${XSILIUM_INCLUDE} 
 Console 
 Login
+Game
 .
 )
 
