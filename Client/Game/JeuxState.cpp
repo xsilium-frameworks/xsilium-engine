@@ -1,9 +1,5 @@
 #include "JeuxState.h"
-#include "PagedGeometry.h"
-#include "GrassLoader.h"
-#include "BatchPage.h"
-#include "ImpostorPage.h"
-#include "TreeLoader3D.h"
+
 
 using namespace Ogre;
 using namespace Forests;
@@ -21,10 +17,6 @@ JeuxState::JeuxState()
     m_bRMouseDown = false;
 
     inputManager = InputManager::getSingletonPtr();
-
-    mSkyX = 0;
-    mBasicController = 0;
-    mHydrax = 0;
 }
 
 
@@ -62,10 +54,7 @@ void JeuxState::exit()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
-    XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(mSkyX);
-    XsiliumFramework::getInstance()->m_pRenderWnd->removeListener(mSkyX);
-
-    delete mHydrax;
+    delete gestionnaireMeteo;
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
@@ -152,66 +141,14 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
-		mBasicController = new SkyX::BasicController();
-		mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
-		mSkyX->create();
+     gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera);
+     gestionnaireMeteo->create();
 
-		mBasicController->setMoonPhase(0.0f);
-		mSkyX->setTimeMultiplier(0.2f);
-
-		XsiliumFramework::getInstance()->m_pRoot->addFrameListener(mSkyX);
-		XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
-
-
-		mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
-
-
-
-		mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0));
-
-
-		Hydrax::Module::ProjectedGrid *mModule
-					= new Hydrax::Module::ProjectedGrid(mHydrax,new Hydrax::Noise::Perlin(/*Generic one*/),
-					                                    Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
-														// Normal mode
-														Hydrax::MaterialManager::NM_VERTEX,
-														// Projected grid options
-												        Hydrax::Module::ProjectedGrid::Options());
-
-				// Set our module
-				mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
-
-				// Load all parameters from config file
-				// Remarks: The config file must be in Hydrax resource group.
-				// All parameters can be set/updated directly by code(Like previous versions),
-				// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
-				mHydrax->loadCfg("HydraxDemo.hdx");
-
-
-				if (XsiliumFramework::getInstance()->m_pRoot->getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-					mHydrax->setShaderMode( Hydrax::MaterialManager::SM_GLSL);
-				else
-					mHydrax->setShaderMode( Hydrax::MaterialManager::SM_HLSL);
-
-
-
-		        // Create water
-		        mHydrax->create();
-}
-
-bool JeuxState::frameStarted(const FrameEvent &evt)
-{
-	mHydrax->update(evt.timeSinceLastFrame);
-	return true;
 }
 
 void JeuxState::update(double timeSinceLastFrame)
 {
     m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
-
-
-
-   // mHydrax->update(m_FrameEvent.timeSinceLastFrame / 1000);
 
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 

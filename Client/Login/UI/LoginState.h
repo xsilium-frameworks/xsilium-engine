@@ -27,7 +27,6 @@ public:
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
 	void update(double timeSinceLastFrame);
-	virtual bool frameStarted(const Ogre::FrameEvent &evt);
 
 
 	void setMessage(int typeMessage,int message);
