@@ -71,6 +71,10 @@ bool GestionnaireMeteo::frameStarted(const Ogre::FrameEvent& evt)
 
 void GestionnaireMeteo::create()
 {
+	Ogre::Light *mLight0 = m_pSceneMgr->getLight("Light#0");
+	mLight0->setDiffuseColour(1, 1, 1);
+	mLight0->setCastShadows(false);
+
 	// Shadow caster
 	Ogre::Light *mLight1 = m_pSceneMgr->createLight("Light1");
 	mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
@@ -121,14 +125,6 @@ void GestionnaireMeteo::create()
 			// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
 			mHydrax->loadCfg("HydraxDemo.hdx");
 
-
-			if (XsiliumFramework::getInstance()->m_pRoot->getRenderSystem()->getName() == "OpenGL Rendering Subsystem")
-				mHydrax->setShaderMode( Hydrax::MaterialManager::SM_GLSL);
-			else
-				mHydrax->setShaderMode( Hydrax::MaterialManager::SM_HLSL);
-
-
-
 	        // Create water
 	        mHydrax->create();
 
@@ -137,7 +133,10 @@ void GestionnaireMeteo::create()
 
 
 
+
+
 	XsiliumFramework::getInstance()->m_pRoot->addFrameListener(this);
+
 }
 
 void GestionnaireMeteo::updateEnvironmentLighting()
