@@ -11,10 +11,7 @@
 
 #include "XsiliumFramework.h"
 
-#include "SkyX.h"
-#include "Hydrax.h"
-#include "Noise/Perlin/Perlin.h"
-#include "Modules/ProjectedGrid/ProjectedGrid.h"
+#include "HydraxRttListener/HydraxRttListener.h"
 
 /*
  *
@@ -28,6 +25,9 @@ public:
 
     bool frameStarted(const Ogre::FrameEvent& evt);
 
+    void updateEnvironmentLighting();
+    void updateShadowFarDistance();
+
 private:
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::Camera*				m_pCamera;
@@ -36,6 +36,15 @@ private:
     SkyX::SkyX* mSkyX ;
     SkyX::BasicController* mBasicController;
     Hydrax::Hydrax* mHydrax;
+
+
+	// Color gradients
+	SkyX::ColorGradient mWaterGradient,
+		                mSunGradient,
+						mAmbientGradient;
+
+	Ogre::Real mLastPositionLength;
+
 };
 
 #endif /* GESTIONNAIREMETEO_H_ */

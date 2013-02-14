@@ -19,6 +19,7 @@ set(CORE_SOURCE_FILES
     Console/Console.cpp
     Login/Authentification.cpp
     Game/GestionnaireMeteo/GestionnaireMeteo.cpp
+    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
     Game/JeuxState.cpp
 )
 
@@ -29,6 +30,7 @@ set(CORE_HEADER_FILES
     Login/Authentification.h
     Login/ListOfMessage/ListOfMessage.h
     Game/GestionnaireMeteo/GestionnaireMeteo.h
+    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h
     Game/JeuxState.h
 )
 
