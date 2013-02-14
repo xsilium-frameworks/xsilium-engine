@@ -6,6 +6,7 @@ GameStateManager::GameStateManager()
 {
 	m_bShutdown = false;
     inputManager = InputManager::getSingletonPtr();
+    mRoot = 0;
 }
 
 GameStateManager::~GameStateManager()
@@ -56,13 +57,14 @@ GameState* GameStateManager::findByName(Ogre::String stateName)
 	return 0;
 }
 
-void GameStateManager::start(GameState* state)
+void GameStateManager::start(GameState* state  )
 {
 	changeGameState(state);
 
 	int timeSinceLastFrame = 1;
 	int startTime = 0;
-
+	mRoot = XsiliumFramework::getInstance()->m_pRoot;
+	mRoot->addFrameListener(this);
 	while(!m_bShutdown)
 	{
 		if(XsiliumFramework::getInstance()->m_pRenderWnd->isClosed())m_bShutdown = true;
@@ -76,7 +78,7 @@ void GameStateManager::start(GameState* state)
 			inputManager->capture();
 
 			m_ActiveStateStack.back()->update(timeSinceLastFrame);
-			//m_ActiveStateStack.back()->frameStarted(e);
+			//m_ActiveStateStack.back()->frameStarted(evt);
 
 			XsiliumFramework::getInstance()->m_pRoot->renderOneFrame();
 
