@@ -12,11 +12,12 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 	this->chatUI = chatUI ;
 
 	networkManager = NetworkManager::getInstance();
+	networkManager->addNetworkListener(this,"Chat");
 
 }
 
 GestionnaireChat::~GestionnaireChat() {
-	// TODO Auto-generated destructor stub
+	networkManager->removeNetworkListener("Chat");
 }
 
 void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)

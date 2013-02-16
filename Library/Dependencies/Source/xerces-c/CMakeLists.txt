@@ -43,6 +43,12 @@ add_to_sources( xercesc/util/regx )
 add_to_sources_no_rec( xercesc/util )
 add_to_sources_no_rec( . )
 
+
+configure_file(${OGRE_TEMPLATES_DIR}/Xerces_autoconf_config.hpp.in ${XSILIUM_BINARY_DIR}/include/Xerces_autoconf_config.hpp)
+
+add_to_sources(${XSILIUM_BINARY_DIR}/include)
+
+
 # These files are included by hpp files and should not be directly compiled
 file(GLOB to_remove xercesc/dom/impl/DOMDeepNodeListPool.c 
                     xercesc/framework/psvi/XSNamedMap.c 

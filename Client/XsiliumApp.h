@@ -6,6 +6,7 @@
 
 #include "UI/LoginState.h"
 #include "Game/JeuxState.h"
+#include "Compte/Compte.h"
 
 class XsiliumApp
 {
@@ -17,6 +18,7 @@ public:
 
 private:
 	GameStateManager*	m_pGameStateManager;
+	Compte * compte;
 };
 
 #endif

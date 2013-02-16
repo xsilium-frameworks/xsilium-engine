@@ -27,6 +27,8 @@ public:
 
 	void updateNetwork(int event ,ENetEvent * packet);
 
+	void sendMessageToChat(const char * message, int to);
+
 
 private:
 	NetworkManager * networkManager;

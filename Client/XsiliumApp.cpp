@@ -3,11 +3,15 @@
 XsiliumApp::XsiliumApp()
 {
 	m_pGameStateManager = new GameStateManager();
+
+	compte = Compte::getInstance();
+
 }
 
 XsiliumApp::~XsiliumApp()
 {
 	delete m_pGameStateManager;
+	Compte::DestroyInstance();
     XsiliumFramework::DestroyInstance();
 }
 
@@ -24,5 +28,5 @@ void XsiliumApp::startXsilium()
 	JeuxState::create(m_pGameStateManager, "JeuxState");
 //    PauseState::create(m_pAppStateManager, "PauseState");
 
-	m_pGameStateManager->start(m_pGameStateManager->findByName("JeuxState"));
+	m_pGameStateManager->start(m_pGameStateManager->findByName("LoginState"));
 }

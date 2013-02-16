@@ -9,7 +9,7 @@
 #ifndef AUTHENTIFICATION_H_
 #define AUTHENTIFICATION_H_
 
-#include "StructurePacket/StructurePacket.h"
+#include "StructurePacket/PacketAuth.h"
 #include "Shared/Network/Opcode.h"
 #include "Network/NetworkManager.h"
 #include "Network/NetworkListener.h"
@@ -17,18 +17,9 @@
 #include <cstring>
 #include "UI/LoginState.h"
 
-class LoginState;
+#include "Compte/Compte.h"
 
-struct cClient
-	{
-	    uint16_t  build;
-	    uint8_t   platform[4];
-	    uint8_t   os[4];
-	    uint8_t   country[4];
-	    const char * login;
-	    const char * password;
-	    uint8_t etape;
-	};
+class LoginState;
 
 
 /*
@@ -55,7 +46,7 @@ private:
 	NetworkManager * networkManager;
 	LoginState *login;
 	ENetEvent eventAuth;
-	cClient client;
+	Compte * compte;
 
 };
 

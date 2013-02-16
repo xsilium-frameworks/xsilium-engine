@@ -1,15 +1,15 @@
 /*
- * \file StructurePacket.h
+ * \file PacketAuth.h
  *
  *  Created on: \date 22 juin 2012
  *      Author: \author joda
  *  \brief :
  */
 
-#ifndef STRUCTUREPACKET_H_
-#define STRUCTUREPACKET_H_
+#ifndef PACKETAUTH_H_
+#define PACKETAUTH_H_
 
-#include <stdint.h>
+#include "Shared/StructurePacket/StructurePacket.h"
 
 	typedef struct AUTH_LOGON_CHALLENGE_C
 	{
@@ -54,4 +54,4 @@
 
 
 
-#endif /* STRUCTUREPACKET_H_ */
+#endif /* PACKETAUTH_H_ */

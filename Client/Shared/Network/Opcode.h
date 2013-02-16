@@ -31,6 +31,10 @@ enum Opcode
     ID_SEND_CANCEL,
     ID_INVALID_IP,
     ID_ERROR,
+
+    //chat
+    ID_CHAT,
+
     ID_OPCOD_MAX
 };
 
