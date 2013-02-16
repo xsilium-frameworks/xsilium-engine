@@ -28,6 +28,9 @@ macro( add_to_sources_no_rec folder_path )
     endif()
 endmacro()
 
+
+configure_file(${OGRE_TEMPLATES_DIR}/Xerces_autoconf_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/xercesc/util/Xerces_autoconf_config.hpp)
+
 add_to_sources( xercesc/dom )
 add_to_sources( xercesc/framework )
 add_to_sources( xercesc/internal )
@@ -42,11 +45,6 @@ add_to_sources( xercesc/util/regx )
 
 add_to_sources_no_rec( xercesc/util )
 add_to_sources_no_rec( . )
-
-
-configure_file(${OGRE_TEMPLATES_DIR}/Xerces_autoconf_config.hpp.in ${XSILIUM_BINARY_DIR}/include/Xerces_autoconf_config.hpp)
-
-add_to_sources(${XSILIUM_BINARY_DIR}/include)
 
 
 # These files are included by hpp files and should not be directly compiled
