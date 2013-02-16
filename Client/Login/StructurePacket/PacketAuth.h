@@ -13,8 +13,7 @@
 
 	typedef struct AUTH_LOGON_CHALLENGE_C
 	{
-	    uint8_t   cmd;
-	    uint8_t   opcode;
+		structure_opcodeT structure_opcode;
 	    uint8_t   error;
 	    uint16_t  size;
 	    uint8_t   version1;
@@ -30,23 +29,20 @@
 
 	typedef struct AUTH_LOGON_PROOF_C
 	{
-	    uint8_t   cmd;
-	    uint8_t   opcode;
+		structure_opcodeT structure_opcode;
 	    uint8_t   A[32];
 	} sAuthLogonProof_C;
 
 	typedef struct AUTH_LOGON_ERROR
 	{
-		uint8_t   cmd;
-		uint8_t   opcode;
+		structure_opcodeT structure_opcode;
 		uint8_t   error;
 		uint8_t   M2[20];
 	} sAuthLogonError;
 
 	typedef struct AUTH_LOGON_CHALLENGE_S
 	{
-		uint8_t   cmd;  /*!< correspond au type de packet que l'on envoi */
-		uint8_t   opcode;
+		structure_opcodeT structure_opcode;
 		uint32_t	key;
 		uint32_t	key2;
 	} sAuthLogonChallenge_S;

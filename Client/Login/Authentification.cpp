@@ -52,8 +52,8 @@ void Authentification::handleEtapeDeux(ENetEvent * packet)
 	printf("key : %d \n",data->key);
 
 	sAuthLogonProof_C message2;
-	message2.cmd = XSILIUM_AUTH;
-	message2.opcode = ID_SEND_REPONSE;
+	message2.structure_opcode.cmd = XSILIUM_AUTH;
+	message2.structure_opcode.opcode = ID_SEND_REPONSE;
 	std::stringstream convert2 (compte->getPassWord());
 	convert2>> std::hex >> message2.A;
 	networkManager->sendToHost( (const char *)&message2,sizeof(message2));
@@ -62,8 +62,8 @@ void Authentification::handleEtapeDeux(ENetEvent * packet)
 bool Authentification::sendAuthentification()
 {
 		sAuthLogonChallenge_C message;
-		message.cmd = XSILIUM_AUTH;
-		message.opcode = ID_SEND_USER;
+		message.structure_opcode.cmd = XSILIUM_AUTH;
+		message.structure_opcode.opcode = ID_SEND_USER;
 		message.build = compte->getVersion();
 		message.login_len = std::strlen(compte->getLogin());
 		std::stringstream convert (compte->getLogin());
@@ -91,11 +91,13 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 	switch(event)
 	{
 	case ENET_EVENT_TYPE_RECEIVE:
-		if ((uint8_t)packet->packet->data[0] == XSILIUM_AUTH)
-		{
-			printf("message recu %d \n",(uint8_t)packet->packet->data[1]);
+		structure_opcodeT * typePacket = (structure_opcodeT *) packet->data ;
 
-			switch((uint8_t)packet->packet->data[1])
+		if (typePacket->cmd == XSILIUM_AUTH)
+		{
+			printf("message recu %d \n",typePacket->opcode);
+
+			switch(typePacket->opcode)
 			{
 			case ID_SEND_CHALLENGE :
 				compte->setEtapeDeLogin(2);
