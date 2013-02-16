@@ -17,6 +17,7 @@ XsiliumFramework::~XsiliumFramework()
     XsiliumFramework::getInstance()->m_pLog->logMessage("Extinction OGRE...");
     if(m_pRoot)			delete m_pRoot;
     if(inputManager) delete inputManager;
+    if(keyboardMap) delete keyboardMap;
 }
 
 bool XsiliumFramework::initOgre(Ogre::String wndTitle)
@@ -24,6 +25,9 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     std::string mResourcePath ;
 
     inputManager = InputManager::getSingletonPtr();
+    keyboardMap = KeyboardMap::getInstance();
+
+    keyboardMap->load(" ");
 
 #ifdef __APPLE__
     mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";

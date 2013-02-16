@@ -6,6 +6,7 @@
 #include <OgreLogManager.h>
 
 #include "InputManager/InputManager.h"
+#include "KeyboardMap/KeyboardMap.h"
 
 #ifdef __APPLE__
 #include "OSX/macUtils.h"
@@ -43,6 +44,7 @@ public:
 	Ogre::Log*					m_pLog;
 	Ogre::Timer*				m_pTimer;
 	InputManager*				inputManager;
+	KeyboardMap * keyboardMap;
 
 private:
 	XsiliumFramework(const XsiliumFramework&);
