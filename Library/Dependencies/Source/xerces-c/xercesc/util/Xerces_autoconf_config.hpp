@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 /* src/xercesc/util/Xerces_autoconf_config.hpp.  Generated from Xerces_autoconf_config.hpp.in by configure.  */
-=======
->>>>>>> 061e71a6d09002c312fba724fa8359668be2d1b3
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -52,7 +49,6 @@
 // ---------------------------------------------------------------------------
 //  These defines are set by configure as appropriate for the platform.
 // ---------------------------------------------------------------------------
-<<<<<<< HEAD
 #define XERCES_AUTOCONF 1
 #define XERCES_HAVE_SYS_TYPES_H 1
 #define XERCES_HAVE_INTTYPES_H 1
@@ -84,39 +80,6 @@
 #define XERCES_PLATFORM_IMPORT 
 
 /* #undef XERCES_NO_MATCHING_DELETE_OPERATOR */
-=======
-#undef XERCES_AUTOCONF
-#undef XERCES_HAVE_SYS_TYPES_H
-#undef XERCES_HAVE_INTTYPES_H
-#undef XERCES_HAVE_INTRIN_H
-#undef XERCES_HAVE_EMMINTRIN_H
-#undef XERCES_INCLUDE_WCHAR_H
-
-#undef XERCES_S16BIT_INT
-#undef XERCES_S32BIT_INT
-#undef XERCES_S64BIT_INT
-#undef XERCES_U16BIT_INT
-#undef XERCES_U32BIT_INT
-#undef XERCES_U64BIT_INT
-#undef XERCES_XMLCH_T
-#undef XERCES_SIZE_T
-#undef XERCES_SSIZE_T
-
-#undef XERCES_HAS_CPP_NAMESPACE
-#undef XERCES_STD_NAMESPACE
-#undef XERCES_NEW_IOSTREAMS
-#undef XERCES_NO_NATIVE_BOOL
-#undef XERCES_LSTRSUPPORT
-
-#undef XERCES_HAVE_CPUID_INTRINSIC
-#undef XERCES_HAVE_SSE2_INTRINSIC
-#undef XERCES_HAVE_GETCPUID
-
-#undef XERCES_PLATFORM_EXPORT
-#undef XERCES_PLATFORM_IMPORT
-
-#undef XERCES_NO_MATCHING_DELETE_OPERATOR
->>>>>>> 061e71a6d09002c312fba724fa8359668be2d1b3
 
 // ---------------------------------------------------------------------------
 //  Include standard headers, if available, that we may rely on below.
