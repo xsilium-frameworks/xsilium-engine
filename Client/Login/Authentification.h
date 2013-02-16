@@ -37,7 +37,7 @@ struct cClient
 class Authentification : public NetworkListener {
 
 public:
-	Authentification();
+	Authentification(LoginState *login);
 	virtual ~Authentification();
 
 	void InitialisationAuth();
@@ -50,8 +50,6 @@ public:
 
 
 	void setLoginPwd(const char * user,const char * password);
-
-	void setLogin(LoginState *login);
 
 private:
 	NetworkManager * networkManager;

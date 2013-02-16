@@ -16,7 +16,8 @@ set(CORE_SOURCE_FILES
     main.cpp
     Login/UI/LoginState.cpp 
     XsiliumApp.cpp
-    Console/Console.cpp
+    Game/Chat/UI/Chat.cpp
+    Game/Chat/GestionnaireChat/GestionnaireChat.cpp
     Login/Authentification.cpp
     Game/GestionnaireMeteo/GestionnaireMeteo.cpp
     Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
@@ -26,7 +27,8 @@ set(CORE_SOURCE_FILES
 set(CORE_HEADER_FILES
     Login/UI/LoginState.h
     XsiliumApp.h 
-    Console/Console.h
+    Game/Chat/UI/Chat.h
+    Game/Chat/GestionnaireChat/GestionnaireChat.h
     Login/Authentification.h
     Login/ListOfMessage/ListOfMessage.h
     Game/GestionnaireMeteo/GestionnaireMeteo.h
@@ -36,7 +38,6 @@ set(CORE_HEADER_FILES
 
 include_directories(
 ${XSILIUM_INCLUDE} 
-Console 
 Login
 Game
 .

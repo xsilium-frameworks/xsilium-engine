@@ -3,7 +3,7 @@
 
 #include "GameState/GameState.h"
 
-#include"Console/Console.h"
+#include"Chat/UI/Chat.h"
 
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
@@ -88,6 +88,7 @@ private:
     Ogre::Rect 					mPGDirtyRect;
 
     GestionnaireMeteo* gestionnaireMeteo;
+    Chat * chat;
 
 
 };

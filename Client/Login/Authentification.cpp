@@ -7,8 +7,9 @@
  */
 
 #include "Authentification.h"
-Authentification::Authentification() {
+Authentification::Authentification(LoginState *login) {
 
+	this->login = login;
 	networkManager = NetworkManager::getInstance();
 	networkManager->addNetworkListener(this,"Authentification");
 }
@@ -32,11 +33,6 @@ void Authentification::InitialisationAuth()
 			login->setProgression(2);
 		}
 	}
-}
-
-void Authentification::setLogin(LoginState *login)
-{
-	this->login = login;
 }
 
 void Authentification::handleEtapeDeux(ENetEvent * packet)

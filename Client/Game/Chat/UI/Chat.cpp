@@ -1,29 +1,64 @@
-#include <Console.h>
-//Console class
+#include "Chat.h"
+//Chat class
 
 
-Console::Console(CEGUI::Window* d_root) :
+Chat::Chat() :
     d_historyPos(0)
 {
-	this->d_root = d_root ;
+	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+
+	parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
+
+	d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
+
+	// we will destroy the console box windows ourselves
+	d_root->setDestroyedByParent(false);
+
+	gestionnaireChat = new GestionnaireChat(this);
+
+
+
+
+
+	// Do events wire-up
+	d_root->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
+
+	d_root->getChild("Console/Button")->
+	            subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
+
+	d_root->getChild("Console/Editbox")->
+	            subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
+
+	        // attach this window if parent is valid
+	parent->addChild(d_root);
+
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
+
+
+
+
+
 }
 
-Console::~Console()
+Chat::~Chat()
 {
-
+	delete gestionnaireChat;
+    CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
+    d_root->destroy();
+    parent->destroy();
 }
 
-void Console::toggleVisibility()
+void Chat::toggleVisibility()
 {
     d_root->isVisible() ? d_root->hide() : d_root->show();
 }
 
-bool Console::isVisible() const
+bool Chat::isVisible() const
 {
     return d_root->isEffectiveVisible();
 }
 
-bool Console::setMessage(CEGUI::String message)
+bool Chat::setMessage(CEGUI::String message)
 {
 	using namespace CEGUI;
 
@@ -43,7 +78,7 @@ bool Console::setMessage(CEGUI::String message)
 	return true;
 }
 
-bool Console::handleSubmit(const CEGUI::EventArgs&)
+bool Chat::handleSubmit(const CEGUI::EventArgs&)
 {
     using namespace CEGUI;
 
@@ -66,7 +101,7 @@ bool Console::handleSubmit(const CEGUI::EventArgs&)
     return true;
 }
 
-bool Console::handleKeyDown(const CEGUI::EventArgs& args)
+bool Chat::handleKeyDown(const CEGUI::EventArgs& args)
 {
     using namespace CEGUI;
 
@@ -112,6 +147,9 @@ bool Console::handleKeyDown(const CEGUI::EventArgs& args)
     return true;
 }
 
-
+bool Chat::isActive()
+{
+	return d_root->getChild("Console/Editbox")->isActive();
+}
 
 
