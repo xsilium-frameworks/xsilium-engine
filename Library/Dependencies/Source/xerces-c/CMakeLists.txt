@@ -29,7 +29,7 @@ macro( add_to_sources_no_rec folder_path )
 endmacro()
 
 
-configure_file(${OGRE_TEMPLATES_DIR}/Xerces_autoconf_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/xercesc/util/Xerces_autoconf_config.hpp)
+#configure_file(${OGRE_TEMPLATES_DIR}/Xerces_autoconf_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/xercesc/util/Xerces_autoconf_config.hpp)
 
 add_to_sources( xercesc/dom )
 add_to_sources( xercesc/framework )

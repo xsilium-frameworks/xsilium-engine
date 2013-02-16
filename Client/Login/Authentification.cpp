@@ -93,7 +93,6 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 	case ENET_EVENT_TYPE_RECEIVE:
 	{
 		structure_opcodeT * typePacket = (structure_opcodeT *) packet->packet->data ;
-
 		if (typePacket->cmd == XSILIUM_AUTH)
 		{
 			printf("message recu %d \n",typePacket->opcode);
