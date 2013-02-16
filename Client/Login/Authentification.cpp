@@ -91,7 +91,8 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 	switch(event)
 	{
 	case ENET_EVENT_TYPE_RECEIVE:
-		structure_opcodeT * typePacket = (structure_opcodeT *) packet->data ;
+	{
+		structure_opcodeT * typePacket = (structure_opcodeT *) packet->packet->data ;
 
 		if (typePacket->cmd == XSILIUM_AUTH)
 		{
@@ -125,6 +126,7 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 
 			}
 		}
+	}
 		break;
 	case ENET_EVENT_TYPE_DISCONNECT:
 		login->setMessage(0,3);
