@@ -44,6 +44,9 @@ void HydraxRttListener::preRenderTargetUpdate(const Hydrax::RttManager::RttType&
 			mSkyX->getMoonManager()->getMoonBillboard()->setVisible(false);
 		}
 		break;
+		default:
+		break;
+
 	}
 }
 
@@ -69,6 +72,8 @@ void HydraxRttListener::postRenderTargetUpdate(const Hydrax::RttManager::RttType
 			mSkyX->getMeshManager()->getEntity()->setVisible(true);
 			mSkyX->getMoonManager()->getMoonBillboard()->setVisible(true);
 		}
+		break;
+		default:
 		break;
 	}
 }

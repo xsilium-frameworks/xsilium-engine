@@ -8,7 +8,7 @@ LoginState::LoginState()
     m_bQuit         = false;
     inputManager = InputManager::getSingletonPtr();
     m_FrameEvent    = Ogre::FrameEvent();
-    auth = new Authentification();
+    auth = new Authentification(this);
     messageFlag = false;
     progression = 0;
     progressionOld = 0;
@@ -68,8 +68,6 @@ void LoginState::enter()
     XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
 
     createScene();
-
-    auth->setLogin(this);
 }
 
 void LoginState::createScene()

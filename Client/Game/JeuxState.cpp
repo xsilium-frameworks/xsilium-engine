@@ -54,13 +54,12 @@ void JeuxState::exit()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
+    delete chat;
     delete gestionnaireMeteo;
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
-
-    CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
     inputManager->removeKeyListener(this);
@@ -70,31 +69,8 @@ void JeuxState::exit()
 void JeuxState::buildGUI()
 {
 
-	using namespace CEGUI;
-    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+    chat = new Chat();
 
-    CEGUI::Window* parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
-
-    CEGUI::Window* d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
-
-    Console * d_console = new Console(d_root);
-
-    // we will destroy the console box windows ourselves
-    d_root->setDestroyedByParent(false);
-
-        // Do events wire-up
-    d_root->subscribeEvent(CEGUI::Window::EventKeyDown, Event::Subscriber(&Console::handleKeyDown, d_console));
-
-    d_root->getChild("Console/Button")->
-            subscribeEvent(PushButton::EventClicked, Event::Subscriber(&Console::handleSubmit, d_console));
-
-    d_root->getChild("Console/Editbox")->
-            subscribeEvent(Editbox::EventTextAccepted, Event::Subscriber(&Console::handleSubmit, d_console));
-
-        // attach this window if parent is valid
-    parent->addChild(d_root);
-
-    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
 }
 
 void JeuxState::createScene()
@@ -103,6 +79,7 @@ void JeuxState::createScene()
 
     m_Loader = new DotSceneLoader();
     m_Loader->parseDotScene("test-terrain.scene", "General", m_pSceneMgr);
+
 
     // Loop through all cameras and grab their name and set their debug representation
      Ogre::SceneManager::CameraIterator cameras = m_pSceneMgr->getCameraIterator();
@@ -165,7 +142,9 @@ void JeuxState::update(double timeSinceLastFrame)
 
 	m_TranslateVector = Ogre::Vector3::ZERO;
 
-    getInput();
+	if(!chat->isActive())
+		getInput();
+
     m_pCamera->moveRelative(m_TranslateVector / 10);
 
 }

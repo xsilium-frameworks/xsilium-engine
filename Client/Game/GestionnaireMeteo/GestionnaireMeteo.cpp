@@ -99,6 +99,10 @@ void GestionnaireMeteo::create()
 
 	mSkyX->create();
 
+	mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
+
+	mSkyX->setTimeMultiplier(0.2f);
+
 	XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
 
 	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0));
@@ -130,8 +134,6 @@ void GestionnaireMeteo::create()
 
 	        // Add the Hydrax Rtt listener
 	        mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
-
-
 
 
 

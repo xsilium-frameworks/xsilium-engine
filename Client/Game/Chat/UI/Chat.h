@@ -1,16 +1,21 @@
-#ifndef CONSOLE_H_
-#define CONSOLE_H_
+#ifndef CHAT_UI_H_
+#define CHAT_UI_H_
 
 #include "CEGUI/CEGUI.h"
+#include "Chat/GestionnaireChat/GestionnaireChat.h"
 
-class Console
+class GestionnaireChat;
+
+class Chat
 {
 public:
-    Console(CEGUI::Window* parent = 0);
-    ~Console();
+    Chat();
+    ~Chat();
 
     void toggleVisibility();
     bool isVisible() const;
+
+    bool isActive();
 
     bool setMessage(CEGUI::String message);
 
@@ -20,12 +25,14 @@ public:
 private:
 
     CEGUI::Window* d_root;
+    CEGUI::Window* parent;
     int d_historyPos;
     std::vector<CEGUI::String> d_history;
+    GestionnaireChat * gestionnaireChat ;
 
 
 };
 
 
 
-#endif /* CONSOLE_H_ */
+#endif /* CHAT_UI_H_ */

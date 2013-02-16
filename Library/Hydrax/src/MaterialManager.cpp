@@ -785,7 +785,7 @@ namespace Hydrax
 						else
 						{
 							FragmentProgramData +=
-								"float dotProduct=dot(-camToSurface,pixelNormal);\n";
+								"float dotProduct=dot(camToSurface,pixelNormal);\n"; // was -camToSurface
 						}
 						FragmentProgramData +=
 							Ogre::String(
@@ -1004,7 +1004,7 @@ namespace Hydrax
                                 else
                                 {
                                     FragmentProgramData +=
-                                    "float dotProduct=dot(-camToSurface,pixelNormal);\n";
+                                    "float dotProduct=dot(camToSurface,pixelNormal);\n"; //was -camToSurface
                                 }
                                 FragmentProgramData += Ogre::String(
 								"dotProduct=clamp(dotProduct, 0.0, 1.0);\n") +
@@ -2507,7 +2507,7 @@ namespace Hydrax
                                 else
                                 {
                                     FragmentProgramData +=
-                                    "float dotProduct=dot(-camToSurface,pixelNormal);\n";
+                                    "float dotProduct=dot(camToSurface,pixelNormal);\n"; // was -camToSurface
                                 }
                                 FragmentProgramData += Ogre::String(
 								"dotProduct=clamp(dotProduct, 0.0, 1.0);\n") +
