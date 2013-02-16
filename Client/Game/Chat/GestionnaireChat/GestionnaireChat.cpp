@@ -24,3 +24,5 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 {
 
 }
+
+
