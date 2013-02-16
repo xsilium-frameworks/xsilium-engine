@@ -12,9 +12,14 @@ Authentification::Authentification(LoginState *login) {
 	this->login = login;
 	networkManager = NetworkManager::getInstance();
 	networkManager->addNetworkListener(this,"Authentification");
+
+	compte = Compte::getInstance();
 }
 
 Authentification::~Authentification() {
+
+	networkManager->removeNetworkListener("Authentification");
+
 }
 
 
@@ -49,7 +54,7 @@ void Authentification::handleEtapeDeux(ENetEvent * packet)
 	sAuthLogonProof_C message2;
 	message2.cmd = XSILIUM_AUTH;
 	message2.opcode = ID_SEND_REPONSE;
-	std::stringstream convert2 (client.password);
+	std::stringstream convert2 (compte->getPassWord());
 	convert2>> std::hex >> message2.A;
 	networkManager->sendToHost( (const char *)&message2,sizeof(message2));
 }
@@ -59,9 +64,9 @@ bool Authentification::sendAuthentification()
 		sAuthLogonChallenge_C message;
 		message.cmd = XSILIUM_AUTH;
 		message.opcode = ID_SEND_USER;
-		message.build = client.build;
-		message.login_len = std::strlen(client.login);
-		std::stringstream convert (client.login);
+		message.build = compte->getVersion();
+		message.login_len = std::strlen(compte->getLogin());
+		std::stringstream convert (compte->getLogin());
 		convert>> std::hex >> message.login;
 		return networkManager->sendToHost( (const char *)&message,sizeof(message));
 }
@@ -70,12 +75,13 @@ bool Authentification::sendAuthentification()
 void Authentification::setLoginPwd(const char * user,const char * password)
 {
 	InitialisationAuth();
-	/*if (std::strcmp(user,client.login) == 0)
+
+	if (std::strcmp(user,compte->getLogin()) == 0)
 	{
-		client.etape = 1;
-	}*/
-	client.login = user;
-	client.password = password;
+		compte->setEtapeDeLogin(1);
+	}
+	compte->setLogin(user);
+	compte->setPassWord(password);
 
 	sendAuthentification();
 }
@@ -92,7 +98,7 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 			switch((uint8_t)packet->packet->data[1])
 			{
 			case ID_SEND_CHALLENGE :
-				client.etape = 2;
+				compte->setEtapeDeLogin(2);
 				login->setProgression(3);
 				handleEtapeDeux(packet);
 				break;

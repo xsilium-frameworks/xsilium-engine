@@ -14,6 +14,7 @@ endif(UNIX)
 
 set(CORE_SOURCE_FILES
     main.cpp
+    Compte/Compte.cpp
     Login/UI/LoginState.cpp 
     XsiliumApp.cpp
     Game/Chat/UI/Chat.cpp
@@ -26,6 +27,7 @@ set(CORE_SOURCE_FILES
 
 set(CORE_HEADER_FILES
     Login/UI/LoginState.h
+    Compte/Compte.h
     XsiliumApp.h 
     Game/Chat/UI/Chat.h
     Game/Chat/GestionnaireChat/GestionnaireChat.h
