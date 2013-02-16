@@ -17,6 +17,7 @@ JeuxState::JeuxState()
     m_bRMouseDown = false;
 
     inputManager = InputManager::getSingletonPtr();
+    keyboardMap = KeyboardMap::getInstance();
 }
 
 
@@ -151,16 +152,17 @@ void JeuxState::update(double timeSinceLastFrame)
 
 void JeuxState::getInput()
 {
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_A))
+
+        if(inputManager->getKeyboard()->isKeyDown( keyboardMap->checkKey("gauche")))
             m_TranslateVector.x = -m_MoveScale;
 
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_D))
+        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("droite") ))
             m_TranslateVector.x = m_MoveScale;
 
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_W))
+        if(inputManager->getKeyboard()->isKeyDown( keyboardMap->checkKey("avance") ))
             m_TranslateVector.z = -m_MoveScale;
 
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_S))
+        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("reculer")))
             m_TranslateVector.z = m_MoveScale;
         if(inputManager->getKeyboard()->isKeyDown(OIS::KC_0))
         {

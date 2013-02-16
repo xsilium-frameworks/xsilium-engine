@@ -53,6 +53,14 @@ set( Camera_H
 ./Camera/SdkCameraMan.h
 )
 
+set( Keyboard_H
+./KeyboardMap/KeyboardMap.h
+)
+
+set( Keyboard_S
+./KeyboardMap/KeyboardMap.cpp
+)
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
@@ -60,6 +68,7 @@ ${Network_S}
 ${XsiliumEngine_S}
 ${GameState_S}
 ${SceneLoader_S}
+${Keyboard_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -70,6 +79,7 @@ ${XsiliumEngine_H}
 ${GameState_H}
 ${SceneLoader_H}
 ${Camera_H}
+${Keyboard_H}
 )
 
 

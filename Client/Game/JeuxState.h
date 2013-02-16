@@ -89,6 +89,8 @@ private:
 
     GestionnaireMeteo* gestionnaireMeteo;
     Chat * chat;
+	KeyboardMap * keyboardMap ;
+
 
 
 };

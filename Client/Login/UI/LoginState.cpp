@@ -68,6 +68,8 @@ void LoginState::enter()
     XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
 
     createScene();
+
+
 }
 
 void LoginState::createScene()
