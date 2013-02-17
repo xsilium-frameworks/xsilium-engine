@@ -17,6 +17,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
+
+#include "rapidxml/rapidxml.h"
 
 /*
  *
@@ -28,7 +31,7 @@ class KeyboardMap : public xsilium::Singleton<KeyboardMap>
 public:
 	KeyboardMap();
 	virtual ~KeyboardMap();
-	void load(const std::string& File);
+	void load(const char * file);
 
 	const char * checkKey(OIS::KeyCode key);
 	const OIS::KeyCode checkKey(const char * touche);
