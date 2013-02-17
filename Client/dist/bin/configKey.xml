@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<KEYBOARD>
+    <AVANCER>0x11</AVANCER>
+    <RECULER>0x1F</RECULER>
+    <GAUCHE>0x1E</GAUCHE>
+    <DROITE>0x20</DROITE>
+</KEYBOARD>

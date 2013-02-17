@@ -27,14 +27,14 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     inputManager = InputManager::getSingletonPtr();
     keyboardMap = KeyboardMap::getInstance();
 
-    keyboardMap->load(" ");
 
 #ifdef __APPLE__
     mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
 #else
     mResourcePath = "";
 #endif
-    
+
+    keyboardMap->load( (std::string(mResourcePath + "/configKey.xml")).c_str());
     
     Ogre::LogManager* logMgr = new Ogre::LogManager();
     

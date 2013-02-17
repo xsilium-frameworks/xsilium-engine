@@ -46,7 +46,6 @@ set( SceneLoader_S
 
 set( SceneLoader_H
 ./DotSceneLoader/DotSceneLoader.h
-./DotSceneLoader/rapidxml.h
 )
 
 set( Camera_H
@@ -61,6 +60,12 @@ set( Keyboard_S
 ./KeyboardMap/KeyboardMap.cpp
 )
 
+set( Rapidxml_H
+./rapidxml/rapidxml.h
+)
+
+
+
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
 ${Interface_S}
@@ -69,6 +74,7 @@ ${XsiliumEngine_S}
 ${GameState_S}
 ${SceneLoader_S}
 ${Keyboard_S}
+${Rapidxml_H}
 )
 
 set (CORE_HEADER_FILES 
