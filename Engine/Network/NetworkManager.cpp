@@ -65,7 +65,7 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	    }
 }
 
-bool NetworkManager::sendToHost(const char * message,int sizeOfMessage)
+bool NetworkManager::sendToHost(const void * message,int sizeOfMessage)
 {
 	/* Create a reliable packet of size 7 containing "packet\0" */
 
