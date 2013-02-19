@@ -12,7 +12,17 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 	this->chatUI = chatUI ;
 
 	networkManager = NetworkManager::getInstance();
-	networkManager->addNetworkListener(this,"Chat");
+
+	int messageErreur = networkManager->connexionToHost("127.0.0.1",60001);
+
+	if( messageErreur > 0)
+	{
+		printf("erreur de connection: %d \n",messageErreur);
+	}
+	else
+	{
+		networkManager->addNetworkListener(this,"Chat");
+	}
 
 }
 
@@ -22,7 +32,49 @@ GestionnaireChat::~GestionnaireChat() {
 
 void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 {
+	switch(event)
+		{
+		case ENET_EVENT_TYPE_RECEIVE:
+		{
+			CHATPACKET_C * typePacket = (CHATPACKET_C *) packet->packet->data ;
+			if (typePacket->structure_opcode.cmd == XSILIUM_KINGDOM)
+			{
+				printf("message recu %s \n",typePacket->message);
 
+				chatUI->setMessage((const char *)typePacket->message);
+
+			}
+		}
+			break;
+		default:
+			break;
+		}
 }
 
+void GestionnaireChat::sendMessageToChat(const char * message, int to)
+{
+	CHATPACKET_C messagePacket ;
+	std::stringstream convert;
+
+	messagePacket.structure_opcode.cmd = XSILIUM_KINGDOM ;
+	messagePacket.structure_opcode.opcode = ID_CHAT ;
+	messagePacket.typeChat = 0;
+
+	convert.str("Joda");
+	convert >> std::hex >> messagePacket.perso;
+	convert.clear();
+
+
+	convert.str(message);
+	convert>> std::hex >> 	messagePacket.message;
+	convert.clear();
+
+
+
+
+
+
+	networkManager->sendToHost((const char *)&messagePacket,sizeof(messagePacket));
+
+}
 

@@ -10,7 +10,6 @@
 
 NetworkManager::NetworkManager() {
 	enet_initialize();
-	endThread = false;
 	peer = NULL;
 	createConnexion();
 	isConnectedflag = false;
@@ -52,8 +51,8 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	    /* Wait up to 5 seconds for the connection attempt to succeed. */
 	    if (enet_host_service (client, &eventClient, 5000) > 0 && eventClient.type == ENET_EVENT_TYPE_CONNECT)
 	    {
+	    	isConnectedflag = true;
             thread = boost::thread(&NetworkManager::threadConnexion, (void *) this);
-	        isConnectedflag = true;
 	        return 0;
 	    }
 	    else
@@ -73,9 +72,6 @@ bool NetworkManager::sendToHost(const char * message,int sizeOfMessage)
 	    ENetPacket * packet = enet_packet_create (message,sizeOfMessage,ENET_PACKET_FLAG_RELIABLE);
 	    enet_peer_send (peer, 0, packet);
 
-	    /* One could just use enet_host_service() instead. */
-	    enet_host_flush (client);
-
 	    return true;
 
 }
@@ -85,7 +81,7 @@ void* NetworkManager::threadConnexion(void* arguments)
 	NetworkManager * networkManager = (NetworkManager *) arguments ;
 	networkManager->packet = &networkManager->eventClient;
 
-	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 1000) >= 0 ) && (networkManager->endThread == false )  )
+	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 1000) >= 0 ) && (networkManager->isConnectedflag)  )
 	{
 		if(networkManager->eventClient.type >0)
 		{
@@ -93,8 +89,6 @@ void* NetworkManager::threadConnexion(void* arguments)
 
 			if (networkManager->eventClient.type == ENET_EVENT_TYPE_RECEIVE )
 			{
-				/* One could just use enet_host_service() instead. */
-				enet_host_flush (networkManager->client);
 				/* Clean up the packet now that we're done using it. */
 				enet_packet_destroy (networkManager->eventClient.packet);
 			}
@@ -108,7 +102,7 @@ void NetworkManager::disconnexion()
 {
 	if(peer != NULL)
 	{
-		endThread = true;
+		isConnectedflag = false;
 		thread.join();
 		enet_peer_disconnect (peer, 0);
 	    /* Allow up to 3 seconds for the disconnect to succeed
@@ -130,7 +124,6 @@ void NetworkManager::disconnexion()
 		}
 
 		enet_peer_reset (peer);
-		isConnectedflag = false;
 	}
 
 }

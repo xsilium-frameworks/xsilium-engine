@@ -11,8 +11,9 @@
 
 enum typerequete
 {
-   XSILIUM_AUTH = 0,
-   XSILIUM_ALL
+	   XSILIUM_AUTH = 0,
+	   XSILIUM_KINGDOM,
+	   XSILIUM_ALL
 };
 
 enum Opcode

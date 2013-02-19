@@ -13,6 +13,9 @@
 #include "Network/NetworkListener.h"
 
 #include "Chat/UI/Chat.h"
+#include "Shared/Network/Opcode.h"
+
+#include "Game/Chat/StructurePacket/PacketChat.h"
 
 class Chat;
 

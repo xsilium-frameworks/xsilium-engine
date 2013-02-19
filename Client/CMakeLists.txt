@@ -30,6 +30,7 @@ set(CORE_HEADER_FILES
     Compte/Compte.h
     XsiliumApp.h 
     Game/Chat/UI/Chat.h
+    Game/Chat/StructurePacket/PacketChat.h
     Game/Chat/GestionnaireChat/GestionnaireChat.h
     Login/Authentification.h
     Login/ListOfMessage/ListOfMessage.h

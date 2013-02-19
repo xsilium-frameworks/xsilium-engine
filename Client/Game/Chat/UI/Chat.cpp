@@ -58,12 +58,14 @@ bool Chat::isVisible() const
     return d_root->isEffectiveVisible();
 }
 
-bool Chat::setMessage(CEGUI::String message)
+bool Chat::setMessage(const char * message)
 {
 	using namespace CEGUI;
 
+	String messageChat(message);
+
 	 // add this entry to the command history buffer
-	 d_history.push_back(message);
+	 d_history.push_back(messageChat);
      // reset history position
      d_historyPos = d_history.size();
      // append newline to this entry
@@ -71,7 +73,7 @@ bool Chat::setMessage(CEGUI::String message)
      // get history window
      MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/Buffer"));
      // append new text to history output
-     history->setText(history->getText() + message);
+     history->setText(history->getText() + messageChat);
      // scroll to bottom of history output
      history->setCaretIndex(static_cast<size_t>(-1));
 
@@ -90,7 +92,7 @@ bool Chat::handleSubmit(const CEGUI::EventArgs&)
     // if the string is not empty
     if (!edit_text.empty())
     {
-        setMessage(edit_text);
+    	gestionnaireChat->sendMessageToChat(edit_text.c_str(),0);
         // erase text in text entry box.
         editbox->setText("");
     }
