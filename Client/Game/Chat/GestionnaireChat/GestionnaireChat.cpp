@@ -13,7 +13,7 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 
 	networkManager = NetworkManager::getInstance();
 
-	int messageErreur = networkManager->connexionToHost("127.0.0.1",60001);
+	int messageErreur = networkManager->connexionToHost("85.25.251.97",60001);
 
 	if( messageErreur > 0)
 	{
