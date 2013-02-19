@@ -17,7 +17,7 @@ public:
 
     bool isActive();
 
-    bool setMessage(CEGUI::String message);
+    bool setMessage(const char * message);
 
     bool handleSubmit(const CEGUI::EventArgs& args);
     bool handleKeyDown(const CEGUI::EventArgs& args);

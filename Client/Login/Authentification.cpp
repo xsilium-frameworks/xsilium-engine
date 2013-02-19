@@ -11,7 +11,6 @@ Authentification::Authentification(LoginState *login) {
 
 	this->login = login;
 	networkManager = NetworkManager::getInstance();
-	networkManager->addNetworkListener(this,"Authentification");
 
 	compte = Compte::getInstance();
 }
@@ -19,6 +18,7 @@ Authentification::Authentification(LoginState *login) {
 Authentification::~Authentification() {
 
 	networkManager->removeNetworkListener("Authentification");
+	networkManager->disconnexion();
 
 }
 
@@ -35,6 +35,7 @@ void Authentification::InitialisationAuth()
 		}
 		else
 		{
+			networkManager->addNetworkListener(this,"Authentification");
 			login->setProgression(2);
 		}
 	}

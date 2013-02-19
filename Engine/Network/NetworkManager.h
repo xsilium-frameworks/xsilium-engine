@@ -44,7 +44,6 @@ protected:
 	static void * threadConnexion(void * arguments);
 
 private:
-		bool endThread;
 
 		boost::thread thread;
 		ENetHost * client;
