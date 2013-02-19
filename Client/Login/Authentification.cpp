@@ -56,8 +56,8 @@ void Authentification::handleEtapeDeux(ENetEvent * packet)
 	message2.structure_opcode.cmd = XSILIUM_AUTH;
 	message2.structure_opcode.opcode = ID_SEND_REPONSE;
 	std::stringstream convert2 (compte->getPassWord());
-	convert2>> std::hex >> message2.A;
-	networkManager->sendToHost( (const char *)&message2,sizeof(message2));
+	convert2>> message2.A;
+	networkManager->sendToHost( (const void *)&message2,sizeof(message2));
 }
 
 bool Authentification::sendAuthentification()
@@ -68,8 +68,8 @@ bool Authentification::sendAuthentification()
 		message.build = compte->getVersion();
 		message.login_len = std::strlen(compte->getLogin());
 		std::stringstream convert (compte->getLogin());
-		convert>> std::hex >> message.login;
-		return networkManager->sendToHost( (const char *)&message,sizeof(message));
+		convert>> message.login;
+		return networkManager->sendToHost( (const void *)&message,sizeof(message));
 }
 
 

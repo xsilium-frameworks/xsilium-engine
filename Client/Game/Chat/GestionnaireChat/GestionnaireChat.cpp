@@ -61,12 +61,12 @@ void GestionnaireChat::sendMessageToChat(const char * message, int to)
 	messagePacket.typeChat = 0;
 
 	convert.str("Joda");
-	convert >> std::hex >> messagePacket.perso;
+	convert >>  messagePacket.perso;
 	convert.clear();
 
 
 	convert.str(message);
-	convert>> std::hex >> 	messagePacket.message;
+	convert >> messagePacket.message;
 	convert.clear();
 
 
@@ -74,7 +74,7 @@ void GestionnaireChat::sendMessageToChat(const char * message, int to)
 
 
 
-	networkManager->sendToHost((const char *)&messagePacket,sizeof(messagePacket));
+	networkManager->sendToHost((const void *)&messagePacket,sizeof(messagePacket) + 1);
 
 }
 

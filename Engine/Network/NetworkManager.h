@@ -30,7 +30,7 @@ public:
 
 	void createConnexion();
 	int connexionToHost(std::string url,int port);
-	bool sendToHost(const char * message,int sizeOfMessage);
+	bool sendToHost(const void * message,int sizeOfMessage);
 
 	void disconnexion();
 
