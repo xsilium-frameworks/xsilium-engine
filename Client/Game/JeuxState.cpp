@@ -153,16 +153,16 @@ void JeuxState::update(double timeSinceLastFrame)
 void JeuxState::getInput()
 {
 
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("gauche")))
+        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("GAUCHE")))
             m_TranslateVector.x = -m_MoveScale;
 
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("droite") ))
+        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("DROITE") ))
             m_TranslateVector.x = m_MoveScale;
 
         if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("AVANCER")))
             m_TranslateVector.z = -m_MoveScale;
 
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("reculer")))
+        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("RECULER")))
             m_TranslateVector.z = m_MoveScale;
         if(inputManager->getKeyboard()->isKeyDown(OIS::KC_0))
         {
