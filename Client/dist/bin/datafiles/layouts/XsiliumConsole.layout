@@ -2,27 +2,21 @@
 
 <GUILayout version="4" >
     <Window type="DefaultWindow" name="DefaultWindow" >
-        <Property name="Area" value="{{0,2},{0,-1},{1,2},{1,-1}}" />
+        <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
-        <Window type="AlfiskoSkin/FrameWindow" name="Console" >
-            <Property name="Area" value="{{0,154},{0,113},{0,732},{0,494}}" />
-            <Property name="Text" value="Console" />
-            <Window type="AlfiskoSkin/MultiLineEditbox" name="Buffer" >
-                <Property name="ID" value="3" />
-                <Property name="Area" value="{{0,3},{0,3},{0,558},{0,278}}" />
+        <Window type="DragContainer" name="Console" >
+            <Property name="Area" value="{{0,0},{0,585},{0,265},{0,716}}" />
+            <Property name="StickyMode" value="False" />
+            <Window type="AlfiskoSkin/Editbox" name="Editbox" >
+                <Property name="Area" value="{{0,25},{0,105},{0,265},{0,130}}" />
+                <Property name="MaxTextLength" value="512" />
+            </Window>
+            <Window type="AlfiskoSkin/MultiLineEditbox" name="ListOfMessage" >
+                <Property name="Area" value="{{0,25},{0,0},{0,265},{0,105}}" />
+                <Property name="Font" value="DejaVuSans-10" />
                 <Property name="Text" >
 </Property>
                 <Property name="ReadOnly" value="True" />
-            </Window>
-            <Window type="AlfiskoSkin/Editbox" name="Editbox" >
-                <Property name="ID" value="2" />
-                <Property name="Area" value="{{0,2},{0,284},{0,424},{0,334}}" />
-                <Property name="BlinkCaret" value="True" />
-            </Window>
-            <Window type="AlfiskoSkin/Button" name="Button" >
-                <Property name="ID" value="1" />
-                <Property name="Area" value="{{0,438},{0,286},{0,560},{0,336}}" />
-                <Property name="Text" value="Envois" />
             </Window>
         </Window>
     </Window>
