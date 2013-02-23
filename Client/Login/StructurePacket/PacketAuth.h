@@ -23,14 +23,14 @@
 	    uint8_t   country[4];
 	    uint32_t  timezone_bias;
 	    uint8_t   login_len;
-	    uint8_t   login[32];
+	    char   login[32];
 	} sAuthLogonChallenge_C;
 
 
 	typedef struct AUTH_LOGON_PROOF_C
 	{
 		structure_opcodeT structure_opcode;
-	    uint8_t   A[32];
+	    char   A[32];
 	} sAuthLogonProof_C;
 
 	typedef struct AUTH_LOGON_ERROR
