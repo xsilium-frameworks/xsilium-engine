@@ -14,9 +14,9 @@
 typedef struct CHATPACKET_C
 {
 	structure_opcodeT structure_opcode;
-    uint8_t   typeChat;
-    uint8_t   perso[64];
-    uint8_t   message[512];
+    uint8_t        typeChat;
+    char   perso[64];
+    char   message[512];
 } sChatPacket_C;
 
 

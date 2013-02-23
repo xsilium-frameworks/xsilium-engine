@@ -13,7 +13,7 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 
 	networkManager = NetworkManager::getInstance();
 
-	int messageErreur = networkManager->connexionToHost("85.25.251.97",60001);
+	int messageErreur = networkManager->connexionToHost("127.0.0.1",60001);
 
 	if( messageErreur > 0)
 	{
@@ -54,25 +54,13 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 void GestionnaireChat::sendMessageToChat(const char * message, int to)
 {
 	CHATPACKET_C messagePacket ;
-	std::stringstream convert;
 
 	messagePacket.structure_opcode.cmd = XSILIUM_KINGDOM ;
 	messagePacket.structure_opcode.opcode = ID_CHAT ;
 	messagePacket.typeChat = 0;
 
-	convert.str("Joda");
-	convert >>  messagePacket.perso;
-	convert.clear();
-
-
-	convert.str(message);
-	convert >> messagePacket.message;
-	convert.clear();
-
-
-
-
-
+	std::strcpy(messagePacket.perso,"Joda");
+	std::strcpy(messagePacket.message,message);
 
 	networkManager->sendToHost((const void *)&messagePacket,sizeof(messagePacket) + 1);
 
