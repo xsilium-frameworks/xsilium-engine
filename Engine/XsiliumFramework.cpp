@@ -34,7 +34,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     mResourcePath = "";
 #endif
 
-    keyboardMap->load( (std::string(mResourcePath + "/configKey.xml")).c_str());
+    keyboardMap->load( (std::string(mResourcePath + "configKey.xml")).c_str());
     
     Ogre::LogManager* logMgr = new Ogre::LogManager();
     

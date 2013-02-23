@@ -9,6 +9,7 @@
             <Property name="StickyMode" value="False" />
             <Window type="AlfiskoSkin/Editbox" name="Editbox" >
                 <Property name="Area" value="{{0,25},{0,105},{0,265},{0,130}}" />
+                <Property name="Alpha" value="0.5" />
                 <Property name="MaxTextLength" value="512" />
             </Window>
             <Window type="AlfiskoSkin/MultiLineEditbox" name="ListOfMessage" >
@@ -16,6 +17,7 @@
                 <Property name="Font" value="DejaVuSans-10" />
                 <Property name="Text" >
 </Property>
+                <Property name="Alpha" value="0.5" />
                 <Property name="ReadOnly" value="True" />
             </Window>
         </Window>
