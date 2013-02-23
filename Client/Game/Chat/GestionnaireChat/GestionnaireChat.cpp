@@ -13,7 +13,7 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 
 	networkManager = NetworkManager::getInstance();
 
-	int messageErreur = networkManager->connexionToHost("127.0.0.1",60001);
+	int messageErreur = networkManager->connexionToHost("85.25.251.97",60001);
 
 	if( messageErreur > 0)
 	{
@@ -41,7 +41,14 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 			{
 				printf("message recu %s \n",typePacket->message);
 
-				chatUI->setMessage((const char *)typePacket->message);
+
+				char messageConsole[576];
+				std::strcpy(messageConsole,(const char *)typePacket->perso); // copy string one into the result.
+				std::strcat(messageConsole," > ");
+				std::strcat(messageConsole,(const char *)typePacket->message);
+
+
+				chatUI->setMessage(messageConsole);
 
 			}
 		}

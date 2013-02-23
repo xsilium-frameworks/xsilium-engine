@@ -23,8 +23,8 @@ Chat::Chat() :
 	// Do events wire-up
 	d_root->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
 
-	d_root->getChild("Console/Button")->
-	            subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
+	//d_root->getChild("Console/Button")->
+	//            subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
 
 	d_root->getChild("Console/Editbox")->
 	            subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
@@ -71,7 +71,7 @@ bool Chat::setMessage(const char * message)
      // append newline to this entry
      message += '\n';
      // get history window
-     MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/Buffer"));
+     MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/ListOfMessage"));
      // append new text to history output
      history->setText(history->getText() + messageChat);
      // scroll to bottom of history output
