@@ -75,10 +75,6 @@ void GestionnaireMeteo::create()
 	mLight0->setDiffuseColour(1, 1, 1);
 	mLight0->setCastShadows(false);
 
-	// Shadow caster
-	Ogre::Light *mLight1 = m_pSceneMgr->createLight("Light1");
-	mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
-
 
 	mBasicController = new SkyX::BasicController();
 	mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
@@ -132,6 +128,12 @@ void GestionnaireMeteo::create()
 	        // Create water
 	        mHydrax->create();
 
+
+	        //mHydrax->getMaterialManager()->addDepthTechnique(static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Default"))->createTechnique());
+
+	        //where material16 is the name of your terrain material (you may use terrain->getMaterial())
+
+
 	        // Add the Hydrax Rtt listener
 	        mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
 
@@ -143,20 +145,19 @@ void GestionnaireMeteo::create()
 
 void GestionnaireMeteo::updateEnvironmentLighting()
 {
+
 	Ogre::Vector3 lightDir = mBasicController->getSunDirection();
 
 	// Calculate current color gradients point
-	float point = (-lightDir.y + 1.0f) / 2.0f;
+	float point = (lightDir.y + 1.0f) / 2.0f;
 	mHydrax->setWaterColor(mWaterGradient.getColor(point));
 
 	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
 	mHydrax->setSunPosition(sunPos);
 
-	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0"),
-				*Light1 = m_pSceneMgr->getLight("Light1");
+	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0");
 
 	Light0->setPosition(m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.02);
-	Light1->setDirection(lightDir);
 
 	Ogre::Vector3 sunCol = mSunGradient.getColor(point);
 	Light0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
@@ -172,7 +173,6 @@ void GestionnaireMeteo::updateEnvironmentLighting()
  */
 void GestionnaireMeteo::updateShadowFarDistance()
 {
-	Ogre::Light* Light1 = m_pSceneMgr->getLight("Light1");
 	float currentLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length();
 
 	if (currentLength < 1000)
@@ -184,13 +184,9 @@ void GestionnaireMeteo::updateShadowFarDistance()
 	if (currentLength - mLastPositionLength > 100)
 	{
 		mLastPositionLength += 100;
-
-		Light1->setShadowFarDistance(Light1->getShadowFarDistance() + 100);
 	}
 	else if (currentLength - mLastPositionLength < -100)
 	{
 		mLastPositionLength -= 100;
-
-		Light1->setShadowFarDistance(Light1->getShadowFarDistance() - 100);
 	}
 }
