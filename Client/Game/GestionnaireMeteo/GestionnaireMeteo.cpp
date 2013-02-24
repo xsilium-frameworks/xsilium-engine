@@ -149,7 +149,7 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 	Ogre::Vector3 lightDir = mBasicController->getSunDirection();
 
 	// Calculate current color gradients point
-	float point = (lightDir.y + 1.0f) / 2.0f;
+	float point = (-lightDir.y + 1.0f) / 2.0f;
 	mHydrax->setWaterColor(mWaterGradient.getColor(point));
 
 	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
