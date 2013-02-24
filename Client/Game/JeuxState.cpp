@@ -62,7 +62,6 @@ void JeuxState::exit()
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
 
-
     inputManager->removeKeyListener(this);
     inputManager->removeMouseListener(this);
 }
@@ -78,7 +77,7 @@ void JeuxState::createScene()
 {
 	m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
-    m_Loader = new DotSceneLoader();
+	m_Loader = new DotSceneLoader();
     m_Loader->parseDotScene("test-terrain.scene", "General", m_pSceneMgr);
 
 

@@ -14,10 +14,11 @@ XsiliumFramework::XsiliumFramework()
 
 XsiliumFramework::~XsiliumFramework()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Extinction OGRE...");
+    m_pLog->logMessage("Extinction OGRE...");
     if(m_pRoot)			delete m_pRoot;
     if(inputManager) delete inputManager;
     if(keyboardMap) delete keyboardMap;
+    if(m_pLog) delete m_pLog;
 }
 
 bool XsiliumFramework::initOgre(Ogre::String wndTitle)
@@ -34,7 +35,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle)
     mResourcePath = "";
 #endif
 
-    keyboardMap->load( (std::string(mResourcePath + "configKey.xml")).c_str());
+    keyboardMap->load(mResourcePath + "configKey.xml");
     
     Ogre::LogManager* logMgr = new Ogre::LogManager();
     

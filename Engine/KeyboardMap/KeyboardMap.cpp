@@ -16,9 +16,9 @@ KeyboardMap::~KeyboardMap() {
 	// TODO Auto-generated destructor stub
 }
 
-void KeyboardMap::load(const char * file)
+void KeyboardMap::load(const std::string& file)
 {
-	std::ifstream fichierConfKey(file);
+	std::ifstream fichierConfKey(file.c_str());
 	if (fichierConfKey.fail())
 	{
 		printf("erreur \n");

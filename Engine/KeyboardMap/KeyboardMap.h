@@ -31,7 +31,7 @@ class KeyboardMap : public xsilium::Singleton<KeyboardMap>
 public:
 	KeyboardMap();
 	virtual ~KeyboardMap();
-	void load(const char * file);
+	void load(const std::string& file);
 
 	const char * checkKey(OIS::KeyCode key);
 	const OIS::KeyCode checkKey(const char * touche);

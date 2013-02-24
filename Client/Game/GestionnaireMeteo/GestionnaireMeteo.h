@@ -10,6 +10,7 @@
 #define GESTIONNAIREMETEO_H_
 
 #include "XsiliumFramework.h"
+#include <OgreMaterialManager.h>
 
 #include "HydraxRttListener/HydraxRttListener.h"
 
