@@ -34,6 +34,7 @@ set (SKYX_SOURCE_FILES
   Source/GPUManager.cpp
   Source/MeshManager.cpp
   Source/MoonManager.cpp
+  Source/Prerequisites.cpp
   Source/SkyX.cpp
   Source/VCloudsManager.cpp
 )
