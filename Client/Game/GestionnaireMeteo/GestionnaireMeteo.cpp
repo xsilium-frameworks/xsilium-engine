@@ -8,10 +8,11 @@
 
 #include "GestionnaireMeteo.h"
 
-GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c) {
+GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,Ogre::TerrainGroup* terrainGroup) {
 
 	m_pSceneMgr = sm;
 	m_pCamera = c;
+	this->terrainGroup = terrainGroup;
 
     mSkyX = 0;
     mBasicController = 0;
@@ -79,6 +80,7 @@ void GestionnaireMeteo::create()
 	mBasicController = new SkyX::BasicController();
 	mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
 
+
 	// A little change to default atmosphere settings :)
 	SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
 	atOpt.RayleighMultiplier = 0.003075f;
@@ -96,8 +98,6 @@ void GestionnaireMeteo::create()
 	mSkyX->create();
 
 	mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
-
-	mSkyX->setTimeMultiplier(0.2f);
 
 	XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
 
@@ -128,11 +128,12 @@ void GestionnaireMeteo::create()
 	        // Create water
 	        mHydrax->create();
 
-
-	        //mHydrax->getMaterialManager()->addDepthTechnique(static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Default"))->createTechnique());
-
-	        //where material16 is the name of your terrain material (you may use terrain->getMaterial())
-
+	        Ogre::TerrainGroup::TerrainIterator terrainIterator = terrainGroup->getTerrainIterator() ;
+	        while(terrainIterator.hasMoreElements())
+	        {
+	           Ogre::Terrain* terrain = terrainIterator.getNext()->instance;
+	           mHydrax->getMaterialManager()->addDepthTechnique(terrain->getMaterial()->createTechnique(),false);
+	        }
 
 	        // Add the Hydrax Rtt listener
 	        mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
@@ -145,13 +146,19 @@ void GestionnaireMeteo::create()
 
 void GestionnaireMeteo::updateEnvironmentLighting()
 {
+	float point;
+
 	Ogre::Vector3 time = mBasicController->getTime();
 
 	bool day = time.x > time.y && time.x < time.z ;
 	Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
 
+	if(day)
+		point = ( lightDir.y + 1.0f) / 2.0f;
+	else
+		point = (-lightDir.y + 1.0f) / 2.0f;
+
 	// Calculate current color gradients point
-	float point = (mBasicController->getSunDirection().y + 1.0f) / 2.0f;
 	mHydrax->setWaterColor(mWaterGradient.getColor(point));
 
 	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() + lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
