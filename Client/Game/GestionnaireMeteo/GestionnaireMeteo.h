@@ -11,6 +11,8 @@
 
 #include "XsiliumFramework.h"
 #include <OgreMaterialManager.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
 
 #include "HydraxRttListener/HydraxRttListener.h"
 
@@ -20,7 +22,7 @@
  */
 class GestionnaireMeteo :  public Ogre::FrameListener {
 public:
-	GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c);
+	GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,Ogre::TerrainGroup* terrainGroup);
 	virtual ~GestionnaireMeteo();
 
 	void create();
@@ -33,6 +35,7 @@ public:
 private:
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::Camera*				m_pCamera;
+	Ogre::TerrainGroup*         terrainGroup;
 
 
     SkyX::SkyX* mSkyX ;

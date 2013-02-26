@@ -118,7 +118,7 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
-     gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera);
+     gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getTerrainGroup());
      gestionnaireMeteo->create();
 
 }
