@@ -34,7 +34,6 @@ set (SKYX_SOURCE_FILES
   Source/GPUManager.cpp
   Source/MeshManager.cpp
   Source/MoonManager.cpp
-  Source/Prerequisites.cpp
   Source/SkyX.cpp
   Source/VCloudsManager.cpp
 )
@@ -60,6 +59,7 @@ set (VCLOUDS_SOURCE_FILES
   Source/VClouds/LightningManager.cpp
   Source/VClouds/VClouds.cpp
 )
+
 
 # Create files groups for IDE.
 source_group(Header\ Files\\VClouds FILES ${VCLOUDS_HEADER_FILES})

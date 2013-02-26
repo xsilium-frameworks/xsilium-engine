@@ -145,18 +145,21 @@ void GestionnaireMeteo::create()
 
 void GestionnaireMeteo::updateEnvironmentLighting()
 {
-	Ogre::Vector3 lightDir = mBasicController->getSunDirection();
+	Ogre::Vector3 time = mBasicController->getTime();
+
+	bool day = time.x > time.y && time.x < time.z ;
+	Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
 
 	// Calculate current color gradients point
-	float point = (-lightDir.y + 1.0f) / 2.0f;
+	float point = (mBasicController->getSunDirection().y + 1.0f) / 2.0f;
 	mHydrax->setWaterColor(mWaterGradient.getColor(point));
 
-	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
-	//mHydrax->setSunPosition(sunPos);
+	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() + lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
+	mHydrax->setSunPosition(sunPos);
 
 	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0");
 
-	Light0->setPosition(m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.02);
+	Light0->setPosition(m_pCamera->getDerivedPosition() + lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.02);
 
 	Ogre::Vector3 sunCol = mSunGradient.getColor(point);
 	Light0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
