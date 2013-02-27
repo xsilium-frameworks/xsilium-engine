@@ -80,6 +80,8 @@ void GestionnaireMeteo::create()
 	mBasicController = new SkyX::BasicController();
 	mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
 
+	mSkyX->setTimeMultiplier(1.0f / 3600 );
+
 
 	// A little change to default atmosphere settings :)
 	SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
@@ -91,8 +93,11 @@ void GestionnaireMeteo::create()
 
 
 	// Add a basic cloud layer
-	mSkyX->getCloudsManager()->add(SkyX::CloudLayer::Options(/* Default options */));
 
+	SkyX::CloudLayer::Options cmOpt ;
+	cmOpt.TimeMultiplier = 80;
+
+	mSkyX->getCloudsManager()->add(cmOpt);
 
 
 	mSkyX->create();
@@ -132,7 +137,8 @@ void GestionnaireMeteo::create()
 	        while(terrainIterator.hasMoreElements())
 	        {
 	           Ogre::Terrain* terrain = terrainIterator.getNext()->instance;
-	           mHydrax->getMaterialManager()->addDepthTechnique(terrain->getMaterial()->createTechnique(),false);
+	           mHydrax->getMaterialManager()->addDepthTechnique(terrain->getMaterial()->createTechnique());
+	           mSkyX->getGPUManager()->addGroundPass(terrain->getMaterial()->getTechnique(0)->createPass(), 5000, Ogre::SBT_TRANSPARENT_COLOUR);
 	        }
 
 	        // Add the Hydrax Rtt listener
@@ -149,6 +155,8 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 	float point;
 
 	Ogre::Vector3 time = mBasicController->getTime();
+
+	printf("time : %d,%d \n",(int) floor(time.x),(int) floor ( ( time.x - floor(time.x) )*60 ));
 
 	bool day = time.x > time.y && time.x < time.z ;
 	Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
