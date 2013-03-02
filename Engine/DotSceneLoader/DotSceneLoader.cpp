@@ -1300,6 +1300,11 @@ Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
     );
 }
 
+void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLRoot)
+{
+	//Recupêration des params SkyX
+}
+
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)
 {
     for ( unsigned int i = 0 ; i < nodeProperties.size(); i++ )
