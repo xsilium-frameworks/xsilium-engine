@@ -9,6 +9,8 @@
 #include "BatchPage.h"
 #include "ImpostorPage.h"
 #include "TreeLoader3D.h"
+#include "SkyX.h"
+#include "Hydrax.h"
 
 
 #pragma warning(disable:4390)
@@ -173,6 +175,7 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
     pElement = XMLRoot->first_node("terrain");
     if(pElement)
         processTerrain(pElement);
+
 }
 
 void DotSceneLoader::processNodes(rapidxml::xml_node<>* XMLNode)
@@ -266,6 +269,11 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
     pElement = XMLNode->first_node("userDataReference");
     if(pElement)
         processUserDataReference(pElement);
+
+    // Process Skyx
+    pElement = XMLNode->first_node("SkyX");
+    if(pElement)
+    	processSkyx(pELement);
 }
 
 void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
@@ -1298,6 +1306,14 @@ Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
         Ogre::StringConverter::parseReal(XMLNode->first_attribute("b")->value()),
         XMLNode->first_attribute("a") != NULL ? Ogre::StringConverter::parseReal(XMLNode->first_attribute("a")->value()) : 1
     );
+}
+
+void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLRoot)
+{
+	//Recupêration des params SkyX
+
+	//déclaration de pElement
+	rapidxml::xml_node<>* pElement;
 }
 
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)

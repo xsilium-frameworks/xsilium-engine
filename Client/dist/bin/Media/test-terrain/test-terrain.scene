@@ -46,4 +46,10 @@
         <clipping near="0.1" far="1000" />
     </camera>
     <nodes />
+    <skyx rayleighMultiplier="0.0022" mieMultiplier="0.000675" exposure="3" innerRadius="9.77501" outerRadius="10.2963" sampleCount="4" height="0.1" sunIntensity="30" G="-0.991">
+    	<time multiplier="0.01" current="16.2535" sunRise="7.5" sunSet="20.5" />
+        <eastPosition X="0" Y="1" />
+        <waveLength R="0.57" G="0.54" B="0.44" />
+        <vClouds windSpeed="80" windDirection="0" noiseScale="4.2" />
+    </skyx>
 </scene>
