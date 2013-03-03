@@ -107,6 +107,7 @@ set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUI
 
 subdirs(Library)
 subdirs(Engine)
+subdirs(Launcher)
 subdirs(Client)
 
 

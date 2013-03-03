@@ -58,6 +58,7 @@ void JeuxState::exit()
     delete chat;
     delete gestionnaireMeteo;
 
+
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
