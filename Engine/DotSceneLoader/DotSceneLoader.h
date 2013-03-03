@@ -96,6 +96,7 @@
         void processSkyDome(rapidxml::xml_node<>* XMLNode);
         void processSkyPlane(rapidxml::xml_node<>* XMLNode);
         void processClipping(rapidxml::xml_node<>* XMLNode);
+        void processSkyx(rapidxml::xml_node<>* XMLNode);
 
         void processLightRange(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight);
         void processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight);
