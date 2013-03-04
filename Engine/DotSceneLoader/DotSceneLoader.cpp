@@ -273,7 +273,7 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
     // Process Skyx
     pElement = XMLNode->first_node("SkyX");
     if(pElement)
-    	processSkyx(pELement);
+    	processSkyx(pElement);
 }
 
 void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
