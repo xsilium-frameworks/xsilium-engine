@@ -6,6 +6,7 @@
 #include "string.h"
 #include "ListOfMessage/ListOfMessage.h"
 
+
 class Authentification;
 
 class LoginState : public OIS::KeyListener,public GameState
@@ -42,6 +43,8 @@ private:
 	bool messageFlag;
 	int progression;
 	int progressionOld;
+
+	boost::mutex mutex;
 };
 
 

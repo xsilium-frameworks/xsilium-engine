@@ -5,30 +5,30 @@ using namespace Ogre;
 
 LoginState::LoginState()
 {
-    m_bQuit         = false;
-    inputManager = InputManager::getSingletonPtr();
-    m_FrameEvent    = Ogre::FrameEvent();
-    auth = new Authentification(this);
-    messageFlag = false;
-    progression = 0;
-    progressionOld = 0;
+	m_bQuit         = false;
+	inputManager = InputManager::getSingletonPtr();
+	m_FrameEvent    = Ogre::FrameEvent();
+	auth = new Authentification(this);
+	messageFlag = false;
+	progression = 0;
+	progressionOld = 0;
 
 }
 
 void LoginState::enter()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Entering LoginState...");
+	XsiliumFramework::getInstance()->m_pLog->logMessage("Entering LoginState...");
 
-    inputManager->addKeyListener(this,"Login");
+	inputManager->addKeyListener(this,"Login");
 
-    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
-    CEGUI::Window* base = winMgr.createWindow("DefaultWindow");
+	CEGUI::Window* base = winMgr.createWindow("DefaultWindow");
 
-    CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
+	CEGUI::Window* sheet = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
 
-    // attach this to the 'real' root
-    base->addChild(sheet);
+	// attach this to the 'real' root
+	base->addChild(sheet);
 
 	frame = sheet->getChild("LoginForm");
 
@@ -51,49 +51,49 @@ void LoginState::enter()
 	progressBar->setProgress(0.25);
 	progressBar->setStepSize(0.25);
 
-    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
+	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(sheet);
 
-    m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "LoginSceneMgr");
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
+	m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "LoginSceneMgr");
+	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
 
-    m_pCamera = m_pSceneMgr->createCamera("MenuCam");
-    m_pCamera->setPosition(Vector3(0, 50, 100));
-    m_pCamera->lookAt(Vector3(0, 0, 0));
-    m_pCamera->setNearClipDistance(1);
+	m_pCamera = m_pSceneMgr->createCamera("MenuCam");
+	m_pCamera->setPosition(Vector3(0, 50, 100));
+	m_pCamera->lookAt(Vector3(0, 0, 0));
+	m_pCamera->setNearClipDistance(1);
 
 
-    m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) /
-        Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
+	m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->m_pViewport->getActualWidth()) /
+			Real(XsiliumFramework::getInstance()->m_pViewport->getActualHeight()));
 
-    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
+	XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
 
-    createScene();
+	createScene();
 
 
 }
 
 void LoginState::createScene()
 {
-    ParticleSystem* ps;
-    ps = m_pSceneMgr->createParticleSystem("Nimbus", "Xsilium/GreenyNimbus");
-    		m_pSceneMgr->getRootSceneNode()->attachObject(ps);
+	ParticleSystem* ps;
+	ps = m_pSceneMgr->createParticleSystem("Nimbus", "Xsilium/GreenyNimbus");
+	m_pSceneMgr->getRootSceneNode()->attachObject(ps);
 }
 
 void LoginState::exit()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving LoginState...");
+	XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving LoginState...");
 
-    m_pSceneMgr->destroyCamera(m_pCamera);
+	m_pSceneMgr->destroyCamera(m_pCamera);
 
-    inputManager->removeKeyListener(this);
+	inputManager->removeKeyListener(this);
 
 
-    if(m_pSceneMgr)
-        XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
-    XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
+	if(m_pSceneMgr)
+		XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
+	XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
 
 	delete auth;
-    CEGUI::WindowManager::getSingleton().destroyAllWindows();
+	CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
 }
@@ -121,7 +121,7 @@ bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
 		break;
 	}
 
-    return true;
+	return true;
 }
 bool LoginState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
@@ -130,39 +130,45 @@ bool LoginState::keyReleased(const OIS::KeyEvent &keyEventRef)
 
 void LoginState::update(double timeSinceLastFrame)
 {
-    m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
+	m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
 
-    CEGUI::System& gui_system(CEGUI::System::getSingleton());
+	CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
-    gui_system.injectTimePulse(timeSinceLastFrame);
-    gui_system.getDefaultGUIContext().injectTimePulse(timeSinceLastFrame);
+	gui_system.injectTimePulse(timeSinceLastFrame);
+	gui_system.getDefaultGUIContext().injectTimePulse(timeSinceLastFrame);
 
-    if(m_bQuit == true)
-    {
-        shutdown();
-        return;
-    }
-
-    if ((messageFlag == true) && (!popupLogin->isActive()))
-    {
-    	popupProg->setVisible(false);
-    	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
-    	progressBar->setProgress(0.25);
-    	popupLogin->setVisible("true");
-    	popupLogin->activate();
-    	popupLogin->setAlwaysOnTop(true);
-    }
-
-	if (progressionOld < progression)
+	if(m_bQuit == true)
 	{
-		CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
-		progressBar->step();
-	    if(progression == 4)
-	    {
-	    	boost::this_thread::sleep(boost::posix_time::seconds(1));
-	    	changeGameState(findByName("JeuxState"));
-	    }
-	    progressionOld = progression;
+		shutdown();
+		return;
+	}
+
+	boost::mutex::scoped_lock lock(mutex, boost::try_to_lock);
+
+
+	if(lock)
+	{
+
+		if ((messageFlag == true) && (!popupLogin->isActive()))
+		{
+			popupProg->setVisible(false);
+			CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
+			progressBar->setProgress(0.25);
+			popupLogin->setVisible("true");
+			popupLogin->activate();
+			popupLogin->setAlwaysOnTop(true);
+		}
+		if (progressionOld < progression)
+		{
+			CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
+			progressBar->step();
+			if(progression == 4)
+			{
+				boost::this_thread::sleep(boost::posix_time::seconds(1));
+				changeGameState(findByName("JeuxState"));
+			}
+			progressionOld = progression;
+		}
 	}
 }
 
@@ -189,7 +195,7 @@ bool LoginState::CloseButton(const CEGUI::EventArgs &e)
 
 bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 {
-    return true;
+	return true;
 }
 
 void LoginState::setMessage(int typeMessage ,int message)
@@ -201,47 +207,47 @@ void LoginState::setMessage(int typeMessage ,int message)
 		{
 		case 0:
 			switch (message)
-					    {
-							case 1:
-								popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
-								break;
-					        case 2:
-					        	popupLogin->getChild("lblMessage")->setText("Impossible de se connecter au serveur");
-					            break;
+			{
+			case 1:
+				popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
+				break;
+			case 2:
+				popupLogin->getChild("lblMessage")->setText("Impossible de se connecter au serveur");
+				break;
 
-					        case 3:
-					        	popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
-					            break;
+			case 3:
+				popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
+				break;
 
-					        default:
-					        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
+			default:
+				popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
 
-					            break;
-					    }
+				break;
+			}
 			break;
-		case 1:
-			switch (message)
-								    {
-										case ID_INVALID_ACCOUNT_OR_PASSWORD:
-											popupLogin->getChild("lblMessage")->setText("Le login ou le mot de passe est incorrecte .");
-											break;
-								        case ID_CONNECTION_BANNED:
-								        	popupLogin->getChild("lblMessage")->setText("Votre IP a ete banni .\n Il est imposible de se connecter .");
-								            break;
+			case 1:
+				switch (message)
+				{
+				case ID_INVALID_ACCOUNT_OR_PASSWORD:
+					popupLogin->getChild("lblMessage")->setText("Le login ou le mot de passe est incorrecte .");
+					break;
+				case ID_CONNECTION_BANNED:
+					popupLogin->getChild("lblMessage")->setText("Votre IP a ete banni .\n Il est imposible de se connecter .");
+					break;
 
-								        case ID_COMPTE_BANNIE:
-								        	popupLogin->getChild("lblMessage")->setText("Votre Compte a ete banni . \n Il est impossible de se connecter .");
-								            break;
-								        case ID_SEND_VALIDATION:
-								        	popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
-								        	break;
+				case ID_COMPTE_BANNIE:
+					popupLogin->getChild("lblMessage")->setText("Votre Compte a ete banni . \n Il est impossible de se connecter .");
+					break;
+				case ID_SEND_VALIDATION:
+					popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
+					break;
 
-								        default:
-								        	popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
+				default:
+					popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
 
-								            break;
-								    }
-			break;
+					break;
+				}
+				break;
 		}
 
 	}
@@ -249,6 +255,7 @@ void LoginState::setMessage(int typeMessage ,int message)
 
 void LoginState::setProgression(int progression)
 {
+	boost::mutex::scoped_lock lock(mutex);
 	progressionOld = this->progression ;
 	this->progression = progression;
 }

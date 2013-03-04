@@ -102,8 +102,11 @@ void NetworkManager::disconnexion()
 {
 	if(peer != NULL)
 	{
-		isConnectedflag = false;
-		thread.join();
+		if(isConnectedflag)
+		{
+			isConnectedflag = false;
+			thread.join();
+		}
 		enet_peer_disconnect (peer, 0);
 	    /* Allow up to 3 seconds for the disconnect to succeed
 	       and drop any packets received packets.
