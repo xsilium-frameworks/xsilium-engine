@@ -45,7 +45,7 @@ Downloader::Downloader() {
 
 	// add hardcoded/fallback hosts
 	//mHosts.push_back("http://127.0.0.1/");
-	mHosts.push_back("http://update.xsilium.com" + mOSPrefix + "/");
+	mHosts.push_back("http://update.xsilium.com/" + mOSPrefix + "/");
 
 	mPatchScriptName = "patch.txt";
 	mPatchLogName = "latest_changes.txt";
