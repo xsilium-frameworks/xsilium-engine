@@ -76,7 +76,7 @@ Patcher::~Patcher() {
 
 
 	// TODO: boost error checking
-	//boost::filesystem::remove_all(resolvePaths->getTempPath());
+	boost::filesystem::remove_all(resolvePaths->getTempPath());
 }
 
 void Patcher::update() {
@@ -117,13 +117,11 @@ void Patcher::validate() {
 	}
 	mTargetVersion = Version(line);
 	if (mCurrentVersion != mTargetVersion) {
-		//mLog->infoStream()
-        //		<< "Version mismatch, patch is due from "
-        //		<< mCurrentVersion.Value << " to " << mTargetVersion.Value;
-
+		printf("Version mismatch, patch is due from %s to %s \n ",
+				mCurrentVersion.Value.c_str(),mTargetVersion.Value.c_str());
 		needPatch = true;
 	} else {
-		//mLog->infoStream() << "Application is up to date.";
+		printf("Application is up to date. \n");
 	}
 
 	mPatchScript.close();
