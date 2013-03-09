@@ -1,4 +1,4 @@
-/* listhash/libtar_listhash.h.  Generated from listhash.h.in by configure. */
+/*  */
 
 /*
 **  Copyright 1998-2002 University of Illinois Board of Trustees
@@ -46,27 +46,27 @@ typedef int (*libtar_matchfunc_t)(void *, void *);
 
 struct libtar_node
 {
-	void *data;
-	struct libtar_node *next;
-	struct libtar_node *prev;
+  void *data;
+  struct libtar_node *next;
+  struct libtar_node *prev;
 };
 typedef struct libtar_node *libtar_listptr_t;
 
 struct libtar_list
 {
-	libtar_listptr_t first;
-	libtar_listptr_t last;
-	libtar_cmpfunc_t cmpfunc;
-	int flags;
-	unsigned int nents;
+  libtar_listptr_t first;
+  libtar_listptr_t last;
+  libtar_cmpfunc_t cmpfunc;
+  int flags;
+  unsigned int nents;
 };
 typedef struct libtar_list libtar_list_t;
 
 
 /* values for flags */
-#define LIST_USERFUNC	0	/* use cmpfunc() to order */
-#define LIST_STACK	1	/* new elements go in front */
-#define LIST_QUEUE	2	/* new elements go at the end */
+#define LIST_USERFUNC  0  /* use cmpfunc() to order */
+#define LIST_STACK  1  /* new elements go in front */
+#define LIST_QUEUE  2  /* new elements go at the end */
 
 
 /* reset a list pointer */
@@ -80,35 +80,35 @@ libtar_list_t *libtar_list_new(int, libtar_cmpfunc_t);
 
 /* call a function for every element in a list */
 int libtar_list_iterate(libtar_list_t *,
-				   libtar_iterate_func_t, void *);
+           libtar_iterate_func_t, void *);
 
 /* empty the list */
 void libtar_list_empty(libtar_list_t *,
-				  libtar_freefunc_t);
+          libtar_freefunc_t);
 
 /* remove and free() the entire list */
 void libtar_list_free(libtar_list_t *,
-				 libtar_freefunc_t);
+         libtar_freefunc_t);
 
 /* add elements */
 int libtar_list_add(libtar_list_t *, void *);
 
 /* removes an element from the list - returns -1 on error */
 void libtar_list_del(libtar_list_t *,
-				libtar_listptr_t *);
+        libtar_listptr_t *);
 
 /* returns 1 when valid data is returned, or 0 at end of list */
 int libtar_list_next(libtar_list_t *,
-				libtar_listptr_t *);
+        libtar_listptr_t *);
 
 /* returns 1 when valid data is returned, or 0 at end of list */
 int libtar_list_prev(libtar_list_t *,
-				libtar_listptr_t *);
+        libtar_listptr_t *);
 
 /* return 1 if the data matches a list entry, 0 otherwise */
 int libtar_list_search(libtar_list_t *,
-				  libtar_listptr_t *, void *,
-				  libtar_matchfunc_t);
+          libtar_listptr_t *, void *,
+          libtar_matchfunc_t);
 
 /* return number of elements from list */
 unsigned int libtar_list_nents(libtar_list_t *);
@@ -133,17 +133,17 @@ typedef unsigned int (*libtar_hashfunc_t)(void *, unsigned int);
 
 struct libtar_hashptr
 {
-	int bucket;
-	libtar_listptr_t node;
+  int bucket;
+  libtar_listptr_t node;
 };
 typedef struct libtar_hashptr libtar_hashptr_t;
 
 struct libtar_hash
 {
-	int numbuckets;
-	libtar_list_t **table;
-	libtar_hashfunc_t hashfunc;
-	unsigned int nents;
+  int numbuckets;
+  libtar_list_t **table;
+  libtar_hashfunc_t hashfunc;
+  unsigned int nents;
 };
 typedef struct libtar_hash libtar_hash_t;
 
@@ -165,32 +165,31 @@ libtar_hash_t *libtar_hash_new(int, libtar_hashfunc_t);
 
 /* empty the hash */
 void libtar_hash_empty(libtar_hash_t *,
-				  libtar_freefunc_t);
+          libtar_freefunc_t);
 
 /* delete all the libtar_nodes of the hash and clean up */
 void libtar_hash_free(libtar_hash_t *,
-				 libtar_freefunc_t);
+         libtar_freefunc_t);
 
 /* returns 1 when valid data is returned, or 0 at end of list */
 int libtar_hash_next(libtar_hash_t *,
-				libtar_hashptr_t *);
+        libtar_hashptr_t *);
 
 /* return 1 if the data matches a list entry, 0 otherwise */
 int libtar_hash_search(libtar_hash_t *,
-				  libtar_hashptr_t *, void *,
-				  libtar_matchfunc_t);
+          libtar_hashptr_t *, void *,
+          libtar_matchfunc_t);
 
 /* return 1 if the key matches a list entry, 0 otherwise */
 int libtar_hash_getkey(libtar_hash_t *,
-				  libtar_hashptr_t *, void *,
-				  libtar_matchfunc_t);
+          libtar_hashptr_t *, void *,
+          libtar_matchfunc_t);
 
 /* inserting data */
 int libtar_hash_add(libtar_hash_t *, void *);
 
 /* delete an entry */
 int libtar_hash_del(libtar_hash_t *,
-			       libtar_hashptr_t *);
+             libtar_hashptr_t *);
 
 #endif /* ! libtar_LISTHASH_H */
-
