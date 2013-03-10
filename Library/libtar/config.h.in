@@ -209,3 +209,5 @@
 
 /* Define to `long long' if not defined in system header files. */
 #cmakedefine uint64_t @uint64_t@
+
+#define CMTAR_ZLIB_HEADER "@CMTAR_ZLIB_HEADER@"

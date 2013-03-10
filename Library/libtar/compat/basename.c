@@ -1,4 +1,4 @@
-/*	$OpenBSD: dirname.c,v 1.4 1999/05/30 17:10:30 espie Exp $	*/
+/*  $OpenBSD: basename.c,v 1.4 1999/05/30 17:10:30 espie Exp $  */
 
 /*
  * Copyright (c) 1997 Todd C. Miller <Todd.Miller@courtesan.com>
@@ -28,50 +28,49 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$OpenBSD: dirname.c,v 1.4 1999/05/30 17:10:30 espie Exp $";
+static char rcsid[] = "$OpenBSD: basename.c,v 1.4 1999/05/30 17:10:30 espie Exp $";
+const char* libtar_compat_basename_getrcsid() { return rcsid; }
 #endif /* not lint */
 
 #include <errno.h>
 #include <string.h>
-#include <sys/param.h>
+#include <libtar/compat.h>
+#include <libtarint/internal.h>
 
 char *
-openbsd_dirname(path)
-	const char *path;
+openbsd_basename(path)
+  const char *path;
 {
-	static char bname[MAXPATHLEN];
-	register const char *endp;
+  static char bname[TAR_MAXPATHLEN];
+  register const char *endp, *startp;
 
-	/* Empty or NULL string gets treated as "." */
-	if (path == NULL || *path == '\0') {
-		(void)strcpy(bname, ".");
-		return(bname);
-	}
+  /* Empty or NULL string gets treated as "." */
+  if (path == NULL || *path == '\0') {
+    (void)strcpy(bname, ".");
+    return(bname);
+  }
 
-	/* Strip trailing slashes */
-	endp = path + strlen(path) - 1;
-	while (endp > path && *endp == '/')
-		endp--;
+  /* Strip trailing slashes */
+  endp = path + strlen(path) - 1;
+  while (endp > path && *endp == '/')
+    endp--;
 
-	/* Find the start of the dir */
-	while (endp > path && *endp != '/')
-		endp--;
+  /* All slashes becomes "/" */
+  if (endp == path && *endp == '/') {
+    (void)strcpy(bname, "/");
+    return(bname);
+  }
 
-	/* Either the dir is "/" or there are no slashes */
-	if (endp == path) {
-		(void)strcpy(bname, *endp == '/' ? "/" : ".");
-		return(bname);
-	} else {
-		do {
-			endp--;
-		} while (endp > path && *endp == '/');
-	}
+  /* Find the start of the base */
+  startp = endp;
+  while (startp > path && *(startp - 1) != '/')
+    startp--;
 
-	if (endp - path + 1 > sizeof(bname)) {
-		errno = ENAMETOOLONG;
-		return(NULL);
-	}
-	(void)strncpy(bname, path, endp - path + 1);
-	bname[endp - path + 1] = '\0';
-	return(bname);
+  if (endp - startp + 1 > sizeof(bname)) {
+    errno = ENAMETOOLONG;
+    return(NULL);
+  }
+  (void)strncpy(bname, startp, endp - startp + 1);
+  bname[endp - startp + 1] = '\0';
+  return(bname);
 }

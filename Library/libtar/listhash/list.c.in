@@ -12,10 +12,10 @@
 **  University of Illinois at Urbana-Champaign
 */
 
-#include <config.h>
-#include <compat.h>
+#include <@LISTHASH_PREFIX@/config.h>
+#include <@LISTHASH_PREFIX@/compat.h>
 
-#include <@LISTHASH_PREFIX@_listhash.h>
+#include <@LISTHASH_PREFIX@/@LISTHASH_PREFIX@_listhash.h>
 
 #include <stdio.h>
 #include <errno.h>
@@ -457,3 +457,5 @@ static @LISTHASH_PREFIX@_list_t *
   return newlist;
 }
 */
+
+

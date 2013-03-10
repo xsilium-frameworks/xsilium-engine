@@ -1,8 +1,8 @@
-/*	$OpenBSD: strdup.c,v 1.3 1997/08/20 04:18:52 millert Exp $	*/
+/*  $OpenBSD: strdup.c,v 1.3 1997/08/20 04:18:52 millert Exp $  */
 
 /*
  * Copyright (c) 1988, 1993
- *	The Regents of the University of California.  All rights reserved.
+ *  The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -14,8 +14,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *  This product includes software developed by the University of
+ *  California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -35,7 +35,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
-static char sccsid[] = "@(#)strdup.c	8.1 (Berkeley) 6/4/93";
+static char sccsid[] = "@(#)strdup.c  8.1 (Berkeley) 6/4/93";
 #else
 static char *rcsid = "$OpenBSD: strdup.c,v 1.3 1997/08/20 04:18:52 millert Exp $";
 #endif
@@ -49,14 +49,14 @@ static char *rcsid = "$OpenBSD: strdup.c,v 1.3 1997/08/20 04:18:52 millert Exp $
 
 char *
 openbsd_strdup(str)
-	const char *str;
+  const char *str;
 {
-	size_t siz;
-	char *copy;
+  size_t siz;
+  char *copy;
 
-	siz = strlen(str) + 1;
-	if ((copy = malloc(siz)) == NULL)
-		return(NULL);
-	(void)memcpy(copy, str, siz);
-	return(copy);
+  siz = strlen(str) + 1;
+  if ((copy = malloc(siz)) == NULL)
+    return(NULL);
+  (void)memcpy(copy, str, siz);
+  return(copy);
 }
