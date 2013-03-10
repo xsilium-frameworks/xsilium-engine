@@ -1,4 +1,4 @@
-/*	$OpenBSD: strlcpy.c,v 1.4 1999/05/01 18:56:41 millert Exp $	*/
+/*  $OpenBSD: strlcat.c,v 1.5 2001/01/13 16:17:24 millert Exp $  */
 
 /*
  * Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
@@ -28,41 +28,45 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static char *rcsid = "$OpenBSD: strlcpy.c,v 1.4 1999/05/01 18:56:41 millert Exp $";
+static char *rcsid = "$OpenBSD: strlcat.c,v 1.5 2001/01/13 16:17:24 millert Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/types.h>
 #include <string.h>
 
 /*
- * Copy src to string dst of size siz.  At most siz-1 characters
- * will be copied.  Always NUL terminates (unless siz == 0).
- * Returns strlen(src); if retval >= siz, truncation occurred.
+ * Appends src to string dst of size siz (unlike strncat, siz is the
+ * full size of dst, not space left).  At most siz-1 characters
+ * will be copied.  Always NUL terminates (unless siz <= strlen(dst)).
+ * Returns strlen(initial dst) + strlen(src); if retval >= siz,
+ * truncation occurred.
  */
-size_t strlcpy(dst, src, siz)
-	char *dst;
-	const char *src;
-	size_t siz;
+size_t strlcat(dst, src, siz)
+  char *dst;
+  const char *src;
+  size_t siz;
 {
-	register char *d = dst;
-	register const char *s = src;
-	register size_t n = siz;
+  register char *d = dst;
+  register const char *s = src;
+  register size_t n = siz;
+  size_t dlen;
 
-	/* Copy as many bytes as will fit */
-	if (n != 0 && --n != 0) {
-		do {
-			if ((*d++ = *s++) == 0)
-				break;
-		} while (--n != 0);
-	}
+  /* Find the end of dst and adjust bytes left but don't go past end */
+  while (n-- != 0 && *d != '\0')
+    d++;
+  dlen = d - dst;
+  n = siz - dlen;
 
-	/* Not enough room in dst, add NUL and traverse rest of src */
-	if (n == 0) {
-		if (siz != 0)
-			*d = '\0';		/* NUL-terminate dst */
-		while (*s++)
-			;
-	}
+  if (n == 0)
+    return(dlen + strlen(s));
+  while (*s != '\0') {
+    if (n != 1) {
+      *d++ = *s;
+      n--;
+    }
+    s++;
+  }
+  *d = '\0';
 
-	return(s - src - 1);	/* count does not include NUL */
+  return(dlen + (s - src));  /* count does not include NUL */
 }

@@ -22,19 +22,19 @@
 char *
 strrstr(char *string, char *find)
 {
-	size_t stringlen, findlen;
-	char *cp;
+  size_t stringlen, findlen;
+  char *cp;
 
-	findlen = strlen(find);
-	stringlen = strlen(string);
-	if (findlen > stringlen)
-		return NULL;
+  findlen = strlen(find);
+  stringlen = strlen(string);
+  if (findlen > stringlen)
+    return NULL;
 
-	for (cp = string + stringlen - findlen; cp >= string; cp--)
-		if (strncmp(cp, find, findlen) == 0)
-			return cp;
+  for (cp = string + stringlen - findlen; cp >= string; cp--)
+    if (strncmp(cp, find, findlen) == 0)
+      return cp;
 
-	return NULL;
+  return NULL;
 }
 
 

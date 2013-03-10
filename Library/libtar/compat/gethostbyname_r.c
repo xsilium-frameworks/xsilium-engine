@@ -19,22 +19,22 @@
 
 int
 compat_gethostbyname_r(const char *name, struct hostent *hp,
-		       char *buf, size_t buflen,
-		       struct hostent **hpp, int *herr)
+           char *buf, size_t buflen,
+           struct hostent **hpp, int *herr)
 {
 #if GETHOSTBYNAME_R_NUM_ARGS == 5
-	*hpp = gethostbyname_r(name, hp, buf, buflen, herr);
+  *hpp = gethostbyname_r(name, hp, buf, buflen, herr);
 
-	if (*hpp == NULL)
-		return -1;
-	return 0;
+  if (*hpp == NULL)
+    return -1;
+  return 0;
 #elif GETHOSTBYNAME_R_NUM_ARGS == 3
-	struct hostent_data hdata;
+  struct hostent_data hdata;
 
-	if (gethostbyname_r(name, hp, &hdata) == -1)
-		return -1;
-	*hpp = hp;
-	return 0;
+  if (gethostbyname_r(name, hp, &hdata) == -1)
+    return -1;
+  *hpp = hp;
+  return 0;
 #endif /* GETHOSTBYNAME_R_NUM_ARGS == 5 */
 }
 
