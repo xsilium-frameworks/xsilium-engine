@@ -4,6 +4,7 @@
 #include "XsiliumFramework.h"
 #include "InputManager/InputManager.h"
 #include "DotSceneLoader/DotSceneLoader.h"
+#include "EventManager/Eventmanager.h"
 
 class GameState;
 
@@ -54,6 +55,8 @@ protected:
 	Ogre::SceneManager*			m_pSceneMgr;
     Ogre::FrameEvent            m_FrameEvent;
     Ogre::RenderWindow* 		m_Window;
+    EventManager * eventManager ;
+
 };
 
 #define DECLARE_GAMESTATE_CLASS(T)										\

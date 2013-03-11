@@ -105,7 +105,6 @@ void NetworkManager::disconnexion()
 		if(isConnectedflag)
 		{
 			isConnectedflag = false;
-			thread.join();
 		}
 		enet_peer_disconnect (peer, 0);
 	    /* Allow up to 3 seconds for the disconnect to succeed

@@ -64,6 +64,15 @@ set( Rapidxml_H
 ./rapidxml/rapidxml.h
 )
 
+set( EventManager_H
+./EventManager/EventManager.h
+./EventManager/Event/Event.h
+)
+
+set( EventManager_S
+./EventManager/EventManager.cpp
+./EventManager/Event/Event.cpp
+)
 
 
 set (CORE_SOURCE_FILES 
@@ -74,7 +83,7 @@ ${XsiliumEngine_S}
 ${GameState_S}
 ${SceneLoader_S}
 ${Keyboard_S}
-${Rapidxml_H}
+${EventManager_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -86,6 +95,8 @@ ${GameState_H}
 ${SceneLoader_H}
 ${Camera_H}
 ${Keyboard_H}
+${Rapidxml_H}
+${EventManager_H}
 )
 
 
