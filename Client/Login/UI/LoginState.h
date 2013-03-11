@@ -9,6 +9,12 @@
 
 class Authentification;
 
+enum eventType
+{
+	MESSAGE = 0,
+	PROGRESSION
+};
+
 class LoginState : public OIS::KeyListener,public GameState
 {
 public:
@@ -31,8 +37,11 @@ public:
 
 
 	void setMessage(int typeMessage,int message);
-
 	void setProgression(int progression);
+
+	void processMessage(Event * event);
+	void processProgression(Event * event);
+
 private:
 	bool m_bQuit;
 	CEGUI::Window* frame;
@@ -41,8 +50,6 @@ private:
 	Authentification * auth;
 	InputManager * inputManager;
 	bool messageFlag;
-	int progression;
-	int progressionOld;
 
 	boost::mutex mutex;
 };

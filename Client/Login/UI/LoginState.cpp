@@ -8,11 +8,9 @@ LoginState::LoginState()
 	m_bQuit         = false;
 	inputManager = InputManager::getSingletonPtr();
 	m_FrameEvent    = Ogre::FrameEvent();
+	eventManager = new EventManager();
 	auth = new Authentification(this);
 	messageFlag = false;
-	progression = 0;
-	progressionOld = 0;
-
 }
 
 void LoginState::enter()
@@ -93,6 +91,7 @@ void LoginState::exit()
 	XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
 
 	delete auth;
+	delete eventManager;
 	CEGUI::WindowManager::getSingleton().destroyAllWindows();
 
 
@@ -143,32 +142,22 @@ void LoginState::update(double timeSinceLastFrame)
 		return;
 	}
 
-	boost::mutex::scoped_lock lock(mutex, boost::try_to_lock);
+	Event * event = eventManager->getEvent();
 
-
-	if(lock)
+	if(event != NULL)
 	{
-
-		if ((messageFlag == true) && (!popupLogin->isActive()))
+		switch(atoi(event->getProperty("eventType").c_str()))
 		{
-			popupProg->setVisible(false);
-			CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
-			progressBar->setProgress(0.25);
-			popupLogin->setVisible("true");
-			popupLogin->activate();
-			popupLogin->setAlwaysOnTop(true);
+		case 0:
+			processMessage(event);
+			break;
+		case 1:
+			processProgression(event);
+			break;
+		default:
+			break;
 		}
-		if (progressionOld < progression)
-		{
-			CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
-			progressBar->step();
-			if(progression == 4)
-			{
-				boost::this_thread::sleep(boost::posix_time::seconds(1));
-				changeGameState(findByName("JeuxState"));
-			}
-			progressionOld = progression;
-		}
+		eventManager->removeEvent();
 	}
 }
 
@@ -200,13 +189,24 @@ bool LoginState::handleSubmit(const CEGUI::EventArgs&)
 
 void LoginState::setMessage(int typeMessage ,int message)
 {
-	if (messageFlag == false)
+	Event event;
+	event.setProperty("eventType",ToString(MESSAGE));
+	event.setProperty("typeMessage",ToString(typeMessage));
+	event.setProperty("message",ToString(message));
+
+	eventManager->addEvent(event);
+}
+
+void LoginState::processMessage(Event * event)
+{
+	if ((messageFlag == false) && (!popupLogin->isActive()))
 	{
+		popupProg->setVisible(false);
 		messageFlag = true;
-		switch (typeMessage)
+		switch (atoi(event->getProperty("typeMessage").c_str()))
 		{
 		case 0:
-			switch (message)
+			switch (atoi(event->getProperty("message").c_str()))
 			{
 			case 1:
 				popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
@@ -221,12 +221,11 @@ void LoginState::setMessage(int typeMessage ,int message)
 
 			default:
 				popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
-
 				break;
 			}
 			break;
 			case 1:
-				switch (message)
+				switch (atoi(event->getProperty("message").c_str() ))
 				{
 				case ID_INVALID_ACCOUNT_OR_PASSWORD:
 					popupLogin->getChild("lblMessage")->setText("Le login ou le mot de passe est incorrecte .");
@@ -248,16 +247,33 @@ void LoginState::setMessage(int typeMessage ,int message)
 					break;
 				}
 				break;
+				default:
+					popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
+					break;
 		}
+		popupLogin->setVisible("true");
+		popupLogin->activate();
+		popupLogin->setAlwaysOnTop(true);
 
 	}
 }
 
 void LoginState::setProgression(int progression)
 {
-	boost::mutex::scoped_lock lock(mutex);
-	progressionOld = this->progression ;
-	this->progression = progression;
+	Event event;
+	event.setProperty("eventType",ToString(PROGRESSION));
+	event.setProperty("progression",ToString(progression));
+	eventManager->addEvent(event);
+}
+
+void LoginState::processProgression(Event * event)
+{
+	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
+	progressBar->setProgress( (float)(atof(event->getProperty("progression").c_str()) / 4 ));
+	if(atoi(event->getProperty("progression").c_str()) == 4)
+	{
+		changeGameState(findByName("JeuxState"));
+	}
 }
 
 
