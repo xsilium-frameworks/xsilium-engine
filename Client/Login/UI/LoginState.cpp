@@ -142,6 +142,11 @@ void LoginState::update(double timeSinceLastFrame)
 		return;
 	}
 
+	if ((static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar")))->getProgress() == 1.0f)
+	{
+		changeGameState(findByName("JeuxState"));
+	}
+
 	Event * event = eventManager->getEvent();
 
 	if(event != NULL)
@@ -270,10 +275,6 @@ void LoginState::processProgression(Event * event)
 {
 	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
 	progressBar->setProgress( (float)(atof(event->getProperty("progression").c_str()) / 4 ));
-	if(atoi(event->getProperty("progression").c_str()) == 4)
-	{
-		changeGameState(findByName("JeuxState"));
-	}
 }
 
 

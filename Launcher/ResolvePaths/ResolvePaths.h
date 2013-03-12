@@ -14,7 +14,7 @@
 #include <boost/filesystem.hpp>
 #include "XsiliumFramework.h"
 #include "Define.h"
-
+#include <fcntl.h>
 #include "Binreloc/binreloc.h"
 
 
