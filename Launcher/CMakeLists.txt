@@ -22,6 +22,7 @@ set(CORE_SOURCE_FILES
 	Downloader/Fetcher/Fetcher.cpp
 	ResolvePaths/ResolvePaths.cpp
 	Bspatch/bspatch.cpp
+	Binreloc/binreloc.cpp
 )
 
 set(CORE_HEADER_FILES
@@ -37,6 +38,7 @@ set(CORE_HEADER_FILES
 	Downloader/Fetcher/Fetcher.h
 	Downloader/Downloader.h
 	ResolvePaths/ResolvePaths.h
+	Binreloc/binreloc.h
 )
 
 include_directories(
