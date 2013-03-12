@@ -50,8 +50,6 @@ private:
 	Authentification * auth;
 	InputManager * inputManager;
 	bool messageFlag;
-
-	boost::mutex mutex;
 };
 
 
