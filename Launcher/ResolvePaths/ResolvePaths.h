@@ -16,7 +16,7 @@
 #include "Define.h"
 #include <fcntl.h>
 #include "Binreloc/binreloc.h"
-
+#include "fcntl.h"
 
 /*
  *

@@ -4,7 +4,7 @@
 #include "XsiliumFramework.h"
 #include "InputManager/InputManager.h"
 #include "DotSceneLoader/DotSceneLoader.h"
-#include "EventManager/Eventmanager.h"
+#include "EventManager/EventManager.h"
 
 class GameState;
 
