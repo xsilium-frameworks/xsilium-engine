@@ -22,7 +22,7 @@ set(CORE_SOURCE_FILES
 	Downloader/Fetcher/Fetcher.cpp
 	ResolvePaths/ResolvePaths.cpp
 	Bspatch/bspatch.cpp
-	Binreloc/binreloc.cpp
+	Binreloc/binreloc.c
 )
 
 set(CORE_HEADER_FILES

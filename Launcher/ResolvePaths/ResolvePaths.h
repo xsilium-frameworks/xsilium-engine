@@ -15,6 +15,9 @@
 #include "XsiliumFramework.h"
 #include "Define.h"
 
+#include "Binreloc/binreloc.h"
+
+
 /*
  *
  */
