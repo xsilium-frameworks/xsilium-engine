@@ -1308,12 +1308,25 @@ Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
     );
 }
 
-void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLRoot)
+void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 {
-	//Recupêration des params SkyX
-
-	//déclaration de pElement
 	rapidxml::xml_node<>* pElement;
+	//Recupêration des params SkyX (atmosphere)
+	Ogre::Real rayleighMultiplier = getAttribReal(XMLNode, "rayleighMultiplier");
+	Ogre::Real mieMultiplier = getAttribReal(XMLNode, "mieMultiplier");
+	Ogre::Real exposure = getAttribReal(XMLNode, "exposure");
+	Ogre::Real innerRadius = getAttribReal(XMLNode, "innerRadius");
+	Ogre::Real outerRadius = getAttribReal(XMLNode, "outerRadius");
+
+	// Trouvé equivalence de sampleCount
+	//sampleCount ;
+	Ogre::Real heightposition = getAttribReal(XMLNode, "height");
+	Ogre::Real sunIntensity = getAttribReal(XMLNode, "sunIntensity");
+	Ogre::Real G = getAttribReal(XMLNode, "G");
+
+	//options supp.
+
+
 }
 
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)
