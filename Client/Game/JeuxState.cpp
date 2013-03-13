@@ -57,7 +57,7 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
     delete chat;
-    delete gestionnaireMeteo;
+//    delete gestionnaireMeteo;
 
 
     m_pSceneMgr->destroyCamera(m_pCamera);
