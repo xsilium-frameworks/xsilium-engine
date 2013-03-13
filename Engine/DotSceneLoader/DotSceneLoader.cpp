@@ -1308,12 +1308,46 @@ Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
     );
 }
 
-void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLRoot)
+void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 {
-	//Recupêration des params SkyX
-
-	//déclaration de pElement
 	rapidxml::xml_node<>* pElement;
+
+	//Recupêration des params SkyX (atmosphere)
+	Ogre::Real rayleighMultiplier = getAttribReal(XMLNode, "rayleighMultiplier");
+	Ogre::Real mieMultiplier = getAttribReal(XMLNode, "mieMultiplier");
+	Ogre::Real exposure = getAttribReal(XMLNode, "exposure");
+	Ogre::Real innerRadius = getAttribReal(XMLNode, "innerRadius");
+	Ogre::Real outerRadius = getAttribReal(XMLNode, "outerRadius");
+	int NumberOfSamples = Ogre::StringConverter::parseInt(XMLNode->first_attribute("sampleCount")->value());
+	Ogre::Real heightposition = getAttribReal(XMLNode, "height");
+	Ogre::Real sunIntensity = getAttribReal(XMLNode, "sunIntensity");
+	Ogre::Real G = getAttribReal(XMLNode, "G");
+
+	pElement = XMLNode->first_node("time");
+	    if(pElement)
+	    {
+	    	Ogre::Real TimeMultiplier = getAttribReal(XMLNode, "multiplier");
+	    }
+
+
+	    //Recupêration des params SkyX (cloud)
+	    //Manque équivalences ogitor
+	    pElement = XMLNode->first_node("vClouds");
+	    if(pElement)
+	    {
+	    	Ogre::Real 	Height = getAttribReal(XMLNode, "");
+	    	Ogre::Real 	Scale = getAttribReal(XMLNode, "noiseScale"); // Pas certain
+	    	Ogre::Vector2 WindDirection = Ogre::StringConverter::parseVector2(getAttrib(XMLNode, "windDirection"));
+	    	Ogre::Real 	TimeMultiplier = getAttribReal(XMLNode, "");
+	    	Ogre::Real 	DistanceAttenuation = getAttribReal(XMLNode, "");
+	    	Ogre::Real 	DetailAttenuation = getAttribReal(XMLNode, "");
+	    	Ogre::Real 	HeightVolume = getAttribReal(XMLNode, "");
+	    	Ogre::Real 	VolumetricDisplacement = getAttribReal(XMLNode, "");
+	    }
+
+	    //options supp.
+
+
 }
 
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)
