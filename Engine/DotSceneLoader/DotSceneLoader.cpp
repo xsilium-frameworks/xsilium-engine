@@ -1324,6 +1324,13 @@ void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 	Ogre::Real sunIntensity = getAttribReal(XMLNode, "sunIntensity");
 	Ogre::Real G = getAttribReal(XMLNode, "G");
 
+	pElement = XMLNode->first_node("time");
+	    if(pElement)
+	    {
+	    	// Cloud layer
+	    	Ogre::Real TimeMultiplier = getAttribReal(XMLNode, "multiplier");
+	    }
+
 	//options supp.
 
 
