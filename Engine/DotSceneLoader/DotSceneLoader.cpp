@@ -1331,6 +1331,7 @@ void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 
 
 	    //Recupêration des params SkyX (cloud)
+	    //Manque équivalences ogitor
 	    pElement = XMLNode->first_node("vClouds");
 	    if(pElement)
 	    {
