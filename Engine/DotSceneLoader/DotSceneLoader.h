@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "rapidxml/rapidxml.h"
+#include "SkyX.h"
 
 //|||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -58,6 +59,7 @@
         Ogre::String getProperty(const Ogre::String &ndNm, const Ogre::String &prop);
 
         Ogre::TerrainGroup* getTerrainGroup() { return mTerrainGroup; }
+        SkyX::SkyX * getSkyX() { return mSkyX; }
 
         std::vector<nodeProperty> nodeProperties;
         std::vector<Ogre::String> staticObjects;
@@ -117,6 +119,7 @@
         Ogre::TerrainGroup* mTerrainGroup;
         Ogre::Vector3 mTerrainPosition;
         Ogre::Vector3 mLightDirection;
+        SkyX::SkyX * mSkyX ;
 
         // paged geometry related values
         int mPGPageSize;

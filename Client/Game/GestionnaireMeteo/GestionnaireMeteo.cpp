@@ -8,13 +8,13 @@
 
 #include "GestionnaireMeteo.h"
 
-GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,Ogre::TerrainGroup* terrainGroup) {
+GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,Ogre::TerrainGroup* terrainGroup, SkyX::SkyX* mSkyX) {
 
 	m_pSceneMgr = sm;
 	m_pCamera = c;
 	this->terrainGroup = terrainGroup;
+	this->mSkyX = mSkyX;
 
-    mSkyX = 0;
     mBasicController = 0;
     mHydrax = 0;
     mLastPositionLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length() ;
@@ -59,10 +59,10 @@ GestionnaireMeteo::~GestionnaireMeteo() {
 bool GestionnaireMeteo::frameStarted(const Ogre::FrameEvent& evt)
 {
 	// Update environment lighting
-	updateEnvironmentLighting();
+	//updateEnvironmentLighting();
 
 	// Update shadow far distance
-	updateShadowFarDistance();
+	//updateShadowFarDistance();
 
 	mSkyX->update(evt.timeSinceLastFrame);
 	mHydrax->update(evt.timeSinceLastFrame);
@@ -77,33 +77,8 @@ void GestionnaireMeteo::create()
 	mLight0->setCastShadows(false);
 
 
-	mBasicController = new SkyX::BasicController();
-	mSkyX = new SkyX::SkyX(m_pSceneMgr, mBasicController);
-
-	mSkyX->setTimeMultiplier(1.0f / 3600 );
-
-
-	// A little change to default atmosphere settings :)
-	SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
-	atOpt.RayleighMultiplier = 0.003075f;
-	atOpt.MieMultiplier = 0.00125f;
-	atOpt.InnerRadius = 9.92f;
-	atOpt.OuterRadius = 10.3311f;
-	mSkyX->getAtmosphereManager()->setOptions(atOpt);
-
-
-	// Add a basic cloud layer
-
-	SkyX::CloudLayer::Options cmOpt ;
-	cmOpt.TimeMultiplier = 80;
-
-	mSkyX->getCloudsManager()->add(cmOpt);
-
-
-	mSkyX->create();
-
-	mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
-
+	//mBasicController = mSkyX->getController();
+	//mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
 	XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
 
 	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0));
@@ -138,7 +113,7 @@ void GestionnaireMeteo::create()
 	        {
 	           Ogre::Terrain* terrain = terrainIterator.getNext()->instance;
 	           mHydrax->getMaterialManager()->addDepthTechnique(terrain->getMaterial()->createTechnique());
-	           mSkyX->getGPUManager()->addGroundPass(terrain->getMaterial()->getTechnique(0)->createPass(), 5000, Ogre::SBT_TRANSPARENT_COLOUR);
+	           //mSkyX->getGPUManager()->addGroundPass(terrain->getMaterial()->getTechnique(0)->createPass(), 5000, Ogre::SBT_TRANSPARENT_COLOUR);
 	        }
 
 	        // Add the Hydrax Rtt listener
