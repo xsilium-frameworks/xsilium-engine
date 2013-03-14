@@ -57,7 +57,7 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
     delete chat;
-    //delete gestionnaireMeteo;
+    delete gestionnaireMeteo;
 
 
     m_pSceneMgr->destroyCamera(m_pCamera);
@@ -121,8 +121,8 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
- //    gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getTerrainGroup());
- //    gestionnaireMeteo->create();
+     gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getTerrainGroup(),m_Loader->getSkyX());
+     gestionnaireMeteo->create();
 
 }
 
