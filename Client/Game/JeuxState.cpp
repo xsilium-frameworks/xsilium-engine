@@ -72,8 +72,6 @@ void JeuxState::buildGUI()
 {
 
     chat = new Chat();
-    XsiliumFramework::getInstance()->m_pLog->logMessage("test");
-
 }
 
 void JeuxState::createScene()

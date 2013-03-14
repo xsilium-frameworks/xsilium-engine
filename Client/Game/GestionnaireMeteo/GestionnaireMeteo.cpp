@@ -59,10 +59,10 @@ GestionnaireMeteo::~GestionnaireMeteo() {
 bool GestionnaireMeteo::frameStarted(const Ogre::FrameEvent& evt)
 {
 	// Update environment lighting
-	//updateEnvironmentLighting();
+	updateEnvironmentLighting();
 
 	// Update shadow far distance
-	//updateShadowFarDistance();
+	updateShadowFarDistance();
 
 	mSkyX->update(evt.timeSinceLastFrame);
 	mHydrax->update(evt.timeSinceLastFrame);
@@ -76,9 +76,11 @@ void GestionnaireMeteo::create()
 	mLight0->setDiffuseColour(1, 1, 1);
 	mLight0->setCastShadows(false);
 
+	mBasicController = (SkyX::BasicController *) mSkyX->getController();
+	mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
 
-	//mBasicController = mSkyX->getController();
-	//mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
+	mSkyX->create();
+
 	XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
 
 	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0));
@@ -113,7 +115,7 @@ void GestionnaireMeteo::create()
 	        {
 	           Ogre::Terrain* terrain = terrainIterator.getNext()->instance;
 	           mHydrax->getMaterialManager()->addDepthTechnique(terrain->getMaterial()->createTechnique());
-	           //mSkyX->getGPUManager()->addGroundPass(terrain->getMaterial()->getTechnique(0)->createPass(), 5000, Ogre::SBT_TRANSPARENT_COLOUR);
+	           mSkyX->getGPUManager()->addGroundPass(terrain->getMaterial()->getTechnique(0)->createPass(), 5000, Ogre::SBT_TRANSPARENT_COLOUR);
 	        }
 
 	        // Add the Hydrax Rtt listener

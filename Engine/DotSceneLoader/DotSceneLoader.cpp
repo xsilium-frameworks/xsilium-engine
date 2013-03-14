@@ -171,6 +171,12 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 		pElement = pElement->next_sibling("camera");
 	}
 
+	// Process Skyx (?)
+	pElement = XMLRoot->first_node("skyx");
+	if(pElement)
+	{
+		processSkyx(pElement);
+	}
 	// Process terrain (?)
 	pElement = XMLRoot->first_node("terrain");
 	if(pElement)
@@ -269,11 +275,6 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
 	pElement = XMLNode->first_node("userDataReference");
 	if(pElement)
 		processUserDataReference(pElement);
-
-	// Process Skyx
-	pElement = XMLNode->first_node("SkyX");
-	if(pElement)
-		processSkyx(pElement);
 }
 
 void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
@@ -1310,9 +1311,9 @@ Ogre::ColourValue DotSceneLoader::parseColour(rapidxml::xml_node<>* XMLNode)
 
 void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 {
-
 	SkyX::BasicController* mBasicController = new SkyX::BasicController();
 	mSkyX = new SkyX::SkyX(mSceneMgr, mBasicController);
+
 	rapidxml::xml_node<>* pElement;
 
 	//Recupêration des params SkyX (atmosphere)
@@ -1358,12 +1359,7 @@ void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 		Ogre::Real 	HeightVolume = getAttribReal(XMLNode, "");
 		Ogre::Real 	VolumetricDisplacement = getAttribReal(XMLNode, "");
 	}
-
-
-	mSkyX->create();
 	//options supp.
-
-
 }
 
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)
