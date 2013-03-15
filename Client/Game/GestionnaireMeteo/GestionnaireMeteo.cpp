@@ -8,11 +8,10 @@
 
 #include "GestionnaireMeteo.h"
 
-GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,Ogre::TerrainGroup* terrainGroup, SkyX::SkyX* mSkyX) {
+GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c, SkyX::SkyX* mSkyX) {
 
 	m_pSceneMgr = sm;
 	m_pCamera = c;
-	this->terrainGroup = terrainGroup;
 	this->mSkyX = mSkyX;
 
     mBasicController = 0;
@@ -109,14 +108,6 @@ void GestionnaireMeteo::create()
 
 	        // Create water
 	        mHydrax->create();
-
-	        Ogre::TerrainGroup::TerrainIterator terrainIterator = terrainGroup->getTerrainIterator() ;
-	        while(terrainIterator.hasMoreElements())
-	        {
-	           Ogre::Terrain* terrain = terrainIterator.getNext()->instance;
-	           mHydrax->getMaterialManager()->addDepthTechnique(terrain->getMaterial()->createTechnique());
-	           mSkyX->getGPUManager()->addGroundPass(terrain->getMaterial()->getTechnique(0)->createPass(), 5000, Ogre::SBT_TRANSPARENT_COLOUR);
-	        }
 
 	        // Add the Hydrax Rtt listener
 	        mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
