@@ -119,7 +119,7 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
-     gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getTerrainGroup(),m_Loader->getSkyX());
+     gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getSkyX());
      gestionnaireMeteo->create();
 
 }
@@ -147,6 +147,8 @@ void JeuxState::update(double timeSinceLastFrame)
 		getInput();
 
     m_pCamera->moveRelative(m_TranslateVector / 10);
+
+    chat->update();
 
 }
 

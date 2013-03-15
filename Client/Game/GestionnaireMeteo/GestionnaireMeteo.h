@@ -22,7 +22,7 @@
  */
 class GestionnaireMeteo :  public Ogre::FrameListener {
 public:
-	GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,Ogre::TerrainGroup* terrainGroup, SkyX::SkyX* mSkyX);
+	GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,SkyX::SkyX* mSkyX);
 	virtual ~GestionnaireMeteo();
 
 	void create();
@@ -35,7 +35,6 @@ public:
 private:
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::Camera*				m_pCamera;
-	Ogre::TerrainGroup*         terrainGroup;
 
 
     SkyX::SkyX* mSkyX ;
