@@ -5,6 +5,9 @@
 Chat::Chat() :
 d_historyPos(0)
 {
+
+	Interface::setupCEGUI();
+
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
 	parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
@@ -17,12 +20,6 @@ d_historyPos(0)
 	eventManager = new EventManager();
 
 	gestionnaireChat = new GestionnaireChat(this);
-
-
-
-
-
-
 
 	// Do events wire-up
 	d_root->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
@@ -47,20 +44,6 @@ d_historyPos(0)
 Chat::~Chat()
 {
 	delete gestionnaireChat;
-	delete eventManager ;
-	CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
-	d_root->destroy();
-	parent->destroy();
-}
-
-void Chat::toggleVisibility()
-{
-	d_root->isVisible() ? d_root->hide() : d_root->show();
-}
-
-bool Chat::isVisible() const
-{
-	return d_root->isEffectiveVisible();
 }
 
 bool Chat::setMessage(const char * message)
@@ -163,11 +146,6 @@ bool Chat::handleKeyDown(const CEGUI::EventArgs& args)
 	}
 
 	return true;
-}
-
-bool Chat::isActive()
-{
-	return d_root->getChild("Console/Editbox")->isActive();
 }
 
 void Chat::update()

@@ -52,6 +52,9 @@ link_libraries(${XSILIUM_LIB} ${SKYX_LIBRARIES})
 
 ADD_EXECUTABLE(XsiliumClient WIN32 MACOSX_BUNDLE ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES} )
 
+configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/resources.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg)
+configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/plugins.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg)
+
 
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
 
@@ -95,9 +98,9 @@ if (APPLE)
         # now cfg files
         add_custom_command(TARGET XsiliumClient POST_BUILD
                 COMMAND mkdir ARGS -p ${XSILIUM_CONTENTS_PATH}/Resources
-                COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Mac/plugins.cfg
+                COMMAND ln ARGS -s -f ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg
                 ${XSILIUM_CONTENTS_PATH}/Resources/
-                COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Mac/resources.cfg
+                COMMAND ln ARGS -s -f ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg
                 ${XSILIUM_CONTENTS_PATH}/Resources/
 
 		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml

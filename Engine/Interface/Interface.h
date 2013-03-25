@@ -4,6 +4,8 @@
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 
+#include "EventManager/EventManager.h"
+
 class Interface
 {
 
@@ -11,11 +13,25 @@ public:
 	Interface();
 	~Interface();
 
-	void initialiseDefaultResourceGroups();
 	void setupCEGUI();
 
+	void toggleVisibility();
+	bool isVisible() const;
+
+	bool isActive();
+
+	void update();
+
+
+protected:
+    CEGUI::Window* d_root;
+    CEGUI::Window* parent;
+    EventManager * eventManager ;
+
+    bool isActived;
+
 private:
-	CEGUI::OgreRenderer* mRenderer;
+    CEGUI::OgreRenderer* mRenderer;
 
 };
 

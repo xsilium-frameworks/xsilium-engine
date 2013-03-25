@@ -1,37 +1,48 @@
 # Resources required by the sample browser and most samples.
 [Essential]
-Zip=@OGRE_MEDIA_DIR_REL@/packs/SdkTrays.zip
-FileSystem=@OGRE_MEDIA_DIR_REL@/thumbnails
+
 
 # Common sample resources needed by many of the samples.
 # Rarely used resources should be separately loaded by the
 # samples which require them.
 [Popular]
-FileSystem=@OGRE_MEDIA_DIR_REL@/fonts
-FileSystem=@OGRE_MEDIA_DIR_REL@/materials/programs
-FileSystem=@OGRE_MEDIA_DIR_REL@/materials/scripts
-FileSystem=@OGRE_MEDIA_DIR_REL@/materials/textures
-FileSystem=@OGRE_MEDIA_DIR_REL@/materials/textures/nvidia
-FileSystem=@OGRE_MEDIA_DIR_REL@/models
-FileSystem=@OGRE_MEDIA_DIR_REL@/particle
-FileSystem=@OGRE_MEDIA_DIR_REL@/DeferredShadingMedia
-FileSystem=@OGRE_MEDIA_DIR_REL@/PCZAppMedia
-FileSystem=@OGRE_MEDIA_DIR_REL@/RTShaderLib
-FileSystem=@OGRE_MEDIA_DIR_REL@/RTShaderLib/materials
-FileSystem=@OGRE_MEDIA_DIR_REL@/materials/scripts/SSAO
-FileSystem=@OGRE_MEDIA_DIR_REL@/materials/textures/SSAO
-Zip=@OGRE_MEDIA_DIR_REL@/packs/cubemap.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/cubemapsJS.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/dragon.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/fresneldemo.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/ogretestmap.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/ogredance.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/Sinbad.zip
-Zip=@OGRE_MEDIA_DIR_REL@/packs/skybox.zip
+
 
 [General]
-FileSystem=@OGRE_MEDIA_DIR_REL@
+FileSystem=@OGRE_MEDIA_DIR_REL@Media
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/plants
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/materials/scripts
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/materials/textures
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/fonts
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/particle
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/editorResources
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/materials/textures
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/materials/textures/nvidia
 
-# Materials for visual tests
-[Tests]
-FileSystem=@OGRE_MEDIA_DIR_REL@/../../Tests/Media
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/SkyX
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/plants
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/terrain
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/textures
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/textures/diffusespecular
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain
+
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/terrainTextures
+[SkyX]
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/SkyX
+
+[Hydrax]
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/Hydrax
+
+[Imagesets]
+FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/imagesets
+[Fonts]
+FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/fonts
+[Schemes]
+FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/schemes
+[LookNFeels]
+FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/looknfeel
+[Layouts]
+FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/layouts
+[schemas]
+FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/xml_schemas
