@@ -17,8 +17,9 @@ XsiliumApp::~XsiliumApp()
 
 void XsiliumApp::startXsilium()
 {
-	if(!XsiliumFramework::getInstance()->initOgre("Xsilium Client"))
+	if(!XsiliumFramework::getInstance()->initOgre("Xsilium Client","Client"))
 		return;
+	XsiliumFramework::getInstance()->loadRessource();
 
 	XsiliumFramework::getInstance()->m_pLog->logMessage("Xsilium initiliasee!");
 

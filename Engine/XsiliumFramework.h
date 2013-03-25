@@ -21,8 +21,6 @@
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
 
-#include "Interface/Interface.h"
-
 #include <SdkTrays.h>
 
 #include "DotSceneLoader/DotSceneLoader.h"
@@ -36,7 +34,9 @@ public:
 	XsiliumFramework();
 	~XsiliumFramework();
 
-	bool initOgre(Ogre::String wndTitle);
+	bool initOgre(Ogre::String wndTitle,Ogre::String logName);
+
+	void loadRessource();
 
 	Ogre::Root*					m_pRoot;
 	Ogre::RenderWindow*			m_pRenderWnd;
@@ -50,6 +50,8 @@ private:
 	XsiliumFramework(const XsiliumFramework&);
 	XsiliumFramework& operator= (const XsiliumFramework&);
     Ogre::String m_SceneFile;
+
+    std::string mResourcePath ;
 
 };
 
