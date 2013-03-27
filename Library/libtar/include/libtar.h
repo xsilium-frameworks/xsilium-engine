@@ -15,10 +15,10 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <libtar/tar.h>
+#include <include/tar.h>
 
 #include <libtar/libtar_listhash.h>
-#include <libtar/compat.h>
+#include <compat/compat.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
