@@ -1,5 +1,3 @@
-include_directories(${XSILIUM_INCLUDE})
-
 if (UNIX)
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/bin/datafiles
 		DESTINATION ./
@@ -43,6 +41,7 @@ set(CORE_HEADER_FILES
 
 include_directories(
 ${XSILIUM_INCLUDE} 
+${BZIP2_INCLUDE_DIR}
 .
 )
 
