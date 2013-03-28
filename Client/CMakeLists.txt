@@ -18,7 +18,7 @@ set(CORE_SOURCE_FILES
     Compte/Compte.cpp
     Login/UI/LoginState.cpp 
     XsiliumApp.cpp
-    Game/Chat/UI/Chat.cpp
+    Game/Chat/Interface/Chat.cpp
     Game/Chat/GestionnaireChat/GestionnaireChat.cpp
     Login/Authentification.cpp
     Game/GestionnaireMeteo/GestionnaireMeteo.cpp
@@ -30,7 +30,7 @@ set(CORE_HEADER_FILES
     Login/UI/LoginState.h
     Compte/Compte.h
     XsiliumApp.h 
-    Game/Chat/UI/Chat.h
+    Game/Chat/Interface/Chat.h
     Game/Chat/StructurePacket/PacketChat.h
     Game/Chat/GestionnaireChat/GestionnaireChat.h
     Login/Authentification.h

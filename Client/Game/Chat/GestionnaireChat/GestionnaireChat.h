@@ -12,7 +12,7 @@
 #include "Network/NetworkManager.h"
 #include "Network/NetworkListener.h"
 
-#include "Chat/UI/Chat.h"
+#include "Chat/Interface/Chat.h"
 #include "Shared/Network/Opcode.h"
 
 #include "Game/Chat/StructurePacket/PacketChat.h"
