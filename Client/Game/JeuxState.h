@@ -3,7 +3,7 @@
 
 #include "GameState/GameState.h"
 
-#include"Chat/UI/Chat.h"
+#include"Chat/Interface/Chat.h"
 
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
