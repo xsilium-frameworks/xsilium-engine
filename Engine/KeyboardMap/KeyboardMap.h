@@ -20,6 +20,7 @@
 #include <fstream>
 
 #include "rapidxml/rapidxml.h"
+#include "rapidxml/rapidxml_print.h"
 
 /*
  *
@@ -36,10 +37,13 @@ public:
 	const char * checkKey(OIS::KeyCode key);
 	const OIS::KeyCode checkKey(const char * touche);
 
+	void saveKeyboardMap();
+
 protected:
 	typedef std::map<std::string,int> KeyMap;
 private:
 	KeyMap KeyboardBinding;
+	std::string fileName ;
 
 };
 
