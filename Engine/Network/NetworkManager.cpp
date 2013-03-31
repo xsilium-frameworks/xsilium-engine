@@ -81,7 +81,7 @@ void* NetworkManager::threadConnexion(void* arguments)
 	NetworkManager * networkManager = (NetworkManager *) arguments ;
 	networkManager->packet = &networkManager->eventClient;
 
-	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 1000) >= 0 ) && (networkManager->isConnectedflag)  )
+	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 10) >= 0 ) && (networkManager->isConnectedflag)  )
 	{
 		if(networkManager->eventClient.type >0)
 		{

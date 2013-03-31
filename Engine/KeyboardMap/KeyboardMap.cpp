@@ -18,6 +18,7 @@ KeyboardMap::~KeyboardMap() {
 
 void KeyboardMap::load(const std::string& file)
 {
+	fileName = file ;
 	std::ifstream fichierConfKey(file.c_str());
 	if (fichierConfKey.fail())
 	{
@@ -42,9 +43,9 @@ void KeyboardMap::load(const std::string& file)
 	delete [] buffer;
 
 	for (rapidxml::xml_node<>* n = doc.first_node("KEYBOARD")->first_node(); n; n = n->next_sibling())
-		{
-	        KeyboardBinding[n->name()] = static_cast<OIS::KeyCode>(strtol(n->value(), NULL, 0));
-	    }
+	{
+		KeyboardBinding[n->name()] = static_cast<OIS::KeyCode>(strtol(n->value(), NULL, 0));
+	}
 }
 
 const char * KeyboardMap::checkKey(OIS::KeyCode key)
@@ -69,4 +70,39 @@ const OIS::KeyCode KeyboardMap::checkKey(const char * touche)
 	}
 	else
 		return OIS::KC_UNASSIGNED;
+}
+
+void KeyboardMap::saveKeyboardMap()
+{
+	rapidxml::xml_document<> doc;
+
+	rapidxml::xml_node<>* decl = doc.allocate_node(rapidxml::node_declaration);
+	decl->append_attribute(doc.allocate_attribute("version", "1.0"));
+	decl->append_attribute(doc.allocate_attribute("encoding", "ISO-8859-1"));
+	doc.append_node(decl);
+
+	rapidxml::xml_node<> *Keyboard = doc.allocate_node(rapidxml::node_element, "KEYBOARD");
+	doc.append_node(Keyboard);
+
+
+	for ( KeyMap::iterator increment = KeyboardBinding.begin(); increment != KeyboardBinding.end(); ++increment  )
+	{
+		rapidxml::xml_node<> *Key = doc.allocate_node(rapidxml::node_element, ((*increment).first).c_str());
+		std::stringstream ss;
+		ss << "0x" << std::hex << (*increment).second  ;
+
+		char* numBuff =  doc.allocate_string(ss.str().c_str());
+
+		Key->value(numBuff);
+
+		Keyboard->append_node(Key);
+	}
+	std::string data;
+	rapidxml::print(std::back_inserter(data), doc);
+
+	std::ofstream myfile(fileName.c_str()) ;
+	myfile << data;
+	myfile.close();
+
+
 }

@@ -62,6 +62,7 @@ set( Keyboard_S
 
 set( Rapidxml_H
 ./rapidxml/rapidxml.h
+./rapidxml/rapidxml_print.h
 )
 
 set( EventManager_H
