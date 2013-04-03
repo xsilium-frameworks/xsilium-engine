@@ -5,8 +5,8 @@ if (UNIX)
 		DESTINATION ./
 		CONFIGURATIONS All
 	)
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
-		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg
+		${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg
 		DESTINATION ./
 		CONFIGURATIONS All
 	)
@@ -16,24 +16,24 @@ endif(UNIX)
 set(CORE_SOURCE_FILES
     main.cpp
     Compte/Compte.cpp
-    Login/UI/LoginState.cpp 
+    Login/LoginState.cpp 
     XsiliumApp.cpp
     Game/Chat/Interface/Chat.cpp
     Game/Chat/GestionnaireChat/GestionnaireChat.cpp
-    Login/Authentification.cpp
+    Login/Authentification/Authentification.cpp
     Game/GestionnaireMeteo/GestionnaireMeteo.cpp
     Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
     Game/JeuxState.cpp
 )
 
 set(CORE_HEADER_FILES
-    Login/UI/LoginState.h
+    Login/LoginState.h
     Compte/Compte.h
     XsiliumApp.h 
     Game/Chat/Interface/Chat.h
     Game/Chat/StructurePacket/PacketChat.h
     Game/Chat/GestionnaireChat/GestionnaireChat.h
-    Login/Authentification.h
+    Login/Authentification/Authentification.h
     Login/ListOfMessage/ListOfMessage.h
     Game/GestionnaireMeteo/GestionnaireMeteo.h
     Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h

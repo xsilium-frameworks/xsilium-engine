@@ -4,6 +4,6 @@
 	<DROITE>0x20</DROITE>
 	<GAUCHE>0x1e</GAUCHE>
 	<RECULER>0x1f</RECULER>
-	<test>0xFF</test>
+	<test>0xff</test>
 </KEYBOARD>
 

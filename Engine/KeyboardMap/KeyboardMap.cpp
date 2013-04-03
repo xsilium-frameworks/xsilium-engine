@@ -60,6 +60,7 @@ const char * KeyboardMap::checkKey(OIS::KeyCode key)
 	return "";
 
 }
+
 const OIS::KeyCode KeyboardMap::checkKey(const char * touche)
 {
 
@@ -70,6 +71,11 @@ const OIS::KeyCode KeyboardMap::checkKey(const char * touche)
 	}
 	else
 		return OIS::KC_UNASSIGNED;
+}
+
+void KeyboardMap::changeKey(const char * touche,OIS::KeyCode key)
+{
+	KeyboardBinding[touche] = static_cast<int>(key);
 }
 
 void KeyboardMap::saveKeyboardMap()
