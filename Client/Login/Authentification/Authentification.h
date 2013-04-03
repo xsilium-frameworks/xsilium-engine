@@ -15,7 +15,7 @@
 #include "Network/NetworkListener.h"
 #include <sstream>
 #include <cstring>
-#include "UI/LoginState.h"
+#include "Login/LoginState.h"
 
 #include "Compte/Compte.h"
 

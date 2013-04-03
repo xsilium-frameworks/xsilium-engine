@@ -37,6 +37,8 @@ public:
 	const char * checkKey(OIS::KeyCode key);
 	const OIS::KeyCode checkKey(const char * touche);
 
+	void changeKey(const char * touche,OIS::KeyCode key);
+
 	void saveKeyboardMap();
 
 protected:

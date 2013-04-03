@@ -2,9 +2,8 @@
 #define LOGIN_STATE_H
 
 #include "GameState/GameState.h"
-#include "Authentification.h"
+#include "Authentification/Authentification.h"
 #include "string.h"
-#include "ListOfMessage/ListOfMessage.h"
 
 
 class Authentification;
