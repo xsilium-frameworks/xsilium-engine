@@ -3,7 +3,6 @@
 
 #include "Chat/GestionnaireChat/GestionnaireChat.h"
 
-#include "EventManager/EventManager.h"
 #include "Interface/Interface.h"
 
 class GestionnaireChat;

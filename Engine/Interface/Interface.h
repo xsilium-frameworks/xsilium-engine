@@ -13,8 +13,6 @@ public:
 	Interface();
 	~Interface();
 
-	void setupCEGUI();
-
 	void toggleVisibility();
 	bool isVisible() const;
 
@@ -29,10 +27,6 @@ protected:
     EventManager * eventManager ;
 
     bool isActived;
-
-private:
-    CEGUI::OgreRenderer* mRenderer;
-
 };
 
 #endif /* INTERFACE_H_ */
