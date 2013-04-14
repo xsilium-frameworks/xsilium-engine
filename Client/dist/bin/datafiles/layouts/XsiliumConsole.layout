@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <GUILayout version="4" >
-    <Window type="DefaultWindow" name="DefaultWindow" >
-        <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Property name="MaxSize" value="{{1,0},{1,0}}" />
-        <Window type="DragContainer" name="Console" >
-            <Property name="Area" value="{{0,0},{0,585},{0,265},{0,716}}" />
-            <Property name="StickyMode" value="False" />
-            <Window type="AlfiskoSkin/Editbox" name="Editbox" >
-                <Property name="Area" value="{{0,25},{0,105},{0,265},{0,130}}" />
-                <Property name="Alpha" value="0.5" />
-                <Property name="MaxTextLength" value="512" />
-            </Window>
-            <Window type="AlfiskoSkin/MultiLineEditbox" name="ListOfMessage" >
-                <Property name="Area" value="{{0,25},{0,0},{0,265},{0,105}}" />
-                <Property name="Font" value="DejaVuSans-10" />
-                <Property name="Text" >
+    <Window type="DragContainer" name="Console" >
+        <Property name="Area" value="{{0,0},{0,523},{0,363},{0,720}}" />
+        <Property name="StickyMode" value="False" />
+        <Window type="AlfiskoSkin/Editbox" name="Editbox" >
+            <Property name="Area" value="{{0,41},{0,164},{0,362},{0,196}}" />
+            <Property name="Alpha" value="0.6" />
+        </Window>
+        <Window type="AlfiskoSkin/MultiLineEditbox" name="ListOfMessage" >
+            <Property name="Area" value="{{0,41.25},{0,27.75},{0,362.25},{0,163.25}}" />
+            <Property name="Text" >
 </Property>
-                <Property name="Alpha" value="0.5" />
-                <Property name="ReadOnly" value="True" />
-            </Window>
+            <Property name="Alpha" value="0.6" />
         </Window>
     </Window>
 </GUILayout>

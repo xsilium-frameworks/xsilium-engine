@@ -12,29 +12,6 @@ Interface::~Interface()
 	delete eventManager ;
 	CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
 	d_root->destroy();
-	parent->destroy();
-}
-
-void Interface::setupCEGUI()
-{
-
-	mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-
-    // set the default resource groups to be used
-    CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-    CEGUI::Font::setDefaultResourceGroup("Fonts");
-    CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-    CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
-    CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-    CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
-    CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
-    // setup default group for validation schemas
-    CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
-    if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
-        parser->setProperty("SchemaDefaultResourceGroup", "schemas");
-
-    CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
 }
 
 void Interface::toggleVisibility()
@@ -49,6 +26,11 @@ bool Interface::isVisible() const
 
 bool Interface::isActive()
 {
+	CEGUI::Window* windowActuel = CEGUI::System::getSingleton().getDefaultGUIContext().getWindowContainingMouse() ;
+	if ( d_root == windowActuel or d_root->isChild(windowActuel) )
+		isActived = true;
+	else
+		isActived = false;
 	return isActived;
 }
 

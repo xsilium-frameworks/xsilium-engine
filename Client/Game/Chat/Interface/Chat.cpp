@@ -6,11 +6,9 @@ Chat::Chat() :
 d_historyPos(0)
 {
 
-	Interface::setupCEGUI();
-
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
-	parent = winMgr.createWindow("DefaultWindow", "CEGUIApp/Console");
+	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 
 	d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
 
@@ -24,20 +22,11 @@ d_historyPos(0)
 	// Do events wire-up
 	d_root->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
 
-	//d_root->getChild("Console/Button")->
-	//            subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
-
-	d_root->getChild("Console/Editbox")->
+	d_root->getChild("Editbox")->
 			subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
 
 	// attach this window if parent is valid
 	parent->addChild(d_root);
-
-	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(d_root);
-
-
-
-
 
 }
 
@@ -71,7 +60,7 @@ void Chat::processMessage(Event * event)
 	// append newline to this entry
 	message += '\n';
 	// get history window
-	MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("Console/ListOfMessage"));
+	MultiLineEditbox* history = static_cast<MultiLineEditbox*>(d_root->getChild("ListOfMessage"));
 	// append new text to history output
 	history->setText(history->getText() + messageChat);
 	// scroll to bottom of history output
@@ -84,7 +73,7 @@ bool Chat::handleSubmit(const CEGUI::EventArgs&)
 	using namespace CEGUI;
 
 	// get the text entry editbox
-	Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Console/Editbox"));
+	Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Editbox"));
 	// get text out of the editbox
 	CEGUI::String edit_text(editbox->getText());
 
@@ -96,9 +85,6 @@ bool Chat::handleSubmit(const CEGUI::EventArgs&)
 		editbox->setText("");
 	}
 
-	// re-activate the text entry box
-	editbox->activate();
-
 	return true;
 }
 
@@ -107,7 +93,7 @@ bool Chat::handleKeyDown(const CEGUI::EventArgs& args)
 	using namespace CEGUI;
 
 	// get the text entry editbox
-	Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Console/Editbox"));
+	Editbox* editbox = static_cast<Editbox*>(d_root->getChild("Editbox"));
 
 	switch (static_cast<const KeyEventArgs&>(args).scancode)
 	{
@@ -157,5 +143,4 @@ void Chat::update()
 		processMessage(event);
 		eventManager->removeEvent();
 	}
-
 }

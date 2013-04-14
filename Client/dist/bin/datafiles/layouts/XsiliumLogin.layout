@@ -6,10 +6,8 @@
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
         <Window type="AlfiskoSkin/FrameWindow" name="LoginForm" >
             <Property name="Area" value="{{0,-57.75},{0,-7.5},{0,457.75},{0,387.5}}" />
-            <Property name="Font" value="DejaVuSans-10" />
             <Property name="Text" value="Identification" />
             <Property name="AlwaysOnTop" value="True" />
-            <Property name="TitlebarFont" value="DejaVuSans-10" />
             <Property name="RollUpEnabled" value="False" />
             <Property name="SizingEnabled" value="False" />
             <Property name="DragMovingEnabled" value="False" />
@@ -18,7 +16,6 @@
             <Property name="RiseOnClickEnabled" value="False" />
             <Property name="HorizontalAlignment" value="Centre" />
             <AutoWindow namePath="__auto_titlebar__" >
-                <Property name="Font" value="DejaVuSans-10" />
                 <Property name="DraggingEnabled" value="False" />
             </AutoWindow>
             <Window type="AlfiskoSkin/Editbox" name="edtUsername" >
@@ -26,7 +23,6 @@
             </Window>
             <Window type="AlfiskoSkin/Label" name="lblUsername" >
                 <Property name="Area" value="{{0,19.75},{0,25},{1,-236.25},{1,-295}}" />
-                <Property name="Font" value="DejaVuSans-10" />
                 <Property name="Text" value="Nom d&apos;utilisateur" />
                 <Property name="MaxSize" value="{{1,0},{1,0}}" />
                 <Property name="HorzFormatting" value="LeftAligned" />
@@ -36,12 +32,10 @@
             </Window>
             <Window type="AlfiskoSkin/Button" name="btnConnexion" >
                 <Property name="Area" value="{{0,284.75},{0,265},{0,484.75},{0,315}}" />
-                <Property name="Font" value="DejaVuSans-10" />
                 <Property name="Text" value="Connexion" />
             </Window>
             <Window type="AlfiskoSkin/Label" name="lblPassword" >
                 <Property name="Area" value="{{0,19.75},{0,125},{1,-236.25},{1,-190}}" />
-                <Property name="Font" value="DejaVuSans-10" />
                 <Property name="Text" value="Mot de passe" />
                 <Property name="MaxSize" value="{{1,0},{1,0}}" />
                 <Property name="HorzFormatting" value="LeftAligned" />

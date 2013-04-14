@@ -2,7 +2,7 @@
 #define LOGIN_STATE_H
 
 #include "GameState/GameState.h"
-#include "Authentification/Authentification.h"
+#include "Authentification/Interface/Authentification.h"
 #include "string.h"
 
 
@@ -23,6 +23,9 @@ public:
 
 	void enter();
 	void createScene();
+
+    void buildGUI();
+
 	void exit();
 
 	bool PushConnexion(const CEGUI::EventArgs &e);
@@ -34,21 +37,10 @@ public:
 
 	void update(double timeSinceLastFrame);
 
-
-	void setMessage(int typeMessage,int message);
-	void setProgression(int progression);
-
-	void processMessage(Event * event);
-	void processProgression(Event * event);
-
 private:
 	bool m_bQuit;
-	CEGUI::Window* frame;
-	CEGUI::Window* popupLogin;
-	CEGUI::Window* popupProg;
 	Authentification * auth;
 	InputManager * inputManager;
-	bool messageFlag;
 };
 
 

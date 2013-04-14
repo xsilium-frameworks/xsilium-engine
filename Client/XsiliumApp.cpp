@@ -21,6 +21,8 @@ void XsiliumApp::startXsilium()
 		return;
 	XsiliumFramework::getInstance()->loadRessource();
 
+	XsiliumFramework::getInstance()->setupCEGUI();
+
 	XsiliumFramework::getInstance()->m_pLog->logMessage("Xsilium initiliasee!");
 
 	LoginState::create(m_pGameStateManager,"LoginState");

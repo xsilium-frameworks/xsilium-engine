@@ -124,8 +124,6 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 
 	Ogre::Vector3 time = mBasicController->getTime();
 
-	printf("time : %d,%d \n",(int) floor(time.x),(int) floor ( ( time.x - floor(time.x) )*60 ));
-
 	bool day = time.x > time.y && time.x < time.z ;
 	Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
 
