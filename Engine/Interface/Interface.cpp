@@ -9,11 +9,6 @@ Interface::Interface()
 
 Interface::~Interface()
 {
-	if(d_root)
-	{
-		CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
-		d_root->destroy();
-	}
 }
 
 void Interface::toggleVisibility()
@@ -28,11 +23,6 @@ bool Interface::isVisible() const
 
 bool Interface::isActive()
 {
-	CEGUI::Window* windowActuel = CEGUI::System::getSingleton().getDefaultGUIContext().getWindowContainingMouse() ;
-	if ( d_root == windowActuel or d_root->isChild(windowActuel) )
-		isActived = true;
-	else
-		isActived = false;
 	return isActived;
 }
 
@@ -40,21 +30,21 @@ void Interface::initialisationInterface()
 {
 	CEGUI::OgreRenderer* mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
 
-    // set the default resource groups to be used
-    CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-    CEGUI::Font::setDefaultResourceGroup("Fonts");
-    CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-    CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
-    CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-    CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
-    CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
-    // setup default group for validation schemas
-    CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
-    if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
-        parser->setProperty("SchemaDefaultResourceGroup", "schemas");
+	// set the default resource groups to be used
+	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
+	CEGUI::Font::setDefaultResourceGroup("Fonts");
+	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
+	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
+	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+	CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
+	CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
+	// setup default group for validation schemas
+	CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
+	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
+		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
 
-    CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
+	CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
 }
 
 
@@ -75,5 +65,14 @@ void Interface::deleteInterfacePrincipal()
 	CEGUI::WindowManager::getSingleton().destroyWindow(parent);
 }
 
+void Interface::setEvent(const char * typeEvent,const char * message)
+{
+	Event event;
+	std::string typeEvent_str(typeEvent);
+	std::string message_str(message);
+	event.setProperty("eventType",typeEvent_str);
+	event.setProperty("eventData",message_str);
+	eventManager->addEvent(event);
+}
 
 #endif /* INTERFACE_CPP_ */

@@ -29,6 +29,8 @@ public:
 
     void update();
 
+    bool handleMouse(const CEGUI::EventArgs& args);
+
 
 
 private:

@@ -18,6 +18,8 @@ public:
 
 	bool isActive();
 
+	void setEvent(const char * typeEvent,const char * message);
+
 	void update();
 
     void initialisationInterface();

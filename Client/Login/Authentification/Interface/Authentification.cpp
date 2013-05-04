@@ -11,6 +11,7 @@
 Authentification::Authentification() {
 
 	eventManager = new EventManager();
+	messageFlag = false;
 
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
@@ -30,7 +31,9 @@ Authentification::Authentification() {
 
 	frame->getChild("btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&Authentification::PushConnexion, this));
 
-	parent->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Authentification::handleKeyDown, this));
+
+	connectionGlobalEvent = CEGUI::GlobalEventSet::getSingleton().subscribeEvent(CEGUI::Window::EventNamespace + "/" + CEGUI::Window::EventKeyDown,
+			CEGUI::Event::Subscriber(&Authentification::handleKeyDown, this));
 
 
 	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
@@ -47,6 +50,13 @@ Authentification::Authentification() {
 }
 
 Authentification::~Authentification() {
+	connectionGlobalEvent.operator ->()->disconnect();
+	if(d_root)
+	{
+		CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
+		d_root->destroy();
+	}
+	delete gestionnaireAuth ;
 	delete eventManager;
 }
 
@@ -57,7 +67,10 @@ bool Authentification::handleKeyDown(const CEGUI::EventArgs& args)
 	switch(keyEvent.scancode)
 	{
 	case CEGUI::Key::Tab:
-		frame->getChild("edtPassword")->activate();
+		if(frame->getChild("edtUsername")->isActive())
+			frame->getChild("edtPassword")->activate();
+		else
+			frame->getChild("edtUsername")->activate();
 		break;
 	case CEGUI::Key::Return:
 		frame->setAlpha(0.5);
@@ -74,16 +87,22 @@ bool Authentification::handleKeyDown(const CEGUI::EventArgs& args)
 
 void Authentification::update()
 {
+	if( static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"))->getProgress() == 1.0f)
+	{
+		GameStateManager*	m_pGameStateManager = GameStateManager::getInstance();
+		m_pGameStateManager->changeGameState(m_pGameStateManager->findByName("JeuxState"));
+	}
+
 	Event * event = eventManager->getEvent();
 
 	if(event != NULL)
 	{
 		switch(atoi(event->getProperty("eventType").c_str()))
 		{
-		case 0:
+		case MESSAGE:
 			processMessage(event);
 			break;
-		case 1:
+		case PROGRESSION:
 			processProgression(event);
 			break;
 		default:
@@ -96,7 +115,7 @@ void Authentification::update()
 void Authentification::processProgression(Event * event)
 {
 	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
-	progressBar->setProgress( (float)(atof(event->getProperty("progression").c_str()) / 4 ));
+	progressBar->setProgress( (float)(atof(event->getProperty("eventData").c_str()) / 4 ));
 }
 
 void Authentification::processMessage(Event * event)
@@ -105,54 +124,7 @@ void Authentification::processMessage(Event * event)
 	{
 		popupProg->setVisible(false);
 		messageFlag = true;
-	/*	switch (atoi(event->getProperty("typeMessage").c_str()))
-		{
-		case 0:
-			switch (atoi(event->getProperty("message").c_str()))
-			{
-			case 1:
-				popupLogin->getChild("lblMessage")->setText("Les serveur est full dsl ");
-				break;
-			case 2:
-				popupLogin->getChild("lblMessage")->setText("Impossible de se connecter au serveur");
-				break;
-
-			case 3:
-				popupLogin->getChild("lblMessage")->setText("Déconnexion réussie");
-				break;
-
-			default:
-				popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
-				break;
-			}
-			break;
-			case 1:
-				switch (atoi(event->getProperty("message").c_str() ))
-				{
-				case ID_INVALID_ACCOUNT_OR_PASSWORD:
-					popupLogin->getChild("lblMessage")->setText("Le login ou le mot de passe est incorrecte .");
-					break;
-				case ID_CONNECTION_BANNED:
-					popupLogin->getChild("lblMessage")->setText("Votre IP a ete banni .\n Il est imposible de se connecter .");
-					break;
-
-				case ID_COMPTE_BANNIE:
-					popupLogin->getChild("lblMessage")->setText("Votre Compte a ete banni . \n Il est impossible de se connecter .");
-					break;
-				case ID_SEND_VALIDATION:
-					popupLogin->getChild("lblMessage")->setText("Vous avez correctement ete authentifier .");
-					break;
-
-				default:
-					popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
-
-					break;
-				}
-				break;
-				default:
-					popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
-					break;
-		} */
+		popupLogin->getChild("lblMessage")->setText(event->getProperty("eventData").c_str());
 		popupLogin->setVisible("true");
 		popupLogin->activate();
 		popupLogin->setAlwaysOnTop(true);

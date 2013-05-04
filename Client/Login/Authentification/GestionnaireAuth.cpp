@@ -12,6 +12,7 @@ GestionnaireAuth::GestionnaireAuth(Interface * interface) {
 
 	this->interface = interface;
 	networkManager = NetworkManager::getInstance();
+	networkManager->addNetworkListener(this,"GestionnaireAuth");
 
 	compte = Compte::getInstance();
 }
@@ -21,25 +22,6 @@ GestionnaireAuth::~GestionnaireAuth() {
 	networkManager->removeNetworkListener("GestionnaireAuth");
 	networkManager->disconnexion();
 
-}
-
-
-void GestionnaireAuth::InitialisationAuth()
-{
-	if (!networkManager->isConnected())
-	{
-		int messageErreur = networkManager->connexionToHost("85.25.251.97",60000);
-		if( messageErreur > 0)
-		{
-			printf("erreur de connection: %d \n",messageErreur);
-			//login->setMessage(0,messageErreur);
-		}
-		else
-		{
-			networkManager->addNetworkListener(this,"GestionnaireAuth");
-			//login->setProgression(2);
-		}
-	}
 }
 
 void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
@@ -62,19 +44,22 @@ void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
 
 bool GestionnaireAuth::sendAuthentification()
 {
-		sAuthLogonChallenge_C message;
-		message.structure_opcode.cmd = XSILIUM_AUTH;
-		message.structure_opcode.opcode = ID_SEND_USER;
-		message.build = compte->getVersion();
-		message.login_len = std::strlen(compte->getLogin());
-		std::strcpy(message.login,compte->getLogin());
-		return networkManager->sendToHost( (const void *)&message,sizeof(message));
+	sAuthLogonChallenge_C message;
+	message.structure_opcode.cmd = XSILIUM_AUTH;
+	message.structure_opcode.opcode = ID_SEND_USER;
+	message.build = compte->getVersion();
+	message.login_len = std::strlen(compte->getLogin());
+	std::strcpy(message.login,compte->getLogin());
+	return networkManager->sendToHost( (const void *)&message,sizeof(message));
 }
 
 
 void GestionnaireAuth::setLoginPwd(const char * user,const char * password)
 {
-	InitialisationAuth();
+	if (!networkManager->isConnected())
+	{
+		return;
+	}
 
 	if (std::strcmp(user,compte->getLogin()) == 0)
 	{
@@ -88,6 +73,7 @@ void GestionnaireAuth::setLoginPwd(const char * user,const char * password)
 
 void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 {
+
 	switch(event)
 	{
 	case ENET_EVENT_TYPE_RECEIVE:
@@ -101,22 +87,25 @@ void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 			{
 			case ID_SEND_CHALLENGE :
 				compte->setEtapeDeLogin(2);
-				//login->setProgression(3);
+				interface->setEvent("1","3");
 				handleEtapeDeux(packet);
 				break;
 			case ID_INVALID_ACCOUNT_OR_PASSWORD:
+				interface->setEvent("0","Le login ou le mot de passe est incorrecte .");
 				//login->setMessage(1,ID_INVALID_ACCOUNT_OR_PASSWORD);
 				break;
 			case ID_SEND_VALIDATION :
-				//login->setProgression(4);
-				////login->setMessage(1,ID_SEND_VALIDATION);
-				break;
+			{
+				interface->setEvent("1","4");
+				//login->setMessage(1,ID_SEND_VALIDATION);
+			}
+			break;
 			case ID_CONNECTION_BANNED:
-				//login->setMessage(1,ID_CONNECTION_BANNED);
+				interface->setEvent("0","Votre IP a ete banni .\n Il est imposible de se connecter .");
 				networkManager->disconnexion();
 				break;
 			case ID_COMPTE_BANNIE:
-				//login->setMessage(1,ID_COMPTE_BANNIE);
+				interface->setEvent("0","Votre Compte a ete banni . \n Il est impossible de se connecter .");
 				networkManager->disconnexion();
 				break;
 
@@ -126,9 +115,9 @@ void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 			}
 		}
 	}
-		break;
+	break;
 	case ENET_EVENT_TYPE_DISCONNECT:
-		//login->setMessage(0,3);
+		interface->setEvent("0","Déconnexion réussie");
 		break;
 	default:
 		break;
