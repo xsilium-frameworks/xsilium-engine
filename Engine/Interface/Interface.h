@@ -20,6 +20,10 @@ public:
 
 	void update();
 
+    void initialisationInterface();
+	void interfacePrincipal();
+	void deleteInterfacePrincipal();
+
 
 protected:
     CEGUI::Window* d_root;

@@ -10,6 +10,7 @@
 #define AUTHENTIFICATION_H_
 
 #include "Interface/Interface.h"
+#include "Authentification/GestionnaireAuth.h"
 
 
 /*
@@ -20,9 +21,6 @@ class Authentification : public Interface
 public:
 	Authentification();
 	virtual ~Authentification();
-
-    void setMessage(int typeMessage ,int message);
-    void setProgression(int progression);
 
     void processMessage(Event * event);
     void processProgression(Event * event);
@@ -39,6 +37,10 @@ private:
 	CEGUI::Window* frame;
 	CEGUI::Window* popupLogin;
 	CEGUI::Window* popupProg;
+
+	GestionnaireAuth * gestionnaireAuth ;
+
+	bool messageFlag;
 };
 
 #endif /* AUTHENTIFICATION_H_ */

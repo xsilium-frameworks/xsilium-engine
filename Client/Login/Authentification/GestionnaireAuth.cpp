@@ -1,29 +1,30 @@
 /*
- * \file Authentification.cpp
+ * \file GestionnaireAuth.cpp
  *
  *  Created on: \date 25 juin 2012
  *      Author: \author joda
  *  \brief :
  */
 
-#include "Authentification.h"
-Authentification::Authentification(LoginState *login) {
+#include "GestionnaireAuth.h"
 
-	this->login = login;
+GestionnaireAuth::GestionnaireAuth(Interface * interface) {
+
+	this->interface = interface;
 	networkManager = NetworkManager::getInstance();
 
 	compte = Compte::getInstance();
 }
 
-Authentification::~Authentification() {
+GestionnaireAuth::~GestionnaireAuth() {
 
-	networkManager->removeNetworkListener("Authentification");
+	networkManager->removeNetworkListener("GestionnaireAuth");
 	networkManager->disconnexion();
 
 }
 
 
-void Authentification::InitialisationAuth()
+void GestionnaireAuth::InitialisationAuth()
 {
 	if (!networkManager->isConnected())
 	{
@@ -31,17 +32,17 @@ void Authentification::InitialisationAuth()
 		if( messageErreur > 0)
 		{
 			printf("erreur de connection: %d \n",messageErreur);
-			login->setMessage(0,messageErreur);
+			//login->setMessage(0,messageErreur);
 		}
 		else
 		{
-			networkManager->addNetworkListener(this,"Authentification");
-			login->setProgression(2);
+			networkManager->addNetworkListener(this,"GestionnaireAuth");
+			//login->setProgression(2);
 		}
 	}
 }
 
-void Authentification::handleEtapeDeux(ENetEvent * packet)
+void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
 {
 	if (packet->packet->dataLength < sizeof(sAuthLogonChallenge_S))
 	{
@@ -59,7 +60,7 @@ void Authentification::handleEtapeDeux(ENetEvent * packet)
 	networkManager->sendToHost( (const void *)&message2,sizeof(message2));
 }
 
-bool Authentification::sendAuthentification()
+bool GestionnaireAuth::sendAuthentification()
 {
 		sAuthLogonChallenge_C message;
 		message.structure_opcode.cmd = XSILIUM_AUTH;
@@ -71,7 +72,7 @@ bool Authentification::sendAuthentification()
 }
 
 
-void Authentification::setLoginPwd(const char * user,const char * password)
+void GestionnaireAuth::setLoginPwd(const char * user,const char * password)
 {
 	InitialisationAuth();
 
@@ -85,7 +86,7 @@ void Authentification::setLoginPwd(const char * user,const char * password)
 	sendAuthentification();
 }
 
-void Authentification::updateNetwork(int event ,ENetEvent * packet)
+void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 {
 	switch(event)
 	{
@@ -100,22 +101,22 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 			{
 			case ID_SEND_CHALLENGE :
 				compte->setEtapeDeLogin(2);
-				login->setProgression(3);
+				//login->setProgression(3);
 				handleEtapeDeux(packet);
 				break;
 			case ID_INVALID_ACCOUNT_OR_PASSWORD:
-				login->setMessage(1,ID_INVALID_ACCOUNT_OR_PASSWORD);
+				//login->setMessage(1,ID_INVALID_ACCOUNT_OR_PASSWORD);
 				break;
 			case ID_SEND_VALIDATION :
-				login->setProgression(4);
-				//login->setMessage(1,ID_SEND_VALIDATION);
+				//login->setProgression(4);
+				////login->setMessage(1,ID_SEND_VALIDATION);
 				break;
 			case ID_CONNECTION_BANNED:
-				login->setMessage(1,ID_CONNECTION_BANNED);
+				//login->setMessage(1,ID_CONNECTION_BANNED);
 				networkManager->disconnexion();
 				break;
 			case ID_COMPTE_BANNIE:
-				login->setMessage(1,ID_COMPTE_BANNIE);
+				//login->setMessage(1,ID_COMPTE_BANNIE);
 				networkManager->disconnexion();
 				break;
 
@@ -127,7 +128,7 @@ void Authentification::updateNetwork(int event ,ENetEvent * packet)
 	}
 		break;
 	case ENET_EVENT_TYPE_DISCONNECT:
-		login->setMessage(0,3);
+		//login->setMessage(0,3);
 		break;
 	default:
 		break;

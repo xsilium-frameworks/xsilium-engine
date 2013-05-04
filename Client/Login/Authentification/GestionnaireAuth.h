@@ -1,13 +1,13 @@
 /*
- * \file Authentification.h
+ * \file GestionnaireAuth.h
  *
  *  Created on: \date 25 juin 2012
  *      Author: \author joda
  *  \brief :
  */
 
-#ifndef AUTHENTIFICATION_H_
-#define AUTHENTIFICATION_H_
+#ifndef GESTIONNAIREAUTH_H_
+#define GESTIONNAIREAUTH_H_
 
 #include "StructurePacket/PacketAuth.h"
 #include "Shared/Network/Opcode.h"
@@ -15,21 +15,20 @@
 #include "Network/NetworkListener.h"
 #include <sstream>
 #include <cstring>
-#include "Login/LoginState.h"
+
+#include "Interface/Interface.h"
 
 #include "Compte/Compte.h"
-
-class LoginState;
 
 
 /*
  *
  */
-class Authentification : public NetworkListener {
+class GestionnaireAuth : public NetworkListener {
 
 public:
-	Authentification(LoginState *login);
-	virtual ~Authentification();
+	GestionnaireAuth(Interface * interface);
+	virtual ~GestionnaireAuth();
 
 	void InitialisationAuth();
 
@@ -44,10 +43,10 @@ public:
 
 private:
 	NetworkManager * networkManager;
-	LoginState *login;
 	ENetEvent eventAuth;
+	Interface * interface;
 	Compte * compte;
 
 };
 
-#endif /* AUTHENTIFICATION_H_ */
+#endif /* GESTIONNAIREAUTH_H_ */

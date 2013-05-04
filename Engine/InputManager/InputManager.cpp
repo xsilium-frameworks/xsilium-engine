@@ -283,7 +283,6 @@ bool InputManager::keyPressed( const OIS::KeyEvent &e ) {
 
 	CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key));
 
-
 	CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(e.text);
 
 	for(; itKeyListener != itKeyListenerEnd; ++itKeyListener ) {
