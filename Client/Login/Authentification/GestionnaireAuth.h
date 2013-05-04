@@ -30,8 +30,6 @@ public:
 	GestionnaireAuth(Interface * interface);
 	virtual ~GestionnaireAuth();
 
-	void InitialisationAuth();
-
 	void handleEtapeDeux(ENetEvent * packet);
 
 	bool sendAuthentification();

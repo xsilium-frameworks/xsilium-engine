@@ -18,6 +18,8 @@ JeuxState::JeuxState()
 
     inputManager = InputManager::getSingletonPtr();
     keyboardMap = KeyboardMap::getInstance();
+
+	interface = new Interface();
 }
 
 
@@ -56,9 +58,10 @@ void JeuxState::exit()
 {
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
+
     delete chat;
     delete gestionnaireMeteo;
-
+    interface->deleteInterfacePrincipal();
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
@@ -66,11 +69,12 @@ void JeuxState::exit()
 
     inputManager->removeKeyListener(this);
     inputManager->removeMouseListener(this);
+    delete interface;
 }
 
 void JeuxState::buildGUI()
 {
-
+	interface->interfacePrincipal();
     chat = new Chat();
 }
 

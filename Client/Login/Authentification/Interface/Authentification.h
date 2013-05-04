@@ -12,6 +12,14 @@
 #include "Interface/Interface.h"
 #include "Authentification/GestionnaireAuth.h"
 
+#include "GameState/GameStateManager.h"
+
+
+enum eventType
+{
+	MESSAGE = 0,
+	PROGRESSION
+};
 
 /*
  *
@@ -37,6 +45,8 @@ private:
 	CEGUI::Window* frame;
 	CEGUI::Window* popupLogin;
 	CEGUI::Window* popupProg;
+
+	CEGUI::Event::Connection connectionGlobalEvent;
 
 	GestionnaireAuth * gestionnaireAuth ;
 

@@ -6,14 +6,6 @@
 #include "string.h"
 
 
-class Authentification;
-
-enum eventType
-{
-	MESSAGE = 0,
-	PROGRESSION
-};
-
 class LoginState : public OIS::KeyListener,public GameState
 {
 public:
@@ -36,6 +28,8 @@ public:
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
 	void update(double timeSinceLastFrame);
+
+	void initialisationNetwork();
 
 private:
 	bool m_bQuit;

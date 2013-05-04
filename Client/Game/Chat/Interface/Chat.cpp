@@ -25,6 +25,8 @@ d_historyPos(0)
 	d_root->getChild("Editbox")->
 			subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
 
+	parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
+
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
@@ -34,6 +36,11 @@ Chat::~Chat()
 {
 	delete gestionnaireChat;
 	delete eventManager;
+	if(d_root)
+	{
+		CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
+		d_root->destroy();
+	}
 }
 
 bool Chat::setMessage(const char * message)
@@ -134,6 +141,17 @@ bool Chat::handleKeyDown(const CEGUI::EventArgs& args)
 
 	return true;
 }
+
+bool Chat::handleMouse(const CEGUI::EventArgs& args)
+{
+	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(d_root->getChild("Editbox"));
+
+	isActived = false;
+	editbox->deactivate();
+
+	return true;
+}
+
 
 void Chat::update()
 {

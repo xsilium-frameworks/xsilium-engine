@@ -8,6 +8,7 @@ LoginState::LoginState()
 	m_bQuit         = false;
 	inputManager = InputManager::getSingletonPtr();
 	m_FrameEvent    = Ogre::FrameEvent();
+	interface = new Interface();
 }
 
 void LoginState::enter()
@@ -33,6 +34,7 @@ void LoginState::enter()
 	buildGUI();
 	createScene();
 
+	initialisationNetwork();
 
 }
 
@@ -66,6 +68,9 @@ void LoginState::exit()
 	XsiliumFramework::getInstance()->m_pLog->logMessage("destruction scene...");
 
 	delete auth;
+	delete interface;
+
+	NetworkManager::getInstance()->disconnexion();
 }
 
 bool LoginState::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -86,6 +91,25 @@ bool LoginState::keyReleased(const OIS::KeyEvent &keyEventRef)
 	return true;
 }
 
+void LoginState::initialisationNetwork()
+{
+	NetworkManager * networkManager = NetworkManager::getInstance();
+	if (!networkManager->isConnected())
+	{
+		int messageErreur = networkManager->connexionToHost("85.25.251.97",60000);
+		if( messageErreur == 1)
+		{
+			XsiliumFramework::getInstance()->m_pLog->logMessage("erreur de connexion : Le serveur est plein desoler ");
+			auth->setEvent("0","Le serveur est plein desoler");
+		}
+		if( messageErreur == 2)
+		{
+			XsiliumFramework::getInstance()->m_pLog->logMessage("erreur de connexion : Impossible de se connecter au serveur");
+			auth->setEvent("0","Impossible de se connecter au serveur");
+		}
+	}
+}
+
 void LoginState::update(double timeSinceLastFrame)
 {
 	m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
@@ -100,8 +124,7 @@ void LoginState::update(double timeSinceLastFrame)
 		shutdown();
 		return;
 	}
-		//changeGameState(findByName("JeuxState"));
-
+	auth->update();
 }
 
 

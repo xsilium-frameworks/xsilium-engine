@@ -4,7 +4,9 @@
 #include "GameState.h"
 #include "Singleton/Singleton.h"
 
-class GameStateManager : public GameStateListener{
+class GameStateManager : public GameStateListener, public xsilium::Singleton<GameStateManager> {
+
+	friend class xsilium::Singleton<GameStateManager>;
 
 public:
 	typedef struct

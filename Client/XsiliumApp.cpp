@@ -2,7 +2,7 @@
 
 XsiliumApp::XsiliumApp()
 {
-	m_pGameStateManager = new GameStateManager();
+	m_pGameStateManager = GameStateManager::getInstance();
 
 	compte = Compte::getInstance();
 
@@ -10,7 +10,7 @@ XsiliumApp::XsiliumApp()
 
 XsiliumApp::~XsiliumApp()
 {
-	delete m_pGameStateManager;
+	GameStateManager::DestroyInstance();
 	Compte::DestroyInstance();
     XsiliumFramework::DestroyInstance();
 }
