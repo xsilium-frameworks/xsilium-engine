@@ -10,6 +10,8 @@
 
 Authentification::Authentification() {
 
+	eventManager = new EventManager();
+
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
@@ -28,6 +30,8 @@ Authentification::Authentification() {
 
 	frame->getChild("btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&Authentification::PushConnexion, this));
 
+	parent->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Authentification::handleKeyDown, this));
+
 
 	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
 	progressBar->setProgress(0.25);
@@ -38,17 +42,18 @@ Authentification::Authentification() {
 
 	frame->getChild("edtUsername")->activate();
 
+	gestionnaireAuth = new GestionnaireAuth(this);
+
 }
 
 Authentification::~Authentification() {
-	// TODO Auto-generated destructor stub
+	delete eventManager;
 }
 
 bool Authentification::handleKeyDown(const CEGUI::EventArgs& args)
 {
 	const CEGUI::KeyEventArgs& keyEvent = static_cast<const CEGUI::KeyEventArgs&>(args);
 
-	if (CEGUI::Key::Escape == keyEvent.scancode)
 	switch(keyEvent.scancode)
 	{
 	case CEGUI::Key::Tab:
@@ -59,7 +64,9 @@ bool Authentification::handleKeyDown(const CEGUI::EventArgs& args)
 		popupProg->setVisible("true");
 		popupProg->activate();
 		popupProg->setAlwaysOnTop(true);
-		auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
+		gestionnaireAuth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
+		break;
+	default:
 		break;
 	}
 	return true;
@@ -86,24 +93,6 @@ void Authentification::update()
 	}
 }
 
-void Authentification::setMessage(int typeMessage ,int message)
-{
-	Event event;
-	event.setProperty("eventType",ToString(MESSAGE));
-	event.setProperty("typeMessage",ToString(typeMessage));
-	event.setProperty("message",ToString(message));
-
-	eventManager->addEvent(event);
-}
-
-void Authentification::setProgression(int progression)
-{
-	Event event;
-	event.setProperty("eventType",ToString(PROGRESSION));
-	event.setProperty("progression",ToString(progression));
-	eventManager->addEvent(event);
-}
-
 void Authentification::processProgression(Event * event)
 {
 	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
@@ -116,7 +105,7 @@ void Authentification::processMessage(Event * event)
 	{
 		popupProg->setVisible(false);
 		messageFlag = true;
-		switch (atoi(event->getProperty("typeMessage").c_str()))
+	/*	switch (atoi(event->getProperty("typeMessage").c_str()))
 		{
 		case 0:
 			switch (atoi(event->getProperty("message").c_str()))
@@ -163,7 +152,7 @@ void Authentification::processMessage(Event * event)
 				default:
 					popupLogin->getChild("lblMessage")->setText("Erreur inconnue");
 					break;
-		}
+		} */
 		popupLogin->setVisible("true");
 		popupLogin->activate();
 		popupLogin->setAlwaysOnTop(true);
@@ -178,7 +167,7 @@ bool Authentification::PushConnexion(const CEGUI::EventArgs &e)
 	popupProg->setVisible("true");
 	popupProg->activate();
 	popupProg->setAlwaysOnTop(true);
-	auth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
+	gestionnaireAuth->setLoginPwd(frame->getChild("edtUsername")->getText().c_str(),frame->getChild("edtPassword")->getText().c_str());
 	return true;
 }
 

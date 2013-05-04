@@ -6,6 +6,8 @@ Chat::Chat() :
 d_historyPos(0)
 {
 
+	eventManager = new EventManager();
+
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
@@ -14,8 +16,6 @@ d_historyPos(0)
 
 	// we will destroy the console box windows ourselves
 	d_root->setDestroyedByParent(false);
-
-	eventManager = new EventManager();
 
 	gestionnaireChat = new GestionnaireChat(this);
 
@@ -33,6 +33,7 @@ d_historyPos(0)
 Chat::~Chat()
 {
 	delete gestionnaireChat;
+	delete eventManager;
 }
 
 bool Chat::setMessage(const char * message)

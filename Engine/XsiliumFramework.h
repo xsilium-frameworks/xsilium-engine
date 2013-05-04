@@ -38,8 +38,6 @@ public:
 
 	void loadRessource();
 
-	void setupCEGUI();
-
 	Ogre::Root*					m_pRoot;
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Viewport*				m_pViewport;

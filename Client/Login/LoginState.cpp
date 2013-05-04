@@ -45,6 +45,8 @@ void LoginState::createScene()
 
 void LoginState::buildGUI()
 {
+	interface->initialisationInterface();
+	interface->interfacePrincipal();
 	auth = new Authentification();
 }
 
@@ -55,6 +57,8 @@ void LoginState::exit()
 	m_pSceneMgr->destroyCamera(m_pCamera);
 
 	inputManager->removeKeyListener(this);
+
+	interface->deleteInterfacePrincipal();
 
 
 	if(m_pSceneMgr)

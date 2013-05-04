@@ -20,7 +20,8 @@ set(CORE_SOURCE_FILES
     XsiliumApp.cpp
     Game/Chat/Interface/Chat.cpp
     Game/Chat/GestionnaireChat/GestionnaireChat.cpp
-    Login/Authentification/Authentification.cpp
+    Login/Authentification/interface/Authentification.cpp
+    Login/Authentification/GestionnaireAuth.cpp
     Game/GestionnaireMeteo/GestionnaireMeteo.cpp
     Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
     Game/JeuxState.cpp
@@ -33,7 +34,8 @@ set(CORE_HEADER_FILES
     Game/Chat/Interface/Chat.h
     Game/Chat/StructurePacket/PacketChat.h
     Game/Chat/GestionnaireChat/GestionnaireChat.h
-    Login/Authentification/Authentification.h
+    Login/Authentification/GestionnaireAuth.h
+    Login/Authentification/interface/Authentification.h
     Login/ListOfMessage/ListOfMessage.h
     Game/GestionnaireMeteo/GestionnaireMeteo.h
     Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h

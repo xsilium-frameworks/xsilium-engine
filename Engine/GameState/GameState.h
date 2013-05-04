@@ -5,6 +5,7 @@
 #include "InputManager/InputManager.h"
 #include "DotSceneLoader/DotSceneLoader.h"
 #include "EventManager/EventManager.h"
+#include "Interface/Interface.h"
 
 class GameState;
 
@@ -56,6 +57,7 @@ protected:
     Ogre::FrameEvent            m_FrameEvent;
     Ogre::RenderWindow* 		m_Window;
     EventManager * eventManager ;
+    Interface * interface;
 
 };
 
