@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <GUIScheme version="5" name="AlfiskoSkin">
-    <Font filename="DejaVuSans-10.font" />
+    <Font filename="DejaVuSans-12.font" />
     <Imageset filename="AlfiskoSkin.imageset" />
     <LookNFeel filename="AlfiskoSkin.looknfeel" />
     <WindowRendererSet filename="CEGUICoreWindowRendererSet" />
@@ -25,8 +25,6 @@
 	<FalagardMapping windowType="AlfiskoSkin/VerticalSlider" targetType="CEGUI/Slider" renderer="Core/Slider" lookNFeel="AlfiskoSkin/VerticalSlider" />
 
 	<FalagardMapping windowType="AlfiskoSkin/MenuItem" targetType="CEGUI/MenuItem" renderer="Core/MenuItem" lookNFeel="AlfiskoSkin/MenuItem" />
-
-	<FalagardMapping windowType="AlfiskoSkin/MultiColumnList" targetType="CEGUI/MultiColumnList" renderer="Core/MultiColumnList" lookNFeel="AlfiskoSkin/MultiColumnList" />
 <!--
 	<FalagardMapping windowType="AlfiskoSkin/Menubar" targetType="CEGUI/Menubar" renderer="Core/Menubar" lookNFeel="AlfiskoSkin/Menubar" />
 	<FalagardMapping windowType="AlfiskoSkin/PopupMenu" targetType="CEGUI/PopupMenu" renderer="Core/PopupMenu" lookNFeel="AlfiskoSkin/PopupMenu" />
@@ -46,7 +44,7 @@
 
 	<FalagardMapping windowType="AlfiskoSkin/ListHeaderSegment" targetType="CEGUI/ListHeaderSegment" renderer="Core/ListHeaderSegment" lookNFeel="AlfiskoSkin/ListHeaderSegment" />
 	<FalagardMapping windowType="AlfiskoSkin/ListHeader" targetType="CEGUI/ListHeader" renderer="Core/ListHeader" lookNFeel="AlfiskoSkin/ListHeader" />
-
+	<FalagardMapping windowType="AlfiskoSkin/MultiColumnList" targetType="CEGUI/MultiColumnList" renderer="Core/MultiColumnList" lookNFeel="AlfiskoSkin/MultiColumnList" />
 
 	<FalagardMapping windowType="AlfiskoSkin/ScrollablePane" targetType="CEGUI/ScrollablePane" renderer="Core/ScrollablePane" lookNFeel="AlfiskoSkin/ScrollablePane" />
 

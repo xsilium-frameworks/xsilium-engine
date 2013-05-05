@@ -20,8 +20,6 @@ GestionnaireAuth::GestionnaireAuth(Interface * interface) {
 GestionnaireAuth::~GestionnaireAuth() {
 
 	networkManager->removeNetworkListener("GestionnaireAuth");
-	networkManager->disconnexion();
-
 }
 
 void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)

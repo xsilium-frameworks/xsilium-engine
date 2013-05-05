@@ -17,6 +17,7 @@
     <Image height="5" name="EditboxTR" width="5" xPos="677" yPos="257" />
     <Image height="26" name="MouseMove" width="24" xPos="108" yPos="546" />
     <Image height="22" name="MouseNeSw" width="22" xPos="137" yPos="549" />
+    <Image height="6" name="NewImage1" width="6" xPos="218" yPos="426" />
     <Image height="23" name="MouseArrow" width="14" xPos="85" yPos="548" />
     <Image height="24" name="WindowFill" width="663" xPos="9" yPos="224" />
     <Image height="12" name="EditboxFill" width="132" xPos="545" yPos="262" />
@@ -180,32 +181,4 @@
     <Image height="12" name="TitlebarInactiveFill2" width="673" xPos="5" yPos="91" />
     <Image height="7" name="VertSliderThumbNormal" width="25" xPos="0" yPos="533" />
     <Image height="7" name="VertSliderThumbPushed" width="25" xPos="0" yPos="360" />
-    <Image height="8" name="MultiColumnLeftTitle" width="5" xPos="0" yPos="638" />
-    <Image height="9" name="MultiColumnLeftTitleUpCorner" width="11" xPos="0" yPos="629" />
-    <Image height="9" name="MultiColumnLeftTitleDownCorner" width="11" xPos="0" yPos="646" />
-    <Image height="4" name="MultiColumnLeftTitleUp" width="129" xPos="11" yPos="629" />
-    <Image height="10" name="MultiColumnLeftTitleFillUp" width="138" xPos="2" yPos="633" />
-    <Image height="9" name="MultiColumnLeftTitleFillDown" width="138" xPos="2" yPos="643" />
-    <Image height="3" name="MultiColumnLeftTitleDown" width="129" xPos="11" yPos="652" />
-    <Image height="4" name="MultiColumnMiddleTitleUp" width="212" xPos="140" yPos="629" />
-    <Image height="10" name="MultiColumnMiddleTitleFillUp" width="212" xPos="140" yPos="633" />
-    <Image height="9" name="MultiColumnMiddleTitleFillDown" width="212" xPos="140" yPos="643" />
-    <Image height="3" name="MultiColumnMiddleTitleDown" width="212" xPos="140" yPos="652" />
-    <Image height="9" name="MultiColumnRightTitleUpCorner" width="11" xPos="469" yPos="629" />
-    <Image height="9" name="MultiColumnRightTitleDownCorner" width="11" xPos="469" yPos="646" />
-    <Image height="8" name="MultiColumnRightTitle" width="5" xPos="475" yPos="638" />
-    <Image height="4" name="MultiColumnRightTitleUp" width="118" xPos="352" yPos="629" />
-    <Image height="3" name="MultiColumnRightTitleDown" width="118" xPos="352" yPos="652" />
-    <Image height="10" name="MultiColumnRightTitleFillUp" width="124" xPos="352" yPos="633" />
-    <Image height="9" name="MultiColumnRightTitleFillDown" width="124" xPos="352" yPos="643" />
-    <Image height="5" name="MultiColumnRightBodyCornerUp" width="11" xPos="469" yPos="652" />
-    <Image height="5" name="MultiColumnLeftBodyCornerUp" width="11" xPos="0" yPos="652" />
-    <Image height="5" name="MultiColumnLeftBodyCornerDown" width="11" xPos="0" yPos="816" />
-    <Image height="5" name="MultiColumnRIghtBodyCornerDown" width="11" xPos="469" yPos="816" />
-    <Image height="19" name="MultiColumnLeftBodyFill" width="140" xPos="0" yPos="655" />
-    <Image height="21" name="MultiColumnLeftBodyFillSelected" width="140" xPos="0" yPos="674" />
-    <Image height="21" name="MultiColumnMiddleBodyFillSelected" width="212" xPos="140" yPos="674" />
-    <Image height="19" name="MultiColumnMiddleBodyFill" width="212" xPos="140" yPos="655" />
-    <Image height="21" name="MultiColumnRightBodyFillSelected" width="128" xPos="352" yPos="674" />
-    <Image height="19" name="MultiColumnRightBodyFill" width="128" xPos="352" yPos="655" />
 </Imageset>

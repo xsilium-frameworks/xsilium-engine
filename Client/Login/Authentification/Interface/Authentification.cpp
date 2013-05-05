@@ -17,7 +17,7 @@ Authentification::Authentification() {
 
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 
-	d_root = winMgr.loadLayoutFromFile("XsiliumLogin.layout");
+	d_root = winMgr.loadLayoutFromFile("Login.layout");
 
 	frame = d_root->getChild("LoginForm");
 
@@ -32,8 +32,7 @@ Authentification::Authentification() {
 	frame->getChild("btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&Authentification::PushConnexion, this));
 
 
-	connectionGlobalEvent = CEGUI::GlobalEventSet::getSingleton().subscribeEvent(CEGUI::Window::EventNamespace + "/" + CEGUI::Window::EventKeyDown,
-			CEGUI::Event::Subscriber(&Authentification::handleKeyDown, this));
+	parent->subscribeEvent(CEGUI::FrameWindow::EventKeyUp,CEGUI::Event::Subscriber(&Authentification::handleKeyUp, this));
 
 
 	CEGUI::ProgressBar* progressBar = static_cast<CEGUI::ProgressBar*>(popupProg->getChild("ProgressBar"));
@@ -43,14 +42,14 @@ Authentification::Authentification() {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	frame->getChild("edtUsername")->activate();
+
+	parent->activate();
 
 	gestionnaireAuth = new GestionnaireAuth(this);
 
 }
 
 Authentification::~Authentification() {
-	connectionGlobalEvent.operator ->()->disconnect();
 	if(d_root)
 	{
 		CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
@@ -60,7 +59,7 @@ Authentification::~Authentification() {
 	delete eventManager;
 }
 
-bool Authentification::handleKeyDown(const CEGUI::EventArgs& args)
+bool Authentification::handleKeyUp(const CEGUI::EventArgs& args)
 {
 	const CEGUI::KeyEventArgs& keyEvent = static_cast<const CEGUI::KeyEventArgs&>(args);
 
@@ -93,22 +92,26 @@ void Authentification::update()
 		m_pGameStateManager->changeGameState(m_pGameStateManager->findByName("JeuxState"));
 	}
 
-	Event * event = eventManager->getEvent();
-
-	if(event != NULL)
+	if(eventManager)
 	{
-		switch(atoi(event->getProperty("eventType").c_str()))
+
+		Event * event = eventManager->getEvent();
+
+		if(event != NULL)
 		{
-		case MESSAGE:
-			processMessage(event);
-			break;
-		case PROGRESSION:
-			processProgression(event);
-			break;
-		default:
-			break;
+			switch(atoi(event->getProperty("eventType").c_str()))
+			{
+			case MESSAGE:
+				processMessage(event);
+				break;
+			case PROGRESSION:
+				processProgression(event);
+				break;
+			default:
+				break;
+			}
+			eventManager->removeEvent();
 		}
-		eventManager->removeEvent();
 	}
 }
 

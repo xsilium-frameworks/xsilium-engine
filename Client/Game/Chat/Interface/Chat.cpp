@@ -12,7 +12,7 @@ d_historyPos(0)
 
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 
-	d_root = winMgr.loadLayoutFromFile("XsiliumConsole.layout");
+	d_root = winMgr.loadLayoutFromFile("Console.layout");
 
 	// we will destroy the console box windows ourselves
 	d_root->setDestroyedByParent(false);
@@ -20,7 +20,7 @@ d_historyPos(0)
 	gestionnaireChat = new GestionnaireChat(this);
 
 	// Do events wire-up
-	d_root->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
+	parent->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
 
 	d_root->getChild("Editbox")->
 			subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
@@ -29,6 +29,8 @@ d_historyPos(0)
 
 	// attach this window if parent is valid
 	parent->addChild(d_root);
+
+	parent->activate();
 
 }
 
@@ -92,6 +94,8 @@ bool Chat::handleSubmit(const CEGUI::EventArgs&)
 		// erase text in text entry box.
 		editbox->setText("");
 	}
+	isActived = false;
+	editbox->deactivate();
 
 	return true;
 }
@@ -134,7 +138,12 @@ bool Chat::handleKeyDown(const CEGUI::EventArgs& args)
 
 		editbox->activate();
 		break;
-
+	case Key::Return:
+		if(!editbox->isActive())
+		{
+			editbox->activate();
+			isActived = true;
+		}
 	default:
 		return false;
 	}

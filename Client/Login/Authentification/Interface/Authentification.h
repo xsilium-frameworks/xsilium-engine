@@ -37,7 +37,7 @@ public:
     bool CloseButton(const CEGUI::EventArgs &e);
 
 
-    bool handleKeyDown(const CEGUI::EventArgs& args);
+    bool handleKeyUp(const CEGUI::EventArgs& args);
 
     void update();
 
