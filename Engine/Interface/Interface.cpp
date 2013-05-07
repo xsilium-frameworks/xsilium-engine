@@ -63,6 +63,7 @@ void Interface::deleteInterfacePrincipal()
 {
 	CEGUI::Window * parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 	CEGUI::WindowManager::getSingleton().destroyWindow(parent);
+	parent->destroy();
 }
 
 void Interface::setEvent(const char * typeEvent,const char * message)
