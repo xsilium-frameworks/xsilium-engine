@@ -74,6 +74,7 @@ void JeuxState::exit()
 
 void JeuxState::buildGUI()
 {
+	interface->initialisationInterface();
 	interface->interfacePrincipal();
     chat = new Chat();
 }
