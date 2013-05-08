@@ -12,6 +12,7 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 	this->chatUI = chatUI ;
 
 	networkManager = NetworkManager::getInstance();
+	compte = Compte::getInstance();
 
 	int messageErreur = networkManager->connexionToHost("85.25.251.97",60001);
 
@@ -66,7 +67,7 @@ void GestionnaireChat::sendMessageToChat(const char * message, int to)
 	messagePacket.structure_opcode.opcode = ID_CHAT ;
 	messagePacket.typeChat = 0;
 
-	std::strcpy(messagePacket.perso,"Joda");
+	std::strcpy(messagePacket.perso,compte->getLogin());
 	std::strcpy(messagePacket.message,message);
 
 	networkManager->sendToHost((const void *)&messagePacket,sizeof(messagePacket) + 1);

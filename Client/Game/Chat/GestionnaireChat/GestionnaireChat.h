@@ -17,6 +17,8 @@
 
 #include "Game/Chat/StructurePacket/PacketChat.h"
 
+#include "Compte/Compte.h"
+
 class Chat;
 
 /*
@@ -36,6 +38,7 @@ public:
 private:
 	NetworkManager * networkManager;
 	Chat * chatUI;
+	Compte * compte;
 
 };
 
