@@ -10,6 +10,7 @@
 #define COMPTE_H_
 
 #include <stdint.h>
+#include <string>
 
 #include "Singleton/Singleton.h"
 
@@ -41,11 +42,11 @@ public:
 
 private:
     uint16_t  version;
-    const char * platform;
-    const char *   os;
-    const char *   country;
-    const char * login;
-    const char * password;
+    std::string platform;
+    std::string   os;
+    std::string   country;
+    std::string login;
+    std::string password;
     uint8_t etapeDeLogin;
 
 };
