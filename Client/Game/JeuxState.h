@@ -20,6 +20,8 @@
 
 #include "GestionnaireMeteo/GestionnaireMeteo.h"
 
+#include "Entite/Perso/Personnage.h"
+
 class DotSceneLoader;
 
 namespace Forests
@@ -90,6 +92,8 @@ private:
     GestionnaireMeteo* gestionnaireMeteo;
     Chat * chat;
 	KeyboardMap * keyboardMap ;
+
+	Personnage * perso;
 
 
 

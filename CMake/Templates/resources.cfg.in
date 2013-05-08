@@ -26,13 +26,16 @@ FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/terrain
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/textures
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/textures/diffusespecular
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain
-
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/terrainTextures
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/Perso
 [SkyX]
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/SkyX
 
 [Hydrax]
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/Hydrax
+
+[Perso]
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/Perso
 
 [Imagesets]
 FileSystem=@OGRE_MEDIA_DIR_REL@datafiles/imagesets

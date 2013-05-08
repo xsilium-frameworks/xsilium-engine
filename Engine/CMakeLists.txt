@@ -75,6 +75,21 @@ set( EventManager_S
 ./EventManager/Event/Event.cpp
 )
 
+set( Entite_H
+./Entite/Entite.h
+./Entite/Perso/Personnage.h
+./Entite/Perso/GestionnaireAnimation/AnimationPersonnage.h
+./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.h
+
+)
+
+set( Entite_S
+./Entite/Entite.cpp
+./Entite/Perso/Personnage.cpp
+./Entite/Perso/GestionnaireAnimation/AnimationPersonnage.cpp
+./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.cpp
+)
+
 
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
@@ -85,6 +100,7 @@ ${GameState_S}
 ${SceneLoader_S}
 ${Keyboard_S}
 ${EventManager_S}
+${Entite_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -98,6 +114,7 @@ ${Camera_H}
 ${Keyboard_H}
 ${Rapidxml_H}
 ${EventManager_H}
+${Entite_H}
 )
 
 
