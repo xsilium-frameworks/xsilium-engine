@@ -59,6 +59,8 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
 
 
+    delete perso;
+
     delete chat;
     delete gestionnaireMeteo;
     interface->deleteInterfacePrincipal();
@@ -123,6 +125,8 @@ void JeuxState::createScene()
              cameraName + ") failed: " + e.getFullDescription());
      }
 
+     perso = new Personnage(m_pCamera);
+
      gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getSkyX());
      gestionnaireMeteo->create();
 
@@ -147,12 +151,17 @@ void JeuxState::update(double timeSinceLastFrame)
 
 	m_TranslateVector = Ogre::Vector3::ZERO;
 
-	if(!chat->isActive())
-		getInput();
+
+
+//	if(!chat->isActive())
+	//	getInput();
 
     m_pCamera->moveRelative(m_TranslateVector / 10);
 
+
     chat->update();
+
+    perso->update(timeSinceLastFrame / 1000);
 
 }
 

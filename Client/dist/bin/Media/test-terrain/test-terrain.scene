@@ -10,11 +10,6 @@
         <viewport name="Viewport1" id="2000000002" index="1">
             <colour r="0" g="0" b="0" a="1" />
         </viewport>
-        <camera name="Camera#2" viewMode="0" polyMode="3" fov="1">
-            <clipping near="0.1" far="1000" />
-            <position x="-81.7905" y="360.018" z="-194.145" />
-            <rotation qw="0.00398879" qx="-0.00175817" qy="-0.91623" qz="-0.400769" />
-        </camera>
     </environment>
     <terrain worldSize="512" mapSize="129" pagenameprefix="Page" colourmapEnabled="false" colourMapTextureSize="128" tuningCompositeMapDistance="2000" tuningMaxPixelError="3" tuningMinBatchSize="33" tuningMaxBatchSize="65" tuningSkirtSize="10" tuningUseRayBoxDistancealculation="false">
         <terrainPages>
@@ -38,11 +33,6 @@
     <camera name="Camera#0" id="998621376" fov="1" projectionType="perspective">
         <position x="-44.2433" y="102.135" z="-148.62" />
         <rotation qw="-0.0218149" qx="0" qy="0.999762" qz="0" />
-        <clipping near="0.1" far="1000" />
-    </camera>
-    <camera name="Camera#1" id="295575232" fov="1" projectionType="perspective">
-        <position x="-81.7905" y="360.018" z="-194.145" />
-        <rotation qw="0.00398879" qx="-0.00175817" qy="-0.91623" qz="-0.400769" />
         <clipping near="0.1" far="1000" />
     </camera>
     <nodes />
