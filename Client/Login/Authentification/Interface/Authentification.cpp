@@ -90,6 +90,7 @@ void Authentification::update()
 	{
 		GameStateManager*	m_pGameStateManager = GameStateManager::getInstance();
 		m_pGameStateManager->changeGameState(m_pGameStateManager->findByName("JeuxState"));
+		return;
 	}
 
 	if(eventManager)

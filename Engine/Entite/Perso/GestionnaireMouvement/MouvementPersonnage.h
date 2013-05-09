@@ -49,6 +49,8 @@ private:
 
     void updateCamera(double timeSinceLastFrame);
 
+    void updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real deltaPitch, Ogre::Real deltaZoom);
+
 
     KeyboardMap * keyboardMap ;
     InputManager * inputManager;
@@ -59,6 +61,7 @@ private:
     Ogre::SceneNode* mCameraNode;
     Ogre::SceneNode* mCameraPivot;
     Ogre::SceneNode* mCameraGoal;
+    Ogre::Real mPivotPitch;
 
 };
 
