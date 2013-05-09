@@ -31,7 +31,7 @@ namespace Forests
     class GrassLayer;
 }
 
-class JeuxState :public OIS::KeyListener,public OIS::MouseListener, public GameState
+class JeuxState :public OIS::KeyListener, public GameState
 {
 public:
 	JeuxState();
@@ -49,14 +49,9 @@ public:
 
 	void update(double timeSinceLastFrame);
 
-	void getInput();
-
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
-    bool mouseMoved( const OIS::MouseEvent &event );
-    bool mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id );
-    bool mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id );
 
 private:
 

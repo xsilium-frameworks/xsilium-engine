@@ -26,7 +26,6 @@ JeuxState::JeuxState()
 void JeuxState::enter()
 {
     inputManager->addKeyListener(this,"Game1");
-    inputManager->addMouseListener(this,"Game2");
 
 
     XsiliumFramework::getInstance()->m_pLog->logMessage("Entering JeuxState...");
@@ -70,7 +69,6 @@ void JeuxState::exit()
         XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
 
     inputManager->removeKeyListener(this);
-    inputManager->removeMouseListener(this);
     delete interface;
 }
 
@@ -94,14 +92,14 @@ void JeuxState::createScene()
      {
          Ogre::Camera* camera = cameras.getNext();
          mCamNames.push_back(camera->getName());
-         Ogre::Entity* debugEnt = m_pSceneMgr->createEntity(camera->getName() + Ogre::String("_debug"), "scbCamera.mesh");
+       //  Ogre::Entity* debugEnt = m_pSceneMgr->createEntity(camera->getName() + Ogre::String("_debug"), "scbCamera.mesh");
 
-             Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(camera->getName());
-             pNode->setPosition(camera->getPosition());
-             pNode->setOrientation(camera->getOrientation());
+         //    Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(camera->getName());
+           //  pNode->setPosition(camera->getPosition());
+         //    pNode->setOrientation(camera->getOrientation());
 
-             pNode->attachObject(debugEnt);
-             pNode->scale(0.5, 0.5, 0.5);
+          //   pNode->attachObject(debugEnt);
+          //   pNode->scale(0.5, 0.5, 0.5);
      }
 
      // Grab the first available camera, for now
@@ -110,13 +108,12 @@ void JeuxState::createScene()
      {
          m_pCamera = m_pSceneMgr->getCamera(cameraName);
          XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
-        // mCameraMan->setCamera(m_pCamera);
-         m_pSceneMgr->getEntity(m_pCamera->getName() + Ogre::String("_debug"))->setVisible(false);
+         /*m_pSceneMgr->getEntity(m_pCamera->getName() + Ogre::String("_debug"))->setVisible(false);
 
          for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
          {
              m_Loader->mPGHandles[ij]->setCamera(m_pCamera);
-         }
+         }*/
 
      }
      catch (Ogre::Exception& e)
@@ -146,54 +143,12 @@ void JeuxState::update(double timeSinceLastFrame)
         popGameState();
         return;
     }
-    m_MoveScale = m_MoveSpeed   * timeSinceLastFrame;
-    m_RotScale  = m_RotateSpeed * timeSinceLastFrame;
-
-	m_TranslateVector = Ogre::Vector3::ZERO;
-
-
-
-//	if(!chat->isActive())
-	//	getInput();
-
-    m_pCamera->moveRelative(m_TranslateVector / 10);
 
 
     chat->update();
 
-    perso->update(timeSinceLastFrame / 1000);
+    perso->update(timeSinceLastFrame / 100);
 
-}
-
-void JeuxState::getInput()
-{
-
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("GAUCHE")))
-            m_TranslateVector.x = -m_MoveScale;
-
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("DROITE") ))
-            m_TranslateVector.x = m_MoveScale;
-
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("AVANCER")))
-            m_TranslateVector.z = -m_MoveScale;
-
-        if(inputManager->getKeyboard()->isKeyDown(keyboardMap->checkKey("RECULER")))
-            m_TranslateVector.z = m_MoveScale;
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_0))
-        {
-        	m_pCamera = m_pSceneMgr->getCamera("Camera#0");
-        	XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
-        }
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_1))
-        {
-        	m_pCamera = m_pSceneMgr->getCamera("Camera#1");
-        	XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
-        }
-        if(inputManager->getKeyboard()->isKeyDown(OIS::KC_2))
-        {
-        	m_pCamera = m_pSceneMgr->getCamera("Camera#2");
-        	XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
-        }
 }
 
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -213,41 +168,6 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 }
 bool JeuxState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
-	return true;
-}
-
-bool JeuxState::mouseMoved( const OIS::MouseEvent &event )
-{
-	if(m_bLMouseDown)
-	{
-		m_pCamera->yaw(Degree(event.state.X.rel * -0.1f));
-	    m_pCamera->pitch(Degree(event.state.Y.rel * -0.1f));
-	}
-	return true;
-}
-bool JeuxState::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
-{
-    if(id == OIS::MB_Left)
-    {
-        m_bLMouseDown = true;
-    }
-    else if(id == OIS::MB_Right)
-    {
-        m_bRMouseDown = true;
-    }
-
-	return true;
-}
-bool JeuxState::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
-{
-    if(id == OIS::MB_Left)
-    {
-        m_bLMouseDown = false;
-    }
-    else if(id == OIS::MB_Right)
-    {
-        m_bRMouseDown = false;
-    }
 	return true;
 }
 

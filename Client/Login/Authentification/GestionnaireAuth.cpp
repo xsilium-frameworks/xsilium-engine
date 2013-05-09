@@ -115,7 +115,7 @@ void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 	}
 	break;
 	case ENET_EVENT_TYPE_DISCONNECT:
-		//interface->setEvent("0","Déconnexion réussie");
+		interface->setEvent("0","Déconnexion réussie");
 		break;
 	default:
 		break;
