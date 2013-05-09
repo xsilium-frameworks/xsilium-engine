@@ -121,7 +121,7 @@ void MouvementPersonnage::updateBody(double timeSinceLastFrame)
 void MouvementPersonnage::updateCamera(double timeSinceLastFrame)
 {
 	// place the camera pivot roughly at the character's shoulder
-	mCameraPivot->setPosition(mBodyNode->getPosition() + Ogre::Vector3(20,1,0));
+	mCameraPivot->setPosition(mBodyNode->getPosition() + Ogre::Vector3::UNIT_Y * CAM_HEIGHT);
 
 	// move the camera smoothly to the goal
 	Ogre::Vector3 goalOffset = mCameraGoal->_getDerivedPosition() - mCameraNode->getPosition();
@@ -145,7 +145,7 @@ void MouvementPersonnage::updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real delta
 	Ogre::Real distChange = deltaZoom * dist;
 
 	// bound the zoom
-	if (!(dist + distChange < 8 && distChange < 0) && !(dist + distChange > 60 && distChange > 0))
+	if (!(dist + distChange < 8 && distChange < 0) && !(dist + distChange > 25 && distChange > 0))
 	{
 		mCameraGoal->translate(0, 0, distChange, Ogre::Node::TS_LOCAL);
 	}
