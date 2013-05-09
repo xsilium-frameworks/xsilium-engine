@@ -81,7 +81,6 @@
         void processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::Entity *pEntity);
         void processOctree(rapidxml::xml_node<>* XMLNode);
         void processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
-        void processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
 
         void processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
         void processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);

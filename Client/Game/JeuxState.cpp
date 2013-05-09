@@ -87,40 +87,11 @@ void JeuxState::createScene()
 
 
     // Loop through all cameras and grab their name and set their debug representation
-     Ogre::SceneManager::CameraIterator cameras = m_pSceneMgr->getCameraIterator();
-     while (cameras.hasMoreElements())
-     {
-         Ogre::Camera* camera = cameras.getNext();
-         mCamNames.push_back(camera->getName());
-       //  Ogre::Entity* debugEnt = m_pSceneMgr->createEntity(camera->getName() + Ogre::String("_debug"), "scbCamera.mesh");
 
-         //    Ogre::SceneNode* pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode(camera->getName());
-           //  pNode->setPosition(camera->getPosition());
-         //    pNode->setOrientation(camera->getOrientation());
+    m_pCamera = m_pSceneMgr->createCamera("PlayerCam");
 
-          //   pNode->attachObject(debugEnt);
-          //   pNode->scale(0.5, 0.5, 0.5);
-     }
+    XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 
-     // Grab the first available camera, for now
-     Ogre::String cameraName = mCamNames[0];
-     try
-     {
-         m_pCamera = m_pSceneMgr->getCamera(cameraName);
-         XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
-         /*m_pSceneMgr->getEntity(m_pCamera->getName() + Ogre::String("_debug"))->setVisible(false);
-
-         for(unsigned int ij = 0;ij < m_Loader->mPGHandles.size();ij++)
-         {
-             m_Loader->mPGHandles[ij]->setCamera(m_pCamera);
-         }*/
-
-     }
-     catch (Ogre::Exception& e)
-     {
-         Ogre::LogManager::getSingleton().logMessage("SampleApp::createScene : setting the active camera to (\"" +
-             cameraName + ") failed: " + e.getFullDescription());
-     }
 
      perso = new Personnage(m_pCamera);
 

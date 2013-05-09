@@ -163,14 +163,6 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 		pElement = pElement->next_sibling("light");
 	}
 
-	// Process camera (?)
-	pElement = XMLRoot->first_node("camera");
-	while(pElement)
-	{
-		processCamera(pElement);
-		pElement = pElement->next_sibling("camera");
-	}
-
 	// Process Skyx (?)
 	pElement = XMLRoot->first_node("skyx");
 	if(pElement)
@@ -229,11 +221,6 @@ void DotSceneLoader::processExternals(rapidxml::xml_node<>* XMLNode)
 void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
 {
 	rapidxml::xml_node<>* pElement;
-
-	// Process camera (?)
-	pElement = XMLNode->first_node("camera");
-	if(pElement)
-		processCamera(pElement);
 
 	// Process fog (?)
 	pElement = XMLNode->first_node("fog");
@@ -544,88 +531,7 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
 		;//processUserDataReference(pElement, pLight);
 }
 
-void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
-{
-	// Process attributes
-	Ogre::String name = getAttrib(XMLNode, "name");
-	Ogre::String id = getAttrib(XMLNode, "id");
-	Ogre::Real fov = getAttribReal(XMLNode, "fov", 45);
-	Ogre::Real aspectRatio = getAttribReal(XMLNode, "aspectRatio", 1.3333);
-	Ogre::String projectionType = getAttrib(XMLNode, "projectionType", "perspective");
 
-	// Create the camera
-	Ogre::Camera *pCamera = mSceneMgr->createCamera(name);
-
-	//TODO: make a flag or attribute indicating whether or not the camera should be attached to any parent node.
-	//if(pParent)
-	//    pParent->attachObject(pCamera);
-
-	// Set the field-of-view
-	//! @todo Is this always in degrees?
-	//pCamera->setFOVy(Ogre::Degree(fov));
-
-	// Set the aspect ratio
-	//pCamera->setAspectRatio(aspectRatio);
-
-	// Set the projection type
-	if(projectionType == "perspective")
-		pCamera->setProjectionType(Ogre::PT_PERSPECTIVE);
-	else if(projectionType == "orthographic")
-		pCamera->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
-
-	rapidxml::xml_node<>* pElement;
-
-	// Process clipping (?)
-	pElement = XMLNode->first_node("clipping");
-	if(pElement)
-	{
-		Ogre::Real nearDist = getAttribReal(pElement, "near");
-		pCamera->setNearClipDistance(nearDist);
-
-		Ogre::Real farDist =  getAttribReal(pElement, "far");
-		pCamera->setFarClipDistance(farDist);
-	}
-
-	// Process position (?)
-	pElement = XMLNode->first_node("position");
-	if(pElement)
-		pCamera->setPosition(parseVector3(pElement));
-
-	// Process rotation (?)
-	pElement = XMLNode->first_node("rotation");
-	if(pElement)
-		pCamera->setOrientation(parseQuaternion(pElement));
-
-	// Process normal (?)
-	pElement = XMLNode->first_node("normal");
-	if(pElement)
-		;//!< @todo What to do with this element?
-
-	// Process lookTarget (?)
-	pElement = XMLNode->first_node("lookTarget");
-	if(pElement)
-		;//!< @todo Implement the camera look target
-
-	// Process trackTarget (?)
-	pElement = XMLNode->first_node("trackTarget");
-	if(pElement)
-		;//!< @todo Implement the camera track target
-
-	// Process userDataReference (?)
-	pElement = XMLNode->first_node("userDataReference");
-	if(pElement)
-		;//!< @todo Implement the camera user data reference
-	/*
-    // construct a scenenode is no parent
-    if(!pParent)
-    {
-        Ogre::SceneNode* pNode = mAttachNode->createChildSceneNode(name);
-        pNode->setPosition(pCamera->getPosition());
-        pNode->setOrientation(pCamera->getOrientation());
-        pNode->scale(1,1,1);
-    }
-	 */
-}
 
 void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
@@ -714,14 +620,6 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
 	//    processLight(pElement, pNode);
 	//    pElement = pElement->next_sibling("light");
 	//}
-
-	// Process camera (*)
-	pElement = XMLNode->first_node("camera");
-	while(pElement)
-	{
-		processCamera(pElement, pNode);
-		pElement = pElement->next_sibling("camera");
-	}
 
 	// Process particleSystem (*)
 	pElement = XMLNode->first_node("particleSystem");
