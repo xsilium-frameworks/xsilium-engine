@@ -12,8 +12,8 @@ class GameState;
 class GameStateListener
 {
 public:
-	GameStateListener();
-	virtual ~GameStateListener();
+	GameStateListener(){};
+	virtual ~GameStateListener(){};
 
 	virtual void addGameState(Ogre::String stateName, GameState* state) = 0;
 
@@ -30,7 +30,7 @@ class GameState
 public:
 	static void create(GameStateListener* parent, const Ogre::String name);
 
-	virtual ~GameState();
+	virtual ~GameState(){};
 
 	void destroy(){delete this;}
 
@@ -41,7 +41,7 @@ public:
 	virtual void update(double timeSinceLastFrame) = 0;
 
 protected:
-	GameState();
+	GameState(){};
 	GameState*	findByName(Ogre::String stateName){return m_pParent->findByName(stateName);}
 	void		changeGameState(GameState* state){m_pParent->changeGameState(state);}
 	bool		pushGameState(GameState* state){return m_pParent->pushGameState(state);}
@@ -57,6 +57,8 @@ protected:
     Ogre::RenderWindow* 		m_Window;
     EventManager * eventManager ;
     Interface * interface;
+
+
 
 };
 

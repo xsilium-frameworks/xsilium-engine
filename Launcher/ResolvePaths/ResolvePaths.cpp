@@ -17,7 +17,7 @@ ResolvePaths::ResolvePaths() {
 	// locate the binary and build its path
 #ifdef __linux__
 
-	XsiliumFramework::getInstance()->m_pLog->logMessage("Platform linux");
+	XsiliumFramework::getInstance()->getLog()->logMessage("Platform linux");
 
 	// use binreloc and boost::filesystem to build up our paths
 	int brres = br_init(0);

@@ -10,7 +10,7 @@
 #include "Singleton/Singleton.h"
 
 #include <OgreRenderWindow.h>
-#include <String>
+#include <OgrePrerequisites.h>
 
 
 class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener
