@@ -10,6 +10,8 @@ GameStateManager::~GameStateManager()
 {
 	state_info si;
 
+	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
+
 	while(!m_ActiveStateStack.empty())
 	{
 		m_ActiveStateStack.back()->exit();
@@ -58,6 +60,7 @@ void GameStateManager::start(GameState* state  )
 {
 	changeGameState(state);
 	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
+	XsiliumFramework::getInstance()->getRoot()->startRendering();
 }
 
 void GameStateManager::changeGameState(GameState* state)
@@ -120,10 +123,32 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 void GameStateManager::shutdown()
 {
 	XsiliumFramework::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
-	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
+	m_bShutdown = true;
 }
 
 void GameStateManager::init(GameState* state)
 {
 	XsiliumFramework::getInstance()->getRenderWindow()->resetStatistics();
+}
+
+bool GameStateManager::frameStarted (const Ogre::FrameEvent &evt)
+{
+	return true;
+}
+
+bool GameStateManager::frameRenderingQueued (const Ogre::FrameEvent &evt)
+{
+	if(m_bShutdown)
+			return false;
+
+	Ogre::WindowEventUtilities::messagePump();
+	inputManager->capture();
+	if(!m_ActiveStateStack.empty())
+		m_ActiveStateStack.back()->update(evt.timeSinceLastEvent);
+	return true;
+}
+
+bool GameStateManager::frameEnded (const Ogre::FrameEvent &evt)
+{
+	return true;
 }

@@ -35,11 +35,11 @@ public:
 protected:
 	void init(GameState *state);
 
-    bool frameStarted (const Ogre::FrameEvent &evt)
+    bool frameStarted (const Ogre::FrameEvent &evt);
      	//Called when a frame is about to begin rendering.
-    bool frameRenderingQueued (const Ogre::FrameEvent &evt)
+    bool frameRenderingQueued (const Ogre::FrameEvent &evt);
      	//Called after all render targets have had their rendering commands issued, but before render windows have been asked to flip their buffers over.
-    bool frameEnded (const Ogre::FrameEvent &evt)
+    bool frameEnded (const Ogre::FrameEvent &evt);
      	//Called just after a frame has been rendered.
 
 	std::vector<GameState*>		m_ActiveStateStack;

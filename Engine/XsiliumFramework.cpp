@@ -53,6 +53,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 	m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
 
 	inputManager->initialise(m_pRenderWnd);
+	m_pRenderWnd->addViewport(0);
 	m_pRenderWnd->setActive(true);
 
 	return true;
