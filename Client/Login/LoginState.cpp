@@ -124,8 +124,7 @@ void LoginState::update(double timeSinceLastFrame)
 		shutdown();
 		return;
 	}
-	if(auth)
-		auth->update();
+	auth->update();
 }
 
 

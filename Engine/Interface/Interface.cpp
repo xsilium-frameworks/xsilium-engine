@@ -5,6 +5,7 @@
 Interface::Interface()
 {
 	isActived = false;
+	parent = NULL;
 }
 
 Interface::~Interface()

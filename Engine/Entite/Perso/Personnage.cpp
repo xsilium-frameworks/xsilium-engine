@@ -27,6 +27,8 @@ void Personnage::setupBody(Ogre::SceneManager* sceneMgr)
 	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3::UNIT_Y * CHAR_HEIGHT);
 	mBodyEnt = sceneMgr->createEntity("Perso", "Sinbad.mesh");
 
+	mBodyEnt->setCastShadows(true);
+
 	mBodyNode->setPosition(-44.2433,102.135,-148.62);
 	mBodyEnt->setVisible(true);
 	mBodyNode->attachObject(mBodyEnt);

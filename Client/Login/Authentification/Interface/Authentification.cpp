@@ -93,26 +93,22 @@ void Authentification::update()
 		return;
 	}
 
-	if(eventManager)
+	Event * event = eventManager->getEvent();
+
+	if(event != NULL)
 	{
-
-		Event * event = eventManager->getEvent();
-
-		if(event != NULL)
+		switch(atoi(event->getProperty("eventType").c_str()))
 		{
-			switch(atoi(event->getProperty("eventType").c_str()))
-			{
-			case MESSAGE:
-				processMessage(event);
-				break;
-			case PROGRESSION:
-				processProgression(event);
-				break;
-			default:
-				break;
-			}
-			eventManager->removeEvent();
+		case MESSAGE:
+			processMessage(event);
+			break;
+		case PROGRESSION:
+			processProgression(event);
+			break;
+		default:
+			break;
 		}
+		eventManager->removeEvent();
 	}
 }
 
