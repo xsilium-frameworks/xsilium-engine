@@ -88,6 +88,8 @@ void JeuxState::createScene()
     m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
     m_pSceneMgr->setShadowTextureConfig(0, 2048, 2048, Ogre::PF_X8R8G8B8);
 
+    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+
 
     // Loop through all cameras and grab their name and set their debug representation
 
@@ -105,8 +107,6 @@ void JeuxState::createScene()
 
 void JeuxState::update(double timeSinceLastFrame)
 {
-    m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
-
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
     gui_system.injectTimePulse(timeSinceLastFrame);
@@ -114,7 +114,7 @@ void JeuxState::update(double timeSinceLastFrame)
 
     if(m_bQuit == true)
     {
-        popGameState();
+        shutdown();
         return;
     }
 

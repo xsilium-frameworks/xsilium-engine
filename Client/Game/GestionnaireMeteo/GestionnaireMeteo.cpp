@@ -14,9 +14,9 @@ GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c, Sk
 	m_pCamera = c;
 	this->mSkyX = mSkyX;
 
-    mBasicController = 0;
-    mHydrax = 0;
-    mLastPositionLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length() ;
+	mBasicController = 0;
+	mHydrax = 0;
+	mLastPositionLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length() ;
 
 	// Color gradients
 	// Water
@@ -90,27 +90,27 @@ void GestionnaireMeteo::create()
 
 
 	Hydrax::Module::ProjectedGrid *mModule
-				= new Hydrax::Module::ProjectedGrid(mHydrax,new Hydrax::Noise::Perlin(/*Generic one*/),
-				                                    Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
-													// Normal mode
-													Hydrax::MaterialManager::NM_VERTEX,
-													// Projected grid options
-											        Hydrax::Module::ProjectedGrid::Options());
+	= new Hydrax::Module::ProjectedGrid(mHydrax,new Hydrax::Noise::Perlin(/*Generic one*/),
+			Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+			// Normal mode
+			Hydrax::MaterialManager::NM_VERTEX,
+			// Projected grid options
+			Hydrax::Module::ProjectedGrid::Options());
 
-			// Set our module
-			mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
+	// Set our module
+	mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
 
-			// Load all parameters from config file
-			// Remarks: The config file must be in Hydrax resource group.
-			// All parameters can be set/updated directly by code(Like previous versions),
-			// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
-			mHydrax->loadCfg("HydraxDemo.hdx");
+	// Load all parameters from config file
+	// Remarks: The config file must be in Hydrax resource group.
+	// All parameters can be set/updated directly by code(Like previous versions),
+	// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
+	mHydrax->loadCfg("HydraxDemo.hdx");
 
-	        // Create water
-	        mHydrax->create();
+	// Create water
+	mHydrax->create();
 
-	        // Add the Hydrax Rtt listener
-	        mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
+	// Add the Hydrax Rtt listener
+	mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
 
 
 
