@@ -4,7 +4,7 @@
 #include "GameState.h"
 #include "Singleton/Singleton.h"
 
-class GameStateManager : public GameStateListener, public xsilium::Singleton<GameStateManager> {
+class GameStateManager : public GameStateListener, public Ogre::FrameListener , public xsilium::Singleton<GameStateManager> {
 
 	friend class xsilium::Singleton<GameStateManager>;
 
@@ -18,7 +18,7 @@ public:
 	GameStateManager();
 	~GameStateManager();
 
-	void manageGameState(Ogre::String stateName, GameState* state);
+	void addGameState(Ogre::String stateName, GameState* state);
 
 	GameState* findByName(Ogre::String stateName);
 
@@ -26,7 +26,6 @@ public:
 	void changeGameState(GameState* state);
 	bool pushGameState(GameState* state);
 	void popGameState();
-	void pauseGameState();
 	void shutdown();
     void popAllAndPushGameState(GameState* state);
 

@@ -6,10 +6,9 @@ XsiliumFramework::XsiliumFramework()
 {
 	m_pRoot				= 0;
 	m_pRenderWnd		= 0;
-	m_pViewport			= 0;
 	m_pLog				= 0;
-	m_pTimer			= 0;
 	inputManager 		= 0;
+	keyboardMap 		= 0;
 }
 
 XsiliumFramework::~XsiliumFramework()
@@ -54,14 +53,6 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 	m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
 
 	inputManager->initialise(m_pRenderWnd);
-
-	m_pViewport = m_pRenderWnd->addViewport(0);
-	m_pViewport->setBackgroundColour(ColourValue(0.5f, 0.5f, 0.5f, 1.0f));
-
-	m_pViewport->setCamera(0);
-
-	m_pTimer = new Ogre::Timer();
-	m_pTimer->reset();
 	m_pRenderWnd->setActive(true);
 
 	return true;
@@ -96,4 +87,19 @@ void XsiliumFramework::loadRessource()
 
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+}
+
+Ogre::Root* XsiliumFramework::getRoot()
+{
+	return this->m_pRoot;
+}
+
+Ogre::RenderWindow* XsiliumFramework::getRenderWindow()
+{
+	return this->m_pRenderWnd;
+}
+
+Ogre::Log* XsiliumFramework::getLog()
+{
+	return this->m_pLog;
 }

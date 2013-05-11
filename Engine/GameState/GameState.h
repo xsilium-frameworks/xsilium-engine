@@ -12,16 +12,15 @@ class GameState;
 class GameStateListener
 {
 public:
-	GameStateListener(){};
-	virtual ~GameStateListener(){};
+	GameStateListener();
+	virtual ~GameStateListener();
 
-	virtual void manageGameState(Ogre::String stateName, GameState* state) = 0;
+	virtual void addGameState(Ogre::String stateName, GameState* state) = 0;
 
 	virtual GameState*	findByName(Ogre::String stateName) = 0;
 	virtual void		changeGameState(GameState *state) = 0;
 	virtual bool		pushGameState(GameState* state) = 0;
 	virtual void		popGameState() = 0;
-	virtual void		pauseGameState() = 0;
 	virtual void		shutdown() = 0;
     virtual void        popAllAndPushGameState(GameState* state) = 0;
 };
@@ -29,9 +28,9 @@ public:
 class GameState
 {
 public:
-	static void create(GameStateListener* parent, const Ogre::String name){};
+	static void create(GameStateListener* parent, const Ogre::String name);
 
-	virtual ~GameState(){};
+	virtual ~GameState();
 
 	void destroy(){delete this;}
 
@@ -42,7 +41,7 @@ public:
 	virtual void update(double timeSinceLastFrame) = 0;
 
 protected:
-	GameState(){};
+	GameState();
 	GameState*	findByName(Ogre::String stateName){return m_pParent->findByName(stateName);}
 	void		changeGameState(GameState* state){m_pParent->changeGameState(state);}
 	bool		pushGameState(GameState* state){return m_pParent->pushGameState(state);}
@@ -65,8 +64,8 @@ protected:
 static void create(GameStateListener* parent, const Ogre::String name)	\
 {																		\
 	T* myGameState = new T();											\
-	myGameState->m_pParent = parent;										\
-	parent->manageGameState(name, myGameState);							\
+	myGameState->m_pParent = parent;									\
+	parent->addGameState(name, myGameState);							\
 }
 
 #endif
