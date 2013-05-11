@@ -28,7 +28,7 @@ void JeuxState::enter()
     inputManager->addKeyListener(this,"Game1");
 
 
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Entering JeuxState...");
+    XsiliumFramework::getInstance()->getLog()->logMessage("Entering JeuxState...");
 
     createScene();
 
@@ -39,7 +39,7 @@ void JeuxState::enter()
 
 bool JeuxState::pause()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Pausing JeuxState...");
+    XsiliumFramework::getInstance()->getLog()->logMessage("Pausing JeuxState...");
 
     return true;
 }
@@ -47,15 +47,15 @@ bool JeuxState::pause()
 
 void JeuxState::resume()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Resuming JeuxState...");
+    XsiliumFramework::getInstance()->getLog()->logMessage("Resuming JeuxState...");
 
-    XsiliumFramework::getInstance()->m_pViewport->setCamera(m_pCamera);
+    XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
     m_bQuit = false;
 }
 
 void JeuxState::exit()
 {
-    XsiliumFramework::getInstance()->m_pLog->logMessage("Leaving JeuxState...");
+    XsiliumFramework::getInstance()->getLog()->logMessage("Leaving JeuxState...");
 
 
     delete perso;
@@ -66,7 +66,7 @@ void JeuxState::exit()
 
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
-        XsiliumFramework::getInstance()->m_pRoot->destroySceneManager(m_pSceneMgr);
+        XsiliumFramework::getInstance()->getRoot()->destroySceneManager(m_pSceneMgr);
 
     inputManager->removeKeyListener(this);
     delete interface;
@@ -80,7 +80,7 @@ void JeuxState::buildGUI()
 
 void JeuxState::createScene()
 {
-	m_pSceneMgr = XsiliumFramework::getInstance()->m_pRoot->createSceneManager(ST_GENERIC, "GameSceneMgr");
+	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
 	m_Loader = new DotSceneLoader();
     m_Loader->parseDotScene("test-terrain.scene", "General", m_pSceneMgr);
@@ -93,7 +93,7 @@ void JeuxState::createScene()
 
     m_pCamera = m_pSceneMgr->createCamera("PlayerCam");
 
-    XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
+    XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
 
 
      perso = new Personnage(m_pCamera);
@@ -121,7 +121,7 @@ void JeuxState::update(double timeSinceLastFrame)
 
     chat->update();
 
-    perso->update(timeSinceLastFrame / 100);
+    perso->update(timeSinceLastFrame);
 
 }
 
