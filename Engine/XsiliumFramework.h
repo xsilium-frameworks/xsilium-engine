@@ -1,8 +1,6 @@
 #ifndef OGRE_FRAMEWORK_H
 #define OGRE_FRAMEWORK_H
 
-#include <OgreCamera.h>
-#include <OgreEntity.h>
 #include <OgreLogManager.h>
 
 #include "InputManager/InputManager.h"
@@ -12,11 +10,8 @@
 #include "OSX/macUtils.h"
 #endif
 
-#include <OgreParticleSystem.h>
-
 
 #include <OgreRoot.h>
-#include <OgreViewport.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
@@ -38,20 +33,22 @@ public:
 
 	void loadRessource();
 
-	Ogre::Root*					m_pRoot;
-	Ogre::RenderWindow*			m_pRenderWnd;
-	Ogre::Viewport*				m_pViewport;
-	Ogre::Log*					m_pLog;
-	Ogre::Timer*				m_pTimer;
-	InputManager*				inputManager;
-	KeyboardMap * keyboardMap;
+	Ogre::Root* getRoot();
+	Ogre::RenderWindow* getRenderWindow();
+	Ogre::Log* getLog();
 
 private:
 	XsiliumFramework(const XsiliumFramework&);
 	XsiliumFramework& operator= (const XsiliumFramework&);
-    Ogre::String m_SceneFile;
+	Ogre::String m_SceneFile;
 
-    std::string mResourcePath ;
+	std::string mResourcePath ;
+
+	Ogre::Root*					m_pRoot;
+	Ogre::RenderWindow*			m_pRenderWnd;
+	Ogre::Log*					m_pLog;
+	InputManager*				inputManager;
+	KeyboardMap * keyboardMap;
 
 };
 
