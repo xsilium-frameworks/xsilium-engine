@@ -114,14 +114,12 @@ void JeuxState::update(double timeSinceLastFrame)
 
     if(m_bQuit == true)
     {
-        shutdown();
+    	popGameState();
         return;
     }
 
 
     chat->update();
-
-    perso->update(timeSinceLastFrame);
 
 }
 

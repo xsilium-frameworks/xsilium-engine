@@ -15,10 +15,12 @@ Personnage::Personnage(Ogre::Camera* cam) {
 
 	mouvementPersonnage = new MouvementPersonnage(mBodyNode,mCameraNode,mCameraPivot,mCameraGoal);
 
+	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
+
 }
 
 Personnage::~Personnage() {
-	// TODO Auto-generated destructor stub
+	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
 }
 
 void Personnage::setupBody(Ogre::SceneManager* sceneMgr)
@@ -55,7 +57,18 @@ void Personnage::setupCamera(Ogre::Camera* cam)
 	mCameraNode->attachObject(cam);
 }
 
-void Personnage::update(double timeSinceLastFrame)
+bool Personnage::frameStarted (const Ogre::FrameEvent &evt)
 {
-	mouvementPersonnage->update(timeSinceLastFrame);
+	return true;
+}
+
+bool Personnage::frameRenderingQueued (const Ogre::FrameEvent &evt)
+{
+	mouvementPersonnage->update(evt.timeSinceLastEvent);
+	return true;
+}
+
+bool Personnage::frameEnded (const Ogre::FrameEvent &evt)
+{
+	return true;
 }

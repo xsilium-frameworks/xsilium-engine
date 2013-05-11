@@ -36,6 +36,7 @@ public:
 	Ogre::Root* getRoot();
 	Ogre::RenderWindow* getRenderWindow();
 	Ogre::Log* getLog();
+	Ogre::Timer* getTimer();
 
 private:
 	XsiliumFramework(const XsiliumFramework&);
@@ -47,6 +48,7 @@ private:
 	Ogre::Root*					m_pRoot;
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Log*					m_pLog;
+	Ogre::Timer*				m_pTimer;
 	InputManager*				inputManager;
 	KeyboardMap * keyboardMap;
 

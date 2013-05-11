@@ -10,8 +10,6 @@ GameStateManager::~GameStateManager()
 {
 	state_info si;
 
-	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
-
 	while(!m_ActiveStateStack.empty())
 	{
 		m_ActiveStateStack.back()->exit();
@@ -59,8 +57,38 @@ GameState* GameStateManager::findByName(Ogre::String stateName)
 void GameStateManager::start(GameState* state  )
 {
 	changeGameState(state);
-	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
-	XsiliumFramework::getInstance()->getRoot()->startRendering();
+
+	int timeSinceLastFrame = 1;
+	int startTime = 0;
+
+	while(!m_bShutdown)
+	{
+		if(XsiliumFramework::getInstance()->getRenderWindow()->isClosed())m_bShutdown = true;
+
+		Ogre::WindowEventUtilities::messagePump();
+
+		if(XsiliumFramework::getInstance()->getRenderWindow()->isActive())
+		{
+			startTime = XsiliumFramework::getInstance()->getTimer()->getMillisecondsCPU();
+
+			inputManager->capture();
+
+			m_ActiveStateStack.back()->update(timeSinceLastFrame);
+
+			XsiliumFramework::getInstance()->getRoot()->renderOneFrame();
+
+			timeSinceLastFrame = XsiliumFramework::getInstance()->getTimer()->getMillisecondsCPU() - startTime;
+		}
+		else
+		{
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+			Sleep(1000);
+#else
+			sleep(1);
+#endif
+		}
+	}
+	XsiliumFramework::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
 }
 
 void GameStateManager::changeGameState(GameState* state)
@@ -93,13 +121,15 @@ bool GameStateManager::pushGameState(GameState* state)
 
 void GameStateManager::popGameState()
 {
+
+
 	if(!m_ActiveStateStack.empty())
 	{
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
 
-	if(m_ActiveStateStack.empty())
+	if(!m_ActiveStateStack.empty())
 	{
 		init(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->resume();
@@ -122,33 +152,10 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 
 void GameStateManager::shutdown()
 {
-	XsiliumFramework::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
 	m_bShutdown = true;
 }
 
 void GameStateManager::init(GameState* state)
 {
 	XsiliumFramework::getInstance()->getRenderWindow()->resetStatistics();
-}
-
-bool GameStateManager::frameStarted (const Ogre::FrameEvent &evt)
-{
-	return true;
-}
-
-bool GameStateManager::frameRenderingQueued (const Ogre::FrameEvent &evt)
-{
-	if(m_bShutdown)
-			return false;
-
-	Ogre::WindowEventUtilities::messagePump();
-	inputManager->capture();
-	if(!m_ActiveStateStack.empty())
-		m_ActiveStateStack.back()->update(evt.timeSinceLastEvent);
-	return true;
-}
-
-bool GameStateManager::frameEnded (const Ogre::FrameEvent &evt)
-{
-	return true;
 }

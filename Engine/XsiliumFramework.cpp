@@ -7,6 +7,7 @@ XsiliumFramework::XsiliumFramework()
 	m_pRoot				= 0;
 	m_pRenderWnd		= 0;
 	m_pLog				= 0;
+	m_pTimer			= 0;
 	inputManager 		= 0;
 	keyboardMap 		= 0;
 }
@@ -54,6 +55,10 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 
 	inputManager->initialise(m_pRenderWnd);
 	m_pRenderWnd->addViewport(0);
+
+	m_pTimer = new Ogre::Timer();
+	m_pTimer->reset();
+
 	m_pRenderWnd->setActive(true);
 
 	return true;
@@ -103,4 +108,9 @@ Ogre::RenderWindow* XsiliumFramework::getRenderWindow()
 Ogre::Log* XsiliumFramework::getLog()
 {
 	return this->m_pLog;
+}
+
+Ogre::Timer* XsiliumFramework::getTimer()
+{
+	return this->m_pTimer;
 }
