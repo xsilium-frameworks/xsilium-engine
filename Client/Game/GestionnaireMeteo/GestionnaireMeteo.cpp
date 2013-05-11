@@ -49,8 +49,8 @@ GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c, Sk
 
 GestionnaireMeteo::~GestionnaireMeteo() {
 
-	XsiliumFramework::getInstance()->m_pRoot->removeFrameListener(this);
-	XsiliumFramework::getInstance()->m_pRenderWnd->removeListener(mSkyX);
+	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
+	XsiliumFramework::getInstance()->getRenderWindow()->removeListener(mSkyX);
 	delete mSkyX;
 	delete mHydrax ;
 }
@@ -80,9 +80,9 @@ void GestionnaireMeteo::create()
 
 	mSkyX->create();
 
-	XsiliumFramework::getInstance()->m_pRenderWnd->addListener(mSkyX);
+	XsiliumFramework::getInstance()->getRenderWindow()->addListener(mSkyX);
 
-	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->m_pRenderWnd->getViewport(0));
+	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0));
 
 
 
@@ -114,7 +114,7 @@ void GestionnaireMeteo::create()
 
 
 
-	XsiliumFramework::getInstance()->m_pRoot->addFrameListener(this);
+	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
 
 }
 
