@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -112,7 +112,7 @@ namespace Ogre {
 		{
 			OGRE_EXCEPT( 
 				Exception::ERR_INTERNAL_ERROR,
-				"Can not flip an unitialized texture",
+				"Can not flip an uninitialised texture",
 				"Image::flipAroundY" );
 		}
         
@@ -207,7 +207,7 @@ namespace Ogre {
 		{
 			OGRE_EXCEPT( 
 				Exception::ERR_INTERNAL_ERROR,
-				"Can not flip an unitialized texture",
+				"Can not flip an uninitialised texture",
 				"Image::flipAroundX" );
 		}
         
@@ -345,7 +345,7 @@ namespace Ogre {
 		// Wrap memory, be sure not to delete when stream destroyed
 		MemoryDataStreamPtr wrapper(OGRE_NEW MemoryDataStream(mBuffer, mBufSize, false));
 
-		pCodec->codeToFile(wrapper, filename, codeDataPtr);
+		pCodec->encodeToFile(wrapper, filename, codeDataPtr);
 	}
 	//---------------------------------------------------------------------
 	DataStreamPtr Image::encode(const String& formatextension)
@@ -373,7 +373,7 @@ namespace Ogre {
 		// Wrap memory, be sure not to delete when stream destroyed
 		MemoryDataStreamPtr wrapper(OGRE_NEW MemoryDataStream(mBuffer, mBufSize, false));
 
-		return pCodec->code(wrapper, codeDataPtr);
+		return pCodec->encode(wrapper, codeDataPtr);
 	}
 	//-----------------------------------------------------------------------------
 	Image & Image::load(DataStreamPtr& stream, const String& type )
@@ -540,26 +540,18 @@ namespace Ogre {
 		if( bpp != 24 && bpp != 32 ) return;
 
 		uint stride = bpp >> 3;
+		
+		uchar gammaramp[256];
+		const Real exponent = 1.0f / gamma;
+		for(int i = 0; i < 256; i++) {
+			gammaramp[i] = Math::Pow(i/255.0f, exponent)*255+0.5f;
+		}
 
 		for( size_t i = 0, j = size / stride; i < j; i++, buffer += stride )
 		{
-			Real r, g, b;
-
-			const Real rangeMult = 255.0f;
-			const Real rangeMultInv = 1.0f / rangeMult;
-			const Real gammaValue = 1.0f / gamma;
-
-			r = rangeMultInv * buffer[0];
-			g = rangeMultInv * buffer[1];
-			b = rangeMultInv * buffer[2];
-
-			Math::Pow(r, gammaValue);
-			Math::Pow(g, gammaValue);
-			Math::Pow(b, gammaValue);
-
-			buffer[0] = (uchar)(r * rangeMult);
-			buffer[1] = (uchar)(g * rangeMult);
-			buffer[2] = (uchar)(b * rangeMult);
+			buffer[0] = gammaramp[buffer[0]];
+			buffer[1] = gammaramp[buffer[1]];
+			buffer[2] = gammaramp[buffer[2]];
 		}
 	}
 	//-----------------------------------------------------------------------------

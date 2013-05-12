@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -267,6 +267,23 @@ namespace Ogre
 
 
 	}
+    //---------------------------------------------------------------------
+    size_t Resource::calculateSize(void) const
+    {
+        size_t memSize = 0;
+        memSize += sizeof(ResourceManager);
+        memSize += sizeof(ManualResourceLoader);
+        memSize += sizeof(ResourceHandle);
+        memSize += mName.size() * sizeof(char);
+        memSize += mGroup.size() * sizeof(char);
+        memSize += mOrigin.size() * sizeof(char);
+        memSize += sizeof(size_t) * 2;
+        memSize += sizeof(bool) * 2;
+        memSize += sizeof(Listener) * mListenerList.size();
+        memSize += sizeof(AtomicScalar<LoadingState>);
+
+        return memSize;
+    }
 	//---------------------------------------------------------------------
 	void Resource::_dirtyState()
 	{

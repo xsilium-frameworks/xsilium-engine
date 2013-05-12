@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,10 +41,12 @@ THE SOFTWARE.
 #include "OgreGLSLPreprocessor.h"
 
 namespace Ogre {
+    namespace GLSL {
 
     //-----------------------------------------------------------------------
 	GLSLProgram::CmdPreprocessorDefines GLSLProgram::msCmdPreprocessorDefines;
     GLSLProgram::CmdAttach GLSLProgram::msCmdAttach;
+    GLSLProgram::CmdColumnMajorMatrices GLSLProgram::msCmdColumnMajorMatrices;
 	GLSLProgram::CmdInputOperationType GLSLProgram::msInputOperationTypeCmd;
 	GLSLProgram::CmdOutputOperationType GLSLProgram::msOutputOperationTypeCmd;
 	GLSLProgram::CmdMaxOutputVertices GLSLProgram::msMaxOutputVerticesCmd;
@@ -159,6 +161,10 @@ namespace Ogre {
 			case GPT_GEOMETRY_PROGRAM:
 				shaderType = GL_GEOMETRY_SHADER_EXT;
 				break;
+            case GPT_COMPUTE_PROGRAM:
+            case GPT_DOMAIN_PROGRAM:
+            case GPT_HULL_PROGRAM:
+                break;
 			}
 			mGLHandle = glCreateShaderObjectARB(shaderType);
 		}
@@ -208,7 +214,9 @@ namespace Ogre {
 	{
 		if (isSupported())
 		{
-			glDeleteObjectARB(mGLHandle);
+			glDeleteObjectARB(mGLHandle);			
+			mCompiled = 0;
+			mGLHandle = 0;
 		}
 	}
 
@@ -253,6 +261,7 @@ namespace Ogre {
 		, mInputOperationType(RenderOperation::OT_TRIANGLE_LIST)
         , mOutputOperationType(RenderOperation::OT_TRIANGLE_LIST)
 		, mMaxOutputVertices(3)
+        , mColumnMajorMatrices(true)
     {
 		// add parameter command "attach" to the material serializer dictionary
         if (createParamDictionary("GLSLProgram"))
@@ -266,6 +275,9 @@ namespace Ogre {
             dict->addParameter(ParameterDef("attach", 
                 "name of another GLSL program needed by this program",
                 PT_STRING),&msCmdAttach);
+            dict->addParameter(ParameterDef("column_major_matrices", 
+                "Whether matrix packing in column-major order.",
+                PT_BOOL),&msCmdColumnMajorMatrices);
 			dict->addParameter(
 				ParameterDef("input_operation_type",
 				"The input operation type for this geometry program. \
@@ -469,6 +481,15 @@ namespace Ogre {
 			break;
 		}
 	}
+    //-----------------------------------------------------------------------
+    String GLSLProgram::CmdColumnMajorMatrices::doGet(const void *target) const
+    {
+        return StringConverter::toString(static_cast<const GLSLProgram*>(target)->getColumnMajorMatrices());
+    }
+    void GLSLProgram::CmdColumnMajorMatrices::doSet(void *target, const String& val)
+    {
+        static_cast<GLSLProgram*>(target)->setColumnMajorMatrices(StringConverter::parseBool(val));
+    }
 	//-----------------------------------------------------------------------
     String GLSLProgram::CmdInputOperationType::doGet(const void* target) const
     {
@@ -503,5 +524,5 @@ namespace Ogre {
 		t->setMaxOutputVertices(StringConverter::parseInt(val));
 	}
 
-  
+}
 }

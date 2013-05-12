@@ -35,7 +35,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_COMPILE_WXWIDGETS		"Enable / Disable wxWidgets builds" OFF)
 	option(XSILIUM_DEBUG_ASSERT				"Enable / Disable debug asserts." ON)
 	option(XSILIUM_HEADER_GENERATOR			"Build Blender DNA to C++ generator."   OFF)
-	option(XSILIUM_DISABLE_ZIP				"Disable external .zip resource loading" ON)
+	option(XSILIUM_DISABLE_ZIP				"Disable external .zip resource loading" OFF)
 	option(XSILIUM_USE_STATIC_FREEIMAGE		"Compile and link statically FreeImage and all its plugins" ON)	
 	option(XSILIUM_MINIMAL_FREEIMAGE_CODEC	"Compile minimal FreeImage Codec(PNG/JPEG/TGA)" OFF)
 	option(XSILIUM_COMPILE_TINYXML			"Enable / Disable TinyXml builds" OFF)
@@ -49,7 +49,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_USE_RTSHADER_SYSTEM		"Eanble shader system instead of fixed piped functions." OFF)
 	option(XSILIUM_USE_COMPOSITOR			"Enable post effect by compositor (Bloom, BlackAndWhite, HDR, ...)" OFF)
 	option(XSILIUM_USE_COMPOSITOR_TEX		"Add Compositor texture resources (NightVision, HeatVision, ...)" OFF)
-	option(XSILIUM_COMPILE_OPTS				"Enable / Disable Opts builds" OFF)	
+	option(XSILIUM_COMPILE_OPTS				"Enable / Disable Opts builds" OFF)
+       option(XSILIUM_BUILD_GL3PLUS				"Enable / Disable Opts builds" OFF)	
 	set(OGRE_UNITY_FILES_PER_UNIT "40" CACHE STRING "Number of files per compilation unit in Unity build.")
 	
 	if (APPLE)
@@ -276,10 +277,10 @@ set( XERCESC_LIB_DBG "Xerces" )
 	  
 		# 10.6 sets x86_64 as the default architecture.
 		# Because Carbon isn't supported on 64-bit and we still need it, force the architectures to ppc and i386
-		if(CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" OR CMAKE_OSX_ARCHITECTURES MATCHES "ppc64")
-			string(REPLACE "x86_64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
-			string(REPLACE "ppc64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
-		endif()
+		#if(CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" OR CMAKE_OSX_ARCHITECTURES MATCHES "ppc64")
+		#	string(REPLACE "x86_64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
+		#	string(REPLACE "ppc64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
+		#endif()
 	
 		# Make sure that the OpenGL render system is selected for non-iPhone Apple builds
 		
@@ -301,7 +302,12 @@ set( XERCESC_LIB_DBG "Xerces" )
 	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/freetype/include)
 	set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/zziplib)
 	set(XSILIUM_OIS_INCLUDE ${XSILIUM_DEP_DIR}/ois/includes)
-	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Terrain/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
+	set(XSILIUM_OGRE_INCLUDE 
+	   ${OGREPATH}/OgreMain/include 
+           ${OGREPATH}/Components/Terrain/include 
+	   ${OGREPATH}/Components/Overlay/include 
+           ${XSILIUM_BINARY_DIR}/include 
+           ${XSILIUM_PLATFORM})	
 	set(OGRE_H_PATH ${XSILIUM_OGRE_INCLUDE})
 
 	set(XSILIUM_DEP_INCLUDE
@@ -373,6 +379,15 @@ set( XERCESC_LIB_DBG "Xerces" )
 	else()
 	   set(OGRE_BUILD_RENDERSYSTEM_GLES2 FALSE CACHE BOOL "Forcing remove OpenGLES2 RenderSystem" FORCE)
 	endif()
+
+	if (XSILIUM_BUILD_GL3PLUS)	   
+	   set(OGRE_BUILD_RENDERSYSTEM_GL3PLUS TRUE  CACHE BOOL "Forcing OpenGLES3PLUS RenderSystem" FORCE)       
+	else()
+	   set(OGRE_BUILD_RENDERSYSTEM_GL3PLUS FALSE CACHE BOOL "Forcing remove OpenGLES3PLUS RenderSystem" FORCE)
+	endif()
+
+
+
 	
 	mark_as_advanced(
 	   OGRE_BUILD_RENDERSYSTEM_GL 
@@ -403,6 +418,14 @@ set( XERCESC_LIB_DBG "Xerces" )
 		set(XSILIUM_GLES2RS_INCLUDE        ${OGREPATH}/RenderSystems/GLES2/include)
 		set(XSILIUM_RTSHADERSYSTEM_INCLUDE ${OGREPATH}/Components/RTShaderSystem/include)
 		set(XSILIUM_GLRS_INCLUDE           ${OGREPATH}/RenderSystems/GL/include)
+	endif()
+
+	if (OPENGLES_FOUND AND XSILIUM_BUILD_GL3PLUS )		
+		set(OGRE_BUILD_RENDERSYSTEM_GL3PLUS TRUE)
+		set(XSILIUM_GLESRS_LIBS          RenderSystem_GLESPLUS)
+		set(XSILIUM_GLESRS_ROOT          ${OGREPATH}/RenderSystems/GL3Plus)
+		set(XSILIUM_GLESRS_INCLUDE       ${OGREPATH}/RenderSystems/GL3Plus/include)
+		set(XSILIUM_GLRS_INCLUDE         ${OGREPATH}/RenderSystems/GL/include)
 	endif()
 
 	if (WIN32 AND XSILIUM_MINGW_DIRECT3D)

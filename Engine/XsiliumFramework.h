@@ -16,7 +16,7 @@
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
 
-#include <SdkTrays.h>
+//#include <SdkTrays.h>
 
 #include "DotSceneLoader/DotSceneLoader.h"
 

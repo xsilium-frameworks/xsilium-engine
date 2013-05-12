@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ THE SOFTWARE.
 #include "OgreArchive.h"
 #include "OgreIteratorWrappers.h"
 #include <ctime>
+#include "OgreHeaderPrefix.h"
 
 // If X11/Xlib.h gets included before this header (for example it happens when
 // including wxWidgets and FLTK), Status is defined as an int which we don't
@@ -140,7 +141,6 @@ namespace Ogre {
         /** This event is fired when a stage of preparing linked world geometry 
             has been completed. The number of stages required will have been 
             included in the resourceCount passed in resourceGroupLoadStarted.
-        @param description Text description of what was just prepared
         */
         virtual void worldGeometryPrepareStageEnded(void) {}
         /** This event is fired when a resource group finished preparing. */
@@ -169,7 +169,6 @@ namespace Ogre {
         /** This event is fired when a stage of loading linked world geometry 
             has been completed. The number of stages required will have been 
             included in the resourceCount passed in resourceGroupLoadStarted.
-        @param description Text description of what was just loaded
         */
         virtual void worldGeometryStageEnded(void) = 0;
         /** This event is fired when a resource group finished loading. */
@@ -398,6 +397,14 @@ namespace Ogre {
 		void fireResourcePrepareEnded(void);
 		/// Internal event firing method
 		void fireResourceGroupPrepareEnded(const String& groupName);
+		/** Internal modification time retrieval */
+		time_t resourceModifiedTime(ResourceGroup* group, const String& filename);
+
+        /** Find out if the named file exists in a group. Internal use only
+         @param group Pointer to the resource group
+         @param filename Fully qualified name of the file to test for
+         */
+        bool resourceExists(ResourceGroup* group, const String& filename);
 
 		/// Stored current group - optimisation for when bulk loading a group
 		ResourceGroup* mCurrentGroup;
@@ -625,7 +632,7 @@ namespace Ogre {
 			this allows duplicate names in alternate paths.
         */
         void addResourceLocation(const String& name, const String& locType, 
-            const String& resGroup = DEFAULT_RESOURCE_GROUP_NAME, bool recursive = false);
+            const String& resGroup = DEFAULT_RESOURCE_GROUP_NAME, bool recursive = false, bool readOnly = true);
         /** Removes a resource location from the search path. */ 
         void removeResourceLocation(const String& name, 
 			const String& resGroup = DEFAULT_RESOURCE_GROUP_NAME);
@@ -798,12 +805,6 @@ namespace Ogre {
         @param filename Fully qualified name of the file to test for
         */
         bool resourceExists(const String& group, const String& filename);
-
-        /** Find out if the named file exists in a group. 
-        @param group Pointer to the resource group
-        @param filename Fully qualified name of the file to test for
-        */
-        bool resourceExists(ResourceGroup* group, const String& filename);
 		
         /** Find out if the named file exists in any group. 
         @param filename Fully qualified name of the file to test for
@@ -845,9 +846,6 @@ namespace Ogre {
         @return A list of resource locations matching the criteria
         */
         StringVectorPtr findResourceLocation(const String& groupName, const String& pattern);
-
-		/** Retrieve the modification time of a given file */
-		time_t resourceModifiedTime(ResourceGroup* group, const String& filename); 
 
 		/** Create a new resource file in a given group.
 		@remarks
@@ -1088,5 +1086,7 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

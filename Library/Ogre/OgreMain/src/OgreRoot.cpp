@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,6 @@ THE SOFTWARE.
 #include "OgreTextureManager.h"
 #include "OgreParticleSystemManager.h"
 #include "OgreSkeletonManager.h"
-#include "OgreOverlayElementFactory.h"
-#include "OgreOverlayManager.h"
 #include "OgreProfiler.h"
 #include "OgreErrorDialog.h"
 #include "OgreConfigDialog.h"
@@ -66,7 +64,8 @@ THE SOFTWARE.
 #include "OgrePlatformInformation.h"
 #include "OgreConvexBody.h"
 #include "Threading/OgreDefaultWorkQueue.h"
-	
+#include "OgreQueuedProgressiveMeshGenerator.h"
+
 #if OGRE_NO_FREEIMAGE == 0
 #include "OgreFreeImageCodec.h"
 #endif
@@ -77,17 +76,11 @@ THE SOFTWARE.
 #include "OgreZip.h"
 #endif
 
-#include "OgreFontManager.h"
 #include "OgreHardwareBufferManager.h"
-
-#include "OgreOverlay.h"
 #include "OgreHighLevelGpuProgramManager.h"
-
 #include "OgreExternalTextureSourceManager.h"
 #include "OgreCompositorManager.h"
-
 #include "OgreScriptCompiler.h"
-
 #include "OgreWindowEventUtilities.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
@@ -95,7 +88,10 @@ THE SOFTWARE.
 #endif
 #if OGRE_NO_PVRTC_CODEC == 0
 #  include "OgrePVRTCCodec.h"
-#endif     
+#endif
+#if OGRE_NO_ETC1_CODEC == 0
+#  include "OgreETC1Codec.h"
+#endif
 
 namespace Ogre {
     //-----------------------------------------------------------------------
@@ -117,7 +113,8 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     Root::Root(const String& pluginFileName, const String& configFileName, 
 		const String& logFileName)
-      : mLogManager(0)
+      : mQueuedEnd(false)
+      , mLogManager(0)
 	  , mRenderSystemCapabilitiesManager(0)
 	  , mNextFrame(0)
 	  , mFrameSmoothingTime(0.0f)
@@ -146,6 +143,11 @@ namespace Ogre {
 			mLogManager = OGRE_NEW LogManager();
 			mLogManager->createLog(logFileName, true, true);
 		}
+        
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
+        mAndroidLogger = OGRE_NEW AndroidLogListener();
+        mLogManager->getDefaultLog()->addListener(mAndroidLogger);
+#endif
 
         // Dynamic library manager
         mDynLibManager = OGRE_NEW DynLibManager();
@@ -201,36 +203,31 @@ namespace Ogre {
 
         mTimer = OGRE_NEW Timer();
 
-        // Overlay manager
-        mOverlayManager = OGRE_NEW OverlayManager();
-
-        mPanelFactory = OGRE_NEW PanelOverlayElementFactory();
-        mOverlayManager->addOverlayElementFactory(mPanelFactory);
-
-        mBorderPanelFactory = OGRE_NEW BorderPanelOverlayElementFactory();
-        mOverlayManager->addOverlayElementFactory(mBorderPanelFactory);
-
-        mTextAreaFactory = OGRE_NEW TextAreaOverlayElementFactory();
-        mOverlayManager->addOverlayElementFactory(mTextAreaFactory);
-        // Font manager
-        mFontManager = OGRE_NEW FontManager();
-
         // Lod strategy manager
         mLodStrategyManager = OGRE_NEW LodStrategyManager();
+
+        // Queued Progressive Mesh Generator Worker
+        mPMWorker = OGRE_NEW PMWorker();
+
+        // Queued Progressive Mesh Generator Injector
+        mPMInjector = OGRE_NEW PMInjector();
 
 #if OGRE_PROFILING
         // Profiler
         mProfiler = OGRE_NEW Profiler();
 		Profiler::getSingleton().setTimer(mTimer);
 #endif
+
+
         mFileSystemArchiveFactory = OGRE_NEW FileSystemArchiveFactory();
-        ArchiveManager::getSingleton().addArchiveFactory( mFileSystemArchiveFactory );
-#if OGRE_NO_ZIP_ARCHIVE == 0
+        ArchiveManager::getSingleton().addArchiveFactory( mFileSystemArchiveFactory );        
+#   if OGRE_NO_ZIP_ARCHIVE == 0
         mZipArchiveFactory = OGRE_NEW ZipArchiveFactory();
         ArchiveManager::getSingleton().addArchiveFactory( mZipArchiveFactory );
         mEmbeddedZipArchiveFactory = OGRE_NEW EmbeddedZipArchiveFactory();
         ArchiveManager::getSingleton().addArchiveFactory( mEmbeddedZipArchiveFactory );
-#endif
+#   endif
+        
 #if OGRE_NO_DDS_CODEC == 0
 		// Register image codecs
 		DDSCodec::startup();
@@ -242,7 +239,11 @@ namespace Ogre {
 #if OGRE_NO_PVRTC_CODEC == 0
         PVRTCCodec::startup();
 #endif
+#if OGRE_NO_ETC1_CODEC == 0
+        ETC1Codec::startup();
+#endif
 
+        
         mHighLevelGpuProgramManager = OGRE_NEW HighLevelGpuProgramManager();
 
 		mExternalTextureSourceManager = OGRE_NEW ExternalTextureSourceManager();
@@ -266,7 +267,7 @@ namespace Ogre {
 		addMovableObjectFactory(mBillboardChainFactory);
 		mRibbonTrailFactory = OGRE_NEW RibbonTrailFactory();
 		addMovableObjectFactory(mRibbonTrailFactory);
-     
+
 		// Load plugins
         if (!pluginFileName.empty())
             loadPlugins(pluginFileName);
@@ -302,18 +303,25 @@ namespace Ogre {
 #if OGRE_NO_PVRTC_CODEC == 0
 		PVRTCCodec::shutdown();
 #endif
+#if OGRE_NO_ETC1_CODEC == 0
+        ETC1Codec::shutdown();
+#endif
 #if OGRE_PROFILING
         OGRE_DELETE mProfiler;
 #endif
-        OGRE_DELETE mOverlayManager;
-        OGRE_DELETE mFontManager;
+
 		OGRE_DELETE mLodStrategyManager;
+		OGRE_DELETE mPMWorker;
+		OGRE_DELETE mPMInjector;
+
         OGRE_DELETE mArchiveManager;
-#if OGRE_NO_ZIP_ARCHIVE == 0
+        
+#   if OGRE_NO_ZIP_ARCHIVE == 0
         OGRE_DELETE mZipArchiveFactory;
         OGRE_DELETE mEmbeddedZipArchiveFactory;
-#endif
+#   endif
         OGRE_DELETE mFileSystemArchiveFactory;
+        
         OGRE_DELETE mSkeletonManager;
         OGRE_DELETE mMeshManager;
         OGRE_DELETE mParticleManager;
@@ -322,10 +330,6 @@ namespace Ogre {
             OGRE_DELETE mControllerManager;
         if (mHighLevelGpuProgramManager)
             OGRE_DELETE mHighLevelGpuProgramManager;
-
-        OGRE_DELETE mTextAreaFactory;
-        OGRE_DELETE mBorderPanelFactory;
-        OGRE_DELETE mPanelFactory;
 
         unloadPlugins();
         OGRE_DELETE mMaterialManager;
@@ -345,6 +349,12 @@ namespace Ogre {
 		OGRE_DELETE mTimer;
 
         OGRE_DELETE mDynLibManager;
+        
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
+        mLogManager->getDefaultLog()->removeListener(mAndroidLogger);
+        OGRE_DELETE mAndroidLogger;
+#endif
+        
         OGRE_DELETE mLogManager;
 
 		OGRE_DELETE mCompilerManager;
@@ -942,9 +952,14 @@ namespace Ogre {
         return Real(times.back() - times.front()) / ((times.size()-1) * 1000);
     }
     //-----------------------------------------------------------------------
-    void Root::queueEndRendering(void)
+    void Root::queueEndRendering(bool state /* = true */)
     {
-	    mQueuedEnd = true;
+	    mQueuedEnd = state;
+    }
+    //-----------------------------------------------------------------------
+    bool Root::endRenderingQueued(void)
+    {
+	    return mQueuedEnd;
     }
     //-----------------------------------------------------------------------
     void Root::startRendering(void)
@@ -1003,6 +1018,9 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     void Root::shutdown(void)
     {
+		if(mActiveRenderer)
+			mActiveRenderer->_setViewport(NULL);
+
 		// Since background thread might be access resources,
 		// ensure shutdown before destroying resource manager.
 		mResourceBackgroundQueue->shutdown();
@@ -1043,7 +1061,7 @@ namespace Ogre {
 
         if (!pluginDir.empty() && *pluginDir.rbegin() != '/' && *pluginDir.rbegin() != '\\')
         {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WINRT
             pluginDir += "\\";
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
             pluginDir += "/";

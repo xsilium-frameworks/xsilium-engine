@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ THE SOFTWARE.
 #include "OgreIteratorWrappers.h"
 #include "OgreStringVector.h"
 #include "OgreAnimation.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 	/** \addtogroup Core
@@ -251,7 +252,6 @@ namespace Ogre {
             animations do not have to sum to 1.0, because some animations may affect only subsets
             of the skeleton. If the weights exceed 1.0 for the same area of the skeleton, the 
             movement will just be exaggerated.
-            @param 
         */
         virtual void setAnimationState(const AnimationStateSet& animSet);
 
@@ -367,7 +367,7 @@ namespace Ogre {
             'compatible' here means identically bones will have same hierarchy,
             but skeletons are not necessary to have same number of bones (if
             number bones of source skeleton's more than this skeleton, they will
-            copied as is, except that duplicate names are unallowed; and in the
+            copied as is, except that duplicate names are disallowed; and in the
             case of bones missing in source skeleton, nothing happen for those
             bones).
         @par
@@ -457,7 +457,7 @@ namespace Ogre {
         */
         void unloadImpl(void);
 		/// @copydoc Resource::calculateSize
-		size_t calculateSize(void) const { return 0; } // TODO 
+		size_t calculateSize(void) const;
 
     };
 
@@ -534,6 +534,7 @@ namespace Ogre {
 
 }
 
+#include "OgreHeaderSuffix.h"
 
 #endif
 

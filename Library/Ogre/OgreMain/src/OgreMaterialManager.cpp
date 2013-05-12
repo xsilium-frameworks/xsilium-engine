@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,9 +38,7 @@ THE SOFTWARE.
 #include "OgrePass.h"
 #include "OgreTextureUnitState.h"
 #include "OgreException.h"
-#if OGRE_USE_NEW_COMPILERS == 1
-#  include "OgreScriptCompiler.h"
-#endif
+#include "OgreScriptCompiler.h"
 #include "OgreLodStrategyManager.h"
 #include "OgreLodStrategyManager.h"
 
@@ -64,6 +62,9 @@ namespace Ogre {
 	    mDefaultMinFilter = FO_LINEAR;
 	    mDefaultMagFilter = FO_LINEAR;
 	    mDefaultMipFilter = FO_POINT;
+		mDefaultCompareEnabled	= false;
+		mDefaultCompareFunction = CMPF_GREATER_EQUAL;
+
 		mDefaultMaxAniso = 1;
 
 		// Create primary thread copies of script compiler / serializer
@@ -73,11 +74,6 @@ namespace Ogre {
         // Loading order
         mLoadOrder = 100.0f;
 		// Scripting is supported by this manager
-#if OGRE_USE_NEW_COMPILERS == 0
-		mScriptPatterns.push_back("*.program");
-		mScriptPatterns.push_back("*.material");
-		ResourceGroupManager::getSingleton()._registerScriptLoader(this);
-#endif
 
 		// Resource type
 		mResourceType = "Material";
@@ -133,22 +129,7 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     void MaterialManager::parseScript(DataStreamPtr& stream, const String& groupName)
     {
-#if OGRE_USE_NEW_COMPILERS == 1
 		ScriptCompilerManager::getSingleton().parseScript(stream, groupName);
-#else // OGRE_USE_NEW_COMPILERS
-#  if OGRE_THREAD_SUPPORT
-		// Delegate to serializer
-		// check we have an instance for this thread (should always have one for main thread)
-		if (!OGRE_THREAD_POINTER_GET(mSerializer))
-		{
-			// create a new instance for this thread - will get deleted when
-			// the thread dies
-			OGRE_THREAD_POINTER_SET(OGRE_NEW MaterialSerializer());
-		}
-#  endif
-        OGRE_THREAD_POINTER_GET(mSerializer)->parseScript(stream, groupName);
-#endif // OGRE_USE_NEW_COMPILERS
-
     }
     //-----------------------------------------------------------------------
 	void MaterialManager::setDefaultTextureFiltering(TextureFilterOptions fo)

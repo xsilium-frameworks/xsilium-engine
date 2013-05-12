@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -221,7 +221,7 @@ void DualQuaternionSkinning::addPositionCalculations(Function* vsMain, int& func
 			//Transform the position based by the scaling and shearing matrix
 			curFuncInvocation = OGRE_NEW FunctionInvocation(FFP_FUNC_TRANSFORM, FFP_VS_TRANSFORM, funcCounter++);
 			curFuncInvocation->pushOperand(mParamBlendS, Operand::OPS_IN);
-			curFuncInvocation->pushOperand(mParamInPosition, Operand::OPS_IN, Operand::OPM_X | Operand::OPM_Y | Operand::OPM_Z);
+			curFuncInvocation->pushOperand(mParamInPosition, Operand::OPS_IN, Operand::OPM_XYZ);
 			curFuncInvocation->pushOperand(mParamLocalBlendPosition, Operand::OPS_OUT);
 			vsMain->addAtomInstance(curFuncInvocation);
 		}
@@ -229,7 +229,7 @@ void DualQuaternionSkinning::addPositionCalculations(Function* vsMain, int& func
 		{
 			//Assign the input position to the local blended position
 			curFuncInvocation = OGRE_NEW FunctionInvocation(FFP_FUNC_ASSIGN, FFP_VS_TRANSFORM, funcCounter++);
-			curFuncInvocation->pushOperand(mParamInPosition, Operand::OPS_IN, Operand::OPM_X | Operand::OPM_Y | Operand::OPM_Z);
+			curFuncInvocation->pushOperand(mParamInPosition, Operand::OPS_IN, Operand::OPM_XYZ);
 			curFuncInvocation->pushOperand(mParamLocalBlendPosition, Operand::OPS_OUT);
 			vsMain->addAtomInstance(curFuncInvocation);
 		}

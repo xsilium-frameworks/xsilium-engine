@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 #include "OgreShaderPrerequisites.h"
 #include "OgreSingleton.h"
+#include "OgreFileSystemLayer.h"
 #include "OgreRenderObjectListener.h"
 #include "OgreSceneManager.h"
 #include "OgreShaderRenderState.h"
@@ -57,7 +58,6 @@ public:
 	/** 
 	Initialize the Shader Generator System.
 	Return true upon success.
-	@param sceneMgr The scene manager that the shader generator will be bound to. 
 	*/
 	static bool initialize();
 
@@ -134,7 +134,7 @@ public:
 
 	/** 
 	Set the output vertex shader target profiles.
-	@param vertexShaderProfile The target profiles for the vertex shader.	
+	@param vertexShaderProfiles The target profiles for the vertex shader.	
 	*/
 	void setVertexShaderProfiles(const String& vertexShaderProfiles);
 
@@ -151,7 +151,7 @@ public:
 
 	/** 
 	Set the output fragment shader target profiles.
-	@param fragmentShaderProfile The target profiles for the fragment shader.	
+	@param fragmentShaderProfiles The target profiles for the fragment shader.	
 	*/
 	void setFragmentShaderProfiles(const String& fragmentShaderProfiles);
 
@@ -210,7 +210,7 @@ public:
 	bool hasRenderState(const String& schemeName) const;
 	
 
-	/** 
+    /** 
 	Get render state of specific pass.
 	Using this method allows the user to customize the behavior of a specific pass.
 	@param schemeName The destination scheme name.
@@ -265,7 +265,7 @@ public:
 	void destroySubRenderState(SubRenderState* subRenderState);
 
 
-	/** 
+    /** 
 	Checks if a shader based technique has been created for a given technique. 
 	Return true if exist. False if not.
 	@param materialName The source material name.
@@ -276,7 +276,7 @@ public:
 	bool hasShaderBasedTechnique(const String& materialName, const String& srcTechniqueSchemeName, const String& dstTechniqueSchemeName) const;
 	bool hasShaderBasedTechnique(const String& materialName, const String& groupName, const String& srcTechniqueSchemeName, const String& dstTechniqueSchemeName) const;
 
-	/** 
+    /** 
 	Create shader based technique from a given technique. 
 	Return true upon success. Failure may occur if the source technique is not FFP pure, or different
 	source technique is mapped to the requested destination scheme.
@@ -290,7 +290,7 @@ public:
 	bool createShaderBasedTechnique(const String& materialName, const String& groupName, const String& srcTechniqueSchemeName, const String& dstTechniqueSchemeName, bool overProgrammable = false);
 
 
-	/** 
+    /** 
 	Remove shader based technique from a given technique. 
 	Return true upon success. Failure may occur if the given source technique was not previously
 	registered successfully using the createShaderBasedTechnique method.
@@ -821,7 +821,7 @@ protected:
 	void _finalize();
 
 	/** Find source technique to generate shader based technique based on it. */
-	Technique* findSourceTechnique(const String& materialName, const String& groupName, const String& srcTechniqueSchemeName);
+	Technique* findSourceTechnique(const String& materialName, const String& groupName, const String& srcTechniqueSchemeName, bool allowProgrammable);
 
 	/** Checks if a given technique has passes with shaders. */
 	bool isProgrammable(Technique* tech) const;
@@ -844,7 +844,7 @@ protected:
 	@param compiler The compiler instance.
 	@param prop The abstract property node.
 	@param pass The pass that is the parent context of this node.
-	@param the translator for the specific SubRenderState
+	@param translator The translator for the specific SubRenderState
 	*/
 	SubRenderState* createSubRenderState(ScriptCompiler* compiler, PropertyAbstractNode* prop, Pass* pass, SGScriptTranslator* translator);
 	
@@ -854,7 +854,7 @@ protected:
 	@param compiler The compiler instance.
 	@param prop The abstract property node.
 	@param texState The texture unit state that is the parent context of this node.
-	@param the translator for the specific SubRenderState
+	@param translator The translator for the specific SubRenderState
 	*/
 	SubRenderState* createSubRenderState(ScriptCompiler* compiler, PropertyAbstractNode* prop, TextureUnitState* texState, SGScriptTranslator* translator);
 
@@ -946,6 +946,8 @@ protected:
 	ProgramManager* mProgramManager;
 	// Shader program writer manager.
 	ProgramWriterManager* mProgramWriterManager;
+    // File system layer manager.
+	FileSystemLayer* mFSLayer;
 	// Fixed Function Render state builder.
 	FFPRenderStateBuilder* mFFPRenderStateBuilder;
 	// Material entries map.

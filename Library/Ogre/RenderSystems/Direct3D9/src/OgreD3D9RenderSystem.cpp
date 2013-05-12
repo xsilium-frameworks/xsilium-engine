@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,9 @@ namespace Ogre
 
 	//---------------------------------------------------------------------
 	D3D9RenderSystem::D3D9RenderSystem( HINSTANCE hInstance ) :
-		mMultiheadUse(mutAuto)
+		mMultiheadUse(mutAuto),
+		mAllowDirectX9Ex(false),
+		mIsDirectX9Ex(false)
 	{
 		LogManager::getSingleton().logMessage( "D3D9 : " + getName() + " created." );
 
@@ -185,6 +187,7 @@ namespace Ogre
 		D3D9Driver* driver;
 
 		ConfigOption optDevice;
+		ConfigOption optAllowDirectX9Ex;
 		ConfigOption optVideoMode;
 		ConfigOption optFullScreen;
 		ConfigOption optMultihead;
@@ -206,6 +209,12 @@ namespace Ogre
 		optDevice.currentValue.clear();
 		optDevice.possibleValues.clear();
 		optDevice.immutable = false;
+
+		optAllowDirectX9Ex.name = "Allow DirectX9Ex";
+		optAllowDirectX9Ex.possibleValues.push_back( "Yes" );
+		optAllowDirectX9Ex.possibleValues.push_back( "No" );
+		optAllowDirectX9Ex.currentValue = "No";
+		optAllowDirectX9Ex.immutable = false;
 
 		optVideoMode.name = "Video Mode";
 		optVideoMode.currentValue = "800 x 600 @ 32-bit colour";
@@ -305,6 +314,7 @@ namespace Ogre
 #endif
 
 		mOptions[optDevice.name] = optDevice;
+		mOptions[optAllowDirectX9Ex.name] = optAllowDirectX9Ex;
 		mOptions[optVideoMode.name] = optVideoMode;
 		mOptions[optFullScreen.name] = optFullScreen;
 		mOptions[optMultihead.name] = optMultihead;
@@ -396,6 +406,38 @@ namespace Ogre
 		// Refresh other options if D3DDriver changed
 		if( name == "Rendering Device" )
 			refreshD3DSettings();
+
+		if ( name == "Allow DirectX9Ex" )
+		{
+			if (value == "Yes")
+				mAllowDirectX9Ex = true;
+			else mAllowDirectX9Ex = false;
+
+			// Create our Direct3D object
+			if (mAllowDirectX9Ex && !mIsDirectX9Ex)
+			{
+				SAFE_RELEASE(mD3D);
+				HMODULE hD3D = LoadLibrary(TEXT("d3d9.dll"));
+				if (hD3D)
+				{
+					typedef HRESULT (WINAPI *DIRECT3DCREATE9EXFUNCTION)(UINT, IDirect3D9Ex**);
+					DIRECT3DCREATE9EXFUNCTION pfnCreate9Ex = (DIRECT3DCREATE9EXFUNCTION)GetProcAddress(hD3D, "Direct3DCreate9Ex");
+					if (pfnCreate9Ex)
+					{
+						IDirect3D9Ex* d3dEx = NULL;
+						(*pfnCreate9Ex)(D3D_SDK_VERSION, &d3dEx);
+						d3dEx->QueryInterface(__uuidof(IDirect3D9), reinterpret_cast<void **>(&mD3D));
+						mIsDirectX9Ex = true;
+					}
+					FreeLibrary(hD3D);
+				}
+			}
+			if ((mD3D == NULL) || (!mAllowDirectX9Ex && mIsDirectX9Ex))
+			{
+				if ( NULL == (mD3D = Direct3DCreate9(D3D_SDK_VERSION)) )
+					OGRE_EXCEPT( Exception::ERR_INTERNAL_ERROR, "Failed to create Direct3D9 object", "D3D9RenderSystem::D3D9RenderSystem" );
+			}
+		}
 
 		if( name == "Full Screen" )
 		{
@@ -875,6 +917,7 @@ namespace Ogre
 		rsc->setCapability(RSC_HWOCCLUSION);		
 		rsc->setCapability(RSC_USER_CLIP_PLANES);			
 		rsc->setCapability(RSC_VERTEX_FORMAT_UBYTE4);			
+		rsc->setCapability(RSC_TEXTURE_1D);			
 		rsc->setCapability(RSC_TEXTURE_3D);			
 		rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
 		rsc->setNonPOW2TexturesLimited(false);
@@ -1055,7 +1098,7 @@ namespace Ogre
 			rsc->setVendor(GPU_NVIDIA);
 			break;
 		case 0x1002:
-			rsc->setVendor(GPU_ATI);
+			rsc->setVendor(GPU_AMD);
 			break;
 		case 0x163C:
 		case 0x8086:
@@ -1163,7 +1206,7 @@ namespace Ogre
 				}
 
 			}
-			else if (rsc->getVendor() == GPU_ATI)
+			else if (rsc->getVendor() == GPU_AMD)
 			{
 				// There is no check on ATI, we have to assume SM3 == support
 				rsc->setCapability(RSC_ALPHA_TO_COVERAGE);
@@ -2182,7 +2225,7 @@ namespace Ogre
 			{
 				/* FIXME: The actually input texture coordinate dimensions should
 				be determine by texture coordinate vertex element. Now, just trust
-				user supplied texture type matchs texture coordinate vertex element.
+				user supplied texture type matches texture coordinate vertex element.
 				*/
 				if (mTexStageDesc[stage].texType == D3D9Mappings::D3D_TEX_TYPE_NORMAL)
 				{
@@ -2511,7 +2554,7 @@ namespace Ogre
 				}
 
 			}
-			else if ((getCapabilities()->getVendor() == GPU_ATI))
+			else if ((getCapabilities()->getVendor() == GPU_AMD))
 			{
 				if (a2c)
 				{
@@ -2687,7 +2730,7 @@ namespace Ogre
 	}
 	//---------------------------------------------------------------------
 	void D3D9RenderSystem::setStencilBufferParams(CompareFunction func, 
-		uint32 refValue, uint32 mask, StencilOperation stencilFailOp, 
+		uint32 refValue, uint32 compareMask, uint32 writeMask, StencilOperation stencilFailOp, 
 		StencilOperation depthFailOp, StencilOperation passOp, 
 		bool twoSidedOperation)
 	{
@@ -2749,10 +2792,16 @@ namespace Ogre
 			OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, "Error setting stencil buffer reference value.",
 			"D3D9RenderSystem::setStencilBufferParams");
 
-		// mask
-		hr = __SetRenderState(D3DRS_STENCILMASK, mask);
+		// compare mask
+		hr = __SetRenderState(D3DRS_STENCILMASK, compareMask);
 		if (FAILED(hr))
-			OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, "Error setting stencil buffer mask.",
+			OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, "Error setting stencil buffer compare mask.",
+			"D3D9RenderSystem::setStencilBufferParams");
+
+		// compare mask
+		hr = __SetRenderState(D3DRS_STENCILWRITEMASK, writeMask);
+		if (FAILED(hr))
+			OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, "Error setting stencil buffer write mask.",
 			"D3D9RenderSystem::setStencilBufferParams");
 
 		// fail op
@@ -2783,6 +2832,16 @@ namespace Ogre
 			D3D9Mappings::get(ftype, filter, mDeviceManager->getActiveDevice()->getD3D9DeviceCaps(), texType));
 		if (FAILED(hr))
 			OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, "Failed to set texture filter ", "D3D9RenderSystem::_setTextureUnitFiltering");
+	}
+	//---------------------------------------------------------------------
+	void D3D9RenderSystem::_setTextureUnitCompareFunction(size_t unit, CompareFunction function)
+	{
+		//no effect in directX9 rendersystem
+	}
+	//---------------------------------------------------------------------
+	void D3D9RenderSystem::_setTextureUnitCompareEnabled(size_t unit, bool compare)
+	{
+		//no effect in directX9 rendersystem
 	}
 	//---------------------------------------------------------------------
 	DWORD D3D9RenderSystem::_getCurrentAnisotropy(size_t unit)
@@ -3382,7 +3441,7 @@ namespace Ogre
 		   ) 
 		{
 			OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, 
-				"Attempted to render using the fixed pipeline when it is diabled.",
+				"Attempted to render using the fixed pipeline when it is disabled.",
 				"D3D9RenderSystem::_render");
 		}
 #endif
@@ -4394,6 +4453,9 @@ namespace Ogre
 						// ran out of options, no FSAA
 						fsaa = 0;
 						ok = true;
+
+						*outMultisampleType = D3DMULTISAMPLE_NONE;
+						*outMultisampleQuality = 0;
 					}
 				}
 			}

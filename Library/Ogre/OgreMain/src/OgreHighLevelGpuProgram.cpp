@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,6 +100,18 @@ namespace Ogre
 			params->copyConstantsFrom(*(mDefaultParams.get()));
         return params;
     }
+    size_t HighLevelGpuProgram::calculateSize(void) const
+    {
+        size_t memSize = 0;
+        memSize += sizeof(bool);
+        if(!mAssemblerProgram.isNull())
+            memSize += mAssemblerProgram->calculateSize();
+
+        memSize += GpuProgram::calculateSize();
+
+        return memSize;
+    }
+
     //---------------------------------------------------------------------------
     void HighLevelGpuProgram::loadHighLevel(void)
     {
@@ -185,7 +197,7 @@ namespace Ogre
 		getConstantDefinitions();
 		params->_setNamedConstants(mConstantDefs);
 		// also set logical / physical maps for programs which use this
-		params->_setLogicalIndexes(mFloatLogicalToPhysical, mIntLogicalToPhysical);
+		params->_setLogicalIndexes(mFloatLogicalToPhysical, mDoubleLogicalToPhysical, mIntLogicalToPhysical);
 	}
 	//-----------------------------------------------------------------------
 	//-----------------------------------------------------------------------

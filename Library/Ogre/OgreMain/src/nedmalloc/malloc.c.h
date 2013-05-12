@@ -497,7 +497,9 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 #endif  /* WIN32 */
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
+#if (_WIN32_WINNT < 0x403)
 #define _WIN32_WINNT 0x403
+#endif
 #include <windows.h>
 #define HAVE_MMAP 1
 #define HAVE_MORECORE 0
@@ -692,6 +694,9 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 
 #ifdef HAVE_USR_INCLUDE_MALLOC_H
 #include "/usr/include/malloc.h"
+#elif defined(__ANDROID__) || defined(ANDROID)
+#include <malloc.h>
+#define STRUCT_MALLINFO_DECLARED 1
 #else /* HAVE_USR_INCLUDE_MALLOC_H */
 #ifndef STRUCT_MALLINFO_DECLARED
 #define STRUCT_MALLINFO_DECLARED 1

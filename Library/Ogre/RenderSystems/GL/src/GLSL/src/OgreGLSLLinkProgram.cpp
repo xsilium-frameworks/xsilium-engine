@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@ THE SOFTWARE.
 #include "OgreGpuProgramManager.h"
 
 namespace Ogre {
+    namespace GLSL {
 
 	//  a  builtin				custom attrib name
 	// ----------------------------------------------
@@ -132,6 +133,7 @@ namespace Ogre {
 		if (!mLinked && !mTriedToLinkAndFailed)
 		{			
 			glGetError(); //Clean up the error. Otherwise will flood log.
+
 			mGLHandle = glCreateProgramObjectARB();
 
             GLenum glErr = glGetError();
@@ -261,6 +263,15 @@ namespace Ogre {
 		GLUniformReferenceIterator currentUniform = mGLUniformReferences.begin();
 		GLUniformReferenceIterator endUniform = mGLUniformReferences.end();
 
+        // determine if we need to transpose matrices when binding
+        int transpose = GL_TRUE;
+        if ((fromProgType == GPT_FRAGMENT_PROGRAM && mVertexProgram && (!mVertexProgram->getGLSLProgram()->getColumnMajorMatrices())) ||
+            (fromProgType == GPT_VERTEX_PROGRAM && mFragmentProgram && (!mFragmentProgram->getGLSLProgram()->getColumnMajorMatrices())) ||
+            (fromProgType == GPT_GEOMETRY_PROGRAM && mGeometryProgram && (!mGeometryProgram->getGLSLProgram()->getColumnMajorMatrices())))
+        {
+            transpose = GL_FALSE;
+        }
+
 		for (;currentUniform != endUniform; ++currentUniform)
 		{
 			// Only pull values from buffer it's supposed to be in (vertex or fragment)
@@ -295,57 +306,57 @@ namespace Ogre {
 						break;
 					case GCT_MATRIX_2X2:
 						glUniformMatrix2fvARB(currentUniform->mLocation, glArraySize, 
-							GL_TRUE, params->getFloatPointer(def->physicalIndex));
+							transpose, params->getFloatPointer(def->physicalIndex));
 						break;
 					case GCT_MATRIX_2X3:
 						if (GLEW_VERSION_2_1)
 						{
 							glUniformMatrix2x3fv(currentUniform->mLocation, glArraySize, 
-								GL_TRUE, params->getFloatPointer(def->physicalIndex));
+								transpose, params->getFloatPointer(def->physicalIndex));
 						}
 						break;
 					case GCT_MATRIX_2X4:
 						if (GLEW_VERSION_2_1)
 						{
 							glUniformMatrix2x4fv(currentUniform->mLocation, glArraySize, 
-								GL_TRUE, params->getFloatPointer(def->physicalIndex));
+								transpose, params->getFloatPointer(def->physicalIndex));
 						}
 						break;
 					case GCT_MATRIX_3X2:
 						if (GLEW_VERSION_2_1)
 						{
 							glUniformMatrix3x2fv(currentUniform->mLocation, glArraySize, 
-								GL_TRUE, params->getFloatPointer(def->physicalIndex));
+								transpose, params->getFloatPointer(def->physicalIndex));
 						}
 						break;
 					case GCT_MATRIX_3X3:
 						glUniformMatrix3fvARB(currentUniform->mLocation, glArraySize, 
-							GL_TRUE, params->getFloatPointer(def->physicalIndex));
+							transpose, params->getFloatPointer(def->physicalIndex));
 						break;
 					case GCT_MATRIX_3X4:
 						if (GLEW_VERSION_2_1)
 						{
 							glUniformMatrix3x4fv(currentUniform->mLocation, glArraySize, 
-								GL_TRUE, params->getFloatPointer(def->physicalIndex));
+								transpose, params->getFloatPointer(def->physicalIndex));
 						}
 						break;
 					case GCT_MATRIX_4X2:
 						if (GLEW_VERSION_2_1)
 						{
 							glUniformMatrix4x2fv(currentUniform->mLocation, glArraySize, 
-								GL_TRUE, params->getFloatPointer(def->physicalIndex));
+								transpose, params->getFloatPointer(def->physicalIndex));
 						}
 						break;
 					case GCT_MATRIX_4X3:
 						if (GLEW_VERSION_2_1)
 						{
 							glUniformMatrix4x3fv(currentUniform->mLocation, glArraySize, 
-								GL_TRUE, params->getFloatPointer(def->physicalIndex));
+								transpose, params->getFloatPointer(def->physicalIndex));
 						}
 						break;
 					case GCT_MATRIX_4X4:
 						glUniformMatrix4fvARB(currentUniform->mLocation, glArraySize, 
-							GL_TRUE, params->getFloatPointer(def->physicalIndex));
+							transpose, params->getFloatPointer(def->physicalIndex));
 						break;
 					case GCT_INT1:
 						glUniform1ivARB(currentUniform->mLocation, glArraySize, 
@@ -487,7 +498,7 @@ namespace Ogre {
                             foundAttr = true;
                         }
 					}
-                    // Find the position of the next occurance if needed
+                    // Find the position of the next occurrence if needed
                     pos = vpSource.find(a.name, pos + a.name.length());
 				}
 			}
@@ -593,4 +604,5 @@ namespace Ogre {
 		}
 	}
 	//-----------------------------------------------------------------------
+} // namespace GLSL
 } // namespace Ogre

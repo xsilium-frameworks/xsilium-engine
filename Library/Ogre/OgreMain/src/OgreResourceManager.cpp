@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -104,6 +104,7 @@ namespace Ogre {
         ResourcePtr r = createOrRetrieve(name,group,isManual,loader,loadParams).first;
 		// ensure loaded
         r->load(backgroundThread);
+
         return r;
     }
     //-----------------------------------------------------------------------
@@ -463,15 +464,34 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     ResourceHandle ResourceManager::getNextHandle(void)
     {
-		OGRE_LOCK_AUTO_MUTEX
-
+        // This is an atomic operation and hence needs no locking
         return mNextHandle++;
     }
     //-----------------------------------------------------------------------
     void ResourceManager::checkUsage(void)
     {
-        // TODO Page out here?
-    }
+		if (getMemoryUsage() > mMemoryBudget)
+		{
+			OGRE_LOCK_AUTO_MUTEX
+			// unload unreferenced resources until we are within our budget again
+			const bool reloadableOnly = true;
+			ResourceMap::iterator i, iend;
+			iend = mResources.end();
+			for (i = mResources.begin(); i != iend && getMemoryUsage() > mMemoryBudget; ++i)
+			{
+				// A use count of 3 means that only RGM and RM have references
+				// RGM has one (this one) and RM has 2 (by name and by handle)
+				if (i->second.useCount() == ResourceGroupManager::RESOURCE_SYSTEM_NUM_REFERENCE_COUNTS)
+				{
+					Resource* res = i->second.get();
+					if (!reloadableOnly || res->isReloadable())
+					{
+						res->unload();
+					}
+				}
+			}
+		}
+	}
 	//-----------------------------------------------------------------------
 	void ResourceManager::_notifyResourceTouched(Resource* res)
 	{
@@ -481,11 +501,12 @@ namespace Ogre {
 	void ResourceManager::_notifyResourceLoaded(Resource* res)
 	{
 		mMemoryUsage += res->getSize();
+		checkUsage();
 	}
 	//-----------------------------------------------------------------------
 	void ResourceManager::_notifyResourceUnloaded(Resource* res)
 	{
-		mMemoryUsage += -(res->getSize());
+		mMemoryUsage -= res->getSize();
 	}
 	//---------------------------------------------------------------------
 	ResourceManager::ResourcePool* ResourceManager::getResourcePool(const String& name)

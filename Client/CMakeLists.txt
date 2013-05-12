@@ -74,7 +74,8 @@ if (APPLE)
    	set(MACOSX_BUNDLE_BUNDLE_NAME "Xsilium Client")
    	set(MACOSX_BUNDLE_INFO_STRING "Xsilium game 0.0.1")
    	set(MACOSX_BUNDLE_BUNDLE_VERSION "0.0.1")
-    	set_target_properties(XsiliumClient PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
+   	set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.ogre3d.\${PRODUCT_NAME:rfc1034identifier}")
+    set_target_properties(XsiliumClient PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
 
   if (OGRE_BUILD_PLATFORM_APPLE_IOS)
     set(XSILIUM_CONTENTS_PATH ${OGRE_BINARY_DIR}/XsiliumClient.app)
@@ -96,8 +97,20 @@ if (APPLE)
                 ${XSILIUM_CONTENTS_PATH}/Frameworks/
 		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib
                 ${XSILIUM_CONTENTS_PATH}/Frameworks/
-
+                
                 )
+   
+   # Components             
+                
+		add_custom_command(TARGET XsiliumClient POST_BUILD
+        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/RenderSystem_GL.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
+        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgreTerrain.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
+        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgrePaging.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
+                )
+                
         # now cfg files
         add_custom_command(TARGET XsiliumClient POST_BUILD
                 COMMAND mkdir ARGS -p ${XSILIUM_CONTENTS_PATH}/Resources
@@ -117,73 +130,39 @@ if (APPLE)
                 )
 
         # now plugins
-        add_custom_command(TARGET XsiliumClient POST_BUILD
-                COMMAND mkdir ARGS -p ${XSILIUM_CONTENTS_PATH}/Plugins)
-        add_custom_command(TARGET XsiliumClient POST_BUILD
-                COMMAND mkdir ARGS -p ${XSILIUM_CONTENTS_PATH}/Components)
-
                 add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libRenderSystem_GL.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
-                        )
-
-                add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libPlugin_BSPSceneManager.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
+                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_BSPSceneManager.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
 
 
                 add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libPlugin_CgProgramManager.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
+                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_CgProgramManager.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
 
 
                 add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libPlugin_OctreeSceneManager.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
+                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_OctreeZone.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
 
 
                 add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libPlugin_PCZSceneManager.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
+                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_PCZSceneManager.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
 
                 add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libPlugin_OctreeZone.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
+                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_OctreeSceneManager.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
 
                 add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libPlugin_ParticleFX.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Plugins/
+                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_ParticleFX.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
 
-        # Components
-
-                add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libOgrePaging.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Components/
-                        )
-
-
-                add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libOgreProperty.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Components/
-                        )
-
-
-                add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libOgreRTShaderSystem.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Components/
-                        )
-
-
-                add_custom_command(TARGET XsiliumClient POST_BUILD
-                        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libOgreTerrain.1.8.1.dylib
-                        ${XSILIUM_CONTENTS_PATH}/Components/
-                        )
 
 
         # Add links for the sample plugins
