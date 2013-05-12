@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ THE SOFTWARE.
 #include "OgreGpuProgram.h"
 #include "OgreHardwareVertexBuffer.h"
 #include "OgreGLSLESProgramCommon.h"
+#include "OgreGLES2ManagedResource.h"
 
 namespace Ogre {
     
@@ -41,7 +42,7 @@ namespace Ogre {
 
 	*/
 
-	class _OgreGLES2Export GLSLESLinkProgram : public GLSLESProgramCommon
+	class _OgreGLES2Export GLSLESLinkProgram : public GLSLESProgramCommon MANAGED_RESOURCE
 	{
 	protected:
         virtual void extractLayoutQualifiers(void) {}
@@ -53,6 +54,14 @@ namespace Ogre {
 
 		void buildGLUniformReferences(void);
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
+        /** See AndroidResource. */
+        virtual void notifyOnContextLost();
+        
+        /** See AndroidResource. */
+        virtual void notifyOnContextReset();
+#endif
+        
 	public:
 		/// Constructor should only be used by GLSLESLinkProgramManager
 		GLSLESLinkProgram(GLSLESGpuProgram* vertexProgram, GLSLESGpuProgram* fragmentProgram);
@@ -66,6 +75,10 @@ namespace Ogre {
 		normally called by GLSLESGpuProgram::bindParameters() just before rendering occurs.
 		*/
 		virtual void updateUniforms(GpuProgramParametersSharedPtr params, uint16 mask, GpuProgramType fromProgType);
+		/** Updates program object uniform blocks using data from GpuProgramParameters.
+         normally called by GLSLGpuProgram::bindParameters() just before rendering occurs.
+         */
+		virtual void updateUniformBlocks(GpuProgramParametersSharedPtr params, uint16 mask, GpuProgramType fromProgType);
 		/** Updates program object uniforms using data from pass iteration GpuProgramParameters.
 		normally called by GLSLESGpuProgram::bindMultiPassParameters() just before multi pass rendering occurs.
 		*/

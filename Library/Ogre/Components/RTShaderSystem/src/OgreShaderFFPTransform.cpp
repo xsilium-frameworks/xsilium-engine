@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -56,27 +56,24 @@ int	FFPTransform::getExecutionOrder() const
 bool FFPTransform::createCpuSubPrograms(ProgramSet* programSet)
 {
 	Program* vsProgram = programSet->getCpuVertexProgram();
+	Function* vsEntry = vsProgram->getEntryPointFunction();
 	
 	// Resolve World View Projection Matrix.
 	UniformParameterPtr wvpMatrix = vsProgram->resolveAutoParameterInt(GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX, 0);
-	if (wvpMatrix.get() == NULL)
-		return false;
 		
-	Function* vsEntry = vsProgram->getEntryPointFunction();
-	assert(vsEntry != NULL);
-
 	// Resolve input position parameter.
 	ParameterPtr positionIn = vsEntry->resolveInputParameter(Parameter::SPS_POSITION, 0, Parameter::SPC_POSITION_OBJECT_SPACE, GCT_FLOAT4);	
-	if (positionIn.get() == NULL)
-		return false;
 	
-
 	// Resolve output position parameter.
 	ParameterPtr positionOut = vsEntry->resolveOutputParameter(Parameter::SPS_POSITION, 0, Parameter::SPC_POSITION_PROJECTIVE_SPACE, GCT_FLOAT4);
-	if (positionOut.get() == NULL)
-		return false;
 	
-
+	if (!(wvpMatrix.get()) || !(positionIn.get()) || !(positionOut.get()))
+	{
+		OGRE_EXCEPT( Exception::ERR_INTERNAL_ERROR, 
+				"Not all parameters could be constructed for the sub-render state.",
+				"FFPTransform::createCpuSubPrograms" );
+	}
+	
 	// Add dependency.
 	vsProgram->addDependency(FFP_LIB_TRANSFORM);
 

@@ -4,7 +4,7 @@ This source file is a part of OGRE
 
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -55,6 +55,8 @@ Torus Knot Software Ltd.
 #include "OgreLodListener.h"
 #include "OgreInstanceManager.h"
 #include "OgreRenderSystem.h"
+#include "OgreHeaderPrefix.h"
+
 namespace Ogre {
 	/** \addtogroup Core
 	*  @{
@@ -507,11 +509,11 @@ namespace Ogre {
         /// Cached light information, used to tracking light's changes
         struct _OgreExport LightInfo
         {
-            Light* light;       // Just a pointer for comparison, the light might destroyed for some reason
-            int type;           // Use int instead of Light::LightTypes to avoid header file dependence
-            Real range;         // Sets to zero if directional light
-            Vector3 position;   // Sets to zero if directional light
-			uint32 lightMask;   // Light mask
+            Light* light;       /// Just a pointer for comparison, the light might destroyed for some reason
+            int type;           /// Use int instead of Light::LightTypes to avoid header file dependence
+            Real range;         /// Sets to zero if directional light
+            Vector3 position;   /// Sets to zero if directional light
+			uint32 lightMask;   /// Light mask
 
             bool operator== (const LightInfo& rhs) const
             {
@@ -628,7 +630,7 @@ namespace Ogre {
             int xsegments, int ysegments, int ySegmentsToKeep, 
             const String& groupName);
 
-        // Flag indicating whether SceneNodes will be rendered as a set of 3 axes
+        /// Flag indicating whether SceneNodes will be rendered as a set of 3 axes
         bool mDisplayNodes;
 
         /// Storage of animations, lookup by name
@@ -747,7 +749,7 @@ namespace Ogre {
 		bool mShadowUseInfiniteFarPlane;
 		bool mShadowCasterRenderBackFaces;
 		bool mShadowAdditiveLightClip;
-		/// Struct for cacheing light clipping information for re-use in a frame
+		/// Struct for caching light clipping information for re-use in a frame
 		struct LightClippingInfo
 		{
 			RealRect scissorRect;
@@ -850,9 +852,9 @@ namespace Ogre {
         AxisAlignedBoxSceneQuery* mShadowCasterAABBQuery;
         Real mDefaultShadowFarDist;
         Real mDefaultShadowFarDistSquared;
-        Real mShadowTextureOffset; // proportion of texture offset in view direction e.g. 0.4
-        Real mShadowTextureFadeStart; // as a proportion e.g. 0.6
-        Real mShadowTextureFadeEnd; // as a proportion e.g. 0.9
+        Real mShadowTextureOffset; /// Proportion of texture offset in view direction e.g. 0.4
+        Real mShadowTextureFadeStart; /// As a proportion e.g. 0.6
+        Real mShadowTextureFadeEnd; /// As a proportion e.g. 0.9
 		bool mShadowTextureSelfShadow;
 		Pass* mShadowTextureCustomCasterPass;
 		Pass* mShadowTextureCustomReceiverPass;
@@ -1722,7 +1724,7 @@ namespace Ogre {
             @return
                 On success, true is returned.
             @par
-                On failiure, false is returned.
+                On failure, false is returned.
         */
         virtual ViewPoint getSuggestedViewpoint(bool random = false);
 
@@ -1737,7 +1739,7 @@ namespace Ogre {
             @return
                 On success, true is returned.
             @par
-                On failiure, false is returned.
+                On failure, false is returned.
         */
         virtual bool setOption( const String& strKey, const void* pValue )
         { (void)strKey; (void)pValue; return false; }
@@ -1753,12 +1755,12 @@ namespace Ogre {
                 On success, true is returned and pDestValue points to the value of the given
                 option.
             @par
-                On failiure, false is returned and pDestValue is set to NULL.
+                On failure, false is returned and pDestValue is set to NULL.
         */
         virtual bool getOption( const String& strKey, void* pDestValue )
         { (void)strKey; (void)pDestValue; return false; }
 
-        /** Method for verifying wether the scene manager has an implementation-specific
+        /** Method for verifying whether the scene manager has an implementation-specific
             option.
             @param
                 strKey The name of the option to check for.
@@ -1791,7 +1793,7 @@ namespace Ogre {
             @param
                 refKeys A reference to a list that will be filled with all the available options.
             @return
-                On success, true is returned. On failiure, false is returned.
+                On success, true is returned. On failure, false is returned.
         */
         virtual bool getOptionKeys( StringVector& refKeys )
         { (void)refKeys; return false; }
@@ -3158,11 +3160,11 @@ namespace Ogre {
 		@param customName Custom name for referencing. Must be unique
 		@param meshName The mesh name the instances will be based upon
 		@param groupName The resource name where the mesh lives
-		@param Technique to use, which may be shader based, or hardware based.
+		@param technique Technique to use, which may be shader based, or hardware based.
 		@param numInstancesPerBatch Suggested number of instances per batch. The actual number
 		may end up being lower if the technique doesn't support having so many. It can't be zero
 		@param flags @see InstanceManagerFlags
-		@param InstanceManager only supports using one submesh from the base mesh. This parameter
+		@param subMeshIdx InstanceManager only supports using one submesh from the base mesh. This parameter
 		says which submesh to pick (must be <= Mesh::getNumSubMeshes())
 		@return The new InstanceManager instance
 		*/
@@ -3184,7 +3186,7 @@ namespace Ogre {
 		@remarks
 			Be sure you don't have any InstancedEntity referenced somewhere which was created with
 			this manager, since it will become a dangling pointer.
-		@param customName Name of the manager to remove
+		@param name Name of the manager to remove
 		*/
 		virtual void destroyInstanceManager( const String &name );
 		virtual void destroyInstanceManager( InstanceManager *instanceManager );
@@ -3542,6 +3544,8 @@ namespace Ogre {
 
         /** Handle lod events. */
         void _handleLodEvents();
+
+		IlluminationRenderStage _getCurrentRenderStage() {return mIlluminationStage;}
     };
 
     /** Default implementation of IntersectionSceneQuery. */
@@ -3665,6 +3669,6 @@ namespace Ogre {
 
 } // Namespace
 
-
+#include "OgreHeaderSuffix.h"
 
 #endif

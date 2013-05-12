@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +35,10 @@ THE SOFTWARE.
 #include "OgreRenderTexture.h"
 #include "OgreTexture.h"
 #include "OgreHardwarePixelBuffer.h"
+#include "OgreGLES2ManagedResource.h"
 
 namespace Ogre {
-    class _OgreGLES2Export GLES2Texture : public Texture
+    class _OgreGLES2Export GLES2Texture : public Texture MANAGED_RESOURCE
     {
         public:
             // Constructor
@@ -68,7 +69,7 @@ namespace Ogre {
             void unprepareImpl(void);
             /// @copydoc Resource::loadImpl
             void loadImpl(void);
-            /// @copydoc Resource::freeInternalResourcesImpl
+            /// @copydoc Texture::freeInternalResourcesImpl
             void freeInternalResourcesImpl(void);
 
             /** Internal method, create GLHardwarePixelBuffers for every face and
@@ -87,6 +88,16 @@ namespace Ogre {
              */
             LoadedImages mLoadedImages;
 
+            /// Create gl texture
+            void _createGLTexResource();
+        
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
+            /** See AndroidResource. */
+            virtual void notifyOnContextLost();
+        
+            /** See AndroidResource. */
+            virtual void notifyOnContextReset();
+#endif
 
         private:
             GLuint mTextureID;

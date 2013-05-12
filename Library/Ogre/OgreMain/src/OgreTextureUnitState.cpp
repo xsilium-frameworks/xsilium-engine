@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include "OgreLogManager.h"
 #include "OgreException.h"
 #include "OgreTextureManager.h"
+#include "OgreRoot.h"
 
 namespace Ogre {
 
@@ -50,6 +51,7 @@ namespace Ogre {
 		, mTextureLoadFailed(false)
 		, mIsAlpha(false)
 		, mHwGamma(false)
+		, mGamma(1)
 		, mRecalcTexMatrix(false)
 		, mUMod(0)
 		, mVMod(0)
@@ -60,6 +62,8 @@ namespace Ogre {
 		, mMinFilter(FO_LINEAR)
 		, mMagFilter(FO_LINEAR)
 		, mMipFilter(FO_POINT)
+		, mCompareEnabled(false)
+		, mCompareFunc(CMPF_GREATER_EQUAL)
 		, mMaxAniso(MaterialManager::getSingleton().getDefaultAnisotropy())
 		, mMipmapBias(0)
 		, mIsDefaultAniso(true)
@@ -105,6 +109,7 @@ namespace Ogre {
 		, mTextureLoadFailed(false)
 		, mIsAlpha(false)
 		, mHwGamma(false)
+		, mGamma(1)
 		, mRecalcTexMatrix(false)
 		, mUMod(0)
 		, mVMod(0)
@@ -1154,7 +1159,7 @@ namespace Ogre {
 					mFramePtrs[frame] = 
 						TextureManager::getSingleton().prepare(mFrames[frame], 
 							mParent->getResourceGroup(), mTextureType, 
-							mTextureSrcMipmaps, 1.0f, mIsAlpha, mDesiredFormat, mHwGamma);
+							mTextureSrcMipmaps, mGamma, mIsAlpha, mDesiredFormat, mHwGamma);
 				}
 				catch (Exception &e) {
 					String msg;
@@ -1186,7 +1191,7 @@ namespace Ogre {
 					mFramePtrs[frame] = 
 						TextureManager::getSingleton().load(mFrames[frame], 
 							mParent->getResourceGroup(), mTextureType, 
-							mTextureSrcMipmaps, 1.0f, mIsAlpha, mDesiredFormat, mHwGamma);
+							mTextureSrcMipmaps, mGamma, mIsAlpha, mDesiredFormat, mHwGamma);
 				}
 				catch (Exception &e) {
 					String msg;
@@ -1196,7 +1201,7 @@ namespace Ogre {
 						+ e.getFullDescription();
 					LogManager::getSingleton().logMessage(msg);
 					mTextureLoadFailed = true;
-				}	
+				}
 			}
 			else
 			{
@@ -1306,7 +1311,7 @@ namespace Ogre {
             setTextureFiltering(FO_LINEAR, FO_LINEAR, FO_LINEAR);
             break;
         case TFO_ANISOTROPIC:
-            setTextureFiltering(FO_ANISOTROPIC, FO_ANISOTROPIC, FO_LINEAR);
+            setTextureFiltering(FO_ANISOTROPIC, FO_ANISOTROPIC, Root::getSingleton().getRenderSystem()->hasAnisotropicMipMapFilter() ? FO_ANISOTROPIC : FO_LINEAR);
             break;
         }
         mIsDefaultFiltering = false;
@@ -1356,7 +1361,26 @@ namespace Ogre {
 		// to keep compiler happy
 		return mMinFilter;
 	}
-
+	//-----------------------------------------------------------------------
+	void TextureUnitState::setTextureCompareEnabled(bool enabled)
+	{
+		mCompareEnabled=enabled;
+	}
+	//-----------------------------------------------------------------------
+	bool TextureUnitState::getTextureCompareEnabled() const
+	{
+		return mCompareEnabled;
+	}
+	//-----------------------------------------------------------------------
+	void TextureUnitState::setTextureCompareFunction(CompareFunction function)
+	{
+		mCompareFunc=function;
+	}
+	//-----------------------------------------------------------------------
+	CompareFunction TextureUnitState::getTextureCompareFunction() const
+	{
+		return mCompareFunc;
+	}
 	//-----------------------------------------------------------------------
 	void TextureUnitState::setTextureAnisotropy(unsigned int maxAniso)
 	{
@@ -1522,4 +1546,35 @@ namespace Ogre {
 		mCompositorRefTexName = textureName; 
 		mCompositorRefMrtIndex = mrtIndex; 
 	}
+    //-----------------------------------------------------------------------
+    size_t TextureUnitState::calculateSize(void) const
+    {
+        size_t memSize = 0;
+
+        memSize += sizeof(unsigned int) * 3;
+        memSize += sizeof(int);
+        memSize += sizeof(float);
+        memSize += sizeof(Real) * 5;
+        memSize += sizeof(bool) * 8;
+        memSize += sizeof(size_t);
+        memSize += sizeof(TextureType);
+        memSize += sizeof(PixelFormat);
+        memSize += sizeof(UVWAddressingMode);
+        memSize += sizeof(ColourValue);
+        memSize += sizeof(LayerBlendModeEx) * 2;
+        memSize += sizeof(SceneBlendFactor) * 2;
+        memSize += sizeof(Radian);
+        memSize += sizeof(Matrix4);
+        memSize += sizeof(FilterOptions) * 3;
+        memSize += sizeof(CompareFunction);
+        memSize += sizeof(BindingType);
+        memSize += sizeof(ContentType);
+        memSize += sizeof(String) * 4;
+
+        memSize += mFrames.size() * sizeof(String);
+        memSize += mFramePtrs.size() * sizeof(TexturePtr);
+        memSize += mEffects.size() * sizeof(TextureEffect);
+
+        return memSize;
+    }
 }

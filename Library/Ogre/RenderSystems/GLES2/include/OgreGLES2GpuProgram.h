@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,11 @@ namespace Ogre {
 		virtual void bindProgramParameters(GpuProgramParametersSharedPtr params, uint16 mask) {}
 		/// Bind just the pass iteration parameters
 		virtual void bindProgramPassIterationParameters(GpuProgramParametersSharedPtr params) {}
+		/// Execute the shared param binding functions for this program
+		virtual void bindProgramSharedParameters(GpuProgramParametersSharedPtr params, uint16 mask) {}
 
+        /// @copydoc Resource::calculateSize
+        virtual size_t calculateSize(void) const;
 
         /// Get the assigned GL program id
         GLuint getProgramID(void) const

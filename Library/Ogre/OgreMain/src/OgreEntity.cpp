@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -434,7 +434,7 @@ namespace Ogre {
             for (i = mSubEntityList.begin(); i != iend; ++i)
             {
                 // Get sub-entity material
-                const MaterialPtr& material = (*i)->mMaterial;
+                const MaterialPtr& material = (*i)->getMaterial();
                 
                 // Get material lod strategy
                 const LodStrategy *materialStrategy = material->getLodStrategy();
@@ -1900,6 +1900,9 @@ namespace Ogre {
         Vector4 lightPos = light->getAs4DVector();
         Matrix4 world2Obj = mParentNode->_getFullTransform().inverseAffine();
         lightPos = world2Obj.transformAffine(lightPos);
+        Matrix3 world2Obj3x3;
+        world2Obj.extract3x3Matrix(world2Obj3x3);
+        extrusionDistance *= Math::Sqrt(std::min(std::min(world2Obj3x3.GetColumn(0).squaredLength(), world2Obj3x3.GetColumn(1).squaredLength()), world2Obj3x3.GetColumn(2).squaredLength()));
 
         // We need to search the edge list for silhouette edges
         EdgeData* edgeList = getEdgeList();
@@ -2070,7 +2073,7 @@ namespace Ogre {
             (normalsAlso && mSoftwareAnimationNormalsRequests == 0))
         {
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,
-                        "Attempt to remove nonexistant request.",
+                        "Attempt to remove nonexistent request.",
                         "Entity::removeSoftwareAnimationRequest");
         }
         mSoftwareAnimationRequests--;

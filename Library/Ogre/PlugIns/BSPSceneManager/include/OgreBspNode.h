@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -147,16 +147,16 @@ namespace Ogre {
         struct Brush
         {
 			list<Plane>::type planes;
-            SceneQuery::WorldFragment fragment; // For query reporting
+            SceneQuery::WorldFragment fragment; /// For query reporting
         };
-		typedef vector<Brush*>::type NodeBrushList; // Main brush memory held on level
+		typedef vector<Brush*>::type NodeBrushList; /// Main brush memory held on level
 
         /** Get the list of solid Brushes for this node.
         @remarks Only applicable for leaf nodes. 
         */
         const NodeBrushList& getSolidBrushes(void) const;
     protected:
-        BspLevel* mOwner; // Back-reference to containing level
+        BspLevel* mOwner; /// Back-reference to containing level
         bool mIsLeaf;
 
         // Node-only members

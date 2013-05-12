@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,7 @@ namespace Ogre {
     {
     protected:
 
-        // World geometry
+        /// World geometry
         BspLevelPtr mLevel;
 
         // State variables for rendering WIP
@@ -146,7 +146,7 @@ namespace Ogre {
 
         const BspLevelPtr& getLevel(void) {return mLevel; }
 
-        /** Overriden from SceneManager. */
+        /** Overridden from SceneManager. */
         void _findVisibleObjects(Camera* cam, VisibleObjectsBoundsInfo* visibleBounds, 
 			bool onlyShadowCasters);
 
@@ -160,7 +160,7 @@ namespace Ogre {
 		/** Internal method for notifying the level that an object has been detached from a node */
 		void _notifyObjectDetached(const MovableObject* mov);
 
-        /** Creates an AxisAlignedBoxSceneQuery for this scene manager. 
+        /* Creates an AxisAlignedBoxSceneQuery for this scene manager. 
         @remarks
             This method creates a new instance of a query object for this scene manager, 
             for an axis aligned box region. See SceneQuery and AxisAlignedBoxSceneQuery 
@@ -176,7 +176,7 @@ namespace Ogre {
         virtual AxisAlignedBoxSceneQuery* 
             createAABBQuery(const AxisAlignedBox& box, unsigned long mask = 0xFFFFFFFF);
         */
-        /** Creates a SphereSceneQuery for this scene manager. 
+        /* Creates a SphereSceneQuery for this scene manager. 
         @remarks
             This method creates a new instance of a query object for this scene manager, 
             for a spherical region. See SceneQuery and SphereSceneQuery 

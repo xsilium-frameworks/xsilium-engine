@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ namespace Ogre {
 
             // Download a box of pixels from the card
             virtual void download(const PixelBox &data);
-
+        
         public:
             /// Should be called by HardwareBufferManager
             GLES2HardwarePixelBuffer(size_t mWidth, size_t mHeight, size_t mDepth,
@@ -93,7 +93,7 @@ namespace Ogre {
             virtual void bindToFramebuffer(GLenum attachment, size_t zoffset);
 
             /// @copydoc HardwarePixelBuffer::getRenderTarget
-            RenderTexture* getRenderTarget(size_t);
+            RenderTexture* getRenderTarget(size_t slice);
 
             /// Upload a box of pixels to this buffer on the card
             virtual void upload(const PixelBox &data, const Image::Box &dest);
@@ -117,6 +117,15 @@ namespace Ogre {
             void blit(const HardwarePixelBufferSharedPtr &src, const Image::Box &srcBox, const Image::Box &dstBox);
             // Blitting implementation
             void blitFromTexture(GLES2TextureBuffer *src, const Image::Box &srcBox, const Image::Box &dstBox);
+            
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
+        // Friends.
+        protected:
+            friend class GLES2Texture;
+                
+            void updateTextureId(GLuint textureID);
+#endif
+                
         protected:
             // In case this is a texture level
             GLenum mTarget;
@@ -125,7 +134,7 @@ namespace Ogre {
             GLint mFace;
             GLint mLevel;
             bool mSoftwareMipmap;
-
+                
             typedef vector<RenderTexture*>::type SliceTRT;
             SliceTRT mSliceTRT;
 
@@ -140,12 +149,13 @@ namespace Ogre {
             GLES2RenderBuffer(GLenum format, size_t width, size_t height, GLsizei numSamples);
             virtual ~GLES2RenderBuffer();
 
-            /// @copydoc GLHardwarePixelBuffer::bindToFramebuffer
+            /// @copydoc GLES2HardwarePixelBuffer::bindToFramebuffer
             virtual void bindToFramebuffer(GLenum attachment, size_t zoffset);
 
         protected:
             // In case this is a render buffer
             GLuint mRenderbufferID;
+            GLsizei mNumSamples;
     };
 }
 

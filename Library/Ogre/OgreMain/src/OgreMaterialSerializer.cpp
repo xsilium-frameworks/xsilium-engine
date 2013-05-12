@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -865,13 +865,54 @@ namespace Ogre
         else
         {
             logParseError(
-                "Bad filtering attribute, wrong number of parameters (expected 1 or 3)",
+                "Bad filtering attribute, wrong number of parameters (expected 1, 3 or 4)",
                 context);
         }
 
         return false;
     }
     //-----------------------------------------------------------------------
+	bool parseCompareTest(String& params, MaterialScriptContext& context)
+    {
+        StringUtil::toLowerCase(params);
+        try 
+		{
+			if(params == "on")
+			{
+				context.textureUnit->setTextureCompareEnabled(true);
+			}
+			else if(params == "off")
+			{
+				context.textureUnit->setTextureCompareEnabled(false);
+			}
+			else
+			{
+				  OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Invalid compare setting", "parseCompareEnabled");
+			}
+        }
+        catch (...)
+        {
+            logParseError("Bad compare_test attribute, invalid function parameter.", context);
+        }
+
+        return false;
+    }
+	//-----------------------------------------------------------------------
+	bool parseCompareFunction(String& params, MaterialScriptContext& context)
+	{
+		StringUtil::toLowerCase(params);
+		try {
+			CompareFunction func = convertCompareFunction(params);
+			context.textureUnit->setTextureCompareFunction(func);
+		}
+		catch (...)
+		{
+			logParseError("Bad compare_func attribute, invalid function parameter.", context);
+		}
+
+		return false;
+	}
+	//-----------------------------------------------------------------------
     // Texture layer attributes
     bool parseTexture(String& params, MaterialScriptContext& context)
     {
@@ -950,6 +991,22 @@ namespace Ogre
 		else if (params == "vertex")
 		{
 			context.textureUnit->setBindingType(TextureUnitState::BT_VERTEX);
+		}
+		else if (params == "geometry")
+		{
+			context.textureUnit->setBindingType(TextureUnitState::BT_GEOMETRY);
+		}
+		else if (params == "tesselation_hull")
+		{
+			context.textureUnit->setBindingType(TextureUnitState::BT_TESSELATION_HULL);
+		}
+		else if (params == "tesselation_domain")
+		{
+			context.textureUnit->setBindingType(TextureUnitState::BT_TESSELATION_DOMAIN);
+		}
+		else if (params == "compute")
+		{
+			context.textureUnit->setBindingType(TextureUnitState::BT_COMPUTE);
 		}
 		else
 		{
@@ -1181,9 +1238,11 @@ namespace Ogre
             context.pass->setTransparentSortingEnabled(true);
         else if (params == "off")
             context.pass->setTransparentSortingEnabled(false);
+        else if (params == "force")
+            context.pass->setTransparentSortingForced(true);
         else
             logParseError(
-            "Bad transparent_sorting attribute, valid parameters are 'on' or 'off'.",
+            "Bad transparent_sorting attribute, valid parameters are 'on', 'off' or 'force'.",
             context);
 
         return false;
@@ -1871,6 +1930,21 @@ namespace Ogre
         {
             // find the dimensionality
             start = vecparams[1].find_first_not_of("float");
+            // Assume 1 if not specified
+            if (start == String::npos)
+            {
+                dims = 1;
+            }
+            else
+            {
+                dims = StringConverter::parseInt(vecparams[1].substr(start));
+            }
+            isReal = true;
+        }
+        else if ((start = vecparams[1].find("double")) != String::npos)
+        {
+            // find the dimensionality
+            start = vecparams[1].find_first_not_of("double");
             // Assume 1 if not specified
             if (start == String::npos)
             {
@@ -3116,6 +3190,8 @@ namespace Ogre
         mTextureUnitAttribParsers.insert(AttribParserList::value_type("wave_xform", (ATTRIBUTE_PARSER)parseWaveXform));
 		mTextureUnitAttribParsers.insert(AttribParserList::value_type("transform", (ATTRIBUTE_PARSER)parseTransform));
         mTextureUnitAttribParsers.insert(AttribParserList::value_type("filtering", (ATTRIBUTE_PARSER)parseFiltering));
+		mTextureUnitAttribParsers.insert(AttribParserList::value_type("compare_test", (ATTRIBUTE_PARSER)parseCompareTest));
+		mTextureUnitAttribParsers.insert(AttribParserList::value_type("compare_func", (ATTRIBUTE_PARSER)parseCompareFunction));
         mTextureUnitAttribParsers.insert(AttribParserList::value_type("max_anisotropy", (ATTRIBUTE_PARSER)parseAnisotropy));
         mTextureUnitAttribParsers.insert(AttribParserList::value_type("texture_alias", (ATTRIBUTE_PARSER)parseTextureAlias));
 		mTextureUnitAttribParsers.insert(AttribParserList::value_type("mipmap_bias", (ATTRIBUTE_PARSER)parseMipmapBias));
@@ -3537,7 +3613,7 @@ namespace Ogre
         if (mBuffer.empty())
             OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Queue is empty !", "MaterialSerializer::exportQueued");
 
-        LogManager::getSingleton().logMessage("MaterialSerializer : writing material(s) to material script : " + fileName, LML_CRITICAL);
+        LogManager::getSingleton().logMessage("MaterialSerializer : writing material(s) to material script : " + fileName, LML_NORMAL);
         FILE *fp;
         fp = fopen(fileName.c_str(), "w");
         if (!fp)
@@ -3567,7 +3643,7 @@ namespace Ogre
             fclose(locFp);
         }
 
-        LogManager::getSingleton().logMessage("MaterialSerializer : done.", LML_CRITICAL);
+        LogManager::getSingleton().logMessage("MaterialSerializer : done.", LML_NORMAL);
         clearQueue();
     }
     //-----------------------------------------------------------------------
@@ -3606,7 +3682,7 @@ namespace Ogre
 			outMaterialName = pMat->getName();
 		}
 
-        LogManager::getSingleton().logMessage("MaterialSerializer : writing material " + outMaterialName + " to queue.", LML_CRITICAL);
+        LogManager::getSingleton().logMessage("MaterialSerializer : writing material " + outMaterialName + " to queue.", LML_NORMAL);
 
 		bool skipWriting = false;
 
@@ -4029,10 +4105,12 @@ namespace Ogre
 			}
 			// transparent_sorting
 			if (mDefaults ||
+				pPass->getTransparentSortingForced() == true ||
 				pPass->getTransparentSortingEnabled() != true)
 			{
 				writeAttribute(3, "transparent_sorting");
-                writeValue(pPass->getTransparentSortingEnabled() ? "on" : "off");
+				writeValue(pPass->getTransparentSortingForced() ? "force" :
+					(pPass->getTransparentSortingEnabled() ? "on" : "off"));
 			}
 
 
@@ -4276,7 +4354,7 @@ namespace Ogre
 		// Fire post section write event.
 		firePassEvent(MSE_POST_WRITE, skipWriting, pPass);
         
-		LogManager::getSingleton().logMessage("MaterialSerializer : done.", LML_CRITICAL);
+		LogManager::getSingleton().logMessage("MaterialSerializer : done.", LML_NORMAL);
     }
     //-----------------------------------------------------------------------
     String MaterialSerializer::convertFiltering(FilterOptions fo)
@@ -4322,7 +4400,7 @@ namespace Ogre
 		if (skipWriting)		
 			return;
 	
-        LogManager::getSingleton().logMessage("MaterialSerializer : parsing texture layer.", LML_CRITICAL);
+        LogManager::getSingleton().logMessage("MaterialSerializer : parsing texture layer.", LML_NORMAL);
         mBuffer += "\n";
         writeAttribute(3, "texture_unit");
         // only write out name if its not equal to the default name
@@ -4625,6 +4703,11 @@ namespace Ogre
 				case TextureUnitState::BT_VERTEX:
 					writeValue("vertex");
 					break;
+                case TextureUnitState::BT_GEOMETRY:
+                case TextureUnitState::BT_TESSELATION_DOMAIN:
+                case TextureUnitState::BT_TESSELATION_HULL:
+                case TextureUnitState::BT_COMPUTE:
+                    break;
 				};
 		
 			}
@@ -4980,7 +5063,7 @@ namespace Ogre
         writeValue(quoteWord(program->getName()));
         beginSection(3);
         {
-            // write out paramters
+            // write out parameters
             GpuProgramParameters* defaultParams= 0;
             // does the GPU program have default parameters?
             if (program->hasDefaultParameters())
@@ -5043,7 +5126,7 @@ namespace Ogre
 			}
 
 			writeGpuProgramParameter("param_named", 
-				paramName, autoEntry, defaultAutoEntry, def.isFloat(), 
+				paramName, autoEntry, defaultAutoEntry, def.isFloat(), def.isDouble(),
 				def.physicalIndex, def.elementSize * def.arraySize,
 				params, defaultParams, level, useMainBuffer);
 		}
@@ -5080,9 +5163,37 @@ namespace Ogre
 
 				writeGpuProgramParameter("param_indexed", 
 					StringConverter::toString(logicalIndex), autoEntry, 
-					defaultAutoEntry, true, logicalUse.physicalIndex, 
+					defaultAutoEntry, true, false, logicalUse.physicalIndex,
 					logicalUse.currentSize,
 					params, defaultParams, level, useMainBuffer);
+			}
+		}
+
+        // double params
+		GpuLogicalBufferStructPtr doubleLogical = params->getDoubleLogicalBufferStruct();
+        if( !doubleLogical.isNull() )
+		{
+			OGRE_LOCK_MUTEX(floatLogical->mutex)
+
+			for(GpuLogicalIndexUseMap::const_iterator i = doubleLogical->map.begin();
+				i != doubleLogical->map.end(); ++i)
+			{
+				size_t logicalIndex = i->first;
+				const GpuLogicalIndexUse& logicalUse = i->second;
+
+				const GpuProgramParameters::AutoConstantEntry* autoEntry =
+                params->findDoubleAutoConstantEntry(logicalIndex);
+				const GpuProgramParameters::AutoConstantEntry* defaultAutoEntry = 0;
+				if (defaultParams)
+				{
+					defaultAutoEntry = defaultParams->findDoubleAutoConstantEntry(logicalIndex);
+				}
+
+				writeGpuProgramParameter("param_indexed",
+                                         StringConverter::toString(logicalIndex), autoEntry,
+                                         defaultAutoEntry, false, true, logicalUse.physicalIndex,
+                                         logicalUse.currentSize,
+                                         params, defaultParams, level, useMainBuffer);
 			}
 		}
 
@@ -5108,7 +5219,7 @@ namespace Ogre
 
 				writeGpuProgramParameter("param_indexed", 
 					StringConverter::toString(logicalIndex), autoEntry, 
-					defaultAutoEntry, false, logicalUse.physicalIndex, 
+					defaultAutoEntry, false, false, logicalUse.physicalIndex,
 					logicalUse.currentSize,
 					params, defaultParams, level, useMainBuffer);
 			}
@@ -5121,7 +5232,7 @@ namespace Ogre
 		const String& commandName, const String& identifier, 
 		const GpuProgramParameters::AutoConstantEntry* autoEntry, 
 		const GpuProgramParameters::AutoConstantEntry* defaultAutoEntry, 
-		bool isFloat, size_t physicalIndex, size_t physicalSize,
+		bool isFloat, bool isDouble, size_t physicalIndex, size_t physicalSize,
 		const GpuProgramParametersSharedPtr& params, GpuProgramParameters* defaultParams,
 		const ushort level, const bool useMainBuffer)
 	{
@@ -5161,6 +5272,13 @@ namespace Ogre
 						params->getFloatPointer(physicalIndex), 
 						defaultParams->getFloatPointer(physicalIndex),
 						sizeof(float) * physicalSize) != 0;
+				}
+				else if (isDouble)
+				{
+					different = memcmp(
+						params->getDoublePointer(physicalIndex),
+						defaultParams->getDoublePointer(physicalIndex),
+						sizeof(double) * physicalSize) != 0;
 				}
 				else
 				{
@@ -5226,6 +5344,18 @@ namespace Ogre
 					for (size_t f = 0 ; f < physicalSize; ++f)
 					{
 						writeValue(StringConverter::toString(*pFloat++), useMainBuffer);
+					}
+				}
+				else if (isDouble)
+				{
+					// Get pointer to start of values
+					const double* pDouble = params->getDoublePointer(physicalIndex);
+
+					writeValue("double" + countLabel, useMainBuffer);
+					// iterate through real constants
+					for (size_t f = 0 ; f < physicalSize; ++f)
+					{
+						writeValue(StringConverter::toString(*pDouble++), useMainBuffer);
 					}
 				}
 				else

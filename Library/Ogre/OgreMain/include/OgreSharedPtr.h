@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ namespace Ogre {
 	protected:
 		T* pRep;
 		unsigned int* pUseCount;
-		SharedPtrFreeMethod useFreeMethod; // if we should use OGRE_FREE instead of OGRE_DELETE
+		SharedPtrFreeMethod useFreeMethod; /// If we should use OGRE_FREE instead of OGRE_DELETE
 	public:
 		OGRE_AUTO_SHARED_MUTEX // public to allow external locking
 		/** Constructor, does not initialise the SharedPtr.
@@ -76,7 +76,7 @@ namespace Ogre {
 
 		/** Constructor.
 		@param rep The pointer to take ownership of
-		@param freeMode The mechanism to use to free the pointer
+		@param inFreeMethod The mechanism to use to free the pointer
 		*/
         template< class Y>
 		explicit SharedPtr(Y* rep, SharedPtrFreeMethod inFreeMethod = SPFM_DELETE) 
@@ -220,12 +220,12 @@ namespace Ogre {
             OGRE_SET_AUTO_SHARED_MUTEX_NULL
         }
 
+        /** IF YOU GET A CRASH HERE, YOU FORGOT TO FREE UP POINTERS
+         BEFORE SHUTTING OGRE DOWN
+         Use setNull() before shutdown or make sure your pointer goes
+         out of scope before OGRE shuts down to avoid this. */
         virtual void destroy(void)
         {
-            // IF YOU GET A CRASH HERE, YOU FORGOT TO FREE UP POINTERS
-            // BEFORE SHUTTING OGRE DOWN
-            // Use setNull() before shutdown or make sure your pointer goes
-            // out of scope before OGRE shuts down to avoid this.
 			switch(useFreeMethod)
 			{
 			case SPFM_DELETE:

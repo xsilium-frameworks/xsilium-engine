@@ -105,9 +105,8 @@ include(InstallResources)
 
 subdirs(Library)
 subdirs(Engine)
-subdirs(Launcher)
+#subdirs(Launcher)
 subdirs(Client)
-
 
 
 

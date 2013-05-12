@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -105,6 +105,13 @@ namespace Ogre {
 			return mField;
 		}
 
+		T operator-=(const T &sub)
+		{
+			OGRE_LOCK_AUTO_MUTEX
+			mField -= sub;
+			return mField;
+		}
+
         protected:
 
         OGRE_AUTO_MUTEX
@@ -165,27 +172,32 @@ namespace Ogre {
             
         T operator++ (void)
         {
-            __sync_add_and_fetch (&mField, 1);
+            return __sync_add_and_fetch (&mField, 1);
         }
             
         T operator-- (void)
         {
-            __sync_add_and_fetch (&mField, -1);
+            return __sync_add_and_fetch (&mField, -1);
         }
 
         T operator++ (int)
         {
-            __sync_fetch_and_add (&mField, 1);
+            return __sync_fetch_and_add (&mField, 1);
         }
             
         T operator-- (int)
         {
-            __sync_fetch_and_add (&mField, -1);
+            return __sync_fetch_and_add (&mField, -1);
         }
 
 		T operator+=(const T &add)
 		{
 			return __sync_add_and_fetch (&mField, add);
+		}
+
+		T operator-=(const T &sub)
+		{
+			return __sync_sub_and_fetch (&mField, sub);
 		}
 
         volatile T mField;
@@ -266,7 +278,7 @@ namespace Ogre {
         T operator++ (void)
         {
             if (sizeof(T)==2) {
-                return InterlockedIncrement16((SHORT*)&mField);
+                return _InterlockedIncrement16((SHORT*)&mField);
             } else if (sizeof(T)==4) {
                 return InterlockedIncrement((LONG*)&mField);
             } else if (sizeof(T)==8) {
@@ -279,7 +291,7 @@ namespace Ogre {
         T operator-- (void)
         {
             if (sizeof(T)==2) {
-                return InterlockedDecrement16((SHORT*)&mField);
+                return _InterlockedDecrement16((SHORT*)&mField);
             } else if (sizeof(T)==4) {
                 return InterlockedDecrement((LONG*)&mField);
             } else if (sizeof(T)==8) {
@@ -292,7 +304,7 @@ namespace Ogre {
         T operator++ (int)
         {
             if (sizeof(T)==2) {
-                return InterlockedIncrement16((SHORT*)&mField)-1;
+                return _InterlockedIncrement16((SHORT*)&mField)-1;
             } else if (sizeof(T)==4) {
                 return InterlockedIncrement((LONG*)&mField)-1;
             } else if (sizeof(T)==8) {
@@ -305,7 +317,7 @@ namespace Ogre {
         T operator-- (int)
         {
             if (sizeof(T)==2) {
-                return InterlockedDecrement16((SHORT*)&mField)+1;
+                return _InterlockedDecrement16((SHORT*)&mField)+1;
             } else if (sizeof(T)==4) {
                 return InterlockedDecrement((LONG*)&mField)+1;
             } else if (sizeof(T)==8) {
@@ -327,6 +339,21 @@ namespace Ogre {
 				//of the field hasn't changed in the mean time by comparing it to the new value
 				//minus the added value. 
 			} while (!cas(newVal - add, newVal)); //repeat until successful
+			return newVal;
+		}
+
+		T operator-=(const T &sub)
+		{
+			//The function InterlockedExchangeAdd is not available for 64 and 16 bit version
+			//We will use the cas operation instead. 
+			T newVal;
+			do {
+				//Create a value of the current field plus the added value
+				newVal = mField - sub;
+				//Replace the current field value with the new value. Ensure that the value 
+				//of the field hasn't changed in the mean time by comparing it to the new value
+				//minus the added value. 
+			} while (!cas(newVal + sub, newVal)); //repeat until successful
 			return newVal;
 		}
 
@@ -419,6 +446,13 @@ namespace Ogre {
 		{
 			OGRE_LOCK_AUTO_MUTEX
 			mField += add;
+			return mField;
+		}
+
+		T operator-=(const T &sub)
+		{
+			OGRE_LOCK_AUTO_MUTEX
+			mField -= sub;
 			return mField;
 		}
 

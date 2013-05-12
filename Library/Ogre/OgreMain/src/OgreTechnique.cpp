@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2013 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -60,6 +60,20 @@ namespace Ogre {
     bool Technique::isSupported(void) const
     {
         return mIsSupported;
+    }
+    //-----------------------------------------------------------------------------
+    size_t Technique::calculateSize(void) const
+    {
+        size_t memSize = 0;
+
+        // Tally up passes
+        Passes::const_iterator i, iend;
+        iend = mPasses.end();
+        for (i = mPasses.begin(); i != iend; ++i)
+        {
+            memSize += (*i)->calculateSize();
+        }
+        return memSize;
     }
     //-----------------------------------------------------------------------------
     String Technique::_compile(bool autoManageTextureUnits)
@@ -129,7 +143,24 @@ namespace Ogre {
 					}
 				}
 			}
+			if (currPass->hasComputeProgram())
+			{
+				// Check fragment program version
+				if (!currPass->getComputeProgram()->isSupported())
+				{
+					// Can't do this one
+					compileErrors << "Pass " << passNum << 
+						": Compute program " << currPass->getComputeProgram()->getName()
+						<< " cannot be used - ";
+					if (currPass->getComputeProgram()->hasCompileError())
+						compileErrors << "compile error.";
+					else
+						compileErrors << "not supported.";
 
+					compileErrors << std::endl;
+					return false;
+				}
+			}
 			if (currPass->hasVertexProgram())
 			{
 				// Check vertex program version
@@ -140,6 +171,42 @@ namespace Ogre {
 						": Vertex program " << currPass->getVertexProgram()->getName()
 						<< " cannot be used - ";
 					if (currPass->getVertexProgram()->hasCompileError())
+						compileErrors << "compile error.";
+					else
+						compileErrors << "not supported.";
+
+					compileErrors << std::endl;
+					return false;
+				}
+			}
+			if (currPass->hasTesselationHullProgram())
+			{
+				// Check tesselation control program version
+				if (!currPass->getTesselationHullProgram()->isSupported() )
+				{
+					// Can't do this one
+					compileErrors << "Pass " << passNum << 
+						": Tesselation Hull program " << currPass->getTesselationHullProgram()->getName()
+						<< " cannot be used - ";
+					if (currPass->getTesselationHullProgram()->hasCompileError())
+						compileErrors << "compile error.";
+					else
+						compileErrors << "not supported.";
+
+					compileErrors << std::endl;
+					return false;
+				}
+			}
+			if (currPass->hasTesselationDomainProgram())
+			{
+				// Check tesselation control program version
+				if (!currPass->getTesselationDomainProgram()->isSupported() )
+				{
+					// Can't do this one
+					compileErrors << "Pass " << passNum << 
+						": Tesselation Domain program " << currPass->getTesselationDomainProgram()->getName()
+						<< " cannot be used - ";
+					if (currPass->getTesselationDomainProgram()->hasCompileError())
 						compileErrors << "compile error.";
 					else
 						compileErrors << "not supported.";
