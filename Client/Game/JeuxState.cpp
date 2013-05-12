@@ -83,7 +83,7 @@ void JeuxState::createScene()
 	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
 	m_Loader = new DotSceneLoader();
-    m_Loader->parseDotScene("test-terrain.scene", "General", m_pSceneMgr);
+    m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
 
     m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
     m_pSceneMgr->setShadowTextureConfig(0, 2048, 2048, Ogre::PF_X8R8G8B8);
