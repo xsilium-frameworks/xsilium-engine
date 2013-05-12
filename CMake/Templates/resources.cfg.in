@@ -19,17 +19,18 @@ FileSystem=@OGRE_MEDIA_DIR_REL@Media/editorResources
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/materials/textures
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/materials/textures/nvidia
 
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/SkyX
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/plants
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/terrain
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/textures
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain/textures/diffusespecular
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/test-terrain/Terrain
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/SkyX
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Terrain/plants
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Terrain/terrain
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Terrain/textures
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Terrain/textures/diffusespecular
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Terrain/textures/normalheight
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Terrain
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/terrainTextures
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/Perso
 [SkyX]
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/SkyX
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/SkyX
 
 [Hydrax]
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/Hydrax

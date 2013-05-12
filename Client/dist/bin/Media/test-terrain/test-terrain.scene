@@ -30,11 +30,7 @@
         <colourSpecular r="0" g="0" b="0" a="1" />
         <lightAttenuation range="100" constant="0.5" linear="0.1" quadratic="0" />
     </light>
-    <camera name="Camera#0" id="998621376" fov="1" projectionType="perspective">
-        <position x="-44.2433" y="102.135" z="-148.62" />
-        <rotation qw="-0.0218149" qx="0" qy="0.999762" qz="0" />
-        <clipping near="0.1" far="1000" />
-    </camera>
+
     <nodes />
     <skyx rayleighMultiplier="0.0022" mieMultiplier="0.000675" exposure="3" innerRadius="9.77501" outerRadius="10.2963" sampleCount="4" height="0.1" sunIntensity="30" G="-0.991">
     	<time multiplier="0.01" current="16.2535" sunRise="7.5" sunSet="20.5" />
