@@ -80,6 +80,8 @@ namespace Ogre {
             Adrian Cearn„u (cearny@cearny.ro)
         @since
             27 January 2002
+        @see
+            Resource
     */
 	class _OgreExport DynLib : public DynLibAlloc
     {

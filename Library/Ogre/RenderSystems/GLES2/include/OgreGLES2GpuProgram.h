@@ -55,8 +55,6 @@ namespace Ogre {
 		/// Execute the shared param binding functions for this program
 		virtual void bindProgramSharedParameters(GpuProgramParametersSharedPtr params, uint16 mask) {}
 
-        /// @copydoc Resource::calculateSize
-        virtual size_t calculateSize(void) const;
 
         /// Get the assigned GL program id
         GLuint getProgramID(void) const

@@ -47,7 +47,7 @@ namespace Ogre {
     class _OgreParticleFXExport RingEmitter : public AreaEmitter
     {
     public:
-        /// @see AreaEmitter
+        // See AreaEmitter
         /** Command object for inner size (see ParamCommand).*/
         class CmdInnerX : public ParamCommand
         {
@@ -65,7 +65,7 @@ namespace Ogre {
 
         RingEmitter(ParticleSystem* psys);
 
-        /// @see ParticleEmitter
+        /** See ParticleEmitter. */
         void _initParticle(Particle* pParticle);
 
         /** Sets the size of the clear space inside the area from where NO particles are emitted.
@@ -93,7 +93,7 @@ namespace Ogre {
         Real getInnerSizeY(void) const;
 
     protected:
-        /// @see ParticleEmitter
+        // See ParticleEmitter
         static CmdInnerX msCmdInnerX;
         static CmdInnerY msCmdInnerY;
 

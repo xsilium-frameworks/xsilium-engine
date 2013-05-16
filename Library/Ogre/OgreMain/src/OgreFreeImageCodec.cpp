@@ -145,7 +145,7 @@ namespace Ogre {
 		for (RegisteredCodecList::iterator i = msCodecList.begin();
 			i != msCodecList.end(); ++i)
 		{
-			Codec::unregisterCodec(*i);
+			Codec::unRegisterCodec(*i);
 			OGRE_DELETE *i;
 		}
 		msCodecList.clear();
@@ -158,7 +158,7 @@ namespace Ogre {
     { 
     }
 	//---------------------------------------------------------------------
-	FIBITMAP* FreeImageCodec::encodeBitmap(MemoryDataStreamPtr& input, CodecDataPtr& pData) const
+	FIBITMAP* FreeImageCodec::encode(MemoryDataStreamPtr& input, CodecDataPtr& pData) const
 	{
 		FIBITMAP* ret = 0;
 
@@ -366,9 +366,9 @@ namespace Ogre {
 		return ret;
 	}
     //---------------------------------------------------------------------
-    DataStreamPtr FreeImageCodec::encode(MemoryDataStreamPtr& input, Codec::CodecDataPtr& pData) const
+    DataStreamPtr FreeImageCodec::code(MemoryDataStreamPtr& input, Codec::CodecDataPtr& pData) const
     {        
-		FIBITMAP* fiBitmap = encodeBitmap(input, pData);
+		FIBITMAP* fiBitmap = encode(input, pData);
 
 		// open memory chunk allocated by FreeImage
 		FIMEMORY* mem = FreeImage_OpenMemory();
@@ -394,10 +394,10 @@ namespace Ogre {
 
     }
     //---------------------------------------------------------------------
-    void FreeImageCodec::encodeToFile(MemoryDataStreamPtr& input,
+    void FreeImageCodec::codeToFile(MemoryDataStreamPtr& input, 
         const String& outFileName, Codec::CodecDataPtr& pData) const
     {
-		FIBITMAP* fiBitmap = encodeBitmap(input, pData);
+		FIBITMAP* fiBitmap = encode(input, pData);
 
 		FreeImage_Save((FREE_IMAGE_FORMAT)mFreeImageType, fiBitmap, outFileName.c_str());
 		FreeImage_Unload(fiBitmap);

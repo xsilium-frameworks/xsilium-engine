@@ -187,7 +187,7 @@ namespace Ogre {
 	{
 		if(msInstance)
 		{
-			Codec::unregisterCodec(msInstance);
+			Codec::unRegisterCodec(msInstance);
 			OGRE_DELETE msInstance;
 			msInstance = 0;
 		}
@@ -199,14 +199,14 @@ namespace Ogre {
     { 
     }
     //---------------------------------------------------------------------
-    DataStreamPtr DDSCodec::encode(MemoryDataStreamPtr& input, Codec::CodecDataPtr& pData) const
+    DataStreamPtr DDSCodec::code(MemoryDataStreamPtr& input, Codec::CodecDataPtr& pData) const
     {        
 		OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED,
 			"DDS encoding not supported",
-			"DDSCodec::encode" ) ;
+			"DDSCodec::code" ) ;
     }
     //---------------------------------------------------------------------
-    void DDSCodec::encodeToFile(MemoryDataStreamPtr& input,
+    void DDSCodec::codeToFile(MemoryDataStreamPtr& input, 
         const String& outFileName, Codec::CodecDataPtr& pData) const
     {
 		// Unwrap codecDataPtr - data is cleaned by calling function
@@ -273,7 +273,7 @@ namespace Ogre {
 		{
 			OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED,
 				"DDS encoding for" + notImplementedString + " not supported",
-				"DDSCodec::encodeToFile" ) ;
+				"DDSCodec::codeToFile" ) ;
 		}
 		else
 		{
@@ -399,7 +399,7 @@ namespace Ogre {
             default:
                 OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND,
                             "Unsupported DirectX format found in DDS file",
-                            "DDSCodec::convertDXToOgreFormat");
+                            "DDSCodec::decode");
         }
     }
 	//---------------------------------------------------------------------
@@ -444,7 +444,7 @@ namespace Ogre {
 		default:
 			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
 				"Unsupported FourCC format found in DDS file", 
-				"DDSCodec::convertFourCCFormat");
+				"DDSCodec::decode");
 		};
 
 	}
@@ -887,17 +887,36 @@ namespace Ogre {
 				}
 				else
 				{
-                    // Note: We assume the source and destination have the same pitch
+					// Final data - trim incoming pitch
+					size_t srcPitch;
+					if (header.flags & DDSD_PITCH)
+					{
+						srcPitch = header.sizeOrPitch / 
+							std::max((size_t)1, mip * 2);
+					}
+					else
+					{
+						// assume same as final pitch
+						srcPitch = dstPitch;
+					}
+					assert (dstPitch <= srcPitch);
+					long srcAdvance = static_cast<long>(srcPitch) - static_cast<long>(dstPitch);
+
 					for (size_t z = 0; z < imgData->depth; ++z)
 					{
 						for (size_t y = 0; y < imgData->height; ++y)
 						{
 							stream->read(destPtr, dstPitch);
+							if (srcAdvance > 0)
+								stream->skip(srcAdvance);
+
 							destPtr = static_cast<void*>(static_cast<uchar*>(destPtr) + dstPitch);
 						}
 					}
+
 				}
 
+				
 				/// Next mip
 				if(width!=1) width /= 2;
 				if(height!=1) height /= 2;

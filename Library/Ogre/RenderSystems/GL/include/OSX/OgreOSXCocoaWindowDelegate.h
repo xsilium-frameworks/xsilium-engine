@@ -28,7 +28,7 @@
 
 #include "OgreRenderWindow.h"
 
-#import <AppKit/NSWindow.h>
+#import <Cocoa/Cocoa.h>
 
 @interface OSXCocoaWindowDelegate : NSObject
 {

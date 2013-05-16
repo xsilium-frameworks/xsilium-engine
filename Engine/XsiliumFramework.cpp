@@ -7,7 +7,6 @@ XsiliumFramework::XsiliumFramework()
 	m_pRoot				= 0;
 	m_pRenderWnd		= 0;
 	m_pLog				= 0;
-	m_pTimer			= 0;
 	inputManager 		= 0;
 	keyboardMap 		= 0;
 }
@@ -15,10 +14,15 @@ XsiliumFramework::XsiliumFramework()
 XsiliumFramework::~XsiliumFramework()
 {
 	m_pLog->logMessage("Extinction OGRE...");
-	if(m_pRoot)			delete m_pRoot;
-	if(inputManager) delete inputManager;
-	if(keyboardMap) delete keyboardMap;
-	if(m_pLog) delete m_pLog;
+	m_pRoot->removeFrameListener(this);
+	if(m_pRoot)
+		delete m_pRoot;
+	if(inputManager)
+		delete inputManager;
+	if(keyboardMap)
+		delete keyboardMap;
+	if(m_pLog)
+		delete m_pLog;
 }
 
 bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
@@ -40,10 +44,10 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 
 	Ogre::LogManager* logMgr = new Ogre::LogManager();
 
-	m_pLog = Ogre::LogManager::getSingleton().createLog(mResourcePath + "OgreLogfile.log", true, true, false);
+	m_pLog = logMgr->createLog(mResourcePath + "OgreLogfile.log", true, true, false);
 	m_pLog->setDebugOutputEnabled(true);
 
-	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg",logName + ".log");
+	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg",mResourcePath + logName + ".log");
 
 
 	if (!m_pRoot->restoreConfig())
@@ -51,15 +55,14 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 		if(!m_pRoot->showConfigDialog())
 			return false;
 	}
-	m_pRenderWnd = m_pRoot->initialise(true, wndTitle);
+	m_pRenderWnd = m_pRoot->initialise(true);
 
 	inputManager->initialise(m_pRenderWnd);
 	m_pRenderWnd->addViewport(0);
 
-	m_pTimer = new Ogre::Timer();
-	m_pTimer->reset();
-
 	m_pRenderWnd->setActive(true);
+
+	m_pRoot->addFrameListener(this);
 
 	return true;
 }
@@ -89,8 +92,6 @@ void XsiliumFramework::loadRessource()
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
 		}
 	}
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 }
@@ -110,7 +111,46 @@ Ogre::Log* XsiliumFramework::getLog()
 	return this->m_pLog;
 }
 
-Ogre::Timer* XsiliumFramework::getTimer()
+bool XsiliumFramework::frameStarted (const Ogre::FrameEvent &evt)
 {
-	return this->m_pTimer;
+	return true;
+}
+
+bool XsiliumFramework::frameRenderingQueued (const Ogre::FrameEvent &evt)
+{
+	inputManager->capture();
+	return true;
+}
+
+bool XsiliumFramework::frameEnded (const Ogre::FrameEvent &evt)
+{
+	return true;
+}
+
+void XsiliumFramework::shutdown()
+{
+	XsiliumFramework::getInstance()->getRoot()->queueEndRendering(true);
+
+#ifdef USE_RTSHADER_SYSTEM
+	// Finalize the RT Shader System.
+	finalizeRTShaderSystem();
+#endif // USE_RTSHADER_SYSTEM
+
+
+#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
+	// Set the shutting down flag and sleep a bit so the displaylink thread can shut itself down
+	// Note: It is essential that you yield to the CVDisplayLink thread. Otherwise it will
+	// continue to run which will result in either a crash or kernel panic.
+	struct timespec ts;
+	ts.tv_sec = 0;
+	ts.tv_nsec = 1000;
+	nanosleep(&ts, NULL);
+
+	[NSApp terminate:nil];
+
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
+	[mGestureView release];
+#endif
 }

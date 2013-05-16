@@ -71,6 +71,10 @@ namespace Ogre
 		/// Whether the underlying stream is valid compressed data
 		bool mIsCompressedValid;
 		
+		/**
+		 @param avail_in Available data length to be uncompressed. With it we can uncompress
+			DataStream partly.
+		*/
 		void init();
 		void destroy();
 		void compressFinal();

@@ -10,18 +10,20 @@
 #include "OSX/macUtils.h"
 #endif
 
+#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
+#import <Cocoa/Cocoa.h>
+#endif
+
 
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
 
-//#include <SdkTrays.h>
-
 #include "DotSceneLoader/DotSceneLoader.h"
 
 
-class XsiliumFramework : public xsilium::Singleton<XsiliumFramework> {
+class XsiliumFramework : public xsilium::Singleton<XsiliumFramework> , public Ogre::FrameListener {
 
 	friend class xsilium::Singleton<XsiliumFramework>;
 
@@ -33,10 +35,15 @@ public:
 
 	void loadRessource();
 
+	bool frameStarted(const Ogre::FrameEvent& evt);
+	bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+	bool frameEnded(const Ogre::FrameEvent& evt);
+
+	void shutdown();
+
 	Ogre::Root* getRoot();
 	Ogre::RenderWindow* getRenderWindow();
 	Ogre::Log* getLog();
-	Ogre::Timer* getTimer();
 
 private:
 	XsiliumFramework(const XsiliumFramework&);
@@ -48,7 +55,6 @@ private:
 	Ogre::Root*					m_pRoot;
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Log*					m_pLog;
-	Ogre::Timer*				m_pTimer;
 	InputManager*				inputManager;
 	KeyboardMap * keyboardMap;
 

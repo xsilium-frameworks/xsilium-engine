@@ -42,6 +42,12 @@ set(CORE_HEADER_FILES
     Game/JeuxState.h
 )
 
+if (APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" )
+
+	list(APPEND CORE_SOURCE_FILES "SDK/OSX/XsiliumApp.mm")
+
+endif()
+
 include_directories(
 ${XSILIUM_INCLUDE} 
 Login
@@ -67,13 +73,15 @@ endif()
 
 
 if (APPLE)
-        set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/OgreFramework.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++ ")
+        set_source_files_properties(${CORE_SOURCE_FILES} ${CORE_HEADER_FILES}  PROPERTIES COMPILE_FLAGS "-x objective-c++ ")
 
 	   # Mac OS X bundle specific settings
-   	set(MACOSX_BUNDLE true)
-   	set(MACOSX_BUNDLE_BUNDLE_NAME "Xsilium Client")
-   	set(MACOSX_BUNDLE_INFO_STRING "Xsilium game 0.0.1")
-   	set(MACOSX_BUNDLE_BUNDLE_VERSION "0.0.1")
+   	set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE true)
+   	set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE_BUNDLE_NAME "Xsilium Client")
+   	set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE_INFO_STRING "Xsilium game 0.0.1")
+   	set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE_BUNDLE_VERSION "0.0.1")
+   	set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE_ICON_FILE SampleBrowser_OSX.icns)
+   	set_property(TARGET XsiliumClient PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Info.plist)
    	set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.ogre3d.\${PRODUCT_NAME:rfc1034identifier}")
     set_target_properties(XsiliumClient PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
 
@@ -162,6 +170,11 @@ if (APPLE)
                         COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/Plugin_ParticleFX.framework
                         ${XSILIUM_CONTENTS_PATH}/Frameworks/
                         )
+                        
+                        
+                 add_custom_command(TARGET XsiliumClient POST_BUILD
+        				COMMAND ditto ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/SampleBrowser_OSX.icns ${XSILIUM_CONTENTS_PATH}/Resources
+		)
 
 
 

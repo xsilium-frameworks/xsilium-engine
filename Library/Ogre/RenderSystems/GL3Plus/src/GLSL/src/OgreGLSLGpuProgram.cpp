@@ -46,7 +46,7 @@ namespace Ogre {
             parent->getGroup(), false, 0), mGLSLProgram(parent)
     {
         mType = parent->getType();
-        mSyntaxCode = "glsl" + StringConverter::toString(Root::getSingleton().getRenderSystem()->getNativeShadingLanguageVersion());
+        mSyntaxCode = "glsl";
 
         mLinked = 0;
 

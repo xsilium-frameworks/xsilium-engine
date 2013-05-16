@@ -116,7 +116,7 @@ namespace Volume {
         @param to
             The front upper right corner of the cell.
         */
-        OctreeNode(const Vector3 &from = Vector3::ZERO, const Vector3 &to = Vector3::ZERO);
+        OctreeNode(Vector3 from = Vector3::ZERO, Vector3 to = Vector3::ZERO);
 
         /** Destructor.
         */

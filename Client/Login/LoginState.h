@@ -27,7 +27,7 @@ public:
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
-	void update(double timeSinceLastFrame);
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 
 	void initialisationNetwork();
 

@@ -25,7 +25,7 @@ public:
     virtual void        popAllAndPushGameState(GameState* state) = 0;
 };
 
-class GameState
+class GameState : public Ogre::FrameListener
 {
 public:
 	static void create(GameStateListener* parent, const Ogre::String name);
@@ -38,7 +38,9 @@ public:
 	virtual void exit() = 0;
 	virtual bool pause(){return true;}
 	virtual void resume(){};
-	virtual void update(double timeSinceLastFrame) = 0;
+	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent){return true;}
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent){return true;}
+	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent){return true;}
 
 protected:
 	GameState(){};

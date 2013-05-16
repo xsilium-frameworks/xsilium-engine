@@ -30,7 +30,7 @@ THE SOFTWARE.
 #define __OSXCocoaView_H__
 
 #include "OgreRenderWindow.h"
-#include <AppKit/NSView.h>
+#include <Cocoa/Cocoa.h>
 
 @interface OgreView : NSView
 {

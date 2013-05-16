@@ -158,7 +158,7 @@ namespace Ogre {
         */
         void setBillboardRotationType(BillboardRotationType rotationType);
 
-        /** Gets billboard rotation type.
+        /** Sets billboard rotation type.
         @return
             A member of the BillboardRotationType enum specifying the rotation type for all the billboards in this set.
         */

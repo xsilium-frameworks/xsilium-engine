@@ -509,6 +509,15 @@ set( XERCESC_LIB_DBG "Xerces" )
 	endif(APPLE)
 
 
+	if (OGRE_BUILD_RENDERSYSTEM_GL)
+		
+		include_directories(
+			${XSILIUM_GLRS_ROOT}/include
+			${XSILIUM_GLRS_ROOT}/src/GLSL/include
+			${XSILIUM_GLRS_ROOT}/src/atifs/include
+		)
+		
+	endif()
 
 endmacro(configure_xsilium)
 

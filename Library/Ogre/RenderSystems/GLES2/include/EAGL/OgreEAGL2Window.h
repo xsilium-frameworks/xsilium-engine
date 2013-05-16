@@ -97,7 +97,6 @@ namespace Ogre {
             void setClosed(bool closed) { mClosed = closed; }
             void swapBuffers(bool waitForVSync);
             void copyContentsToMemory(const PixelBox &dst, FrameBuffer buffer);
-            PixelFormat suggestPixelFormat() const { return PF_BYTE_RGBA; }
 
             /**
                @remarks

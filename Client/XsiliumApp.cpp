@@ -31,3 +31,4 @@ void XsiliumApp::startXsilium()
 
 	m_pGameStateManager->start(m_pGameStateManager->findByName("LoginState"));
 }
+
