@@ -77,10 +77,13 @@ namespace Ogre {
         /// Pointer to parent.
         Entity* mParentEntity;
 
-        /// Cached pointer to material.
-        MaterialPtr mMaterialPtr;
+        /// Name of Material in use by this SubEntity.
+        String mMaterialName;
 
-        /// Pointer to the SubMesh defining geometry.
+        /// Cached pointer to material.
+        MaterialPtr mMaterial;
+
+        // Pointer to the SubMesh defining geometry.
         SubMesh* mSubMesh;
 
         /// Is this SubEntity visible?

@@ -37,7 +37,6 @@ protected:
 
 	std::vector<GameState*>		m_ActiveStateStack;
 	std::vector<state_info>		m_States;
-	bool						m_bShutdown;
 	InputManager* 				inputManager;
 
 

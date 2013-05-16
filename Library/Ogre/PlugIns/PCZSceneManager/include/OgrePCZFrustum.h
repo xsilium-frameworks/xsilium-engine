@@ -97,20 +97,20 @@ namespace Ogre
         /* more detailed check for visibility of an AABB */
         PCZFrustum::Visibility getVisibility(const AxisAlignedBox & bound);
 
-		/** Calculate  culling planes from portal and Frustum
-            origin and add to list of culling planes */
+		// calculate  culling planes from portal and Frustum 
+		// origin and add to list of  culling planes
 		int addPortalCullingPlanes(PortalBase* portal);
-		/// Remove  culling planes created from the given portal
+		// remove  culling planes created from the given portal
 		void removePortalCullingPlanes(PortalBase* portal);
-		/// Remove all  culling planes
+		// remove all  culling planes
 		void removeAllCullingPlanes(void);
-        /// Set the origin value
+        // set the origin value
         void setOrigin(const Vector3 & newOrigin) {mOrigin = newOrigin;}
-        /// Set the origin plane
+        // set the origin plane
         void setOriginPlane(const Vector3 &rkNormal, const Vector3 &rkPoint);
-        /// Tell the frustum whether or not to use the originplane
+        // tell the frustum whether or not to use the originplane
         void setUseOriginPlane(bool yesno) {mUseOriginPlane = yesno;}
-		/// Get an unused PCPlane from the CullingPlane Reservoir
+		// get an unused PCPlane from the CullingPlane Reservoir
 		PCPlane * getUnusedCullingPlane(void);
 
 		/// Set the projection type of this PCZFrustum.

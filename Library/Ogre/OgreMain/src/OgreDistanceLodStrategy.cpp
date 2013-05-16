@@ -154,7 +154,7 @@ namespace Ogre {
         mReferenceViewEnabled = value;
     }
     //---------------------------------------------------------------------
-    bool DistanceLodStrategy::isReferenceViewEnabled() const
+    bool DistanceLodStrategy::getReferenceViewEnabled() const
     {
         return mReferenceViewEnabled;
     }

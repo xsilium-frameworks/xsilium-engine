@@ -39,7 +39,7 @@ namespace Ogre {
     }
     extern "C" void dllStopPlugin(void)
     {
-        Codec::unregisterCodec( mEXRCodec );
+        Codec::unRegisterCodec( mEXRCodec );
         delete mEXRCodec;
     }
 

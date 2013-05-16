@@ -69,8 +69,9 @@ namespace Volume {
     
     //-----------------------------------------------------------------------
 
-    CSGPlaneSource::CSGPlaneSource(const Real d, const Vector3 &normal) : mD(d), mNormal(normal.normalisedCopy())
+    CSGPlaneSource::CSGPlaneSource(const Real d, const Vector3 &normal) : mD(d)
     {
+        mNormal = normal.normalisedCopy();
     }
     
     //-----------------------------------------------------------------------

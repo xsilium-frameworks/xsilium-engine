@@ -269,26 +269,26 @@ namespace Ogre
 			}
 		};
 
-		/// Name of the zone (must be unique)
+		// name of the zone (must be unique)
 		String mName;
 		/// Zone type name
 		String mZoneTypeName;
-        /// Frame counter for visibility
+        // frame counter for visibility
         unsigned long mLastVisibleFrame;
-		/// Last camera which this zone was visible to
+		// last camera which this zone was visible to
 		PCZCamera * mLastVisibleFromCamera;
-		/// Flag determining whether or not this zone has sky in it.
+		// flag determining whether or not this zone has sky in it.
 		bool mHasSky;
-		/// SceneNode which corresponds to the enclosure for this zone
+		//SceneNode which corresponds to the enclosure for this zone
 		SceneNode * mEnclosureNode;
-		/// List of SceneNodes contained in this particular PCZone
+		// list of SceneNodes contained in this particular PCZone
         PCZSceneNodeList mHomeNodeList;
-		/// List of SceneNodes visiting this particular PCZone
+		// list of SceneNodes visiting this particular PCZone
         PCZSceneNodeList mVisitorNodeList;
-		/// Flag recording whether any portals in this zone have moved
+		// flag recording whether any portals in this zone have moved 
 		bool mPortalsUpdated;   
-		/** User defined data pointer - NOT allocated or deallocated by the zone!
-            you must clean it up yourself! */
+		// user defined data pointer - NOT allocated or deallocated by the zone!  
+		// you must clean it up yourself!
 		void * mUserData;
 
     };

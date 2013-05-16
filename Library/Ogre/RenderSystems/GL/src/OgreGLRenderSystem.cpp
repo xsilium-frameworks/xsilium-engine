@@ -1962,10 +1962,7 @@ namespace Ogre {
 		else
 		{
 			glEnable(GL_BLEND);
-			if(GLEW_VERSION_1_4)
-				glBlendFuncSeparate(sourceBlend, destBlend, sourceBlendAlpha, destBlendAlpha);
-			else if(GLEW_EXT_blend_func_separate)
-				glBlendFuncSeparateEXT(sourceBlend, destBlend, sourceBlendAlpha, destBlendAlpha);
+			glBlendFuncSeparate(sourceBlend, destBlend, sourceBlendAlpha, destBlendAlpha);
 		}
 
 		GLint func = GL_FUNC_ADD, alphaFunc = GL_FUNC_ADD;

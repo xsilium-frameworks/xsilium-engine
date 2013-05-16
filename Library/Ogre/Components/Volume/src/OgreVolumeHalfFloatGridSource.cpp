@@ -88,12 +88,8 @@ namespace Volume {
     
         Timer t;
         DataStreamPtr streamRead = Root::getSingleton().openFileStream(serializedVolumeFile);
-#if OGRE_NO_ZIP_ARCHIVE == 0
         DataStreamPtr uncompressStream(OGRE_NEW DeflateStream(serializedVolumeFile, streamRead));
         StreamSerialiser ser(uncompressStream);
-#else
-        StreamSerialiser ser(streamRead);
-#endif
         if (!ser.readChunkBegin(VOLUME_CHUNK_ID, VOLUME_CHUNK_VERSION))
         {
             OGRE_EXCEPT(Exception::ERR_INVALID_STATE, 

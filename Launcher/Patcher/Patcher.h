@@ -10,7 +10,6 @@
 #define PATCHER_H_
 
 #include <bzlib.h>
-#include <libtar.h>
 #include "Patch/PatchStructure.h"
 #include "Patch/PatchVersion.h"
 #include "Repository/Repository.h"

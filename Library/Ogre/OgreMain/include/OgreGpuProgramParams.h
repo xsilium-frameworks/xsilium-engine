@@ -398,8 +398,6 @@ namespace Ogre {
 		*/
 		void load(DataStreamPtr& stream);
 
-        size_t calculateSize(void) const;
-
 	protected:
 		/** Indicates whether all array entries will be generated and added to the definitions map
 		@remarks
@@ -532,8 +530,6 @@ namespace Ogre {
 		*/
 		unsigned long getVersion() const { return mVersion; }
 
-        size_t calculateSize(void) const;
-
 		/** Mark the shared set as being dirty (values modified).
 		@remarks
 		You do not need to call this yourself, set is marked as dirty whenever
@@ -582,7 +578,7 @@ namespace Ogre {
 		/// Get a pointer to the 'nth' item in the float buffer
 		const float* getFloatPointer(size_t pos) const { return &mFloatConstants[pos]; }
 		/// Get a pointer to the 'nth' item in the double buffer
-		double* getDoublePointer(size_t pos) { _markDirty(); return &mDoubleConstants[pos]; }
+		double* geDoublePointer(size_t pos) { _markDirty(); return &mDoubleConstants[pos]; }
 		/// Get a pointer to the 'nth' item in the double buffer
 		const double* getDoublePointer(size_t pos) const { return &mDoubleConstants[pos]; }
 		/// Get a pointer to the 'nth' item in the int buffer
@@ -1988,7 +1984,6 @@ namespace Ogre {
 		*/
 		void _copySharedParams();
 
-		size_t calculateSize(void) const;
 
 		/** Set subroutine name by slot name
 		 */

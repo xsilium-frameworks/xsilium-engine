@@ -130,7 +130,7 @@ namespace Ogre {
 	{
 		if(msInstance)
 		{
-			Codec::unregisterCodec(msInstance);
+			Codec::unRegisterCodec(msInstance);
 			OGRE_DELETE msInstance;
 			msInstance = 0;
 		}
@@ -141,19 +141,19 @@ namespace Ogre {
     { 
     }
     //---------------------------------------------------------------------
-    DataStreamPtr PVRTCCodec::encode(MemoryDataStreamPtr& input, Codec::CodecDataPtr& pData) const
+    DataStreamPtr PVRTCCodec::code(MemoryDataStreamPtr& input, Codec::CodecDataPtr& pData) const
     {        
 		OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED,
                     "PVRTC encoding not supported",
-                    "PVRTCCodec::encode" ) ;
+                    "PVRTCCodec::code" ) ;
     }
     //---------------------------------------------------------------------
-    void PVRTCCodec::encodeToFile(MemoryDataStreamPtr& input,
+    void PVRTCCodec::codeToFile(MemoryDataStreamPtr& input, 
         const String& outFileName, Codec::CodecDataPtr& pData) const
     {
 		OGRE_EXCEPT(Exception::ERR_NOT_IMPLEMENTED,
                     "PVRTC encoding not supported",
-                    "PVRTCCodec::encodeToFile" ) ;
+                    "PVRTCCodec::codeToFile" ) ;
 	}
     //---------------------------------------------------------------------
     Codec::DecodeResult PVRTCCodec::decode(DataStreamPtr& stream) const

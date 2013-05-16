@@ -65,7 +65,6 @@ namespace Ogre {
 		bool isSupported(void) const { return false; }
 		/// Overridden from GpuProgram
 		const String& getLanguage(void) const { return sNullLang; }
-        size_t calculateSize(void) const { return 0; }
 
 		/// Overridden from StringInterface
 		bool setParameter(const String& name, const String& value)

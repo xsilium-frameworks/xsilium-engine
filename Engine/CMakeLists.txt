@@ -130,3 +130,7 @@ ${ENET_LIBRARY_REL}
 )
 
 add_library(XsiliumEngine ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})
+
+if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+	set_source_files_properties(${CORE_SOURCE_FILES} ${CORE_HEADER_FILES}  PROPERTIES COMPILE_FLAGS "-x objective-c++ ")
+endif()

@@ -91,20 +91,19 @@ namespace Ogre
         */
         void updateZones(PCZone * defaultZone, unsigned long frameCount);
 
-        /// Manually remove a zone from the affected list
-		void removeZoneFromAffectedZonesList(PCZone * zone);
+		void removeZoneFromAffectedZonesList(PCZone * zone); // manually remove a zone from the affected list
 
-		/// MovableObject notified when SceneNode changes
+		// MovableObject notified when SceneNode changes
 		virtual void _notifyMoved(void);   
 
-		/// Clear update flag
+		// clear update flag
 		void clearNeedsUpdate(void)   { mNeedsUpdate = false; } 
 
-		/// Get status of need for update. this checks all affected zones
+		// get status of need for update. this checks all affected zones
 		bool getNeedsUpdate(void);   
 
     protected:
-        /** Flag indicating if any of the zones in the affectedZonesList is 
+        /** flag indicating if any of the zones in the affectedZonesList is 
         *   visible in the current frame
         */
         bool mAffectsVisibleZone;
@@ -113,7 +112,7 @@ namespace Ogre
         */
         ZoneList affectedZonesList;
 
-		/// Flag recording if light has moved, therefore affected list needs updating
+		// flag recording if light has moved, therefore affected list needs updating 
 		bool mNeedsUpdate;   
 	};
 

@@ -45,7 +45,7 @@ set( CEGUI_ABI_VERSION ${CEGUI_ABI_CURRENT}.${CEGUI_ABI_REVISION}.${CEGUI_ABI_AG
 
 # Look for packages
 if (NOT WIN32)
-    find_package(Iconv REQUIRED) 
+    find_package(Iconv REQUIRED)
 endif()
 
 find_package(Ogre)

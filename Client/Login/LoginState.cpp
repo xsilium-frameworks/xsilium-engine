@@ -110,21 +110,21 @@ void LoginState::initialisationNetwork()
 	}
 }
 
-void LoginState::update(double timeSinceLastFrame)
+bool LoginState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
-	m_FrameEvent.timeSinceLastFrame = timeSinceLastFrame;
-
 	CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
-	gui_system.injectTimePulse(timeSinceLastFrame);
-	gui_system.getDefaultGUIContext().injectTimePulse(timeSinceLastFrame);
+	gui_system.injectTimePulse(m_FrameEvent.timeSinceLastFrame);
+	gui_system.getDefaultGUIContext().injectTimePulse(m_FrameEvent.timeSinceLastFrame);
 
 	if(m_bQuit == true)
 	{
-		shutdown();
-		return;
+		popGameState();
+		return false;
 	}
 	auth->update();
+
+	return true;
 }
 
 

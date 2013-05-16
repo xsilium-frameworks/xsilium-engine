@@ -119,9 +119,9 @@ public:
     // protected members
     //--
     protected :
-        /// Number of visible pixels determined by last query
+        // numbers of visible pixels determined by last query
         unsigned int mPixelCount;
-        /// Has the query returned a result yet?
+        // is query hasn't yet returned a result.
 		bool		 mIsQueryResultStillOutstanding;
 };
 

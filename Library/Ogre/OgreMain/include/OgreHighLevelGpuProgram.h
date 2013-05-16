@@ -124,7 +124,6 @@ namespace Ogre {
 		/// Override GpuProgram::getNamedConstants to ensure built
 		const GpuNamedConstants& getNamedConstants() const { return getConstantDefinitions(); }
 
-		virtual size_t calculateSize(void) const;
 
 
 

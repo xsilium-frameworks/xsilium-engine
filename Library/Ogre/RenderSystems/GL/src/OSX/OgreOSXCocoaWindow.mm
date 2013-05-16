@@ -26,17 +26,13 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#import "OgreOSXCocoaWindow.h"
-#import "OgreRoot.h"
-#import "OgreLogManager.h"
-#import "OgreStringConverter.h"
-#import "OgreWindowEventUtilities.h"
-#import "OgreGLPixelFormat.h"
-
-#import "OgreGLRenderSystem.h"
-#import <AppKit/NSScreen.h>
-#import <AppKit/NSOpenGLView.h>
-#import <QuartzCore/CVDisplayLink.h>
+#include "OgreOSXCocoaWindow.h"
+#include "OgreRoot.h"
+#include "OgreLogManager.h"
+#include "OgreStringConverter.h"
+#include "OgreWindowEventUtilities.h"
+#include "OgreGLPixelFormat.h"
+#include "OgreGLRenderSystem.h"
 
 @implementation OgreWindow
 

@@ -434,7 +434,7 @@ namespace Ogre {
             for (i = mSubEntityList.begin(); i != iend; ++i)
             {
                 // Get sub-entity material
-                const MaterialPtr& material = (*i)->getMaterial();
+                const MaterialPtr& material = (*i)->mMaterial;
                 
                 // Get material lod strategy
                 const LodStrategy *materialStrategy = material->getLodStrategy();
