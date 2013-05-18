@@ -91,6 +91,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	if (XSILIUM_COMPILE_OGRE_COMPONENTS)
 		option(OGRE_BUILD_COMPONENT_PAGING "Build Ogre Paging Compoment" ON)
 		option(OGRE_BUILD_COMPONENT_TERRAIN "Build Ogre Terrain Compoment" ON)
+	       option(OGRE_BUILD_COMPONENT_OVERLAY "Build Ogre Overlay Compoment" ON)
+	       option(OGRE_BUILD_COMPONENT_VOLUME "Build Ogre Volume Compoment" ON)
 		#option(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM "Build Ogre RTShaderSystem Compoment" OFF)
 		option(OGRE_BUILD_COMPONENT_PROPERTY "Build Ogre Property Compoment(Required boost)" OFF)
 	endif()
@@ -305,7 +307,9 @@ set( XERCESC_LIB_DBG "Xerces" )
 	set(XSILIUM_OGRE_INCLUDE 
 	   ${OGREPATH}/OgreMain/include 
            ${OGREPATH}/Components/Terrain/include 
+	   ${OGREPATH}/Components/Paging/include/
 	   ${OGREPATH}/Components/Overlay/include 
+	   ${OGREPATH}/Components/Volume/include 
            ${XSILIUM_BINARY_DIR}/include 
            ${XSILIUM_PLATFORM})	
 	set(OGRE_H_PATH ${XSILIUM_OGRE_INCLUDE})
@@ -460,7 +464,7 @@ set( XERCESC_LIB_DBG "Xerces" )
 	set(OGRE_LIB ${XSILIUM_OGRE_LIBS})
 	
 	# ogre 1.8-compatability
-	#list(APPEND XSILIUM_OGRE_LIBS OgreTerrain)  
+	list(APPEND XSILIUM_OGRE_LIBS OgreTerrain OgreOverlay OgreVolume)  
 
 	list(APPEND XSILIUM_OGRE_LIBS 	${XSILIUM_FREEIMAGE_TARGET} 
 		${XSILIUM_FREETYPE_TARGET}

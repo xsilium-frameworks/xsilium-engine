@@ -19,6 +19,7 @@
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
+#include <OgreOverlaySystem.h>
 
 #include "DotSceneLoader/DotSceneLoader.h"
 

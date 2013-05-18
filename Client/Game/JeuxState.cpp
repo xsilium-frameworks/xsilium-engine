@@ -20,6 +20,8 @@ JeuxState::JeuxState()
     keyboardMap = KeyboardMap::getInstance();
 
 	interface = new Interface();
+
+	m_OverlaySystem = 0;
 }
 
 
@@ -29,6 +31,8 @@ void JeuxState::enter()
 
 
     XsiliumFramework::getInstance()->getLog()->logMessage("Entering JeuxState...");
+
+    m_OverlaySystem = new Ogre::OverlaySystem();
 
     createScene();
 
@@ -58,6 +62,11 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->getLog()->logMessage("Leaving JeuxState...");
 
 
+    m_pSceneMgr->removeRenderQueueListener(m_OverlaySystem);
+
+    if (m_OverlaySystem)
+    	delete m_OverlaySystem;
+
     delete perso;
 
     delete chat;
@@ -82,6 +91,7 @@ void JeuxState::createScene()
 {
 	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
+
 	m_Loader = new DotSceneLoader();
     m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
 
@@ -97,6 +107,7 @@ void JeuxState::createScene()
 
     XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
 
+	m_pSceneMgr->addRenderQueueListener(m_OverlaySystem);
 
      perso = new Personnage(m_pCamera);
 
@@ -105,22 +116,23 @@ void JeuxState::createScene()
 
 }
 
-void JeuxState::update(double timeSinceLastFrame)
+bool JeuxState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
     CEGUI::System& gui_system(CEGUI::System::getSingleton());
 
-    gui_system.injectTimePulse(timeSinceLastFrame);
-    gui_system.getDefaultGUIContext().injectTimePulse(timeSinceLastFrame);
+    gui_system.injectTimePulse(m_FrameEvent.timeSinceLastFrame);
+    gui_system.getDefaultGUIContext().injectTimePulse(m_FrameEvent.timeSinceLastFrame);
 
     if(m_bQuit == true)
     {
     	popGameState();
-        return;
+        return false;
     }
 
 
     chat->update();
 
+    return true;
 }
 
 bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -131,7 +143,6 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 		m_bQuit = true;
 		break;
 	case OIS::KC_LSHIFT:
-			m_pCamera->moveRelative(m_TranslateVector);
 		break;
 	default:
 		break;
