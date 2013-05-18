@@ -39,8 +39,6 @@ private:
 	OgreView *ogreView;
 }
 
-- (void)renderOneFrame:(id)sender;
-
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet OgreView *ogreView;
 

@@ -117,6 +117,8 @@ if (APPLE)
                         ${XSILIUM_CONTENTS_PATH}/Frameworks/
         COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgrePaging.framework
                         ${XSILIUM_CONTENTS_PATH}/Frameworks/
+        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgreOverlay.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
                 )
                 
         # now cfg files

@@ -55,7 +55,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 		if(!m_pRoot->showConfigDialog())
 			return false;
 	}
-	m_pRenderWnd = m_pRoot->initialise(true);
+	m_pRenderWnd = m_pRoot->initialise(true,wndTitle);
 
 	inputManager->initialise(m_pRenderWnd);
 	m_pRenderWnd->addViewport(0);
@@ -92,6 +92,9 @@ void XsiliumFramework::loadRessource()
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
 		}
 	}
+
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 }

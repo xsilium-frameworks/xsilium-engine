@@ -3,6 +3,8 @@
 #include <OgreTerrain.h>
 #include <OgreTerrainGroup.h>
 #include <OgreTerrainMaterialGeneratorA.h>
+#include <OgreTerrainQuadTreeNode.h>
+#include <OgreTerrainPaging.h>
 
 #include "PagedGeometry.h"
 #include "GrassLoader.h"
@@ -309,7 +311,7 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 			pPageElement = pPageElement->next_sibling("terrainPage");
 		}
 	}
-	mTerrainGroup->loadAllTerrains(true);
+	mTerrainGroup->loadAllTerrains();
 
 	mTerrainGroup->freeTemporaryResources();
 	//mTerrain->setPosition(mTerrainPosition);
@@ -334,7 +336,7 @@ void DotSceneLoader::processTerrainPage(rapidxml::xml_node<>* XMLNode)
 
 	if (Ogre::ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), name))
 	{
-		mTerrainGroup->defineTerrain(pageX, pageY, name);
+		mTerrainGroup->defineTerrain(pageX, pageY,name);
 	}
 
 	// grass layers

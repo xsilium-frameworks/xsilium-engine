@@ -98,7 +98,7 @@ set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
 		    ${Cg_INCLUDE_DIR}
                     )
 
-set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer OgreTerrain SkyX Hydrax ${Boost_LIBRARIES} ${Cg_LIBRARY_REL} )
+set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer SkyX Hydrax ${Boost_LIBRARIES} ${Cg_LIBRARY_REL} )
 
 
 include(InstallResources)

@@ -45,9 +45,8 @@ public:
 	void resume();
 
     void buildGUI();
-//    void itemSelected(OgreBites::SelectMenu* menu);
 
-	void update(double timeSinceLastFrame);
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);

@@ -308,7 +308,7 @@ namespace Ogre
 			req.origin = this;
 			++LoadRequest::loadingTaskNum;
 			Root::getSingleton().getWorkQueue()->addRequest(
-				mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST, 
+				mWorkQueueChannel, WORKQUEUE_LOAD_REQUEST,
 				Any(req), 0, synchronous);
 
 		}
