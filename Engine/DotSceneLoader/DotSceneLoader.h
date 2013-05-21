@@ -1,5 +1,9 @@
-#ifndef DOT_SCENELOADER_H
-#define DOT_SCENELOADER_H
+//|||||||||||||||||||||||||||||||||||||||||||||||
+
+#ifndef DOT_SCENELOADER_HPP
+#define DOT_SCENELOADER_HPP
+
+//|||||||||||||||||||||||||||||||||||||||||||||||
 
 // Includes
 #include <OgreString.h>
@@ -9,7 +13,11 @@
 #include <vector>
 
 #include "rapidxml/rapidxml.h"
+#include "SkyX.h"
 
+//|||||||||||||||||||||||||||||||||||||||||||||||
+
+// Forward declarations
     // Forward declarations
     namespace Ogre
     {
@@ -51,6 +59,7 @@
         Ogre::String getProperty(const Ogre::String &ndNm, const Ogre::String &prop);
 
         Ogre::TerrainGroup* getTerrainGroup() { return mTerrainGroup; }
+        SkyX::SkyX * getSkyX() { return mSkyX; }
 
         std::vector<nodeProperty> nodeProperties;
         std::vector<Ogre::String> staticObjects;
@@ -72,7 +81,6 @@
         void processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::Entity *pEntity);
         void processOctree(rapidxml::xml_node<>* XMLNode);
         void processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
-        void processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
 
         void processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent = 0);
         void processLookTarget(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
@@ -89,6 +97,7 @@
         void processSkyDome(rapidxml::xml_node<>* XMLNode);
         void processSkyPlane(rapidxml::xml_node<>* XMLNode);
         void processClipping(rapidxml::xml_node<>* XMLNode);
+        void processSkyx(rapidxml::xml_node<>* XMLNode);
 
         void processLightRange(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight);
         void processLightAttenuation(rapidxml::xml_node<>* XMLNode, Ogre::Light *pLight);
@@ -109,6 +118,7 @@
         Ogre::TerrainGroup* mTerrainGroup;
         Ogre::Vector3 mTerrainPosition;
         Ogre::Vector3 mLightDirection;
+        SkyX::SkyX * mSkyX ;
 
         // paged geometry related values
         int mPGPageSize;
