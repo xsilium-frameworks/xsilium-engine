@@ -95,6 +95,12 @@ void JeuxState::createScene()
 	m_Loader = new DotSceneLoader();
     m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
 
+
+    // Light
+	Ogre::Light *mLight0 = m_pSceneMgr->createLight("Light#0");
+	mLight0->setDiffuseColour(1, 1, 1);
+	mLight0->setCastShadows(false);
+
     m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
     m_pSceneMgr->setShadowTextureConfig(0, 2048, 2048, Ogre::PF_X8R8G8B8);
 
