@@ -57,7 +57,7 @@ void GameStateManager::start(GameState* state  )
 {
 	changeGameState(state);
 
-#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE_IOS && ((OGRE_PLATFORM != OGRE_PLATFORM_APPLE) && ! __LP64__ )
+#if  (!__LP64__ || OGRE_PLATFORM != OGRE_PLATFORM_APPLE)
 
 	if (XsiliumFramework::getInstance()->getRoot()->getRenderSystem() != NULL)
 	{

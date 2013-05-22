@@ -14,7 +14,7 @@
 #import <Cocoa/Cocoa.h>
 #endif
 
-
+#include <Ogre.h>
 #include <OgreRoot.h>
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
