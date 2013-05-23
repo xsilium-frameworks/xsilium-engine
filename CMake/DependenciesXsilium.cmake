@@ -24,20 +24,9 @@ if (UNIX AND NOT XSILIUM_BUILD_MOBILE)
 	mark_as_advanced(XAW_LIBRARY)
 endif ()
 
-
-if (XSILIUM_BUILD_MOBILE)
-	# Find OpenGLES
-	find_package(OpenGLES)
-	macro_log_feature(OPENGLES_FOUND "OpenGLES" "Support for the OpenGLES render system" "" FALSE "" "")
-
-	# Find OpenGLES2
-	find_package(OpenGLES2)
-	macro_log_feature(OPENGLES2_FOUND "OpenGLES2" "Support for the OpenGLES2 render system" "" FALSE "" "")
-else()
 	# Find OpenGL
 	find_package(OpenGL)
 	macro_log_feature(OPENGL_FOUND "OpenGL" "Support for the OpenGL render system" "http://www.opengl.org/" FALSE "" "")
-endif()
 
 
 # Find DirectX
@@ -52,8 +41,8 @@ endif()
 
 
 # Find Cg (Disabled Not used right now!)
-# find_package(Cg)
-# macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
+find_package(Cg)
+macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
 
 if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID)
 	# Use static loader On win32 platforms 
@@ -61,15 +50,6 @@ if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID)
 	# Find OpenAL
 	include(FindOpenAL)
 	macro_log_feature(OPENAL_FOUND "OpenAL" "Support for the OpenAL sound system" "http://connect.creativelabs.com/openal/default.aspx" FALSE "" "")
-endif()
-
-if(NOT XSILIUM_USE_STATIC_FREEIMAGE)
-	find_package(FreeImage)
-	macro_log_feature(FreeImage_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
-
-	find_package(ZLIB)
-	macro_log_feature(ZLIB_FOUND "ZLib" "Support for the ZLib library" "http://www.zlib.net/" FALSE "" "")
-
 endif()
 
 #######################################################################

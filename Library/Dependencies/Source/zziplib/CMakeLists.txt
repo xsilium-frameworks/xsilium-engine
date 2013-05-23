@@ -41,15 +41,17 @@ set(zziplib_SOURCES
 )
 
 # need zlib includes
-include_directories(${XSILIUM_ZLIB_INCLUDE})
+include_directories(${ZLIB_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if (WIN32)
   add_definitions(-D_MSC_VER)
 endif ()
 
-add_library(${XSILIUM_ZZIP_TARGET} STATIC ${zziplib_SOURCES})
-config_target_if_iphone_build(${XSILIUM_ZZIP_TARGET} TRUE)
+add_library(ZZip STATIC ${zziplib_SOURCES})
 
-
+set(ZZIP_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "" FORCE)
+set(ZZIP_LIBRARY_DBG "ZZip" CACHE STRING "" FORCE)
+set(ZZIP_LIBRARY_REL "ZZip" CACHE STRING "" FORCE)
+mark_as_advanced(ZZIP_INCLUDE_DIR ZZIP_LIBRARY_DBG ZZIP_LIBRARY_REL)
 

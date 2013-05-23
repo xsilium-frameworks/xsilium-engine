@@ -167,3 +167,8 @@ else()
     target_link_libraries(Xerces pthread )
                        
 endif()
+
+set(XERCESC_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/xerces-c" CACHE PATH "" FORCE)
+set(XERCESC_LIB_DBG "Xerces" CACHE STRING "" FORCE)
+set(XERCESC_LIB "Xerces" CACHE STRING "" FORCE)
+mark_as_advanced(XERCESC_H_PATH XERCESC_LIB_DBG XERCESC_LIB)

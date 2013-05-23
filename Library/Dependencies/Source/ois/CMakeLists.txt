@@ -14,7 +14,7 @@ set(OIS_HEADERS
   includes/OISMultiTouch.h
   includes/OISObject.h
   includes/OISPrereqs.h
-)
+) 
 set(OIS_SOURCES
   src/OISEffect.cpp
   src/OISException.cpp
@@ -163,9 +163,7 @@ if (APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
     set_target_properties(OIS PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
 endif()
 
-set(OIS_INCLUDE_DIR "${OIS_SOURCE_DIR}/includes" CACHE PATH "" FORCE)
+set(OIS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/includes" CACHE PATH "" FORCE)
 set(OIS_LIBRARY_DBG "OIS" CACHE STRING "" FORCE)
 set(OIS_LIBRARY_REL "OIS" CACHE STRING "" FORCE)
 mark_as_advanced(OIS_INCLUDE_DIR OIS_LIBRARY_DBG OIS_LIBRARY_REL)
-
-config_target_if_iphone_build(OIS TRUE)

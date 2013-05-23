@@ -57,7 +57,7 @@ Shared
 )
 
 
-link_libraries(${XSILIUM_LIB} ${SKYX_LIBRARIES})
+link_libraries(${XSILIUM_LIB})
 
 ADD_EXECUTABLE(XsiliumClient WIN32 MACOSX_BUNDLE ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES} )
 
@@ -118,6 +118,8 @@ if (APPLE)
         COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgrePaging.framework
                         ${XSILIUM_CONTENTS_PATH}/Frameworks/
         COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgreOverlay.framework
+                        ${XSILIUM_CONTENTS_PATH}/Frameworks/
+        COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/OgreVolume.framework
                         ${XSILIUM_CONTENTS_PATH}/Frameworks/
                 )
                 

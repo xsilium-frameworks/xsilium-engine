@@ -21,7 +21,6 @@ JeuxState::JeuxState()
 
 	interface = new Interface();
 
-	m_OverlaySystem = 0;
 }
 
 
@@ -32,7 +31,6 @@ void JeuxState::enter()
 
     XsiliumFramework::getInstance()->getLog()->logMessage("Entering JeuxState...");
 
-    m_OverlaySystem = new Ogre::OverlaySystem();
 
     createScene();
 
@@ -62,10 +60,6 @@ void JeuxState::exit()
     XsiliumFramework::getInstance()->getLog()->logMessage("Leaving JeuxState...");
 
 
-    m_pSceneMgr->removeRenderQueueListener(m_OverlaySystem);
-
-    if (m_OverlaySystem)
-    	delete m_OverlaySystem;
 
     delete perso;
 
@@ -113,7 +107,6 @@ void JeuxState::createScene()
 
     XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
 
-	m_pSceneMgr->addRenderQueueListener(m_OverlaySystem);
 
      perso = new Personnage(m_pCamera);
 
