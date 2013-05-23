@@ -125,7 +125,6 @@ ${XSILIUM_INCLUDE}
 
 link_libraries(
 ${XSILIUM_LIB}
-${CEGUI_LIBRARY}
 ${ENET_LIBRARY_REL}
 )
 

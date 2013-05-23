@@ -1,7 +1,5 @@
 #------------OLD---------------------------------------------
 cmake_minimum_required(VERSION 2.6.2)
-#set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
-#cmake_policy(SET CMP0003 NEW)
 
 # CMake 2.8.2 has a bug that creates unusable Xcode projects when using ARCHS_STANDARD_32_BIT
 # to specify both armv6 and armv7.
@@ -9,36 +7,30 @@ if(OGRE_BUILD_PLATFORM_APPLE_IOS AND (CMAKE_VERSION VERSION_EQUAL 2.8.2) AND (CM
 	message(FATAL_ERROR "CMake 2.8.2 cannot create compatible Xcode projects for iOS, please download the latest version or an older release from http://www.cmake.org/files/")
 endif()
 
-project(OgreLite)
+project(OGRELITE)
 include(PrecompiledHeader)
+
 
 set(OgreLite 1.0)
 set (OGRE_CONFIG_HEADER 1)
 set (OGRE_SDK_BUILD 1)
 set(OGRE_LIB_TYPE         SHARED)
-SET(OGRE_BINARY_DIR       ${XSILIUM_BINARY_DIR})
-SET(OGRE_SOURCE_DIR       ${OgreLite_SOURCE_DIR})
+set(OGRE_BINARY_DIR ${XSILIUM_BINARY_DIR})
+SET(OGRE_SOURCE_DIR       ${OGRELITE_SOURCE_DIR})
+include(OgreConfigTargets)
 
  
+# Configure settings
+set(OGRE_NO_ZIP_ARCHIVE 0)
+set(OGRE_CONFIG_ENABLE_ZIP TRUE)
+set(OGRE_CONFIG_ENABLE_FREEIMAGE TRUE)
+set(OGRE_CONFIG_ENABLE_DDS       TRUE)
+
 
 if (XSILIUM_USE_PARTICLE)
 	set(OGRE_BUILD_PLUGIN_PFX        TRUE)
 else()
 	set(OGRE_BUILD_PLUGIN_PFX        FALSE)
-endif()
-	
-set(OGRE_CONFIG_ENABLE_FREEIMAGE TRUE)
-set(OGRE_CONFIG_ENABLE_DDS       TRUE)
-
-
-if (XSILIUM_DISABLE_ZIP)
-	set(OGRE_CONFIG_ENABLE_ZIP FALSE)
-else()
-	set(OGRE_CONFIG_ENABLE_ZIP TRUE)
-endif()
-
-if (XSILIUM_BUILD_ANDROID)
-	add_definitions(-DNO_MALLINFO=1) #disable nedmalloc struct mallinfo declaration
 endif()
 
 
@@ -60,12 +52,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
-# Configure settings
-if (XSILIUM_DISABLE_ZIP)
-	set(OGRE_NO_ZIP_ARCHIVE 1)
-else()
-	set(OGRE_NO_ZIP_ARCHIVE 0)
-endif()
+
 
 
 # determine system endianess
@@ -212,15 +199,13 @@ include(OgreGetVersion)
 ogre_get_version(${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h)
 message(STATUS "Configuring OGRE ${OGRE_VERSION}")
 
-configure_file(${OGRE_TEMPLATES_DIR}/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/include/OgreBuildSettings.h)
-
-# Configure version file for use by scripts
-#configure_file("${OGRE_TEMPLATES_DIR}/version.txt.in" "${OGRE_BINARY_DIR}/version.txt" @ONLY)
+configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/include/OgreBuildSettings.h)
 
 
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
+
 include_directories(${XSILIUM_BINARY_DIR}/include)
-include_directories(${XSILIUM_FREETYPE_INCLUDE} ${XSILIUM_FREEIMAGE_INCLUDE} ${XSILIUM_ZZIP_INCLUDE} ${XSILIUM_ZLIB_INCLUDE} )
+include_directories(${FREETYPE_H_PATH} ${FREEIMAGE_H_PATH} ${ZZIP_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} )
 
 if (APPLE)
   if (OGRE_BUILD_PLATFORM_IPHONE)

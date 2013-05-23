@@ -57,7 +57,6 @@ protected:
 	Ogre::SceneManager*			m_pSceneMgr;
     Ogre::FrameEvent            m_FrameEvent;
     Ogre::RenderWindow* 		m_Window;
-    Ogre::OverlaySystem* 		m_OverlaySystem;            // Overlay system
     EventManager * eventManager ;
     Interface * interface;
 

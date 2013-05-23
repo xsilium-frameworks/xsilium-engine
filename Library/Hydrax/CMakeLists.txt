@@ -10,6 +10,6 @@ set(Hydrax_SOURCES
 )
 
 include_directories(include)
-include_directories(${XSILIUM_OGRE_INCLUDE})
+include_directories(${OGRE_H_PATH})
 
 add_library(Hydrax ${Hydrax_SOURCES})

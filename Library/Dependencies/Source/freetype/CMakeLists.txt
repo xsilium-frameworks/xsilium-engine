@@ -56,6 +56,10 @@ endif()
 
 include_directories(include)
 add_definitions(-DFT2_BUILD_LIBRARY)
-add_library(${XSILIUM_FREETYPE_TARGET} ${FREETYPE_SRC} ${FREETYPE_PLATFORM})
+add_library(freetype ${FREETYPE_SRC} ${FREETYPE_PLATFORM})
 
-config_target_if_iphone_build(${XSILIUM_FREETYPE_TARGET} TRUE)
+
+set(FREETYPE_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "" FORCE)
+set(FREETYPE_LIB_DBG "freetype" CACHE STRING "" FORCE)
+set(FREETYPE_LIB "freetype" CACHE STRING "" FORCE)
+mark_as_advanced(FREETYPE_H_PATH FREETYPE_LIB_DBG FREETYPE_LIB)

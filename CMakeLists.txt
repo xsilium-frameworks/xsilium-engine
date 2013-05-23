@@ -45,7 +45,6 @@ set(CMAKE_MODULE_PATH
 include(CMakeDependentOption)
 include(CheckCXXCompilerFlag)
 include(ConfigXsilium)
-include(ConfigIPhone)
 include(OgreAddTargets)
 
 configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
@@ -80,25 +79,6 @@ IF(MSVC)
 	ENDFOREACH(flag_var)
 
 ENDIF(MSVC)
-
-
-# ---------------------------------------------------------
-# Common base paths
-set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
-                    ${XSILIUM_SOURCE_DIR}/Engine
-                    ${XSILIUM_DEP_INCLUDE}
-		     ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
-		     ${XSILIUM_SOURCE_DIR}/Library/Boost
-		     ${XSILIUM_SOURCE_DIR}/Library/Enet
-		     ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
-		     ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
-		     ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
-		     ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
-		     ${XSILIUM_SOURCE_DIR}/Library/SkyX/Include
-		    ${Cg_INCLUDE_DIR}
-                    )
-
-set(XSILIUM_LIB XsiliumEngine ${XSILIUM_OGRE_LIBS} CEGUIBase PagedGeometry CEGUIOgreRenderer SkyX Hydrax ${Boost_LIBRARIES} ${Cg_LIBRARY_REL} )
 
 
 include(InstallResources)
