@@ -9,6 +9,7 @@
 #ifndef ANIMATIONPERSONNAGE_H_
 #define ANIMATIONPERSONNAGE_H_
 
+#include <Ogre.h>
 /*
  *
  */
