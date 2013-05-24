@@ -12,10 +12,34 @@
 /*
  *
  */
+
+enum AnimID
+{
+	ANIM_IDLE_BASE,
+	ANIM_IDLE_TOP,
+	ANIM_RUN_BASE,
+	ANIM_RUN_TOP,
+	ANIM_HANDS_CLOSED,
+	ANIM_HANDS_RELAXED,
+	ANIM_DRAW_SWORDS,
+	ANIM_SLICE_VERTICAL,
+	ANIM_SLICE_HORIZONTAL,
+	ANIM_DANCE,
+	ANIM_JUMP_START,
+	ANIM_JUMP_LOOP,
+	ANIM_JUMP_END,
+	ANIM_NONE
+};
+
+
 class AnimationPersonnage {
 public:
 	AnimationPersonnage();
 	virtual ~AnimationPersonnage();
+
+	void updateAnimation(Ogre::Real * deltaTime);
+	void fadeAnimations(Ogre::Real * deltaTime);
+
 };
 
 #endif /* ANIMATIONPERSONNAGE_H_ */

@@ -26,8 +26,6 @@ public:
 	Personnage(Ogre::Camera* cam);
 	virtual ~Personnage();
 
-	void update(double timeSinceLastFrame);
-
 protected:
 
 	void setupBody(Ogre::SceneManager* sceneMgr);

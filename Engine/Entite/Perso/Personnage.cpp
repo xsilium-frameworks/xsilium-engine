@@ -31,8 +31,6 @@ void Personnage::setupBody(Ogre::SceneManager* sceneMgr)
 
 	mBodyEnt->setCastShadows(true);
 
-	mBodyNode->setPosition(-44.2433,102.135,-148.62);
-	mBodyEnt->setVisible(true);
 	mBodyNode->attachObject(mBodyEnt);
 
 }
