@@ -229,21 +229,6 @@ void DotSceneLoader::processEnvironment(rapidxml::xml_node<>* XMLNode)
 	if(pElement)
 		processFog(pElement);
 
-	// Process skyBox (?)
-	pElement = XMLNode->first_node("skyBox");
-	if(pElement)
-		processSkyBox(pElement);
-
-	// Process skyDome (?)
-	pElement = XMLNode->first_node("skyDome");
-	if(pElement)
-		processSkyDome(pElement);
-
-	// Process skyPlane (?)
-	pElement = XMLNode->first_node("skyPlane");
-	if(pElement)
-		processSkyPlane(pElement);
-
 	// Process clipping (?)
 	pElement = XMLNode->first_node("clipping");
 	if(pElement)
