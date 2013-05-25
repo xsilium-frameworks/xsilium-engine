@@ -8,13 +8,15 @@
 
 #include "MouvementPersonnage.h"
 
-MouvementPersonnage::MouvementPersonnage(Ogre::SceneNode* mBodyNode,Ogre::SceneNode* mCameraNode,Ogre::SceneNode* mCameraPivot,Ogre::SceneNode* mCameraGoal) {
+MouvementPersonnage::MouvementPersonnage(Ogre::SceneNode* mBodyNode,Ogre::SceneNode* sceneNode,Animation * animation) {
 	inputManager = InputManager::getSingletonPtr();
 	keyboardMap = KeyboardMap::getInstance();
 	this->mBodyNode = mBodyNode;
-	this->mCameraNode = mCameraNode;
-	this->mCameraPivot = mCameraPivot;
-	this->mCameraGoal = mCameraGoal;
+	this->mCameraNode = (Ogre::SceneNode *) sceneNode->getChild("mCameraNode");
+	this->mCameraPivot = (Ogre::SceneNode *) sceneNode->getChild("mCameraPivot");
+	this->mCameraGoal = (Ogre::SceneNode *) mCameraPivot->getChild("mCameraGoal");
+	this->animation = animation ;
+
 	mKeyDirection = Ogre::Vector3::ZERO;
 	mPivotPitch = 0;
 
@@ -115,6 +117,14 @@ void MouvementPersonnage::updateBody(double timeSinceLastFrame)
 
 		// move in current body direction (not the goal direction)
 		mBodyNode->translate(0, 0, timeSinceLastFrame * RUN_SPEED,Ogre::Node::TS_LOCAL);
+
+		animation->setAnimationBas("RunBase");
+		animation->setAnimationHaut("RunTop");
+	}
+	else
+	{
+		animation->setAnimationBas("IdleBase");
+		animation->setAnimationHaut("IdleTop");
 	}
 }
 

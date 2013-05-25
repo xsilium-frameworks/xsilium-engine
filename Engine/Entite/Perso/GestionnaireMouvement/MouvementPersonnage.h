@@ -11,6 +11,7 @@
 
 #include <OgreSceneNode.h>
 
+#include "Entite/GestionnaireAnimation/Animation.h"
 
 #include "InputManager/InputManager.h"
 #include "KeyboardMap/KeyboardMap.h"
@@ -30,7 +31,7 @@
  */
 class MouvementPersonnage : public OIS::KeyListener,public OIS::MouseListener {
 public:
-	MouvementPersonnage(Ogre::SceneNode* mBodyNode,Ogre::SceneNode* mCameraNode,Ogre::SceneNode* mCameraPivot,Ogre::SceneNode* mCameraGoal);
+	MouvementPersonnage(Ogre::SceneNode* mBodyNode,Ogre::SceneNode* sceneNode,Animation * animation);
 	virtual ~MouvementPersonnage();
 
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
@@ -62,6 +63,8 @@ private:
     Ogre::SceneNode* mCameraPivot;
     Ogre::SceneNode* mCameraGoal;
     Ogre::Real mPivotPitch;
+
+    Animation * animation ;  // Class animation
 
 };
 
