@@ -93,9 +93,6 @@
         void processPagedGeometry(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent);
 
         void processFog(rapidxml::xml_node<>* XMLNode);
-        void processSkyBox(rapidxml::xml_node<>* XMLNode);
-        void processSkyDome(rapidxml::xml_node<>* XMLNode);
-        void processSkyPlane(rapidxml::xml_node<>* XMLNode);
         void processClipping(rapidxml::xml_node<>* XMLNode);
         void processSkyx(rapidxml::xml_node<>* XMLNode);
 
