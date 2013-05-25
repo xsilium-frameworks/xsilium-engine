@@ -78,7 +78,7 @@ set( EventManager_S
 set( Entite_H
 ./Entite/Entite.h
 ./Entite/Perso/Personnage.h
-./Entite/Perso/GestionnaireAnimation/AnimationPersonnage.h
+./Entite/GestionnaireAnimation/Animation.h
 ./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.h
 
 )
@@ -86,7 +86,7 @@ set( Entite_H
 set( Entite_S
 ./Entite/Entite.cpp
 ./Entite/Perso/Personnage.cpp
-./Entite/Perso/GestionnaireAnimation/AnimationPersonnage.cpp
+./Entite/GestionnaireAnimation/Animation.cpp
 ./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.cpp
 )
 

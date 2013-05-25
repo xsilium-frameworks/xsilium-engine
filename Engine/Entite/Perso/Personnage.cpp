@@ -10,10 +10,15 @@
 
 Personnage::Personnage(Ogre::Camera* cam) {
 
-	setupBody(cam->getSceneManager());
+
+	sceneManager = cam->getSceneManager();
+
+	setupBody(sceneManager);
 	setupCamera(cam);
 
-	mouvementPersonnage = new MouvementPersonnage(mBodyNode,mCameraNode,mCameraPivot,mCameraGoal);
+	animation = new Animation(mBodyEnt);
+	animation->loadAnimation();
+	mouvementPersonnage = new MouvementPersonnage(mBodyNode,sceneManager->getRootSceneNode(),animation);
 
 	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
 
@@ -21,6 +26,12 @@ Personnage::Personnage(Ogre::Camera* cam) {
 
 Personnage::~Personnage() {
 	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
+	delete mouvementPersonnage;
+	delete animation;
+
+	mCameraPivot->removeAndDestroyChild("mCameraGoal");
+	sceneManager->getRootSceneNode()->removeAndDestroyChild("mCameraPivot");
+	sceneManager->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
 }
 
 void Personnage::setupBody(Ogre::SceneManager* sceneMgr)
@@ -38,11 +49,11 @@ void Personnage::setupBody(Ogre::SceneManager* sceneMgr)
 void Personnage::setupCamera(Ogre::Camera* cam)
 {
 	// create a pivot at roughly the character's shoulder
-	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraPivot");
 	// this is where the camera should be soon, and it spins around the pivot
-	mCameraGoal = mCameraPivot->createChildSceneNode(Ogre::Vector3(0, 0, 15));
+	mCameraGoal = mCameraPivot->createChildSceneNode("mCameraGoal",Ogre::Vector3(0, 0, 15));
 	// this is where the camera actually is
-	mCameraNode = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+	mCameraNode = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraNode");
 	mCameraNode->setPosition(mCameraPivot->getPosition() + mCameraGoal->getPosition());
 
 	mCameraPivot->setFixedYawAxis(true);
@@ -63,6 +74,9 @@ bool Personnage::frameStarted (const Ogre::FrameEvent &evt)
 bool Personnage::frameRenderingQueued (const Ogre::FrameEvent &evt)
 {
 	mouvementPersonnage->update(evt.timeSinceLastEvent);
+	animation->updateAnimation(evt.timeSinceLastEvent);
+
+
 	return true;
 }
 
