@@ -69,12 +69,12 @@ endif ()
 function(ogre_create_vcproj_userfile TARGETNAME)
   if (MSVC)
     configure_file(
-	  ${OGRE_TEMPLATES_DIR}/VisualStudioUserFile.vcproj.user.in
+	  ${XSILIUM_SOURCE_DIR}/CMake/Templates/VisualStudioUserFile.vcproj.user.in
 	  ${CMAKE_CURRENT_BINARY_DIR}/${TARGETNAME}.vcproj.user
 	  @ONLY
 	)
     configure_file(
-	  ${OGRE_TEMPLATES_DIR}/VisualStudioUserFile.vcxproj.user.in
+	  ${XSILIUM_SOURCE_DIR}/CMake/Templates/VisualStudioUserFile.vcxproj.user.in
 	  ${CMAKE_CURRENT_BINARY_DIR}/${TARGETNAME}.vcxproj.user
 	  @ONLY
 	)
