@@ -60,10 +60,10 @@ set( Keyboard_S
 ./KeyboardMap/KeyboardMap.cpp
 )
 
-set( Rapidxml_H
-./rapidxml/rapidxml.h
-./rapidxml/rapidxml_print.h
-)
+#set( Rapidxml_H
+#./rapidxml/rapidxml.h
+#./rapidxml/rapidxml_print.h
+#)
 
 set( EventManager_H
 ./EventManager/EventManager.h
@@ -79,7 +79,7 @@ set( Entite_H
 ./Entite/Entite.h
 ./Entite/Perso/Personnage.h
 ./Entite/GestionnaireAnimation/Animation.h
-./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.h
+#./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.h
 
 )
 
@@ -87,7 +87,7 @@ set( Entite_S
 ./Entite/Entite.cpp
 ./Entite/Perso/Personnage.cpp
 ./Entite/GestionnaireAnimation/Animation.cpp
-./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.cpp
+#./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.cpp
 )
 
 
