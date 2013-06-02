@@ -59,8 +59,8 @@ CHECK_INCLUDE_FILES("iconv.h" HAVE_ICONV_H )
 CHECK_FUNCTION_EXISTS(iconv_open HAVE_ICONV_OPEN)
 CHECK_INCLUDE_FILES("inttypes.h" HAVE_INTTYPES_H )
 CHECK_INCLUDE_FILES("langinfo.h" HAVE_LANGINFO_H )
-find_package(nsl)
-find_package(socket)
+check_library_exists(socket socket "" HAVE_LIBSOCKET)
+check_library_exists(nsl gethostbyname "" HAVE_LIBNSL)
 CHECK_INCLUDE_FILES("limits.h" HAVE_LIMITS_H )
 
 configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/xerces.config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
@@ -451,9 +451,6 @@ configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/xerces.config.h.in ${CMAKE_
 # Define to empty if the keyword `volatile' does not work. Warning: valid code using `volatile' can become incorrect without. Disable with care. */
 #cmakedefine volatile @volatile@
 
-
-ist( APPEND SOURCES "${CMAKE_CURRENT_BINARY_DIR}/config.h" )
-
 add_to_sources( xercesc/dom )
 add_to_sources( xercesc/framework )
 add_to_sources( xercesc/internal )
@@ -526,7 +523,7 @@ else()
         xercesc/util/MutexManagers/PosixMutexMgr.cpp  )
 endif()
         
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 
 add_library(Xerces ${SOURCES} ) 
 

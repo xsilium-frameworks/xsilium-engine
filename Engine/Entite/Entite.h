@@ -9,6 +9,8 @@
 #ifndef ENTITE_H_
 #define ENTITE_H_
 
+#include <string>
+
 /*
  *
  */
@@ -19,9 +21,13 @@ public:
 
 	void setVieEntite(int Vie);
 	int getVieEntite();
+	void setNom(std::string nom);
+	std::string * getNom();
 
 protected:
 	int vieEntite;
+	std::string * nom;
+
 
 };
 

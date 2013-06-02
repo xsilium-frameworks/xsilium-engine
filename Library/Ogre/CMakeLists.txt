@@ -199,7 +199,7 @@ include(OgreGetVersion)
 ogre_get_version(${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h)
 message(STATUS "Configuring OGRE ${OGRE_VERSION}")
 
-configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/include/OgreBuildSettings.h)
+configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/Ogre/include/OgreBuildSettings.h)
 
 
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
