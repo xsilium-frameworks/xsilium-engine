@@ -122,6 +122,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	   ${OGREPATH}/Components/Volume/include 
            ${XSILIUM_BINARY_DIR}/include 
            ${XSILIUM_PLATFORM})	
+		   
+	set (RAPIDXML_H_PATH ${XSILIUM_SOURCE_DIR}/Library/Dependencies/Source/rapidxml-1.13 )
 
 	set(XSILIUM_MINGW_DIRECT3D TRUE)
 	if (CMAKE_COMPILER_IS_GNUCXX)
