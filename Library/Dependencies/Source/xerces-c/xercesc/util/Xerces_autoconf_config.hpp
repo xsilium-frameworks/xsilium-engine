@@ -51,7 +51,7 @@
 // ---------------------------------------------------------------------------
 #define XERCES_AUTOCONF 1
 #define XERCES_HAVE_SYS_TYPES_H 1
-#define XERCES_HAVE_INTTYPES_H 1
+#define XERCES_HAVE_INTTYPES_H 0 
 /* #undef XERCES_HAVE_INTRIN_H */
 #define XERCES_HAVE_EMMINTRIN_H 1
 /* #undef XERCES_INCLUDE_WCHAR_H */
@@ -85,7 +85,7 @@
 //  Include standard headers, if available, that we may rely on below.
 // ---------------------------------------------------------------------------
 #if XERCES_HAVE_INTTYPES_H
-#	include <inttypes.h>
+//#	include <inttypes.h>
 #endif
 #if XERCES_HAVE_SYS_TYPES_H
 #	include <sys/types.h>

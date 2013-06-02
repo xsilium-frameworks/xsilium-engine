@@ -8,7 +8,8 @@ include(NoWarn)
 subdirs(Source/ois)
 subdirs(Source/freetype)
 subdirs(Source/zlib)
-subdirs(Source/xerces-c)
+#subdirs(Source/xerces-c)
+subdirs(Source/rapidxml-1.13)
 
 
 
