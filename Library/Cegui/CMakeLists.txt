@@ -49,7 +49,7 @@ if (NOT WIN32)
 endif()
 
 find_package(Ogre)
-find_package(XercesC)
+find_package(RapidXML)
 find_package(FreeImage)
 find_package(Freetype)
 
