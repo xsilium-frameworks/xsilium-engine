@@ -16,12 +16,11 @@
 #include "Entite/GestionnaireAnimation/Animation.h"
 #include "XsiliumFramework.h"
 
-#include "GestionnaireMouvement/MouvementPersonnage.h"
 
 /*
  *
  */
-class Personnage : public Entite , public Ogre::FrameListener {
+class Personnage : public Entite {
 public:
 	Personnage(Ogre::Camera* cam);
 	virtual ~Personnage();
@@ -30,10 +29,6 @@ protected:
 
 	void setupBody(Ogre::SceneManager* sceneMgr);
 	void setupCamera(Ogre::Camera* cam);
-
-	bool frameStarted(const Ogre::FrameEvent& evt);
-	bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-	bool frameEnded(const Ogre::FrameEvent& evt);
 
 
 	Ogre::SceneNode* mBodyNode;
@@ -49,7 +44,6 @@ protected:
 	Ogre::AnimationState* mAnims2;
 
 private:
-	MouvementPersonnage * mouvementPersonnage ;
 	Animation * animation ;
 
 };

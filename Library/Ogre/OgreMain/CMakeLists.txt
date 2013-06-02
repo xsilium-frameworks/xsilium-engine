@@ -38,7 +38,7 @@ set (HEADER_FILES
   include/OgreBitwise.h
   include/OgreBlendMode.h
   include/OgreBone.h
-  ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h
+  ${OGRE_BINARY_DIR}/Ogre/include/OgreBuildSettings.h
   include/OgreCamera.h
   include/OgreCodec.h
   include/OgreColourValue.h

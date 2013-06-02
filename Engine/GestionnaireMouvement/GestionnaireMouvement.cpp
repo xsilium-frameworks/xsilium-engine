@@ -1,38 +1,37 @@
 /*
- * \file MouvementPersonnage.cpp
+ * \file GestionnaireMouvement.cpp
  *
- *  Created on: \date 8 mai 2013
+ *  Created on: \date 29 mai 2013
  *      Author: \author joda
  *  \brief :
  */
 
-#include "MouvementPersonnage.h"
+#include "GestionnaireMouvement.h"
 
-MouvementPersonnage::MouvementPersonnage(Ogre::SceneNode* mBodyNode,Ogre::SceneNode* sceneNode,Animation * animation) {
-	inputManager = InputManager::getSingletonPtr();
+GestionnaireMouvement::GestionnaireMouvement() {
+
 	keyboardMap = KeyboardMap::getInstance();
-	this->mBodyNode = mBodyNode;
-	this->mCameraNode = (Ogre::SceneNode *) sceneNode->getChild("mCameraNode");
-	this->mCameraPivot = (Ogre::SceneNode *) sceneNode->getChild("mCameraPivot");
-	this->mCameraGoal = (Ogre::SceneNode *) mCameraPivot->getChild("mCameraGoal");
-	this->animation = animation ;
-
-	mKeyDirection = Ogre::Vector3::ZERO;
+	inputManager = InputManager::getSingletonPtr();
+	mKeyDirection = 0;
+	mGoalDirection = 0;
+	mCameraNode = 0;
+	mCameraPivot = 0;
+	mCameraGoal = 0;
 	mPivotPitch = 0;
+	entite = 0;
 
 
-
-	inputManager->addKeyListener(this,"PersoKey");
-	inputManager->addMouseListener(this,"PersoMouse");
+	inputManager->addKeyListener(this,"GestionMouvementKey");
+	inputManager->addMouseListener(this,"GestionMouvementMouse");
 
 }
 
-MouvementPersonnage::~MouvementPersonnage() {
+GestionnaireMouvement::~GestionnaireMouvement() {
 	inputManager->removeKeyListener(this);
 	inputManager->removeMouseListener(this);
 }
 
-bool MouvementPersonnage::keyPressed(const OIS::KeyEvent &keyEventRef)
+bool GestionnaireMouvement::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
 	if( keyEventRef.key == keyboardMap->checkKey("GAUCHE"))
 		mKeyDirection.x = -1;
@@ -50,7 +49,7 @@ bool MouvementPersonnage::keyPressed(const OIS::KeyEvent &keyEventRef)
 
 
 }
-bool MouvementPersonnage::keyReleased(const OIS::KeyEvent &keyEventRef)
+bool GestionnaireMouvement::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
 	if( keyEventRef.key == keyboardMap->checkKey("GAUCHE") && mKeyDirection.x == -1 )
 		mKeyDirection.x = 0;
@@ -68,27 +67,29 @@ bool MouvementPersonnage::keyReleased(const OIS::KeyEvent &keyEventRef)
 
 }
 
-bool MouvementPersonnage::mouseMoved( const OIS::MouseEvent &event )
+bool GestionnaireMouvement::mouseMoved( const OIS::MouseEvent &event )
 {
 	updateCameraGoal(-0.05f * event.state.X.rel, -0.05f * event.state.Y.rel, -0.0005f * event.state.Z.rel);
 	return true;
 }
-bool MouvementPersonnage::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
+bool GestionnaireMouvement::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
 	return true;
 }
-bool MouvementPersonnage::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
+bool GestionnaireMouvement::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
 	return true;
 }
 
-void MouvementPersonnage::update(double timeSinceLastFrame)
+
+
+void GestionnaireMouvement::update(double timeSinceLastFrame)
 {
 	updateBody(timeSinceLastFrame);
 	updateCamera(timeSinceLastFrame);
 }
 
-void MouvementPersonnage::updateBody(double timeSinceLastFrame)
+void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 {
 	mGoalDirection = Ogre::Vector3::ZERO;   // we will calculate this
 
@@ -118,17 +119,14 @@ void MouvementPersonnage::updateBody(double timeSinceLastFrame)
 		// move in current body direction (not the goal direction)
 		mBodyNode->translate(0, 0, timeSinceLastFrame * RUN_SPEED,Ogre::Node::TS_LOCAL);
 
-		animation->setAnimationBas("RunBase");
-		animation->setAnimationHaut("RunTop");
 	}
 	else
 	{
-		animation->setAnimationBas("IdleBase");
-		animation->setAnimationHaut("IdleTop");
+
 	}
 }
 
-void MouvementPersonnage::updateCamera(double timeSinceLastFrame)
+void GestionnaireMouvement::updateCamera(double timeSinceLastFrame)
 {
 	// place the camera pivot roughly at the character's shoulder
 	mCameraPivot->setPosition(mBodyNode->getPosition() + Ogre::Vector3::UNIT_Y * CAM_HEIGHT);
@@ -140,7 +138,7 @@ void MouvementPersonnage::updateCamera(double timeSinceLastFrame)
 	mCameraNode->lookAt(mCameraPivot->_getDerivedPosition(), Ogre::Node::TS_WORLD);
 }
 
-void MouvementPersonnage::updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real deltaPitch, Ogre::Real deltaZoom)
+void GestionnaireMouvement::updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real deltaPitch, Ogre::Real deltaZoom)
 {
 	mCameraPivot->yaw(Ogre::Degree(deltaYaw), Ogre::Node::TS_WORLD);
 
@@ -160,3 +158,4 @@ void MouvementPersonnage::updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real delta
 		mCameraGoal->translate(0, 0, distChange, Ogre::Node::TS_LOCAL);
 	}
 }
+

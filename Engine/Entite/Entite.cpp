@@ -25,3 +25,13 @@ int Entite::getVieEntite()
 {
 	return this->vieEntite;
 }
+
+void Entite::setNom(std::string nom)
+{
+	this->nom = new std::string(nom.c_str());
+}
+
+std::string * Entite::getNom()
+{
+	return this->nom ;
+}

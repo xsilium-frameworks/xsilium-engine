@@ -18,15 +18,10 @@ Personnage::Personnage(Ogre::Camera* cam) {
 
 	animation = new Animation(mBodyEnt);
 	animation->loadAnimation();
-	mouvementPersonnage = new MouvementPersonnage(mBodyNode,sceneManager->getRootSceneNode(),animation);
-
-	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
 
 }
 
 Personnage::~Personnage() {
-	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
-	delete mouvementPersonnage;
 	delete animation;
 
 	mCameraPivot->removeAndDestroyChild("mCameraGoal");
@@ -64,23 +59,4 @@ void Personnage::setupCamera(Ogre::Camera* cam)
 	cam->setNearClipDistance(0.1);
 	cam->setFarClipDistance(100);
 	mCameraNode->attachObject(cam);
-}
-
-bool Personnage::frameStarted (const Ogre::FrameEvent &evt)
-{
-	return true;
-}
-
-bool Personnage::frameRenderingQueued (const Ogre::FrameEvent &evt)
-{
-	mouvementPersonnage->update(evt.timeSinceLastEvent);
-	animation->updateAnimation(evt.timeSinceLastEvent);
-
-
-	return true;
-}
-
-bool Personnage::frameEnded (const Ogre::FrameEvent &evt)
-{
-	return true;
 }
