@@ -1,8 +1,2 @@
-list( APPEND rapidxml_files
-  rapidxml.hpp
-  rapidxml_utils.hpp
-  rapidxml_print.hpp
-  rapidxml_iterators.hpp
-  )
-
-source_group( Headers FILES ${rapidxml_files} )
+set(RAPIDXML_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/" CACHE PATH "" FORCE)
+mark_as_advanced(RAPIDXML_H_PATH)

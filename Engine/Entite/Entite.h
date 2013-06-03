@@ -10,6 +10,10 @@
 #define ENTITE_H_
 
 #include <string>
+#include <OgreEntity.h>
+#include <OgreSceneManager.h>
+
+#include "Entite/GestionnaireAnimation/Animation.h"
 
 /*
  *
@@ -24,9 +28,18 @@ public:
 	void setNom(std::string nom);
 	std::string * getNom();
 
+	Ogre::SceneNode* getBody();
+
+
+
 protected:
 	int vieEntite;
 	std::string * nom;
+
+	Ogre::SceneNode* mBodyNode;
+	Ogre::Entity* mBodyEnt;
+
+	Ogre::SceneManager* sceneMgr;
 
 
 };

@@ -12,7 +12,7 @@
 #include <OgreResourceGroupManager.h>
 #include <vector>
 
-#include "rapidxml/rapidxml.h"
+#include "rapidxml.hpp"
 #include "SkyX.h"
 
 //|||||||||||||||||||||||||||||||||||||||||||||||
