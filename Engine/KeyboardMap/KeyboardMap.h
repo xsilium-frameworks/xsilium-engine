@@ -19,8 +19,8 @@
 #include <sstream>
 #include <fstream>
 
-#include "rapidxml/rapidxml.h"
-#include "rapidxml/rapidxml_print.h"
+#include "rapidxml.hpp"
+#include "rapidxml_print.hpp"
 
 /*
  *

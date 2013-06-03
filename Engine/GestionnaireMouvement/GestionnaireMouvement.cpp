@@ -8,15 +8,25 @@
 
 #include "GestionnaireMouvement.h"
 
-GestionnaireMouvement::GestionnaireMouvement() {
+GestionnaireMouvement::GestionnaireMouvement(Ogre::Camera* cam) {
 
 	keyboardMap = KeyboardMap::getInstance();
 	inputManager = InputManager::getSingletonPtr();
 	mKeyDirection = 0;
 	mGoalDirection = 0;
-	mCameraNode = 0;
-	mCameraPivot = 0;
-	mCameraGoal = 0;
+	// create a pivot at roughly the character's shoulder
+	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraPivot");
+	// this is where the camera should be soon, and it spins around the pivot
+	mCameraGoal = mCameraPivot->createChildSceneNode("mCameraGoal",Ogre::Vector3(0, 0, 15));
+	// this is where the camera actually is
+	mCameraNode = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraNode");
+	mCameraNode->setPosition(mCameraPivot->getPosition() + mCameraGoal->getPosition());
+
+	mCameraPivot->setFixedYawAxis(true);
+	mCameraGoal->setFixedYawAxis(true);
+	mCameraNode->setFixedYawAxis(true);
+
+	mCameraNode->attachObject(cam);
 	mPivotPitch = 0;
 	entite = 0;
 
@@ -29,6 +39,10 @@ GestionnaireMouvement::GestionnaireMouvement() {
 GestionnaireMouvement::~GestionnaireMouvement() {
 	inputManager->removeKeyListener(this);
 	inputManager->removeMouseListener(this);
+
+    mCameraPivot->removeAndDestroyChild("mCameraGoal");
+    sceneManager->getRootSceneNode()->removeAndDestroyChild("mCameraPivot");
+    sceneManager->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
 }
 
 bool GestionnaireMouvement::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -81,6 +95,11 @@ bool GestionnaireMouvement::mouseReleased( const OIS::MouseEvent &event, OIS::Mo
 	return true;
 }
 
+void GestionnaireMouvement::setEntities(Entite * entite)
+{
+	this->entite = entite;
+}
+
 
 
 void GestionnaireMouvement::update(double timeSinceLastFrame)
@@ -101,7 +120,7 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 		mGoalDirection.y = 0;
 		mGoalDirection.normalise();
 
-		Ogre::Quaternion toGoal = mBodyNode->getOrientation().zAxis().getRotationTo(mGoalDirection);
+		Ogre::Quaternion toGoal = entite->getBody()->getOrientation().zAxis().getRotationTo(mGoalDirection);
 
 		// calculate how much the character has to turn to face goal direction
 		Ogre::Real yawToGoal = toGoal.getYaw().valueDegrees();
@@ -114,10 +133,10 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 		else if (yawToGoal > 0)
 			yawToGoal = std::max<Ogre::Real>(0, std::min<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, 0, yawAtSpeed);
 
-		mBodyNode->yaw(Ogre::Degree(yawToGoal));
+		entite->getBody()->yaw(Ogre::Degree(yawToGoal));
 
 		// move in current body direction (not the goal direction)
-		mBodyNode->translate(0, 0, timeSinceLastFrame * RUN_SPEED,Ogre::Node::TS_LOCAL);
+		entite->getBody()->translate(0, 0, timeSinceLastFrame * RUN_SPEED,Ogre::Node::TS_LOCAL);
 
 	}
 	else
@@ -129,7 +148,7 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 void GestionnaireMouvement::updateCamera(double timeSinceLastFrame)
 {
 	// place the camera pivot roughly at the character's shoulder
-	mCameraPivot->setPosition(mBodyNode->getPosition() + Ogre::Vector3::UNIT_Y * CAM_HEIGHT);
+	mCameraPivot->setPosition(entite->getBody()->getPosition() + Ogre::Vector3::UNIT_Y * CAM_HEIGHT);
 
 	// move the camera smoothly to the goal
 	Ogre::Vector3 goalOffset = mCameraGoal->_getDerivedPosition() - mCameraNode->getPosition();

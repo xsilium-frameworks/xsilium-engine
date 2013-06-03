@@ -9,12 +9,17 @@
 #include "Entite.h"
 
 Entite::Entite() {
-	// TODO Auto-generated constructor stub
+	vieEntite = 0;
+	nom = 0;
+	mBodyNode = 0;
+	mBodyEnt = 0;
+
+	sceneMgr = 0;
 
 }
 
 Entite::~Entite() {
-	// TODO Auto-generated destructor stub
+	delete nom;
 }
 
 void Entite::setVieEntite(int Vie)
@@ -34,4 +39,9 @@ void Entite::setNom(std::string nom)
 std::string * Entite::getNom()
 {
 	return this->nom ;
+}
+
+Ogre::SceneNode* Entite::getBody()
+{
+	return this->mBodyNode;
 }

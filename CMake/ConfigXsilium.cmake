@@ -122,8 +122,6 @@ macro (configure_xsilium ROOT OGREPATH)
 	   ${OGREPATH}/Components/Volume/include 
            ${XSILIUM_BINARY_DIR}/include 
            ${XSILIUM_PLATFORM})	
-		   
-	set (RAPIDXML_H_PATH ${XSILIUM_SOURCE_DIR}/Library/Dependencies/Source/rapidxml-1.13 )
 
 	set(XSILIUM_MINGW_DIRECT3D TRUE)
 	if (CMAKE_COMPILER_IS_GNUCXX)
@@ -265,16 +263,17 @@ macro (configure_xsilium ROOT OGREPATH)
 set(XSILIUM_INCLUDE ${OGRE_H_PATH}
                     ${XSILIUM_SOURCE_DIR}/Engine
                     ${OIS_INCLUDE_DIR}
-		    ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
-		    ${XSILIUM_SOURCE_DIR}/Library/Boost
-		    ${XSILIUM_SOURCE_DIR}/Library/Enet
-		    ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
-		    ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
-		    ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
-		    ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
-		    ${XSILIUM_SOURCE_DIR}/Library/SkyX/Include
-		    ${Cg_INCLUDE_DIR}
-                    )
+		     ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
+		     ${XSILIUM_SOURCE_DIR}/Library/Boost
+		     ${XSILIUM_SOURCE_DIR}/Library/Enet
+		     ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
+		     ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
+		     ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
+		     ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
+		     ${XSILIUM_SOURCE_DIR}/Library/SkyX/Include
+		     ${Cg_INCLUDE_DIR}
+                    ${RAPIDXML_H_PATH}
+)
 
 set(XSILIUM_LIB XsiliumEngine 
 		${OGRE_LIB}

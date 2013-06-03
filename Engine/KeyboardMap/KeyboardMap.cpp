@@ -104,7 +104,7 @@ void KeyboardMap::saveKeyboardMap()
 		Keyboard->append_node(Key);
 	}
 	std::string data;
-	rapidxml::print(std::back_inserter(data), doc);
+	//rapidxml::print(std::back_inserter(data), doc);
 
 	std::ofstream myfile(fileName.c_str()) ;
 	myfile << data;

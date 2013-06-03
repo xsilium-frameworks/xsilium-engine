@@ -79,7 +79,7 @@ set( Entite_H
 ./Entite/Entite.h
 ./Entite/Perso/Personnage.h
 ./Entite/GestionnaireAnimation/Animation.h
-#./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.h
+./GestionnaireMouvement/GestionnaireMouvement.h
 
 )
 
@@ -87,7 +87,7 @@ set( Entite_S
 ./Entite/Entite.cpp
 ./Entite/Perso/Personnage.cpp
 ./Entite/GestionnaireAnimation/Animation.cpp
-#./Entite/Perso/GestionnaireMouvement/MouvementPersonnage.cpp
+./GestionnaireMouvement/GestionnaireMouvement.cpp
 )
 
 

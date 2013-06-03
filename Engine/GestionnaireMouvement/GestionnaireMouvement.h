@@ -21,7 +21,7 @@
  */
 class GestionnaireMouvement {
 public:
-	GestionnaireMouvement();
+	GestionnaireMouvement(Ogre::Camera* cam);
 	virtual ~GestionnaireMouvement();
 
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
@@ -33,7 +33,7 @@ public:
 
 	void update(double timeSinceLastFrame);
 
-	void setEntities();
+	void setEntities(Entite * entite);
 
 
 private:
