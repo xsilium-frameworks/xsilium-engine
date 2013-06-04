@@ -17,7 +17,7 @@
  */
 class Personnage : public Entite {
 public:
-	Personnage(Ogre::SceneManager* sceneMgr);
+	Personnage(Ogre::SceneManager* sceneMgr,const char * nom);
 	virtual ~Personnage();
 
 private:

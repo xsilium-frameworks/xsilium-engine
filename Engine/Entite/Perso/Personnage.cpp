@@ -8,14 +8,15 @@
 
 #include "Personnage.h"
 
-Personnage::Personnage(Ogre::SceneManager* sceneMgr) {
+Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom) {
 
 	this->sceneMgr = sceneMgr;
 	charHeight = 5;
 	turnSpeed = 500.0f;
 	runSpeed = 17 ;
-	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode("bodyNode",Ogre::Vector3::UNIT_Y * charHeight);
-	mBodyEnt = sceneMgr->createEntity("Perso", "Sinbad.mesh");
+	setNom(nom);
+	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(nom,Ogre::Vector3::UNIT_Y * charHeight);
+	mBodyEnt = sceneMgr->createEntity("Sinbad.mesh");
 
 	mBodyEnt->setCastShadows(true);
 
@@ -30,6 +31,6 @@ Personnage::Personnage(Ogre::SceneManager* sceneMgr) {
 Personnage::~Personnage() {
 	delete animation;
 	sceneMgr->destroyEntity(mBodyEnt);
-	sceneMgr->getRootSceneNode()->removeAndDestroyChild("bodyNode");
+	sceneMgr->getRootSceneNode()->removeAndDestroyChild(getNom()->c_str());
 
 }
