@@ -24,7 +24,7 @@ enum eventType
 /*
  *
  */
-class Authentification : public Interface
+class Authentification : public GuiInterface
 {
 public:
 	Authentification();
