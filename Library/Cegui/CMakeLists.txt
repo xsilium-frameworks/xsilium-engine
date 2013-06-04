@@ -236,7 +236,7 @@ include_directories(
 ################################################################################
 # Windows specific config
 if (WIN32)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS -DNOMINMAX)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -DNOMINMAX -DFREEIMAGE_LIB)
 
     if (MSVC)
         cegui_set_msvc_runtime_flags()
