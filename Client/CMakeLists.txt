@@ -99,7 +99,7 @@ if (APPLE)
 
 		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIBase.dylib
                 ${XSILIUM_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIXercesParser.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIRapidXMLParser.dylib
                 ${XSILIUM_CONTENTS_PATH}/Frameworks/
 		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib
                 ${XSILIUM_CONTENTS_PATH}/Frameworks/

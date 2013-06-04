@@ -117,7 +117,6 @@ ${EventManager_H}
 ${Entite_H}
 )
 
-
 include_directories(
 ${XSILIUM_INCLUDE}
 .

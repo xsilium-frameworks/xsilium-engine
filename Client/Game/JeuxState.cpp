@@ -108,7 +108,10 @@ void JeuxState::createScene()
     XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
 
 
-     perso = new Personnage(m_pCamera);
+     perso = new Personnage(m_pSceneMgr);
+
+     gestionnaireMouvement = new GestionnaireMouvement(m_pCamera);
+     gestionnaireMouvement->setEntities(perso);
 
      gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getSkyX());
      gestionnaireMeteo->create();
