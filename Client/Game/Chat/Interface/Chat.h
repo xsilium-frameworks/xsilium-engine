@@ -13,7 +13,7 @@ enum messageType
 };
 
 
-class Chat : public Interface
+class Chat : public GuiInterface
 {
 public:
     Chat();
