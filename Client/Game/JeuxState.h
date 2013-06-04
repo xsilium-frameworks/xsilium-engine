@@ -89,6 +89,7 @@ private:
 	KeyboardMap * keyboardMap ;
 
 	Personnage * perso;
+	Personnage * perso2;
 
 	GestionnaireMouvement * gestionnaireMouvement;
 

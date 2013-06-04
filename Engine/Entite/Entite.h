@@ -26,7 +26,7 @@ public:
 
 	void setVieEntite(int Vie);
 	int getVieEntite();
-	void setNom(std::string nom);
+	void setNom(const char * nom);
 	std::string * getNom();
 	double getTurnSpeed();
 	int getRunSpeed();

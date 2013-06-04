@@ -108,7 +108,12 @@ void JeuxState::createScene()
     XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
 
 
-     perso = new Personnage(m_pSceneMgr);
+    m_pCamera->setNearClipDistance(0.1);
+    m_pCamera->setFarClipDistance(100);
+
+     perso = new Personnage(m_pSceneMgr,"perso1");
+
+     perso2 = new Personnage(m_pSceneMgr,"perso2");
 
      gestionnaireMouvement = new GestionnaireMouvement(m_pCamera);
      gestionnaireMouvement->setEntities(perso);
@@ -133,6 +138,7 @@ bool JeuxState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 
 
     chat->update();
+    gestionnaireMouvement->update(m_FrameEvent.timeSinceLastFrame);
 
     return true;
 }

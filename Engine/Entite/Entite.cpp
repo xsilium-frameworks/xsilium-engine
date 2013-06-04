@@ -11,8 +11,8 @@
 Entite::Entite() {
 	vieEntite = 0;
 	nom = 0;
-	charHeight = 0;
-	turnSpeed = 0;
+	//charHeight = 0;
+	//turnSpeed = 0;
 	mBodyNode = 0;
 	mBodyEnt = 0;
 
@@ -33,9 +33,9 @@ int Entite::getVieEntite()
 	return this->vieEntite;
 }
 
-void Entite::setNom(std::string nom)
+void Entite::setNom(const char * nom)
 {
-	this->nom = new std::string(nom.c_str());
+	this->nom = new std::string(nom);
 }
 
 std::string * Entite::getNom()
