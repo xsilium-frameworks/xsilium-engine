@@ -16,10 +16,12 @@
 
 #include "Entite/Entite.h"
 
+#define CAM_HEIGHT 2
+
 /*
  *
  */
-class GestionnaireMouvement {
+class GestionnaireMouvement : public OIS::KeyListener,public OIS::MouseListener {
 public:
 	GestionnaireMouvement(Ogre::Camera* cam);
 	virtual ~GestionnaireMouvement();
@@ -54,6 +56,7 @@ private:
     Ogre::Real mPivotPitch;
 
     Entite * entite;
+    Ogre::SceneManager* sceneMgr;
 };
 
 #endif /* GESTIONNAIREMOUVEMENT_H_ */

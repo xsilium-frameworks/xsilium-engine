@@ -10,6 +10,7 @@
 #define ENTITE_H_
 
 #include <string>
+#include <stdint.h>
 #include <OgreEntity.h>
 #include <OgreSceneManager.h>
 
@@ -27,6 +28,9 @@ public:
 	int getVieEntite();
 	void setNom(std::string nom);
 	std::string * getNom();
+	double getTurnSpeed();
+	int getRunSpeed();
+
 
 	Ogre::SceneNode* getBody();
 
@@ -35,6 +39,11 @@ public:
 protected:
 	int vieEntite;
 	std::string * nom;
+
+	uint8_t  charHeight ;
+	int  runSpeed ;
+	double  turnSpeed ;
+
 
 	Ogre::SceneNode* mBodyNode;
 	Ogre::Entity* mBodyEnt;

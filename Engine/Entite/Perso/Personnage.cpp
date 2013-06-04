@@ -11,16 +11,19 @@
 Personnage::Personnage(Ogre::SceneManager* sceneMgr) {
 
 	this->sceneMgr = sceneMgr;
-	//mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode("bodyNode",Ogre::Vector3::UNIT_Y * CHAR_HEIGHT);
-	//mBodyEnt = sceneMgr->createEntity("Perso", "Sinbad.mesh");
+	charHeight = 5;
+	turnSpeed = 500.0f;
+	runSpeed = 17 ;
+	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode("bodyNode",Ogre::Vector3::UNIT_Y * charHeight);
+	mBodyEnt = sceneMgr->createEntity("Perso", "Sinbad.mesh");
 
-	//mBodyEnt->setCastShadows(true);
+	mBodyEnt->setCastShadows(true);
 
-	//mBodyNode->attachObject(mBodyEnt);
+	mBodyNode->attachObject(mBodyEnt);
 
 
-	//animation = new Animation(mBodyEnt);
-	//animation->loadAnimation();
+	animation = new Animation(mBodyEnt);
+	animation->loadAnimation();
 
 }
 

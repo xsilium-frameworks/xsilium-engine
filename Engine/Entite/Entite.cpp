@@ -11,6 +11,8 @@
 Entite::Entite() {
 	vieEntite = 0;
 	nom = 0;
+	charHeight = 0;
+	turnSpeed = 0;
 	mBodyNode = 0;
 	mBodyEnt = 0;
 
@@ -44,4 +46,14 @@ std::string * Entite::getNom()
 Ogre::SceneNode* Entite::getBody()
 {
 	return this->mBodyNode;
+}
+
+double Entite::getTurnSpeed()
+{
+	return this->turnSpeed;
+}
+
+int Entite::getRunSpeed()
+{
+	return this->runSpeed ;
 }

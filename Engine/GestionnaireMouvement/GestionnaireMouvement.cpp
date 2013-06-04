@@ -14,6 +14,7 @@ GestionnaireMouvement::GestionnaireMouvement(Ogre::Camera* cam) {
 	inputManager = InputManager::getSingletonPtr();
 	mKeyDirection = 0;
 	mGoalDirection = 0;
+	sceneMgr = cam->getSceneManager() ;
 	// create a pivot at roughly the character's shoulder
 	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraPivot");
 	// this is where the camera should be soon, and it spins around the pivot
@@ -41,8 +42,8 @@ GestionnaireMouvement::~GestionnaireMouvement() {
 	inputManager->removeMouseListener(this);
 
     mCameraPivot->removeAndDestroyChild("mCameraGoal");
-    sceneManager->getRootSceneNode()->removeAndDestroyChild("mCameraPivot");
-    sceneManager->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
+    sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraPivot");
+    sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
 }
 
 bool GestionnaireMouvement::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -125,7 +126,7 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 		// calculate how much the character has to turn to face goal direction
 		Ogre::Real yawToGoal = toGoal.getYaw().valueDegrees();
 		// this is how much the character CAN turn this frame
-		Ogre::Real yawAtSpeed = yawToGoal / Ogre::Math::Abs(yawToGoal) * timeSinceLastFrame * TURN_SPEED;
+		Ogre::Real yawAtSpeed = yawToGoal / Ogre::Math::Abs(yawToGoal) * timeSinceLastFrame * entite->getTurnSpeed();
 
 		// turn as much as we can, but not more than we need to
 		if (yawToGoal < 0)
@@ -136,7 +137,7 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 		entite->getBody()->yaw(Ogre::Degree(yawToGoal));
 
 		// move in current body direction (not the goal direction)
-		entite->getBody()->translate(0, 0, timeSinceLastFrame * RUN_SPEED,Ogre::Node::TS_LOCAL);
+		entite->getBody()->translate(0, 0, timeSinceLastFrame * entite->getRunSpeed(),Ogre::Node::TS_LOCAL);
 
 	}
 	else
