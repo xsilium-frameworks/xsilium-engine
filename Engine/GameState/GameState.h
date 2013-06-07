@@ -58,7 +58,7 @@ protected:
     Ogre::FrameEvent            m_FrameEvent;
     Ogre::RenderWindow* 		m_Window;
     EventManager * eventManager ;
-    Interface * interface;
+    GuiInterface * guiInterface;
 
 
 

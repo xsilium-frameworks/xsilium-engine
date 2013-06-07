@@ -2,32 +2,32 @@
 #define INTERFACE_CPP_
 #include "Interface.h"
 
-Interface::Interface()
+GuiInterface::GuiInterface()
 {
 	isActived = false;
 	parent = NULL;
 }
 
-Interface::~Interface()
+GuiInterface::~GuiInterface()
 {
 }
 
-void Interface::toggleVisibility()
+void GuiInterface::toggleVisibility()
 {
 	d_root->isVisible() ? d_root->hide() : d_root->show();
 }
 
-bool Interface::isVisible() const
+bool GuiInterface::isVisible() const
 {
 	return d_root->isEffectiveVisible();
 }
 
-bool Interface::isActive()
+bool GuiInterface::isActive()
 {
 	return isActived;
 }
 
-void Interface::initialisationInterface()
+void GuiInterface::initialisationInterface()
 {
 	CEGUI::OgreRenderer* mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
 
@@ -49,7 +49,7 @@ void Interface::initialisationInterface()
 }
 
 
-void Interface::interfacePrincipal()
+void GuiInterface::interfacePrincipal()
 {
 
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
@@ -60,14 +60,14 @@ void Interface::interfacePrincipal()
 
 }
 
-void Interface::deleteInterfacePrincipal()
+void GuiInterface::deleteInterfacePrincipal()
 {
 	CEGUI::Window * parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 	CEGUI::WindowManager::getSingleton().destroyWindow(parent);
 	parent->destroy();
 }
 
-void Interface::setEvent(const char * typeEvent,const char * message)
+void GuiInterface::setEvent(const char * typeEvent,const char * message)
 {
 	Event event;
 	std::string typeEvent_str(typeEvent);

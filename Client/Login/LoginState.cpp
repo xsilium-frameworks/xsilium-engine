@@ -8,7 +8,7 @@ LoginState::LoginState()
 	m_bQuit         = false;
 	inputManager = InputManager::getSingletonPtr();
 	m_FrameEvent    = Ogre::FrameEvent();
-	interface = new Interface();
+	guiInterface = new GuiInterface();
 }
 
 void LoginState::enter()
@@ -47,8 +47,8 @@ void LoginState::createScene()
 
 void LoginState::buildGUI()
 {
-	interface->initialisationInterface();
-	interface->interfacePrincipal();
+	guiInterface->initialisationInterface();
+	guiInterface->interfacePrincipal();
 	auth = new Authentification();
 }
 
@@ -60,7 +60,7 @@ void LoginState::exit()
 
 	inputManager->removeKeyListener(this);
 
-	interface->deleteInterfacePrincipal();
+	guiInterface->deleteInterfacePrincipal();
 
 
 	if(m_pSceneMgr)
@@ -68,7 +68,7 @@ void LoginState::exit()
 	XsiliumFramework::getInstance()->getLog()->logMessage("destruction scene...");
 
 	delete auth;
-	delete interface;
+	delete guiInterface;
 
 	NetworkManager::getInstance()->disconnexion();
 }

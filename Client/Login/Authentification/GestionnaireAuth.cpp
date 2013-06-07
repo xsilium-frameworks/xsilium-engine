@@ -8,9 +8,9 @@
 
 #include "GestionnaireAuth.h"
 
-GestionnaireAuth::GestionnaireAuth(Interface * interface) {
+GestionnaireAuth::GestionnaireAuth(GuiInterface * guiInterface) {
 
-	this->interface = interface;
+	this->guiInterface = guiInterface;
 	networkManager = NetworkManager::getInstance();
 	networkManager->addNetworkListener(this,"GestionnaireAuth");
 
@@ -85,25 +85,25 @@ void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 			{
 			case ID_SEND_CHALLENGE :
 				compte->setEtapeDeLogin(2);
-				interface->setEvent("1","3");
+				guiInterface->setEvent("1","3");
 				handleEtapeDeux(packet);
 				break;
 			case ID_INVALID_ACCOUNT_OR_PASSWORD:
-				interface->setEvent("0","Le login ou le mot de passe est incorrecte .");
+				guiInterface->setEvent("0","Le login ou le mot de passe est incorrecte .");
 				//login->setMessage(1,ID_INVALID_ACCOUNT_OR_PASSWORD);
 				break;
 			case ID_SEND_VALIDATION :
 			{
-				interface->setEvent("1","4");
+				guiInterface->setEvent("1","4");
 				//login->setMessage(1,ID_SEND_VALIDATION);
 			}
 			break;
 			case ID_CONNECTION_BANNED:
-				interface->setEvent("0","Votre IP a ete banni .\n Il est imposible de se connecter .");
+				guiInterface->setEvent("0","Votre IP a ete banni .\n Il est imposible de se connecter .");
 				networkManager->disconnexion();
 				break;
 			case ID_COMPTE_BANNIE:
-				interface->setEvent("0","Votre Compte a ete banni . \n Il est impossible de se connecter .");
+				guiInterface->setEvent("0","Votre Compte a ete banni . \n Il est impossible de se connecter .");
 				networkManager->disconnexion();
 				break;
 
@@ -115,7 +115,7 @@ void GestionnaireAuth::updateNetwork(int event ,ENetEvent * packet)
 	}
 	break;
 	case ENET_EVENT_TYPE_DISCONNECT:
-		interface->setEvent("0","Déconnexion réussie");
+		guiInterface->setEvent("0","Déconnexion réussie");
 		break;
 	default:
 		break;

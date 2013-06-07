@@ -27,7 +27,7 @@
 class GestionnaireAuth : public NetworkListener {
 
 public:
-	GestionnaireAuth(Interface * interface);
+	GestionnaireAuth(GuiInterface * guiInterface);
 	virtual ~GestionnaireAuth();
 
 	void handleEtapeDeux(ENetEvent * packet);
@@ -42,7 +42,7 @@ public:
 private:
 	NetworkManager * networkManager;
 	ENetEvent eventAuth;
-	Interface * interface;
+	GuiInterface * guiInterface;
 	Compte * compte;
 
 };
