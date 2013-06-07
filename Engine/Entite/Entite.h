@@ -16,6 +16,8 @@
 
 #include "Entite/GestionnaireAnimation/Animation.h"
 
+#include "EventManager/EventManager.h"
+
 /*
  *
  */
@@ -30,6 +32,8 @@ public:
 	std::string * getNom();
 	double getTurnSpeed();
 	int getRunSpeed();
+
+	void update(double timeSinceLastFrame);
 
 
 	Ogre::SceneNode* getBody();
@@ -49,6 +53,10 @@ protected:
 	Ogre::Entity* mBodyEnt;
 
 	Ogre::SceneManager* sceneMgr;
+
+    EventManager * eventManager ;
+
+	Animation * animation ;
 
 
 };

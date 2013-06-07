@@ -20,10 +20,6 @@ public:
 	Personnage(Ogre::SceneManager* sceneMgr,const char * nom);
 	virtual ~Personnage();
 
-private:
-
-	Animation * animation ;
-
 };
 
 #endif /* PERSONNAGE_H_ */
