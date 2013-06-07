@@ -6,12 +6,12 @@
 
 #include "EventManager/EventManager.h"
 
-class Interface
+class GuiInterface
 {
 
 public:
-	Interface();
-	~Interface();
+	GuiInterface();
+	~GuiInterface();
 
 	void toggleVisibility();
 	bool isVisible() const;
