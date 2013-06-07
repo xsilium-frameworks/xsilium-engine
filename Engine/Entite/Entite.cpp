@@ -18,10 +18,13 @@ Entite::Entite() {
 
 	sceneMgr = 0;
 
+	eventManager = new EventManager();
+
 }
 
 Entite::~Entite() {
 	delete nom;
+	delete eventManager;
 }
 
 void Entite::setVieEntite(int Vie)
@@ -56,4 +59,9 @@ double Entite::getTurnSpeed()
 int Entite::getRunSpeed()
 {
 	return this->runSpeed ;
+}
+
+void Entite::update(double timeSinceLastFrame)
+{
+	animation->updateAnimation(timeSinceLastFrame) ;
 }

@@ -139,6 +139,8 @@ bool JeuxState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 
     chat->update();
     gestionnaireMouvement->update(m_FrameEvent.timeSinceLastFrame);
+    perso->update(m_FrameEvent.timeSinceLastFrame);
+    perso2->update(m_FrameEvent.timeSinceLastFrame);
 
     return true;
 }
