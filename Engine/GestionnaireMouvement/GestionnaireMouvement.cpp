@@ -34,16 +34,18 @@ GestionnaireMouvement::GestionnaireMouvement(Ogre::Camera* cam) {
 
 	inputManager->addKeyListener(this,"GestionMouvementKey");
 	inputManager->addMouseListener(this,"GestionMouvementMouse");
+	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
 
 }
 
 GestionnaireMouvement::~GestionnaireMouvement() {
+	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
 	inputManager->removeKeyListener(this);
 	inputManager->removeMouseListener(this);
 
-    mCameraPivot->removeAndDestroyChild("mCameraGoal");
-    sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraPivot");
-    sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
+	mCameraPivot->removeAndDestroyChild("mCameraGoal");
+	sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraPivot");
+	sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
 }
 
 bool GestionnaireMouvement::keyPressed(const OIS::KeyEvent &keyEventRef)
@@ -101,13 +103,21 @@ void GestionnaireMouvement::setEntities(Entite * entite)
 	this->entite = entite;
 }
 
-
-
-void GestionnaireMouvement::update(double timeSinceLastFrame)
+bool GestionnaireMouvement::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 {
-	updateBody(timeSinceLastFrame);
-	updateCamera(timeSinceLastFrame);
+	return true;
 }
+bool GestionnaireMouvement::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
+{
+	updateBody(m_FrameEvent.timeSinceLastFrame);
+	updateCamera(m_FrameEvent.timeSinceLastFrame);
+	return true;
+}
+bool GestionnaireMouvement::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
+{
+	return true;
+}
+
 
 void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 {
@@ -139,9 +149,20 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 		// move in current body direction (not the goal direction)
 		entite->getBody()->translate(0, 0, timeSinceLastFrame * entite->getRunSpeed(),Ogre::Node::TS_LOCAL);
 
+		Event event;
+		event.setProperty("Evenement",std::string("Animation"));
+		event.setProperty("AnimationBas",std::string("RunBase"));
+		event.setProperty("AnimationHaut",std::string("RunTop"));
+		entite->setEvent(event);
+
 	}
 	else
 	{
+		Event event;
+		event.setProperty("Evenement",std::string("Animation"));
+		event.setProperty("AnimationBas",std::string("IdleBase"));
+		event.setProperty("AnimationHaut",std::string("IdleTop"));
+		entite->setEvent(event);
 
 	}
 }

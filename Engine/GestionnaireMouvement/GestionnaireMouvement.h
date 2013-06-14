@@ -16,12 +16,14 @@
 
 #include "Entite/Entite.h"
 
+#include "XsiliumFramework.h"
+
 #define CAM_HEIGHT 2
 
 /*
  *
  */
-class GestionnaireMouvement : public OIS::KeyListener,public OIS::MouseListener {
+class GestionnaireMouvement : public OIS::KeyListener,public OIS::MouseListener, public Ogre::FrameListener {
 public:
 	GestionnaireMouvement(Ogre::Camera* cam);
 	virtual ~GestionnaireMouvement();
@@ -33,7 +35,9 @@ public:
 	bool mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id );
 	bool mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id );
 
-	void update(double timeSinceLastFrame);
+	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
+	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
 	void setEntities(Entite * entite);
 

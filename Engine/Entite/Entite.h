@@ -35,6 +35,8 @@ public:
 
 	void update(double timeSinceLastFrame);
 
+	void setEvent(Event event);
+
 
 	Ogre::SceneNode* getBody();
 

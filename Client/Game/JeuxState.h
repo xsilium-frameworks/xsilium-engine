@@ -21,6 +21,7 @@
 #include "GestionnaireMeteo/GestionnaireMeteo.h"
 
 #include "Entite/Perso/Personnage.h"
+#include "Entite/GestionnaireEntite.h"
 #include "GestionnaireMouvement/GestionnaireMouvement.h"
 
 class DotSceneLoader;
@@ -87,6 +88,8 @@ private:
     GestionnaireMeteo* gestionnaireMeteo;
     Chat * chat;
 	KeyboardMap * keyboardMap ;
+
+	GestionnaireEntite * gestionnaireEntite;
 
 	Personnage * perso;
 	Personnage * perso2;
