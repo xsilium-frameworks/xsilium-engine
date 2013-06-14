@@ -39,3 +39,9 @@ void Personnage::update(double timeSinceLastFrame)
 {
 	Entite::update(timeSinceLastFrame);
 }
+
+void Personnage::processAnimation(Event * event)
+{
+	animation->setAnimationBas(event->getProperty("AnimationBas").c_str());
+	animation->setAnimationHaut(event->getProperty("AnimationHaut").c_str());
+}

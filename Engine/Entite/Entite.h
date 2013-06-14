@@ -37,6 +37,8 @@ public:
 
 	void setEvent(Event event);
 
+	virtual void processAnimation(Event * event) = 0;
+
 
 	Ogre::SceneNode* getBody();
 

@@ -69,8 +69,7 @@ void Entite::update(double timeSinceLastFrame)
 	{
 		if(event->getProperty("Evenement").compare("Animation") == 0 )
 		{
-			animation->setAnimationBas(event->getProperty("AnimationBas").c_str());
-			animation->setAnimationHaut(event->getProperty("AnimationHaut").c_str());
+			processAnimation(event);
 		}
 		eventManager->removeEvent();
 	}

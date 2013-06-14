@@ -22,6 +22,9 @@ public:
 
 	void update(double timeSinceLastFrame);
 
+	void processAnimation(Event * event);
+
+
 };
 
 #endif /* PERSONNAGE_H_ */
