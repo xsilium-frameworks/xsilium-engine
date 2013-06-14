@@ -63,5 +63,22 @@ int Entite::getRunSpeed()
 
 void Entite::update(double timeSinceLastFrame)
 {
+	Event * event = eventManager->getEvent();
+
+	if(event != NULL)
+	{
+		if(event->getProperty("Evenement").compare("Animation") == 0 )
+		{
+			animation->setAnimationBas(event->getProperty("AnimationBas").c_str());
+			animation->setAnimationHaut(event->getProperty("AnimationHaut").c_str());
+		}
+		eventManager->removeEvent();
+	}
+
 	animation->updateAnimation(timeSinceLastFrame) ;
+}
+
+void Entite::setEvent(Event event)
+{
+	eventManager->addEvent(event);
 }

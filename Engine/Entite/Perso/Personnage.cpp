@@ -34,3 +34,8 @@ Personnage::~Personnage() {
 	sceneMgr->getRootSceneNode()->removeAndDestroyChild(getNom()->c_str());
 
 }
+
+void Personnage::update(double timeSinceLastFrame)
+{
+	Entite::update(timeSinceLastFrame);
+}

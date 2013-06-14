@@ -20,6 +20,8 @@ public:
 	Personnage(Ogre::SceneManager* sceneMgr,const char * nom);
 	virtual ~Personnage();
 
+	void update(double timeSinceLastFrame);
+
 };
 
 #endif /* PERSONNAGE_H_ */
