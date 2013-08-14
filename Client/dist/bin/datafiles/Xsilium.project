@@ -3,5 +3,7 @@
     <Items>
         <Item path="layouts/Console.layout" type="file" />
         <Item path="layouts/Login.layout" type="file" />
+		<Item path="layouts/Error.layout" type="file" />
+		<Item path="layouts/progressBar.layout" type="file" />
     </Items>
 </Project>
