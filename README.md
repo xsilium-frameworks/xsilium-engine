@@ -1,7 +1,7 @@
 xsilium-engine
 ==============
 
-MMORPG based on Ogre, bullet, OpenAl, enet, CEGUI, SkyX/Hydrax
+MMO engine based on Ogre, bullet, OpenAl, enet, CEGUI, SkyX/Hydrax
 
 We want to manage all requierements to build a network client able to interact with others on Windows, Linux and MAC OS
 
