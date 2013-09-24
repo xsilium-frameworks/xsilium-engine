@@ -9,11 +9,18 @@
 #include "GestionnaireEntite.h"
 
 GestionnaireEntite::GestionnaireEntite() {
+	networkManager = NetworkManager::getInstance();
 	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
+//	networkManager->addNetworkListener(this,"GestionnaireEntite");
 }
 
 GestionnaireEntite::~GestionnaireEntite() {
 	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
+//	networkManager->removeNetworkListener("GestionnaireEntite");
+	for (entite=listOfEntite.begin() ; entite!=listOfEntite.end() ; ++entite)
+	{
+				delete (*entite);
+	}
 }
 
 Entite * GestionnaireEntite::trouverEntite(std::string nom)
@@ -50,4 +57,18 @@ bool GestionnaireEntite::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEve
 bool GestionnaireEntite::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 {
 	return true;
+}
+
+
+void GestionnaireEntite::updateNetwork(int event ,ENetEvent * packet)
+{
+	switch(event)
+		{
+		case ENET_EVENT_TYPE_RECEIVE:
+		{
+		}
+			break;
+		default:
+			break;
+		}
 }

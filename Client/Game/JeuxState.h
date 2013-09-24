@@ -38,8 +38,6 @@ class JeuxState :public OIS::KeyListener, public GameState
 public:
 	JeuxState();
 
-	DECLARE_GAMESTATE_CLASS(JeuxState)
-
 	void enter();
 	void createScene();
 	void exit();

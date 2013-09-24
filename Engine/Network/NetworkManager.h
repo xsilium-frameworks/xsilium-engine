@@ -9,18 +9,17 @@
 #ifndef NETWORKMANAGER_H_
 #define NETWORKMANAGER_H_
 
-#include <boost/thread/thread.hpp>
-#include <map>
-#include <string>
-
+#include <boost/thread.hpp>
 #include "enet/enet.h"
 #include "Singleton/Singleton.h"
-#include "NetworkListener.h"
+#include "Callback/Callback.h"
+#include "Opcode/Opcode.h"
+#include "StructurePacket/StructureGeneral.h"
 
 /*
  *
  */
-class NetworkManager : public xsilium::Singleton<NetworkManager> {
+class NetworkManager : public xsilium::Singleton<NetworkManager>, public Callback {
 
 	friend class xsilium::Singleton<NetworkManager>;
 
@@ -28,34 +27,40 @@ public:
 	NetworkManager();
 	virtual ~NetworkManager();
 
-	void createConnexion();
+	bool createConnexion();
+
 	int connexionToHost(std::string url,int port);
-	bool sendToHost(const void * message,int sizeOfMessage);
 
-	void disconnexion();
 
-    bool callBack(int event);
+	bool disconnexion();
 
-    void addNetworkListener( NetworkListener * networkListener, std::string instanceName );
-    void removeNetworkListener(std::string instanceName );
+	ENetEvent * getPacket();
 
-    bool isConnected();
-protected:
-	static void * threadConnexion(void * arguments);
+	ENetHost * getClient();
+
+	void deletePacket(ENetPacket * packet);
+
+	void sendPacket( ENetPacket * packet, enet_uint8 channel = 0);
+
+	bool isConnected();
 
 private:
 
-		boost::thread thread;
-		ENetHost * client;
-		ENetAddress address;
-		ENetEvent eventClient;
-		ENetEvent * packet;
-		ENetPeer *peer;
-		bool isConnectedflag;
+	static void * threadConnexion(void * arguments);
 
+	bool endThread;
+	bool isConnectedflag;
 
-	    std::map<std::string,NetworkListener *> listOfListener ;
-	    std::map<std::string,NetworkListener *>::iterator listener ;
+	boost::thread thread;
+	ENetAddress address;
+	ENetHost * client;
+	ENetEvent eventClient;
+	ENetEvent * packet;
+	ENetPeer *peer;
+
+	boost::mutex mutexSend;
+	boost::mutex mutexDelete;
+
 
 
 };

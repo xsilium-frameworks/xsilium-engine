@@ -144,6 +144,7 @@ bool Chat::handleKeyDown(const CEGUI::EventArgs& args)
 			editbox->activate();
 			isActived = true;
 		}
+		break;
 	default:
 		return false;
 	}
