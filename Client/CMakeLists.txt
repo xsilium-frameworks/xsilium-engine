@@ -18,28 +18,32 @@ set(CORE_SOURCE_FILES
     XsiliumApp.cpp
     Shared/Compte/Compte.cpp
     Login/LoginState.cpp 
-    Game/Chat/Interface/Chat.cpp
-    Game/Chat/GestionnaireChat/GestionnaireChat.cpp
-    Login/Authentification/Interface/Authentification.cpp
+#    Game/Chat/Interface/Chat.cpp
+#    Game/Chat/GestionnaireChat/GestionnaireChat.cpp
+    Login/Authentification/Interface/GuiErreur.cpp
+    Login/Authentification/Interface/GuiProgression.cpp
+    Login/Authentification/Interface/GuiLogin.cpp
     Login/Authentification/GestionnaireAuth.cpp
-    Game/GestionnaireMeteo/GestionnaireMeteo.cpp
-    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
-    Game/JeuxState.cpp
+#    Game/GestionnaireMeteo/GestionnaireMeteo.cpp
+#    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
+#    Game/JeuxState.cpp
 )
 
 set(CORE_HEADER_FILES
     XsiliumApp.h 
     Login/LoginState.h
     Shared/Compte/Compte.h
-    Game/Chat/Interface/Chat.h
-    Game/Chat/StructurePacket/PacketChat.h
-    Game/Chat/GestionnaireChat/GestionnaireChat.h
+#    Game/Chat/Interface/Chat.h
+#    Game/Chat/StructurePacket/PacketChat.h
+#    Game/Chat/GestionnaireChat/GestionnaireChat.h
     Login/Authentification/GestionnaireAuth.h
-    Login/Authentification/Interface/Authentification.h
+    Login/Authentification/Interface/GuiErreur.h
+    Login/Authentification/Interface/GuiProgression.h
+    Login/Authentification/Interface/GuiLogin.h
     Login/ListOfMessage/ListOfMessage.h
-    Game/GestionnaireMeteo/GestionnaireMeteo.h
-    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h
-    Game/JeuxState.h
+#    Game/GestionnaireMeteo/GestionnaireMeteo.h
+#    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h
+#    Game/JeuxState.h
 )
 
 if (APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" )

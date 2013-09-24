@@ -9,26 +9,74 @@
 #ifndef GESTIONNAIREAUTH_H_
 #define GESTIONNAIREAUTH_H_
 
-#include "StructurePacket/PacketAuth.h"
-#include "Shared/Network/Opcode.h"
-#include "Network/NetworkManager.h"
-#include "Network/NetworkListener.h"
 #include <sstream>
 #include <cstring>
 
-#include "Interface/Interface.h"
+#include "StructurePacket/PacketAuth.h"
+#include "Network/Opcode/Opcode.h"
+#include "Network/NetworkManager.h"
+#include "InputManager/InputManager.h"
+
+#include "Login/LoginState.h"
+
+#include "Interface/GestionnaireInterface.h"
+#include "Interface/GuiLogin.h"
+#include "Interface/GuiErreur.h"
+#include "Interface/GuiProgression.h"
 
 #include "Compte/Compte.h"
+
+#include "ModuleActif/ModuleActif.h"
+
+
+#define AUTH_HOST "85.25.143.49"
+//#define AUTH_HOST "127.0.0.1"
+#define AUTH_PORT 60000
+
+
+class LoginState;
+class GuiLogin;
+class GuiErreur;
+class GuiProgression;
+
+enum typeForAuth
+{
+	ID_CHALLENGE = 0,
+	ID_REPONSE,
+	ID_SEND_CANCEL,
+	ID_ERREUR
+};
+
+enum erreurOfAuth
+{
+	ID_NOERROR = 0,
+	ID_ERROR_PACKET_SIZE,
+	ID_CONNECTION_BANNED,
+	ID_INVALID_ACCOUNT_OR_PASSWORD,
+	ID_COMPTE_BANNIE,
+	ID_INVALID_IP,
+	ID_ERROR_ETAPE
+};
 
 
 /*
  *
  */
-class GestionnaireAuth : public NetworkListener {
+class GestionnaireAuth : public OIS::KeyListener , public ModuleActif {
 
 public:
-	GestionnaireAuth(GuiInterface * guiInterface);
+	GestionnaireAuth(LoginState * loginState);
 	virtual ~GestionnaireAuth();
+
+	bool keyPressed(const OIS::KeyEvent &keyEventRef);
+	bool keyReleased(const OIS::KeyEvent &keyEventRef);
+
+	void run();
+
+	void stopThread();
+
+
+	bool initNetwork();
 
 	void handleEtapeDeux(ENetEvent * packet);
 
@@ -36,13 +84,32 @@ public:
 
 	void updateNetwork(int event ,ENetEvent * packet);
 
+	void cancelAuthentification();
 
-	void setLoginPwd(const char * user,const char * password);
+	void quitAuthentification();
+
+	void gestionnaireErreur(AUTHPACKET_ERROR * packetErreur );
+
+
+	void setAuthentification();
 
 private:
+
+	static void  threadAuthentification(void * arguments);
+
+
 	NetworkManager * networkManager;
-	ENetEvent eventAuth;
-	GuiInterface * guiInterface;
+	KeyboardMap * keyboardMap ;
+	InputManager * inputManager;
+
+	LoginState * loginState;
+
+	GestionnaireInterface * gestionnaireInterface;
+
+	GuiLogin * guiLogin;
+	GuiErreur * guiErreur;
+	GuiProgression * guiProgression;
+
 	Compte * compte;
 
 };

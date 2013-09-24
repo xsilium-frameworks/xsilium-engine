@@ -10,10 +10,9 @@
 #define GESTIONNAIRECHAT_H_
 
 #include "Network/NetworkManager.h"
-#include "Network/NetworkListener.h"
 
 #include "Chat/Interface/Chat.h"
-#include "Shared/Network/Opcode.h"
+#include "Network/Opcode/Opcode.h"
 
 #include "Game/Chat/StructurePacket/PacketChat.h"
 
@@ -24,7 +23,7 @@ class Chat;
 /*
  *
  */
-class GestionnaireChat : public NetworkListener {
+class GestionnaireChat {
 public:
 	GestionnaireChat(Chat * chatUI);
 	virtual ~GestionnaireChat();

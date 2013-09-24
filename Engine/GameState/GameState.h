@@ -5,7 +5,6 @@
 #include "InputManager/InputManager.h"
 #include "DotSceneLoader/DotSceneLoader.h"
 #include "EventManager/EventManager.h"
-#include "Interface/Interface.h"
 
 class GameState;
 
@@ -22,13 +21,20 @@ public:
 	virtual bool		pushGameState(GameState* state) = 0;
 	virtual void		popGameState() = 0;
 	virtual void		shutdown() = 0;
-    virtual void        popAllAndPushGameState(GameState* state) = 0;
+	virtual void        popAllAndPushGameState(GameState* state) = 0;
 };
 
 class GameState : public Ogre::FrameListener
 {
 public:
-	static void create(GameStateListener* parent, const Ogre::String name);
+
+	template <class myType>
+	static void create(GameStateListener* parent, const Ogre::String name)
+	{
+		myType * myGameState = new myType();
+		myGameState->m_pParent = parent;
+		parent->addGameState(name, myGameState);
+	}
 
 	virtual ~GameState(){};
 
@@ -49,27 +55,16 @@ protected:
 	bool		pushGameState(GameState* state){return m_pParent->pushGameState(state);}
 	void		popGameState(){m_pParent->popGameState();}
 	void		shutdown(){m_pParent->shutdown();}
-    void        popAllAndPushGameState(GameState* state){m_pParent->popAllAndPushGameState(state);}
+	void        popAllAndPushGameState(GameState* state){m_pParent->popAllAndPushGameState(state);}
+
 
 	GameStateListener*			m_pParent;
 
 	Ogre::Camera*				m_pCamera;
 	Ogre::SceneManager*			m_pSceneMgr;
-    Ogre::FrameEvent            m_FrameEvent;
-    Ogre::RenderWindow* 		m_Window;
-    EventManager * eventManager ;
-    GuiInterface * guiInterface;
-
-
-
+	Ogre::RenderWindow* 		m_Window;
+	EventManager * eventManager ;
 };
 
-#define DECLARE_GAMESTATE_CLASS(T)										\
-static void create(GameStateListener* parent, const Ogre::String name)	\
-{																		\
-	T* myGameState = new T();											\
-	myGameState->m_pParent = parent;									\
-	parent->addGameState(name, myGameState);							\
-}
 
 #endif
