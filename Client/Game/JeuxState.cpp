@@ -19,8 +19,10 @@ JeuxState::JeuxState()
 	inputManager = InputManager::getSingletonPtr();
 	keyboardMap = KeyboardMap::getInstance();
 
-	guiInterface = new GuiInterface();
+}
 
+JeuxState::~JeuxState()
+{
 }
 
 
@@ -63,22 +65,19 @@ void JeuxState::exit()
 
 	delete gestionnaireEntite;
 
-	delete chat;
+//	delete chat;
 	delete gestionnaireMeteo;
-	guiInterface->deleteInterfacePrincipal();
 
 	m_pSceneMgr->destroyCamera(m_pCamera);
 	if(m_pSceneMgr)
 		XsiliumFramework::getInstance()->getRoot()->destroySceneManager(m_pSceneMgr);
 
 	inputManager->removeKeyListener(this);
-	delete guiInterface;
 }
 
 void JeuxState::buildGUI()
 {
-	guiInterface->interfacePrincipal();
-	chat = new Chat();
+	//chat = new Chat();
 }
 
 void JeuxState::createScene()
@@ -141,8 +140,6 @@ bool JeuxState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		return false;
 	}
 
-
-	chat->update();
 	return true;
 }
 

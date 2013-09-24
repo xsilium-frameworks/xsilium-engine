@@ -8,14 +8,25 @@ set( InputManager_S
 
 set( Interface_H
 ./Interface/Interface.h
+./Interface/GestionnaireInterface.h
 )
 
 set( Interface_S
 ./Interface/Interface.cpp
+./Interface/GestionnaireInterface.cpp
+)
+
+set( CallBack_H
+./Callback/Callback.h
+)
+
+set( CallBack_S
+./Callback/Callback.cpp
 )
 
 set( Network_H
-./Network/NetworkListener.h
+./Network/Opcode/Opcode.h
+./Network/StructurePacket/StructureGeneral.h
 ./Network/NetworkManager.h
 )
 
@@ -92,6 +103,14 @@ set( Entite_S
 ./GestionnaireMouvement/GestionnaireMouvement.cpp
 )
 
+set( ModuleActif_H
+./ModuleActif/ModuleActif.h
+)
+
+set( ModuleActif_S
+./ModuleActif/ModuleActif.cpp
+)
+
 
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
@@ -103,6 +122,8 @@ ${SceneLoader_S}
 ${Keyboard_S}
 ${EventManager_S}
 ${Entite_S}
+${CallBack_S}
+${ModuleActif_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -117,6 +138,8 @@ ${Keyboard_H}
 ${Rapidxml_H}
 ${EventManager_H}
 ${Entite_H}
+${CallBack_H}
+${ModuleActif_H}
 )
 
 include_directories(

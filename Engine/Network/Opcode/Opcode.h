@@ -13,30 +13,29 @@ enum typerequete
 {
 	   XSILIUM_AUTH = 0,
 	   XSILIUM_KINGDOM,
+	   XSILIUM_ZONE,
 	   XSILIUM_ALL
 };
 
 enum Opcode
 {
+	// partie generique
 	ID_CONNEXION = 0,
 	ID_DECONEXION,
-    ID_SEND_USER,
-    ID_SEND_CHALLENGE,
-    ID_SEND_REPONSE,
-    ID_SEND_VALIDATION,
-    ID_GET_ROYAUME,
-    ID_SEND_ROYAUME,
-    ID_CONNECTION_BANNED,
-    ID_INVALID_ACCOUNT_OR_PASSWORD,
-    ID_COMPTE_BANNIE,
-    ID_SEND_CANCEL,
-    ID_INVALID_IP,
-    ID_ERROR,
 
-    //chat
+	// partie authentification
+	ID_AUTH,
+
+    //partie royaume
     ID_CHAT,
 
-    ID_OPCOD_MAX
+    //partie ticket
+    ID_TICKET,
+
+    //Partie message
+    ID_MAIL,
+
+    ID_ALL
 };
 
 
