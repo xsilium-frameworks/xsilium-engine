@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <GUILayout version="4" >
-	<Window type="AlfiskoSkin/FrameWindow" name="PopUpLoading" >
-		<Property name="Area" value="{{0,0},{0,0},{0,470},{0,127}}" />
+    <Window type="AlfiskoSkin/FrameWindow" name="PopUpLoading" >
+        <Property name="Area" value="{{0,0},{0,0},{0,470},{0,127}}" />
         <Property name="Visible" value="False" />
         <Property name="VerticalAlignment" value="Centre" />
         <Property name="CloseButtonEnabled" value="False" />
         <Property name="HorizontalAlignment" value="Centre" />
-            <Window type="AlfiskoSkin/ProgressBar" name="ProgressBar" >
-                <Property name="Area" value="{{0,0},{0,0},{0,418},{0,50}}" />
-                <Property name="StepSize" value="0.01" />
-                <Property name="CurrentProgress" value="0.01" />
-                <Property name="HorizontalAlignment" value="Centre" />
-            </Window>
+        <Window type="AlfiskoSkin/ProgressBar" name="ProgressBar" >
+            <Property name="Area" value="{{0,-1},{0,-16},{0,417},{0,34}}" />
+            <Property name="StepSize" value="0.01" />
+            <Property name="CurrentProgress" value="0.01" />
+            <Property name="HorizontalAlignment" value="Centre" />
+        </Window>
+        <Window type="AlfiskoSkin/Button" name="ButtonAnnuler" >
+            <Property name="Area" value="{{0,185},{0,41},{0,281},{0,73}}" />
+            <Property name="Text" value="Annuler" />
+        </Window>
     </Window>
 </GUILayout>

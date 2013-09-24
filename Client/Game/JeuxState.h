@@ -37,8 +37,7 @@ class JeuxState :public OIS::KeyListener, public GameState
 {
 public:
 	JeuxState();
-
-	DECLARE_GAMESTATE_CLASS(JeuxState)
+	virtual ~JeuxState();
 
 	void enter();
 	void createScene();

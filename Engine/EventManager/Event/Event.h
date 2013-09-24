@@ -23,7 +23,7 @@ public:
 
 
 	std::string getProperty(std::string inName);
-	void setProperty(std::string inName,std::string inValue);
+	void setProperty(std::string inName,std::string inValue = "");
 	bool hasProperty(std::string inName);
 
 	int getCountArgument();

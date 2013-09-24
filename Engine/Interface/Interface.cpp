@@ -4,17 +4,24 @@
 
 GuiInterface::GuiInterface()
 {
-	isActived = false;
+	isActived = true;
 	parent = NULL;
+	eventManager = new EventManager();
+	d_root = NULL;
 }
 
 GuiInterface::~GuiInterface()
 {
+	if(eventManager)
+		delete eventManager;
 }
 
-void GuiInterface::toggleVisibility()
+void GuiInterface::setVisibility(bool visibility)
 {
-	d_root->isVisible() ? d_root->hide() : d_root->show();
+	if(visibility)
+		d_root->show();
+	else
+		d_root->hide();
 }
 
 bool GuiInterface::isVisible() const
@@ -27,44 +34,19 @@ bool GuiInterface::isActive()
 	return isActived;
 }
 
-void GuiInterface::initialisationInterface()
+void GuiInterface::activeInterface()
 {
-	CEGUI::OgreRenderer* mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-
-	// set the default resource groups to be used
-	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
-	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-	CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
-	CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
-	// setup default group for validation schemas
-	CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
-	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
-		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
-
-	CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
+	d_root->setAlpha(1);
+	isActived = true;
+	d_root->setAlwaysOnTop(true);
 }
 
-
-void GuiInterface::interfacePrincipal()
+void GuiInterface::desactiveInterface()
 {
 
-	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
-
-	CEGUI::Window* parent = winMgr.createWindow("DefaultWindow", "InterfaceG");
-
-	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(parent);
-
-}
-
-void GuiInterface::deleteInterfacePrincipal()
-{
-	CEGUI::Window * parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-	CEGUI::WindowManager::getSingleton().destroyWindow(parent);
-	parent->destroy();
+	d_root->setAlpha(0.3);
+	d_root->setAlwaysOnTop(false);
+	isActived = false;
 }
 
 void GuiInterface::setEvent(const char * typeEvent,const char * message)
@@ -75,6 +57,32 @@ void GuiInterface::setEvent(const char * typeEvent,const char * message)
 	event.setProperty("eventType",typeEvent_str);
 	event.setProperty("eventData",message_str);
 	eventManager->addEvent(event);
+}
+
+CEGUI::Window* GuiInterface::getWindow()
+{
+	return d_root;
+}
+
+void GuiInterface::EventGlobal()
+{
+	switch(atoi(eventManager->getEvent()->getProperty("eventType").c_str()))
+	{
+	case ACTIVE:
+		activeInterface();
+		break;
+	case DESACTIVE:
+		desactiveInterface();
+		break;
+	case VISIBLE:
+		setVisibility(true);
+		break;
+	case INVISIBLE:
+		setVisibility(false);
+		break;
+	default:
+		break;
+	}
 }
 
 #endif /* INTERFACE_CPP_ */

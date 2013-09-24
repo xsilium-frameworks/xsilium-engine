@@ -18,6 +18,8 @@
 
 #include "XsiliumFramework.h"
 
+#include "Network/NetworkManager.h"
+
 /*
  *
  */
@@ -38,11 +40,15 @@ public:
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
+	void updateNetwork(int event ,ENetEvent * packet);
+
 
 
 private:
 	std::vector<Entite *> listOfEntite ;
     std::vector<Entite *>::iterator entite ;
+
+    NetworkManager * networkManager;
 
 
 };
