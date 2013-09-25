@@ -200,8 +200,8 @@ void GestionnaireAuth::setAuthentification()
 	{
 		if(!initNetwork())
 			return;
+		run();
 	}
-	run();
 	guiLogin->setEvent(ToString(DESACTIVE).c_str());
 	guiProgression->setEvent(ToString(ACTIVE).c_str());
 	guiProgression->setEvent(ToString(VISIBLE).c_str());
