@@ -9,7 +9,15 @@ set(Hydrax_SOURCES
     ${Hydrax_SOURCES_H}
 )
 
-include_directories(include)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include_directories(${OGRE_H_PATH})
 
-add_library(Hydrax ${Hydrax_SOURCES})
+add_definitions(-DHYDRAX_LIB -D_USRDLL)
+
+link_directories(${CMAKE_BINARY_DIR})
+
+add_library(Hydrax SHARED ${Hydrax_SOURCES})
+
+target_link_libraries(Hydrax ${OGRE_LIB})
+
+set(HYDRAX_LIBRARY "Hydrax" CACHE STRING "" FORCE)

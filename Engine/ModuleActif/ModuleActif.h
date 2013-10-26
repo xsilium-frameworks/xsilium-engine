@@ -25,9 +25,11 @@ public:
 	ModuleActif();
 	virtual ~ModuleActif();
 
-	virtual void run() = 0;
+	void run();
 
-	virtual void stopThread() = 0;
+	void stopThread();
+
+	virtual void processPacket(ENetEvent * packet) = 0;
 
 	void setPacket();
 	ENetEvent getPacket();
@@ -35,6 +37,10 @@ public:
 	bool isEmpty();
 
 protected:
+
+	static void threadProcess(void * arguments);
+
+
 	boost::condition_variable condition_Queue;
 	boost::thread_group groupThread;
 	NetworkManager * networkManager;

@@ -280,8 +280,8 @@ set(XSILIUM_LIB XsiliumEngine
 		CEGUIBase
 		PagedGeometry 
 		CEGUIOgreRenderer 
-		SkyX 
-		Hydrax 
+		${SKYX_LIBRARY}  
+		${HYDRAX_LIBRARY}   
 		${Boost_LIBRARIES} 
 		${Cg_LIBRARY_REL}
 		${OIS_LIBRARY_REL} 

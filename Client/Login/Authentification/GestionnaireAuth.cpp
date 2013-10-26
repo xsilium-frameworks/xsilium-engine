@@ -73,20 +73,11 @@ bool GestionnaireAuth::keyReleased(const OIS::KeyEvent &keyEventRef)
 	return true;
 }
 
-void GestionnaireAuth::stopThread()
-{
-	endThread = true;
-	condition_Queue.notify_all();
-	groupThread.join_all();
-}
-
 void GestionnaireAuth::run()
 {
 	networkManager->addlistenneur((XSILIUM_AUTH * 1000) + ID_AUTH,boost::bind(&GestionnaireAuth::setPacket, this));
-		for(uint8_t i = 0;i< NUM_THREAD_MODULE;i++)
-		{
-			groupThread.add_thread(new boost::thread(&GestionnaireAuth::threadAuthentification, (void *) this) );
-		}
+
+	ModuleActif::run();
 }
 
 bool GestionnaireAuth::initNetwork()
@@ -110,39 +101,30 @@ bool GestionnaireAuth::initNetwork()
 	return true;
 }
 
-void GestionnaireAuth::threadAuthentification(void * arguments)
+void GestionnaireAuth::processPacket(ENetEvent * packet)
 {
-	GestionnaireAuth * gestionnaireAuth = (GestionnaireAuth *) arguments ;
-
-	while(!gestionnaireAuth->endThread)
+	AUTHPACKET_TYPE *data = (AUTHPACKET_TYPE *) packet->packet->data ;
+	switch(data->typeAuth)
 	{
-		if(!gestionnaireAuth->isEmpty())
-		{
-			ENetEvent packet = gestionnaireAuth->getPacket();
-			AUTHPACKET_TYPE *data = (AUTHPACKET_TYPE *) packet.packet->data ;
-			switch(data->typeAuth)
-			{
-			case ID_CHALLENGE :
-				gestionnaireAuth->compte->setEtapeDeLogin(2);
-				gestionnaireAuth->guiProgression->setEvent(ToString(PROGRESSION).c_str(),"3");
-				gestionnaireAuth->handleEtapeDeux(&packet);
-				break;
-			case ID_REPONSE :
-				gestionnaireAuth->guiProgression->setEvent(ToString(PROGRESSION).c_str(),"4");
-				gestionnaireAuth->loginState->setChangeState();
-			break;
-			case ID_SEND_CANCEL:
-				gestionnaireAuth->cancelAuthentification();
-				break;
-			case ID_ERREUR:
-				gestionnaireAuth->gestionnaireErreur( (AUTHPACKET_ERROR *) packet.packet->data);
-				break;
-			default:
-				break;
-			}
-			gestionnaireAuth->networkManager->deletePacket(packet.packet);
-		}
+	case ID_CHALLENGE :
+		compte->setEtapeDeLogin(2);
+		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"3");
+		handleEtapeDeux(packet);
+		break;
+	case ID_REPONSE :
+		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"4");
+		loginState->setChangeState();
+		break;
+	case ID_SEND_CANCEL:
+		cancelAuthentification();
+		break;
+	case ID_ERREUR:
+		gestionnaireErreur( (AUTHPACKET_ERROR *) packet->packet->data);
+		break;
+	default:
+		break;
 	}
+
 }
 
 void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
