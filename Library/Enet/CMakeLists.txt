@@ -11,11 +11,11 @@ set(enet_SOURCES
 include_directories(.)
 
 add_library(enet STATIC ${enet_SOURCES})
-if(MSVC)
-message("Microsoft visual studio")
+if(WIN32)
+message("Microsoft Windows")
 target_link_libraries( enet ws2_32 winmm)
 
-endif(MSVC)
+endif(WIN32)
 set(ENET_INCLUDE_DIR "${enet_SOURCES}" CACHE PATH "" FORCE)
 set(ENET_LIBRARY_DBG "enet" CACHE STRING "" FORCE)
 set(ENET_LIBRARY_REL "enet" CACHE STRING "" FORCE)

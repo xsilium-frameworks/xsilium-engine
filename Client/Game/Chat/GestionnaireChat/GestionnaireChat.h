@@ -18,6 +18,8 @@
 
 #include "Compte/Compte.h"
 
+#include "ModuleActif/ModuleActif.h"
+
 class Chat;
 
 /*

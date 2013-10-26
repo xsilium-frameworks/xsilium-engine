@@ -71,8 +71,7 @@ public:
 
 	void run();
 
-	void stopThread();
-
+	void processPacket(ENetEvent * packet);
 
 	bool initNetwork();
 

@@ -9,8 +9,6 @@
 # SkyX core library
 ############################################################
 
-PROJECT(SkyX)
-
 # define header and source files for the library
 set (SKYX_HEADER_FILES
   Include/AtmosphereManager.h
@@ -72,11 +70,6 @@ include_directories(${OGRE_H_PATH})
 # Add needed definitions and nedmalloc include dir
 add_definitions(-DSKYX_LIB -D_USRDLL)
 
-# Add static flag if needed
-if(SKYX_STATIC)
-  add_definitions(-DSKYX_STATIC_LIB)
-endif()
-
 if (UNIX)
   set(PLATFORM_LIBS dl)
 endif()
@@ -85,11 +78,23 @@ set(LIBRARIES
   ${PLATFORM_LIBS}
 )
 
+link_directories(${CMAKE_BINARY_DIR})
+
 # setup SkyX target
-add_library(SkyX
-  ${SKYX_LIB_TYPE}
+add_library(SkyX SHARED
   ${SKYX_HEADER_FILES}
   ${SKYX_SOURCE_FILES}
   ${VCLOUDS_HEADER_FILES}
   ${VCLOUDS_SOURCE_FILES}
 )
+
+target_link_libraries(SkyX ${OGRE_LIB})
+
+set_target_properties(SkyX PROPERTIES
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+)
+
+#find_library(SKYX_LIBRARY SkyX
+#PATHS ${CMAKE_CURRENT_BINARY_DIR}
+#)
+set(SKYX_LIBRARY "SkyX" CACHE STRING "" FORCE)

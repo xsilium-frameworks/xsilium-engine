@@ -19,6 +19,22 @@ ModuleActif::~ModuleActif() {
 		ListOfPacket.pop();
 }
 
+void ModuleActif::run()
+{
+	for(uint8_t i = 0;i< NUM_THREAD_MODULE;i++)
+	{
+		groupThread.add_thread(new boost::thread(&ModuleActif::threadProcess, (void *) this) );
+	}
+}
+
+void ModuleActif::stopThread()
+{
+	endThread = true;
+	condition_Queue.notify_all();
+	groupThread.join_all();
+}
+
+
 ENetEvent ModuleActif::getPacket()
 {
 	boost::mutex::scoped_lock lock(mutexList);
@@ -46,4 +62,19 @@ bool ModuleActif::isEmpty()
 	}
 	else
 		return false;
+}
+
+void ModuleActif::threadProcess(void * arguments)
+{
+	ModuleActif * moduleActif = (ModuleActif *) arguments ;
+
+	while(!moduleActif->endThread)
+	{
+		if(!moduleActif->isEmpty())
+		{
+			ENetEvent packet = moduleActif->getPacket();
+			moduleActif->processPacket(&packet);
+			moduleActif->networkManager->deletePacket(packet.packet);
+		}
+	}
 }
