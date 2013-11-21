@@ -8,6 +8,7 @@ GuiInterface::GuiInterface()
 	parent = NULL;
 	eventManager = new EventManager();
 	d_root = NULL;
+	controleInterface = NULL;
 }
 
 GuiInterface::~GuiInterface()
@@ -62,6 +63,16 @@ void GuiInterface::setEvent(const char * typeEvent,const char * message)
 CEGUI::Window* GuiInterface::getWindow()
 {
 	return d_root;
+}
+
+
+void GuiInterface::setControleur(ControleInterface * controleInterface)
+{
+	this->controleInterface = controleInterface;
+}
+ControleInterface * GuiInterface::getControleur()
+{
+	return this->controleInterface;
 }
 
 void GuiInterface::EventGlobal()

@@ -16,6 +16,7 @@
 
 
 
+
 /*
  *
  */
@@ -32,6 +33,7 @@ public:
 	void removeAllInterface();
 	bool findInterface(GuiInterface * interface);
 	bool findWindow(CEGUI::Window* window);
+	GuiInterface * getByName(std::string nameInterface);
 
     void initialisationInterface();
 	void interfacePrincipal();
@@ -47,11 +49,12 @@ public:
 
 
 private:
+	int generateID;
+
 	static void  threadAuthentification(void * arguments);
 
-	std::vector<GuiInterface*> listOfInterfaceHistory;
-	std::vector<GuiInterface*> listOfInterface;
-	std::vector<GuiInterface*>::iterator interfaceIterator;
+	std::map<char *,GuiInterface*> listOfInterface;
+	std::map<char *,GuiInterface*>::iterator interfaceIterator;
 
 
 	bool interfacePrincipale;
