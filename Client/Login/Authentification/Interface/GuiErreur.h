@@ -10,7 +10,6 @@
 #define GUIERREUR_H_
 
 #include "Interface/Interface.h"
-#include "Authentification/GestionnaireAuth.h"
 
 #include "GameState/GameStateManager.h"
 
@@ -19,15 +18,13 @@ enum eventTypeErreur
 	MESSAGE = LASTIDEVENTTYPE
 };
 
-class GestionnaireAuth;
-
 /*
  *
  */
 class GuiErreur : public GuiInterface
 {
 public:
-	GuiErreur(GestionnaireAuth * gestionnaireAuth);
+	GuiErreur(ControleInterface * controleInterface);
 	virtual ~GuiErreur();
 
 	bool okButton(const CEGUI::EventArgs &e);
@@ -37,7 +34,6 @@ public:
 	void update();
 
 private:
-	GestionnaireAuth * gestionnaireAuth ;
 	bool messageFlag;
 };
 

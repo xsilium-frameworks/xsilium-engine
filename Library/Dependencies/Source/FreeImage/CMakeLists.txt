@@ -532,7 +532,9 @@ include_directories(Source/ZLib)
 
 add_definitions(-DOPJ_STATIC -DLIBRAW_NODLL -DLIBRAW_LIBRARY_BUILD -DFREEIMAGE_LIB -DNO_LCMS)
 add_library(FreeImage STATIC ${FreeImage_SOURCES})
-
+if(WIN32)
+	target_link_libraries( FreeImage wsock32 ws2_32)
+endif(WIN32)
 set(FREEIMAGE_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Source" CACHE PATH "" FORCE)
 set(FREEIMAGE_LIB_DBG "FreeImage" CACHE STRING "" FORCE)
 set(FREEIMAGE_LIB "FreeImage" CACHE STRING "" FORCE)

@@ -6,6 +6,8 @@
 
 #include "EventManager/EventManager.h"
 
+#include "Interface/ControleInterface.h"
+
 enum eventType
 {
 	ACTIVE = 0,
@@ -14,6 +16,8 @@ enum eventType
 	INVISIBLE,
 	LASTIDEVENTTYPE
 };
+
+class ControleInterface;
 
 class GuiInterface
 {
@@ -36,13 +40,21 @@ public:
 
 	void EventGlobal();
 
+	void setIDInterface(int IDInterface);
+	int getIDInterface();
+
+	void setControleur(ControleInterface * controleInterface);
+	ControleInterface * getControleur();
+
 	CEGUI::Window* getWindow();
 
 
 protected:
+	int IDInterface;
     CEGUI::Window* d_root;
     CEGUI::Window* parent;
     EventManager * eventManager ;
+    ControleInterface * controleInterface ;
 
     bool isActived;
 };

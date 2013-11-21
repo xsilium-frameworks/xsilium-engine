@@ -8,7 +8,7 @@
 
 #include "GuiErreur.h"
 
-GuiErreur::GuiErreur(GestionnaireAuth * gestionnaireAuth) {
+GuiErreur::GuiErreur(ControleInterface * controleInterface) {
 
 	messageFlag = false;
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
@@ -19,7 +19,7 @@ GuiErreur::GuiErreur(GestionnaireAuth * gestionnaireAuth) {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->gestionnaireAuth = gestionnaireAuth ;
+	this->controleInterface = controleInterface ;
 
 }
 
@@ -35,7 +35,7 @@ bool GuiErreur::okButton(const CEGUI::EventArgs &e)
 {
 	messageFlag = false;
 	d_root->setVisible(false);
-	gestionnaireAuth->cancelAuthentification();
+	controleInterface->retourInterface("",1);
 	return true;
 }
 

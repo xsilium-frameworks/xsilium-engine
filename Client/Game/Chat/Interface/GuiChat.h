@@ -1,5 +1,5 @@
-#ifndef CHAT_UI_H_
-#define CHAT_UI_H_
+#ifndef GUI_CHAT_UI_H_
+#define GUI_CHAT_UI_H_
 
 #include "Chat/GestionnaireChat/GestionnaireChat.h"
 
@@ -43,4 +43,4 @@ private:
 
 
 
-#endif /* CHAT_UI_H_ */
+#endif /* GUI_CHAT_UI_H_ */

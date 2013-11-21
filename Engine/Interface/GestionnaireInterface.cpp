@@ -11,6 +11,7 @@
 GestionnaireInterface::GestionnaireInterface() {
 
 	interfacePrincipale = false;
+	generateID = 0;
 
 	initialisationInterface();
 
@@ -83,6 +84,7 @@ void GestionnaireInterface::addInterface(GuiInterface * interface)
 {
 	if(!findInterface(interface))
 	{
+		interface->setIDInterface(generateID + 1);
 		listOfInterface.push_back(interface);
 	}
 
@@ -100,6 +102,7 @@ void GestionnaireInterface::removeAllInterface()
 	{
 		listOfInterface.erase(interfaceIterator);
 	}
+	generateID = 0;
 }
 
 bool GestionnaireInterface::findInterface(GuiInterface * interface)
@@ -124,6 +127,11 @@ bool GestionnaireInterface::findWindow(CEGUI::Window* window)
 		}
 	}
 	return false;
+}
+
+GuiInterface * GestionnaireInterface::getByName(std::string nameInterface)
+{
+	return NULL ;
 }
 
 
