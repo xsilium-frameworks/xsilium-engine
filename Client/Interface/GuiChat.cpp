@@ -1,4 +1,4 @@
-#include "Chat.h"
+#include "GuiChat.h"
 //Chat class
 
 

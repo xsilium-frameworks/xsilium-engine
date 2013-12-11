@@ -35,7 +35,7 @@ bool GuiErreur::okButton(const CEGUI::EventArgs &e)
 {
 	messageFlag = false;
 	d_root->setVisible(false);
-	controleInterface->retourInterface("",1);
+	controleInterface->retourInterface(IDInterface,1);
 	return true;
 }
 
