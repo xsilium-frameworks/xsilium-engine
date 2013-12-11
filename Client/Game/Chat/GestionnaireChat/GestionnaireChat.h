@@ -11,7 +11,7 @@
 
 #include "Network/NetworkManager.h"
 
-#include "Chat/Interface/Chat.h"
+#include "Interface/GuiChat.h"
 #include "Network/Opcode/Opcode.h"
 
 #include "Game/Chat/StructurePacket/PacketChat.h"

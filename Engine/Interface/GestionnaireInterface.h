@@ -53,8 +53,8 @@ private:
 
 	static void  threadAuthentification(void * arguments);
 
-	std::map<char *,GuiInterface*> listOfInterface;
-	std::map<char *,GuiInterface*>::iterator interfaceIterator;
+	std::vector<GuiInterface*> listOfInterface;
+	std::vector<GuiInterface*>::iterator interfaceIterator;
 
 
 	bool interfacePrincipale;
