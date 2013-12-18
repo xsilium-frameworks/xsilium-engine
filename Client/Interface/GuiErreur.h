@@ -18,6 +18,11 @@ enum eventTypeErreur
 	MESSAGE = LASTIDEVENTTYPE
 };
 
+enum eventerreur
+{
+	OKBOUTON = 1
+};
+
 /*
  *
  */

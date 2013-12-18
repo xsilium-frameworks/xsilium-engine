@@ -16,10 +16,10 @@
  */
 class ControleInterface {
 public:
-	ControleInterface();
-	virtual ~ControleInterface();
+	ControleInterface() {};
+	virtual ~ControleInterface() {};
 
-	virtual void retourInterface(int IDInterface,int retour);
+	virtual void retourInterface(int IDInterface,int retour) = 0;
 };
 
 #endif /* CONTROLEINTERFACE_H_ */

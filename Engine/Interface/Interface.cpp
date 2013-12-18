@@ -9,6 +9,7 @@ GuiInterface::GuiInterface()
 	eventManager = new EventManager();
 	d_root = NULL;
 	controleInterface = NULL;
+	IDInterface = 0;
 }
 
 GuiInterface::~GuiInterface()
@@ -73,6 +74,15 @@ void GuiInterface::setControleur(ControleInterface * controleInterface)
 ControleInterface * GuiInterface::getControleur()
 {
 	return this->controleInterface;
+}
+
+void GuiInterface::setIDInterface(int IDInterface)
+{
+	this->IDInterface = IDInterface ;
+}
+const int GuiInterface::getIDInterface()
+{
+	return this->IDInterface;
 }
 
 void GuiInterface::EventGlobal()

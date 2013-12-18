@@ -8,7 +8,7 @@
 
 #include "GuiLogin.h"
 
-GuiLogin::GuiLogin(GestionnaireAuth * gestionnaireAuth) {
+GuiLogin::GuiLogin(ControleInterface * controleInterface) {
 
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
@@ -20,7 +20,7 @@ GuiLogin::GuiLogin(GestionnaireAuth * gestionnaireAuth) {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->gestionnaireAuth = gestionnaireAuth ;
+	this->controleInterface = controleInterface ;
 }
 
 GuiLogin::~GuiLogin() {
@@ -67,12 +67,12 @@ const char * GuiLogin::getPassword()
 
 bool GuiLogin::quitterButton(const CEGUI::EventArgs &e)
 {
-	gestionnaireAuth->quitAuthentification();
+	controleInterface->retourInterface(IDInterface,QUITBOUTON);
 	return true;
 }
 
 bool GuiLogin::connexionButton(const CEGUI::EventArgs &e)
 {
-	gestionnaireAuth->setAuthentification();
+	controleInterface->retourInterface(IDInterface,CONNEXIONBOUTON);
 	return true;
 }

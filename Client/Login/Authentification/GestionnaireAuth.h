@@ -60,7 +60,7 @@ enum erreurOfAuth
 /*
  *
  */
-class GestionnaireAuth : public OIS::KeyListener , public ModuleActif {
+class GestionnaireAuth : public OIS::KeyListener , public ModuleActif , public ControleInterface {
 
 public:
 	GestionnaireAuth(LoginState * loginState);
@@ -72,6 +72,8 @@ public:
 	void run();
 
 	void processPacket(ENetEvent * packet);
+
+	void retourInterface(int IDInterface,int retour);
 
 	bool initNetwork();
 
@@ -86,7 +88,6 @@ public:
 	void quitAuthentification();
 
 	void gestionnaireErreur(AUTHPACKET_ERROR * packetErreur );
-
 
 	void setAuthentification();
 
