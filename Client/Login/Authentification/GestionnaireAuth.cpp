@@ -200,6 +200,46 @@ void GestionnaireAuth::setAuthentification()
 	sendAuthentification();
 }
 
+void GestionnaireAuth::retourInterface(int IDInterface,int retour)
+{
+	if(IDInterface == guiLogin->getIDInterface())
+	{
+		switch(retour)
+		{
+		case QUITBOUTON :
+			quitAuthentification();
+			break;
+		case CONNEXIONBOUTON:
+			setAuthentification();
+			break;
+		default:
+			break;
+		}
+	}
+
+	if(IDInterface == guiErreur->getIDInterface())
+	{
+		switch(retour)
+		{
+		case OKBOUTON :
+			cancelAuthentification();
+			break;
+		default:
+			break;
+		}
+	}
+
+	if(IDInterface == guiProgression->getIDInterface())
+	{
+		switch(retour)
+		{
+		default:
+
+			break;
+		}
+	}
+}
+
 void GestionnaireAuth::gestionnaireErreur(AUTHPACKET_ERROR * packetErreur)
 {
 	switch(packetErreur->errorID)

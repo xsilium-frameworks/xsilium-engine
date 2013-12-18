@@ -10,11 +10,14 @@
 #define GUI_LOGIN_H_
 
 #include "Interface/Interface.h"
-#include "Authentification/GestionnaireAuth.h"
 
 #include "GameState/GameStateManager.h"
 
-class GestionnaireAuth;
+enum eventlogin
+{
+	CONNEXIONBOUTON = 1,
+	QUITBOUTON
+};
 
 /*
  *
@@ -22,7 +25,7 @@ class GestionnaireAuth;
 class GuiLogin : public GuiInterface
 {
 public:
-	GuiLogin(GestionnaireAuth * gestionnaireAuth);
+	GuiLogin(ControleInterface * controleInterface);
 	virtual ~GuiLogin();
 
     bool connexionButton(const CEGUI::EventArgs &e);
@@ -38,7 +41,7 @@ public:
     void update();
 
 private:
-	GestionnaireAuth * gestionnaireAuth ;
+    ControleInterface * controleInterface ;
 
 };
 

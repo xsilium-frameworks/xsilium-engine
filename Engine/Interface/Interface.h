@@ -41,7 +41,7 @@ public:
 	void EventGlobal();
 
 	void setIDInterface(int IDInterface);
-	int getIDInterface();
+	const int getIDInterface();
 
 	void setControleur(ControleInterface * controleInterface);
 	ControleInterface * getControleur();
