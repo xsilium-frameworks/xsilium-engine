@@ -9,6 +9,8 @@
 #ifndef GESTIONNAIREINTERFACE_H_
 #define GESTIONNAIREINTERFACE_H_
 
+#define interface QQInterface
+
 #include "Singleton/Singleton.h"
 #include "Interface/Interface.h"
 
