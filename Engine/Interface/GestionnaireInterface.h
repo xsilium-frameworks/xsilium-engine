@@ -9,7 +9,9 @@
 #ifndef GESTIONNAIREINTERFACE_H_
 #define GESTIONNAIREINTERFACE_H_
 
+#ifdef WIN32
 #define interface QQInterface
+#endif
 
 #include "Singleton/Singleton.h"
 #include "Interface/Interface.h"
