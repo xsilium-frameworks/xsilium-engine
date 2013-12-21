@@ -8,7 +8,7 @@
 
 #include "GuiProgression.h"
 
-GuiProgression::GuiProgression(GestionnaireAuth * gestionnaireAuth) {
+GuiProgression::GuiProgression(ControleInterface * controleInterface) {
 
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
@@ -17,7 +17,7 @@ GuiProgression::GuiProgression(GestionnaireAuth * gestionnaireAuth) {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->gestionnaireAuth = gestionnaireAuth ;
+	this->controleInterface = controleInterface ;
 
 }
 
@@ -31,7 +31,7 @@ GuiProgression::~GuiProgression() {
 
 bool GuiProgression::connexionAnnuler(const CEGUI::EventArgs &e)
 {
-	gestionnaireAuth->cancelAuthentification();
+	controleInterface->retourInterface(IDInterface,CANCELBOUTON);
 	return true;
 }
 

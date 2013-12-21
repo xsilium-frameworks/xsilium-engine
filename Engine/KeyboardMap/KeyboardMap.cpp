@@ -80,6 +80,7 @@ void KeyboardMap::changeKey(const char * touche,OIS::KeyCode key)
 
 void KeyboardMap::saveKeyboardMap()
 {
+
 	rapidxml::xml_document<> doc;
 
 	rapidxml::xml_node<>* decl = doc.allocate_node(rapidxml::node_declaration);
@@ -104,10 +105,10 @@ void KeyboardMap::saveKeyboardMap()
 		Keyboard->append_node(Key);
 	}
 	std::string data;
-	//rapidxml::print(std::back_inserter(data), doc);
+	rapidxml::print(std::back_inserter(data,), doc);
 
 	std::ofstream myfile(fileName.c_str()) ;
-	myfile << data;
+	//myfile << doc;
 	myfile.close();
 
 

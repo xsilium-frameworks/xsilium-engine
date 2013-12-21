@@ -84,7 +84,8 @@ void GestionnaireInterface::addInterface(GuiInterface * interface)
 {
 	if(!findInterface(interface))
 	{
-		interface->setIDInterface(generateID + 1);
+		generateID += 1;
+		interface->setIDInterface(generateID);
 		listOfInterface.push_back(interface);
 	}
 
