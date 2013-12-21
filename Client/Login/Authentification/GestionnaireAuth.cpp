@@ -124,7 +124,6 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 	default:
 		break;
 	}
-
 }
 
 void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
@@ -233,6 +232,9 @@ void GestionnaireAuth::retourInterface(int IDInterface,int retour)
 	{
 		switch(retour)
 		{
+		case CANCELBOUTON :
+			cancelAuthentification();
+			break;
 		default:
 
 			break;
@@ -254,7 +256,7 @@ void GestionnaireAuth::gestionnaireErreur(AUTHPACKET_ERROR * packetErreur)
 		guiProgression->setEvent(ToString(INVISIBLE).c_str());
 		guiProgression->setEvent(ToString(DESACTIVE).c_str());
 		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le serveur est plein desoler");
+		guiErreur->setEvent(ToString(MESSAGE).c_str(),"desoler Votre IP est banni ");
 		break;
 	case ID_INVALID_ACCOUNT_OR_PASSWORD :
 		guiProgression->setEvent(ToString(INVISIBLE).c_str());
