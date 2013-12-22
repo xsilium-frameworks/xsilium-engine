@@ -39,7 +39,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 #endif
 
 	keyboardMap->load(mResourcePath + "configKey.xml");
-	//keyboardMap->saveKeyboardMap();
+	keyboardMap->saveKeyboardMap();
 
 
 	Ogre::LogManager* logMgr = new Ogre::LogManager();
