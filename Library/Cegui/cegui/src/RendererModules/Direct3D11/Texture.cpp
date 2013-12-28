@@ -216,8 +216,8 @@ void Direct3D11Texture::loadFromMemory(const void* buffer,
     const void* img_src = buffer;
     if (pixel_format == PF_RGB)
     {
-        const char* src = static_cast<const char*>(buffer);
-        char* dest = new char[buffer_size.d_width * buffer_size.d_height * 4];
+        const unsigned char* src = static_cast<const unsigned char*>(buffer);
+        unsigned char* dest = new unsigned char[static_cast<unsigned int>( buffer_size.d_width * buffer_size.d_height * 4 )];
 
         for (int i = 0; i < buffer_size.d_width * buffer_size.d_height; ++i)
         {
@@ -266,14 +266,14 @@ void Direct3D11Texture::loadFromMemory(const void* buffer,
 }
 
 //----------------------------------------------------------------------------//
-void Direct3D11Texture::blitFromMemory(void* sourceData, const Rectf& area)
+void Direct3D11Texture::blitFromMemory(const void* sourceData, const Rectf& area)
 {
     if (!d_texture)
         return;
 
     uint32* buff = new uint32[static_cast<size_t>(area.getWidth()) *
                               static_cast<size_t>(area.getHeight())];
-    blitFromSurface(static_cast<uint32*>(sourceData), buff,
+    blitFromSurface(static_cast<const uint32*>(sourceData), buff,
                     area.getSize(), static_cast<size_t>(area.getWidth()) * 4);
 
     D3D11_BOX dst_box = {static_cast<UINT>(area.left()),

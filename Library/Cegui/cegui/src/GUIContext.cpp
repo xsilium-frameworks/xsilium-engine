@@ -34,6 +34,11 @@
 #include "CEGUI/widgets/Tooltip.h"
 #include "CEGUI/SimpleTimer.h"
 
+#if defined(_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable : 4355)
+#endif
+
 namespace CEGUI
 {
 /*!
@@ -41,7 +46,8 @@ namespace CEGUI
     Implementation structure used in tracking up & down mouse button inputs in
     order to generate click, double-click, and triple-click events.
 */
-struct MouseClickTracker
+struct MouseClickTracker :
+    public AllocatedObject<MouseClickTracker>
 {
     MouseClickTracker() :
         d_click_count(0),
@@ -85,7 +91,6 @@ GUIContext::GUIContext(RenderTarget& target) :
     d_weCreatedTooltipObject(false),
     d_defaultFont(0),
     d_surfaceSize(target.getArea().getSize()),
-    d_windowContainingMouse(0),
     d_modalWindow(0),
     d_captureWindow(0),
     d_mouseClickTrackers(new MouseClickTracker[MouseButtonCount]),
@@ -98,6 +103,14 @@ GUIContext::GUIContext(RenderTarget& target) :
             WindowManager::EventWindowDestroyed,
             Event::Subscriber(&GUIContext::windowDestroyedHandler, this)))
 {
+    resetWindowContainingMouse();
+}
+
+//----------------------------------------------------------------------------//
+void GUIContext::resetWindowContainingMouse()
+{
+    d_windowContainingMouse = 0;
+    d_windowContainingMouseIsUpToDate = true;
 }
 
 //----------------------------------------------------------------------------//
@@ -233,6 +246,12 @@ Window* GUIContext::getModalWindow() const
 //----------------------------------------------------------------------------//
 Window* GUIContext::getWindowContainingMouse() const
 {
+    if (!d_windowContainingMouseIsUpToDate)
+    {
+        updateWindowContainingMouse_impl();
+        d_windowContainingMouseIsUpToDate = true;
+    }
+
     return d_windowContainingMouse;
 }
 
@@ -406,8 +425,8 @@ bool GUIContext::windowDestroyedHandler(const EventArgs& args)
     if (window == d_rootWindow)
         d_rootWindow = 0;
 
-    if (window == d_windowContainingMouse)
-        d_windowContainingMouse = 0;
+    if (window == getWindowContainingMouse())
+        resetWindowContainingMouse();
 
     if (window == d_modalWindow)
         d_modalWindow = 0;
@@ -487,13 +506,13 @@ bool GUIContext::mouseMoveInjection_impl(MouseEventArgs& ma)
     updateWindowContainingMouse();
 
     // input can't be handled if there is no window to handle it.
-    if (!d_windowContainingMouse)
+    if (!getWindowContainingMouse())
         return false;
 
     // make mouse position sane for this target window
-    ma.position = d_windowContainingMouse->getUnprojectedPosition(ma.position);
+    ma.position = getWindowContainingMouse()->getUnprojectedPosition(ma.position);
     // inform window about the input.
-    ma.window = d_windowContainingMouse;
+    ma.window = getWindowContainingMouse();
     ma.handled = 0;
     ma.window->onMouseMove(ma);
 
@@ -502,7 +521,13 @@ bool GUIContext::mouseMoveInjection_impl(MouseEventArgs& ma)
 }
 
 //----------------------------------------------------------------------------//
-bool GUIContext::updateWindowContainingMouse()
+void GUIContext::updateWindowContainingMouse()
+{
+    d_windowContainingMouseIsUpToDate = false;
+}
+
+//----------------------------------------------------------------------------//
+bool GUIContext::updateWindowContainingMouse_impl() const
 {
     MouseEventArgs ma(0);
     const Vector2f mouse_pos(d_mouseCursor.getPosition());
@@ -551,7 +576,7 @@ bool GUIContext::updateWindowContainingMouse()
 }
 
 //----------------------------------------------------------------------------//
-Window* GUIContext::getCommonAncestor(Window* w1, Window* w2)
+Window* GUIContext::getCommonAncestor(Window* w1, Window* w2) const 
 {
     if (!w2)
         return w2;
@@ -577,7 +602,7 @@ Window* GUIContext::getCommonAncestor(Window* w1, Window* w2)
 //----------------------------------------------------------------------------//
 void GUIContext::notifyMouseTransition(Window* top, Window* bottom,
                                     void (Window::*func)(MouseEventArgs&),
-                                    MouseEventArgs& args)
+                                    MouseEventArgs& args) const
 {
     if (top == bottom)
         return;
@@ -650,21 +675,21 @@ Window* GUIContext::getKeyboardTargetWindow() const
 //----------------------------------------------------------------------------//
 bool GUIContext::injectMouseLeaves(void)
 {
-    if (!d_windowContainingMouse)
+    if (!getWindowContainingMouse())
         return false;
 
     MouseEventArgs ma(0);
-    ma.position = d_windowContainingMouse->getUnprojectedPosition(
+    ma.position = getWindowContainingMouse()->getUnprojectedPosition(
         d_mouseCursor.getPosition());
     ma.moveDelta = Vector2f(0.0f, 0.0f);
     ma.button = NoButton;
     ma.sysKeys = d_systemKeys.get();
     ma.wheelChange = 0;
-    ma.window = d_windowContainingMouse;
+    ma.window = getWindowContainingMouse();
     ma.clickCount = 0;
 
-    d_windowContainingMouse->onMouseLeaves(ma);
-    d_windowContainingMouse = 0;
+    getWindowContainingMouse()->onMouseLeaves(ma);
+    resetWindowContainingMouse();
 
     return ma.handled != 0;
 }
@@ -904,6 +929,9 @@ bool GUIContext::injectTimePulse(float timeElapsed)
     if (!d_rootWindow || !d_rootWindow->isEffectiveVisible())
         return false;
 
+    // ensure window containing mouse is now valid
+    getWindowContainingMouse();
+
     // else pass to sheet for distribution.
     d_rootWindow->update(timeElapsed);
     // this input is then /always/ considered handled.
@@ -1083,6 +1111,10 @@ void GUIContext::notifyDefaultFontChanged(Window* hierarchy_root) const
 }
 
 //----------------------------------------------------------------------------//
+
+#if defined(_MSC_VER)
+#   pragma warning(pop)
+#endif
 
 }
 

@@ -192,7 +192,7 @@ void FreeTypeFont::rasterise(utf32 start_codepoint, utf32 end_codepoint) const
         const String texture_name(d_name + "_auto_glyph_images_" +
                                    PropertyHelper<int>::toString(s->first));
         Texture& texture = System::getSingleton().getRenderer()->createTexture(
-            texture_name, Sizef(texsize, texsize));
+            texture_name, Sizef(static_cast<float>(texsize), static_cast<float>(texsize)));
         d_glyphTextures.push_back(&texture);
 
         // Create a memory buffer where we will render our glyphs
@@ -237,7 +237,7 @@ void FreeTypeFont::rasterise(utf32 start_codepoint, utf32 end_codepoint) const
                     Vector2f offset(0, 0);
                     const String name(PropertyHelper<unsigned long>::toString(s->first));
                     BasicImage* img =
-                        new BasicImage(name, &texture, area, offset, ASM_Disabled,
+                        CEGUI_NEW_AO BasicImage(name, &texture, area, offset, ASM_Disabled,
                                        d_nativeResolution);
                     d_glyphImages.push_back(img);
                     s->second.setImage(img);
@@ -275,7 +275,7 @@ void FreeTypeFont::rasterise(utf32 start_codepoint, utf32 end_codepoint) const
 
                     const String name(PropertyHelper<unsigned long>::toString(s->first));
                     BasicImage* img =
-                        new BasicImage(name, &texture, area, offset, ASM_Disabled,
+                        CEGUI_NEW_AO BasicImage(name, &texture, area, offset, ASM_Disabled,
                                        d_nativeResolution);
                     d_glyphImages.push_back(img);
                     s->second.setImage(img);
@@ -304,7 +304,7 @@ void FreeTypeFont::rasterise(utf32 start_codepoint, utf32 end_codepoint) const
         }
 
         // Copy our memory buffer into the texture and free it
-        texture.loadFromMemory(mem_buffer, Sizef(texsize, texsize), Texture::PF_RGBA);
+        texture.loadFromMemory(mem_buffer, Sizef(static_cast<float>(texsize), static_cast<float>(texsize)), Texture::PF_RGBA);
         CEGUI_DELETE_ARRAY_PT(mem_buffer, argb_t, texsize * texsize, BufferAllocator);
 
         if (finished)
@@ -361,7 +361,7 @@ void FreeTypeFont::free()
     d_cp_map.clear();
 
     for (size_t i = 0; i < d_glyphImages.size(); ++i)
-        delete d_glyphImages[i];
+        CEGUI_DELETE_AO d_glyphImages[i];
     d_glyphImages.clear();
 
     for (size_t i = 0; i < d_glyphTextures.size(); i++)
@@ -402,8 +402,8 @@ void FreeTypeFont::updateFont()
             "cannot be used."));
     }
 
-    uint horzdpi = System::getSingleton().getRenderer()->getDisplayDPI().d_x;
-    uint vertdpi = System::getSingleton().getRenderer()->getDisplayDPI().d_y;
+    uint horzdpi = static_cast<uint>(System::getSingleton().getRenderer()->getDisplayDPI().d_x);
+    uint vertdpi = static_cast<uint>(System::getSingleton().getRenderer()->getDisplayDPI().d_y);
 
     float hps = d_ptSize * 64;
     float vps = d_ptSize * 64;
@@ -462,30 +462,56 @@ void FreeTypeFont::updateFont()
         d_height = d_specificLineSpacing;
     }
 
-    // Create an empty FontGlyph structure for every glyph of the font
+    initialiseGlyphMap();
+}
+
+//----------------------------------------------------------------------------//
+void FreeTypeFont::initialiseGlyphMap()
+{
     FT_UInt gindex;
     FT_ULong codepoint = FT_Get_First_Char(d_fontFace, &gindex);
     FT_ULong max_codepoint = codepoint;
+
     while (gindex)
     {
         if (max_codepoint < codepoint)
             max_codepoint = codepoint;
 
-        // load-up required glyph metrics (don't render)
-        if (FT_Load_Char(d_fontFace, codepoint,
-                         FT_LOAD_DEFAULT | FT_LOAD_FORCE_AUTOHINT))
-            continue; // glyph error
+        d_cp_map[codepoint] = FontGlyph();
 
-        float adv = d_fontFace->glyph->metrics.horiAdvance * float(FT_POS_COEF);
-
-        // create a new empty FontGlyph with given character code
-        d_cp_map[codepoint] = FontGlyph(adv);
-
-        // proceed to next glyph
         codepoint = FT_Get_Next_Char(d_fontFace, codepoint, &gindex);
     }
 
     setMaxCodepoint(max_codepoint);
+}
+
+//----------------------------------------------------------------------------//
+const FontGlyph* FreeTypeFont::findFontGlyph(const utf32 codepoint) const
+{
+    CodepointMap::iterator pos = d_cp_map.find(codepoint);
+
+    if (pos == d_cp_map.end())
+        return 0;
+
+    if (!pos->second.isValid())
+        initialiseFontGlyph(pos);
+
+    return &pos->second;
+}
+
+//----------------------------------------------------------------------------//
+void FreeTypeFont::initialiseFontGlyph(CodepointMap::iterator cp) const
+{
+    // load-up required glyph metrics (don't render)
+    if (FT_Load_Char(d_fontFace, cp->first,
+                     FT_LOAD_DEFAULT | FT_LOAD_FORCE_AUTOHINT))
+        return;
+
+    const float adv =
+        d_fontFace->glyph->metrics.horiAdvance * static_cast<float>(FT_POS_COEF);
+
+    cp->second.setAdvance(adv);
+    cp->second.setValid(true);
 }
 
 //----------------------------------------------------------------------------//

@@ -41,13 +41,6 @@ setting CMake options and regenerating, rather than editing directly.
 #   define DEBUG 1
 #endif
 
-#cmakedefine CEGUI_HAS_VERSION_SUFFIX
-#ifdef CEGUI_HAS_VERSION_SUFFIX
-#   ifndef CEGUI_VERSION_SUFFIX
-#       define CEGUI_VERSION_SUFFIX "${CEGUI_VERSION_SUFFIX}"
-#   endif
-#endif
-
 #cmakedefine CEGUI_HAS_BUILD_SUFFIX
 #ifdef CEGUI_HAS_BUILD_SUFFIX
 #   ifndef CEGUI_BUILD_SUFFIX
@@ -115,6 +108,24 @@ setting CMake options and regenerating, rather than editing directly.
 #endif
 
 //////////////////////////////////////////////////////////////////////////
+// Defines for Ogre version we were built against
+// (Will be all zeroes if Ogre was not found)
+//////////////////////////////////////////////////////////////////////////
+#ifndef CEGUI_OGRE_VERSION_MAJOR
+#   define CEGUI_OGRE_VERSION_MAJOR ${CEGUI_FOUND_OGRE_VERSION_MAJOR}
+#endif
+#ifndef CEGUI_OGRE_VERSION_MINOR
+#   define CEGUI_OGRE_VERSION_MINOR ${CEGUI_FOUND_OGRE_VERSION_MINOR}
+#endif
+#ifndef CEGUI_OGRE_VERSION_PATCH
+#   define CEGUI_OGRE_VERSION_PATCH ${CEGUI_FOUND_OGRE_VERSION_PATCH}
+#endif
+#ifndef CEGUI_OGRE_VERSION
+#   define CEGUI_OGRE_VERSION ((CEGUI_OGRE_VERSION_MAJOR << 16) | (CEGUI_OGRE_VERSION_MINOR << 8) | CEGUI_OGRE_VERSION_PATCH)
+#endif
+
+
+//////////////////////////////////////////////////////////////////////////
 // The following controls whether freetype based font support will be
 // compiled in (default).  If you want to build CEGUI /without/ freetype
 // support, comment the following line.
@@ -174,6 +185,19 @@ setting CMake options and regenerating, rather than editing directly.
 // from locations within .zip files.
 //////////////////////////////////////////////////////////////////////////
 #cmakedefine CEGUI_HAS_MINIZIP_RESOURCE_PROVIDER
+
+// Define the default place where cegui will look for loadable modules
+// this can be changed at runtime via the CEGUI_MODULE_DIR environment var.
+#if defined(_WIN32) || defined(__WIN32__)
+#   define CEGUI_MODULE_DIR "${CMAKE_BINARY_DIR}/bin/"
+#else
+#   define CEGUI_MODULE_DIR "${CMAKE_INSTALL_PREFIX}/${CEGUI_MODULE_INSTALL_DIR}/"
+#endif
+
+// This is defined when iconv is expecting a const char** and not a char**
+// as type for its inbuf parameter. This is only used when building cegui
+// itself, and likely will not be useful externally.
+#cmakedefine CEGUI_ICONV_USES_CONST_INBUF
 
 #endif	// end of guard _CEGUIConfig_h_
 

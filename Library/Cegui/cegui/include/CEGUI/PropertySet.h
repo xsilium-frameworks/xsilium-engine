@@ -172,9 +172,9 @@ public:
     if that is not possible, it gracefully falls back to string conversion
     */
     template<typename T>
-    typename PropertyHelper<T>::return_type getProperty(const String& name)
+    typename PropertyHelper<T>::return_type getProperty(const String& name) const
     {
-        PropertyRegistry::iterator pos = d_properties.find(name);
+        PropertyRegistry::const_iterator pos = d_properties.find(name);
 
         if (pos == d_properties.end())
         {
@@ -190,7 +190,7 @@ public:
             return typedProperty->getNative(this);
         }
         else
-        {
+        {   
             // fall back to string get
             return PropertyHelper<T>::fromString(baseProperty->get(this));
         }

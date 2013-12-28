@@ -518,7 +518,7 @@ macro (cegui_add_test_executable _NAME)
     cegui_target_link_libraries(${CEGUI_TARGET_NAME}
         ${CEGUI_BASE_LIBNAME}
         ${CEGUI_NULL_RENDERER_LIBNAME}
-        boost_unit_test_framework # FIXME: Not portable!
+        ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     )
 
     if (CEGUI_BUILD_STATIC_CONFIGURATION)

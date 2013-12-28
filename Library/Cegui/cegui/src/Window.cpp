@@ -50,6 +50,7 @@
 #include <iterator>
 #include <cmath>
 #include <stdio.h>
+#include <queue>
 
 #if defined (CEGUI_USE_FRIBIDI)
     #include "CEGUI/FribidiVisualMapping.h"
@@ -57,6 +58,11 @@
     #include "CEGUI/MinibidiVisualMapping.h"
 #else
     #include "CEGUI/BidiVisualMapping.h"
+#endif
+
+#if defined(_MSC_VER)
+#   pragma warning(push)
+#   pragma warning(disable : 4355)
 #endif
 
 // Start of CEGUI namespace section
@@ -379,14 +385,33 @@ Window* Window::getChildRecursive(uint ID) const
 {
     const size_t child_count = getChildCount();
 
-    for (size_t i = 0; i < child_count; ++i)
-    {
-        if (getChildAtIdx(i)->getID() == ID)
-            return getChildAtIdx(i);
+    std::queue<Element*> ElementsToSearch;
 
-        Window* tmp = getChildAtIdx(i)->getChildRecursive(ID);
-        if (tmp)
-            return tmp;
+    for (size_t i = 0; i < child_count; ++i) // load all children into the queue
+    {
+        Element* child = getChildElementAtIdx(i);
+        ElementsToSearch.push(child);
+    }
+
+    while (!ElementsToSearch.empty()) // breadth-first search for the child to find
+    {
+        Element* child = ElementsToSearch.front();
+        ElementsToSearch.pop();
+
+        Window* window = dynamic_cast<Window*>(child);
+        if (window)
+        {
+            if (window->getID() == ID)
+            {
+                return window;
+            }
+        }
+
+        const size_t element_child_count = child->getChildCount();
+        for(size_t i = 0; i < element_child_count; ++i)
+        {
+            ElementsToSearch.push(child->getChildElementAtIdx(i));
+        }
     }
 
     return 0;
@@ -567,8 +592,14 @@ bool Window::isHit(const Vector2f& position, const bool allow_disabled) const
 //----------------------------------------------------------------------------//
 Window* Window::getChildAtPosition(const Vector2f& position) const
 {
-    const ChildDrawList::const_reverse_iterator end = d_drawList.rend();
+    return getChildAtPosition(position, &Window::isHit);
+}
 
+//----------------------------------------------------------------------------//
+Window* Window::getChildAtPosition(const Vector2f& position,
+                    bool (Window::*hittestfunc)(const Vector2f&, bool) const,
+                    bool allow_disabled) const
+{
     Vector2f p;
     // if the window has RenderingWindow backing
     if (d_surface && d_surface->isRenderingWindow())
@@ -576,20 +607,19 @@ Window* Window::getChildAtPosition(const Vector2f& position) const
     else
         p = position;
 
+    const ChildDrawList::const_reverse_iterator end = d_drawList.rend();
     ChildDrawList::const_reverse_iterator child;
+
     for (child = d_drawList.rbegin(); child != end; ++child)
     {
         if ((*child)->isEffectiveVisible())
         {
-            // recursively scan children of this child windows...
-            Window* const wnd = (*child)->getChildAtPosition(p);
-
-            // return window pointer if we found a hit down the chain somewhere
-            if (wnd)
+            // recursively scan for hit on children of this child window...
+            if (Window* const wnd = (*child)->getChildAtPosition(p, hittestfunc, allow_disabled))
                 return wnd;
             // see if this child is hit and return it's pointer if it is
-            else if ((*child)->isHit(p))
-                return (*child);
+            else if (((*child)->*hittestfunc)(p, allow_disabled))
+                return *child;
         }
     }
 
@@ -601,36 +631,13 @@ Window* Window::getChildAtPosition(const Vector2f& position) const
 Window* Window::getTargetChildAtPosition(const Vector2f& position,
                                          const bool allow_disabled) const
 {
-    const ChildDrawList::const_reverse_iterator end = d_drawList.rend();
+    return getChildAtPosition(position, &Window::isHitTargetWindow, allow_disabled);
+}
 
-    Vector2f p;
-    // if the window has RenderingWindow backing
-    if (d_surface && d_surface->isRenderingWindow())
-        static_cast<RenderingWindow*>(d_surface)->unprojectPoint(position, p);
-    else
-        p = position;
-
-    ChildDrawList::const_reverse_iterator child;
-    for (child = d_drawList.rbegin(); child != end; ++child)
-    {
-        if ((*child)->isEffectiveVisible())
-        {
-            // recursively scan children of this child windows...
-            Window* const wnd =
-                (*child)->getTargetChildAtPosition(p, allow_disabled);
-
-            // return window pointer if we found a 'hit' down the chain somewhere
-            if (wnd)
-                return wnd;
-            // see if this child is hit and return it's pointer if it is
-            else if (!(*child)->isMousePassThroughEnabled() &&
-                     (*child)->isHit(p, allow_disabled))
-                return (*child);
-        }
-    }
-
-    // nothing hit
-    return 0;
+//----------------------------------------------------------------------------//
+bool Window::isHitTargetWindow(const Vector2f& position, bool allow_disabled) const
+{
+    return !isMousePassThroughEnabled() && isHit(position, allow_disabled);
 }
 
 //----------------------------------------------------------------------------//
@@ -3621,7 +3628,7 @@ void Window::clonePropertiesTo(Window& target) const
                 continue;
         }
 
-        target.setProperty(propertyName, getProperty(propertyName));
+        target.setProperty(propertyName, propertyValue);
     }
 }
 
@@ -3809,5 +3816,9 @@ bool Window::isMouseContainedInArea() const
 }
 
 //----------------------------------------------------------------------------//
+
+#if defined(_MSC_VER)
+#   pragma warning(pop)
+#endif
 
 } // End of  CEGUI namespace section

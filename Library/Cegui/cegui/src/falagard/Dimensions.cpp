@@ -95,6 +95,13 @@ OperatorDim::OperatorDim(DimensionOperator op, BaseDim* left, BaseDim* right) :
 }
 
 //----------------------------------------------------------------------------//
+OperatorDim::~OperatorDim()
+{
+    CEGUI_DELETE_AO d_right;
+    CEGUI_DELETE_AO d_left;
+}
+
+//----------------------------------------------------------------------------//
 void OperatorDim::setLeftOperand(const BaseDim* operand)
 {
     CEGUI_DELETE_AO d_left;
@@ -795,13 +802,13 @@ float PropertyDim::getValue(const Window& wnd) const
         // check property data type and convert to float if necessary
         Property* pi = sourceWindow.getPropertyInstance(d_property);
         if (pi->getDataType() == "bool")
-            return PropertyHelper<bool>::fromString(sourceWindow.getProperty(d_property)) ? 1.0f : 0.0f;
+            return sourceWindow.getProperty<bool>(d_property) ? 1.0f : 0.0f;
 
         // return float property value.
-        return PropertyHelper<float>::fromString(sourceWindow.getProperty(d_property));
+        return sourceWindow.getProperty<float>(d_property);
     }
 
-    const UDim d = PropertyHelper<UDim>::fromString(sourceWindow.getProperty(d_property));
+    const UDim d = sourceWindow.getProperty<UDim>(d_property);
     const Sizef s = sourceWindow.getPixelSize();
 
     switch (d_type)
@@ -1070,7 +1077,7 @@ Rectf ComponentArea::getPixelRect(const Window& wnd) const
     if (isAreaFetchedFromProperty())
     {
         pixelRect = CoordConverter::asAbsolute(
-            PropertyHelper<URect>::fromString(wnd.getProperty(d_namedSource)), wnd.getPixelSize());
+            wnd.getProperty<URect>(d_namedSource), wnd.getPixelSize());
     }
     else if (isAreaFetchedFromNamedArea())
     {
@@ -1115,7 +1122,7 @@ Rectf ComponentArea::getPixelRect(const Window& wnd, const Rectf& container) con
     if (isAreaFetchedFromProperty())
     {
         pixelRect = CoordConverter::asAbsolute(
-            PropertyHelper<URect>::fromString(wnd.getProperty(d_namedSource)), wnd.getPixelSize());
+            wnd.getProperty<URect>(d_namedSource), wnd.getPixelSize());
     }
     else if (isAreaFetchedFromNamedArea())
     {

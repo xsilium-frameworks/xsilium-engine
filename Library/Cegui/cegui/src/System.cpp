@@ -6,7 +6,7 @@
 	purpose:	Implementation of main system object
 *************************************************************************/
 /***************************************************************************
- *   Copyright (C) 2004 - 2012 Paul D Turner & The CEGUI Development Team
+ *   Copyright (C) 2004 - 2013 Paul D Turner & The CEGUI Development Team
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -376,19 +376,15 @@ const String& System::getVerboseVersion()
 
 #elif defined(_MSC_VER)
         ret += " MSVC++ ";
-#if _MSC_VER <= 1200
-        ret += "Dinosaur Edition!";
-#elif _MSC_VER == 1300
-        ret += "7.0";
-#elif _MSC_VER == 1310
-        ret += "7.1";
-#elif _MSC_VER == 1400
-        ret += "8.0";
+#if _MSC_VER < 1500
+        ret += "(Note: Compiler version is old and not officially supported)";
 #elif _MSC_VER == 1500
         ret += "9.0";
 #elif _MSC_VER == 1600
         ret += "10.0";
-#elif _MSC_VER > 1600
+#elif _MSC_VER == 1700
+        ret += "11.0";
+#elif _MSC_VER > 1700
         ret += "Great Scott!";
 #endif
 
@@ -585,9 +581,9 @@ System*	System::getSingletonPtr(void)
 void System::notifyDisplaySizeChanged(const Sizef& new_size)
 {
     // notify other components of the display size change
-    d_renderer->setDisplaySize(new_size);
     ImageManager::getSingleton().notifyDisplaySizeChanged(new_size);
     FontManager::getSingleton().notifyDisplaySizeChanged(new_size);
+    d_renderer->setDisplaySize(new_size);
 
     invalidateAllWindows();
 
@@ -825,19 +821,19 @@ void System::setupImageCodec(const String& codecName)
     // Cleanup the old image codec
     cleanupImageCodec();
 
-    #if defined(CEGUI_STATIC)
+#    if defined(CEGUI_STATIC)
         // for static build use static createImageCodec to create codec object
         d_imageCodec = createImageCodec();
-    #else
+#    else
         // load the appropriate image codec module
         d_imageCodecModule = codecName.empty() ?
-            new DynamicModule(String("CEGUI") + d_defaultImageCodecName) :
-            new DynamicModule(String("CEGUI") + codecName);
+            CEGUI_NEW_AO DynamicModule(String("CEGUI") + d_defaultImageCodecName) :
+            CEGUI_NEW_AO DynamicModule(String("CEGUI") + codecName);
 
         // use function from module to create the codec object.
         d_imageCodec = ((ImageCodec*(*)(void))d_imageCodecModule->
             getSymbolAddress("createImageCodec"))();
-    #endif
+#    endif
 
     // make sure we mark this as our own object so we can clean it up later.
     d_ourImageCodec = true;

@@ -39,6 +39,9 @@
 #endif
 
 
+namespace CEGUI
+{
+
 enum ColourPickerSliderMode
 {
     ColourPickerSliderMode_L,
@@ -46,35 +49,22 @@ enum ColourPickerSliderMode
     ColourPickerSliderMode_B
 };
 
-class Position
-{
-public:
-    Position(float xPosition, float yPosition) :
-        x(xPosition), y(yPosition)
-    {}
-
-    Position()
-    {}
-
-    float x;
-    float y;
-};
-
-namespace CEGUI
-{
-
 class CEGUI_COMMONDIALOGS_API Lab_Colour;
 class CEGUI_COMMONDIALOGS_API RGB_Colour;
 class CEGUI_COMMONDIALOGS_API HSV_Colour;
 
-class CEGUI_COMMONDIALOGS_API RGB_Colour
+class CEGUI_COMMONDIALOGS_API RGB_Colour :
+    public AllocatedObject<RGB_Colour>
 {
 public:
     RGB_Colour(unsigned char red, unsigned char green, unsigned char blue) :
         r(red), g(green), b(blue)
     {}
 
-    RGB_Colour() {}
+    RGB_Colour() :
+        r(0), g(0), b(0)
+    {}
+
     RGB_Colour(const Lab_Colour& colour);
     RGB_Colour(const HSV_Colour& colour);
     RGB_Colour(const CEGUI::Colour& colour);
@@ -87,14 +77,18 @@ public:
     RGB_Colour operator+(const RGB_Colour& colour) const;
 };
 
-class CEGUI_COMMONDIALOGS_API Lab_Colour
+class CEGUI_COMMONDIALOGS_API Lab_Colour :
+    public AllocatedObject<Lab_Colour>
 {
 public:
     Lab_Colour(float LValue, float aValue, float bValue) :
         L(LValue), a(aValue), b(bValue)
     {}
 
-    Lab_Colour() {}
+    Lab_Colour() :
+        L(0.0f), a(0.0f), b(0.0f)
+    {}
+
     Lab_Colour(const RGB_Colour& colour);
     Lab_Colour(const HSV_Colour& colour);
     Lab_Colour(const CEGUI::Colour& colour);
@@ -105,14 +99,18 @@ public:
     float b;
 };
 
-class CEGUI_COMMONDIALOGS_API HSV_Colour
+class CEGUI_COMMONDIALOGS_API HSV_Colour :
+    public AllocatedObject<HSV_Colour>
 {
 public:
     HSV_Colour(float HValue, float SValue, float VValue) :
         H(HValue), S(SValue), V(VValue)
     {}
 
-    HSV_Colour() {}
+    HSV_Colour() :
+        H(0.0f), S(0.0f), V(0.0f)
+    {}
+
     HSV_Colour(const RGB_Colour& colour);
     HSV_Colour(const Lab_Colour& colour);
     HSV_Colour(const CEGUI::Colour& colour);

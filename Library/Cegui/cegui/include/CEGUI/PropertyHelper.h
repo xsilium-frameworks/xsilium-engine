@@ -44,6 +44,11 @@
 
 #include <sstream>
 
+#if defined(_MSC_VER)
+#	pragma warning(push)
+#	pragma warning(disable : 4996)
+#endif
+
 #ifdef _MSC_VER
 #define snprintf _snprintf
 #endif
@@ -222,7 +227,7 @@ public:
     static inline return_type fromString(const String& str)
     {
         double val = 0;
-        sscanf(str.c_str(), " %g", (float*)&val);
+        sscanf(str.c_str(), " %lg", &val);
         
         return val;
     }
@@ -969,5 +974,9 @@ public:
 };
 
 } // End of  CEGUI namespace section
+
+#if defined(_MSC_VER)
+#	pragma warning(pop)
+#endif
 
 #endif	// end of guard _CEGUIPropertyHelper_h_
