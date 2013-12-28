@@ -47,16 +47,20 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     LodStrategyManager::LodStrategyManager()
     {
-        // Add default (distance) strategy
-        LodStrategy *distanceStrategy = OGRE_NEW DistanceLodStrategy();
-        addStrategy(distanceStrategy);
+        // Add distance strategies for bounding box and bounding sphere
+        LodStrategy *strategy = OGRE_NEW DistanceLodBoxStrategy();
+        addStrategy(strategy);
+        strategy = OGRE_NEW DistanceLodSphereStrategy();
+        addStrategy(strategy);
 
-        // Add new pixel-count strategy
-        LodStrategy *pixelCountStrategy = OGRE_NEW PixelCountLodStrategy();
-        addStrategy(pixelCountStrategy);
+        // Set the default strategy to distance_sphere
+        setDefaultStrategy(strategy);
 
-        // Set the default strategy
-        setDefaultStrategy(distanceStrategy);
+        // Add pixel-count strategies (internally based on bounding sphere)
+        strategy = OGRE_NEW AbsolutePixelCountLodStrategy();
+        addStrategy(strategy);
+        strategy = OGRE_NEW ScreenRatioPixelCountLodStrategy();
+        addStrategy(strategy);
     }
     //-----------------------------------------------------------------------
     LodStrategyManager::~LodStrategyManager()
@@ -84,11 +88,13 @@ namespace Ogre {
         if (it == mStrategies.end())
             return 0;
 
+        LodStrategy *strat = it->second;
+
         // Otherwise, erase the strategy from the map
         mStrategies.erase(it);
 
         // Return the strategy that was removed
-        return it->second;
+        return strat;
     }
     //-----------------------------------------------------------------------
     void LodStrategyManager::removeAllStrategies()
@@ -99,7 +105,6 @@ namespace Ogre {
 			OGRE_DELETE it->second;
 		}
 		mStrategies.clear();
-
     }
     //-----------------------------------------------------------------------
     LodStrategy *LodStrategyManager::getStrategy(const String& name)

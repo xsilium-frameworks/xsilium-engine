@@ -110,10 +110,9 @@ namespace Ogre {
         // Check header
         readFileHeader(stream);
 
-        unsigned short streamID;
         while(!stream->eof())
         {
-            streamID = readChunk(stream);
+            unsigned short streamID = readChunk(stream);
             switch (streamID)
             {
             case M_MESH:
@@ -241,7 +240,7 @@ namespace Ogre {
         // bool useSharedVertices
         writeBools(&s->useSharedVertices, 1);
 
-		unsigned int indexCount = s->indexData->indexCount;
+		unsigned int indexCount = static_cast<unsigned int>(s->indexData->indexCount);
         writeInts(&indexCount, 1);
 
         // bool indexes32Bit
@@ -343,7 +342,6 @@ namespace Ogre {
     //---------------------------------------------------------------------
     void MeshSerializerImpl::writeSubMeshTextureAliases(const SubMesh* s)
     {
-        size_t chunkSize;
         AliasTextureNamePairList::const_iterator i;
 
 		LogManager::getSingleton().logMessage("Exporting submesh texture aliases...");
@@ -352,7 +350,7 @@ namespace Ogre {
         for (i = s->mTextureAliases.begin(); i != s->mTextureAliases.end(); ++i)
         {
             // calculate chunk size based on string length + 1.  Add 1 for the line feed.
-            chunkSize = MSTREAM_OVERHEAD_SIZE + i->first.length() + i->second.length() + 2;
+            size_t chunkSize = MSTREAM_OVERHEAD_SIZE + i->first.length() + i->second.length() + 2;
 			writeChunkHeader(M_SUBMESH_TEXTURE_ALIAS, chunkSize);
             // write out alias name
             writeString(i->first);
@@ -395,7 +393,7 @@ namespace Ogre {
 		// Header
         writeChunkHeader(M_GEOMETRY, size);
 
-        unsigned int vertexCount = vertexData->vertexCount;
+        unsigned int vertexCount = static_cast<unsigned int>(vertexData->vertexCount);
         writeInts(&vertexCount, 1);
 
 		// Vertex declaration
@@ -790,7 +788,7 @@ namespace Ogre {
 	{
 		// The map for
 		map<unsigned short, String>::type subMeshNames;
-		unsigned short streamID, subMeshIndex;
+		unsigned short subMeshIndex;
 
 		// Need something to store the index, and the objects name
 		// This table is a method that imported meshes can retain their naming
@@ -801,7 +799,7 @@ namespace Ogre {
         // Read in all the sub-streams. Each sub-stream should contain an index and Ogre::String for the name.
 		if (!stream->eof())
 		{
-			streamID = readChunk(stream);
+			unsigned short streamID = readChunk(stream);
 			while(!stream->eof() && (streamID == M_SUBMESH_NAME_TABLE_ELEMENT ))
 			{
 				// Read in the index of the submesh.
@@ -1375,11 +1373,16 @@ namespace Ogre {
     //---------------------------------------------------------------------
 	void MeshSerializerImpl::readMeshLodInfo(DataStreamPtr& stream, Mesh* pMesh)
 	{
-		unsigned short streamID, i;
+		unsigned short i;
 
         // Read the strategy to be used for this mesh
         String strategyName = readString(stream);
         LodStrategy *strategy = LodStrategyManager::getSingleton().getStrategy(strategyName);
+
+        // Check that valid strategy name was given, otherwise use default
+        if (strategy == 0)
+            strategy = LodStrategyManager::getSingleton().getDefaultStrategy();
+
         pMesh->setLodStrategy(strategy);
 
         // unsigned short numLevels;
@@ -1387,7 +1390,7 @@ namespace Ogre {
         // bool manual;  (true for manual alternate meshes, false for generated)
 		readBools(stream, &(pMesh->mIsLodManual), 1);
 
-		// Preallocate submesh lod face data if not manual
+		// Preallocate submesh LOD face data if not manual
 		if (!pMesh->mIsLodManual)
 		{
 			unsigned short numsubs = pMesh->getNumSubMeshes();
@@ -1401,7 +1404,7 @@ namespace Ogre {
 		// Loop from 1 rather than 0 (full detail index is not in file)
 		for (i = 1; i < pMesh->mNumLods; ++i)
 		{
-			streamID = readChunk(stream);
+			unsigned short streamID = readChunk(stream);
 			if (streamID != M_MESH_LOD_USAGE)
 			{
 				OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND,
@@ -1454,11 +1457,10 @@ namespace Ogre {
 
 		// Get one set of detail per SubMesh
 		unsigned short numSubs, i;
-		unsigned long streamID;
 		numSubs = pMesh->getNumSubMeshes();
 		for (i = 0; i < numSubs; ++i)
 		{
-			streamID = readChunk(stream);
+			unsigned short streamID = readChunk(stream);
 			if (streamID != M_MESH_LOD_GENERATED)
 			{
 				OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND,
@@ -1702,20 +1704,20 @@ namespace Ogre {
                     const EdgeData::Triangle& tri = *t;
                     // unsigned long indexSet;
                     uint32 tmp[3];
-                    tmp[0] = tri.indexSet;
+                    tmp[0] = static_cast<uint32>(tri.indexSet);
                     writeInts(tmp, 1);
                     // unsigned long vertexSet;
-                    tmp[0] = tri.vertexSet;
+                    tmp[0] = static_cast<uint32>(tri.vertexSet);
                     writeInts(tmp, 1);
                     // unsigned long vertIndex[3];
-                    tmp[0] = tri.vertIndex[0];
-                    tmp[1] = tri.vertIndex[1];
-                    tmp[2] = tri.vertIndex[2];
+                    tmp[0] = static_cast<uint32>(tri.vertIndex[0]);
+                    tmp[1] = static_cast<uint32>(tri.vertIndex[1]);
+                    tmp[2] = static_cast<uint32>(tri.vertIndex[2]);
                     writeInts(tmp, 3);
                     // unsigned long sharedVertIndex[3];
-                    tmp[0] = tri.sharedVertIndex[0];
-                    tmp[1] = tri.sharedVertIndex[1];
-                    tmp[2] = tri.sharedVertIndex[2];
+                    tmp[0] = static_cast<uint32>(tri.sharedVertIndex[0]);
+                    tmp[1] = static_cast<uint32>(tri.sharedVertIndex[1]);
+                    tmp[2] = static_cast<uint32>(tri.sharedVertIndex[2]);
                     writeInts(tmp, 3);
                     // float normal[4];
                     writeFloats(&(fni->x), 4);
@@ -1747,16 +1749,16 @@ namespace Ogre {
                         const EdgeData::Edge& edge = *ei;
                         uint32 tmp[2];
                         // unsigned long  triIndex[2]
-                        tmp[0] = edge.triIndex[0];
-                        tmp[1] = edge.triIndex[1];
+                        tmp[0] = static_cast<uint32>(edge.triIndex[0]);
+                        tmp[1] = static_cast<uint32>(edge.triIndex[1]);
                         writeInts(tmp, 2);
                         // unsigned long  vertIndex[2]
-                        tmp[0] = edge.vertIndex[0];
-                        tmp[1] = edge.vertIndex[1];
+                        tmp[0] = static_cast<uint32>(edge.vertIndex[0]);
+                        tmp[1] = static_cast<uint32>(edge.vertIndex[1]);
                         writeInts(tmp, 2);
                         // unsigned long  sharedVertIndex[2]
-                        tmp[0] = edge.sharedVertIndex[0];
-                        tmp[1] = edge.sharedVertIndex[1];
+                        tmp[0] = static_cast<uint32>(edge.sharedVertIndex[0]);
+                        tmp[1] = static_cast<uint32>(edge.sharedVertIndex[1]);
                         writeInts(tmp, 2);
                         // bool degenerate
                         writeBools(&(edge.degenerate), 1);
@@ -2883,10 +2885,10 @@ namespace Ogre {
     //---------------------------------------------------------------------
     void MeshSerializerImpl_v1_4::readMeshLodInfo(DataStreamPtr& stream, Mesh* pMesh)
     {
-        unsigned short streamID, i;
+        unsigned short i;
 
         // Use the old strategy for this mesh
-        LodStrategy *strategy = DistanceLodStrategy::getSingletonPtr();
+        LodStrategy *strategy = DistanceLodSphereStrategy::getSingletonPtr();
         pMesh->setLodStrategy(strategy);
 
         // unsigned short numLevels;
@@ -2894,7 +2896,7 @@ namespace Ogre {
         // bool manual;  (true for manual alternate meshes, false for generated)
         readBools(stream, &(pMesh->mIsLodManual), 1);
 
-        // Preallocate submesh lod face data if not manual
+        // Preallocate submesh LOD face data if not manual
         if (!pMesh->mIsLodManual)
         {
             unsigned short numsubs = pMesh->getNumSubMeshes();
@@ -2908,7 +2910,7 @@ namespace Ogre {
         // Loop from 1 rather than 0 (full detail index is not in file)
         for (i = 1; i < pMesh->mNumLods; ++i)
         {
-            streamID = readChunk(stream);
+            unsigned short streamID = readChunk(stream);
             if (streamID != M_MESH_LOD_USAGE)
             {
                 OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND,
@@ -3203,20 +3205,20 @@ namespace Ogre {
                     const EdgeData::Triangle& tri = *t;
                     // unsigned long indexSet;
                     uint32 tmp[3];
-                    tmp[0] = tri.indexSet;
+                    tmp[0] = static_cast<uint32>(tri.indexSet);
                     writeInts(tmp, 1);
                     // unsigned long vertexSet;
-                    tmp[0] = tri.vertexSet;
+                    tmp[0] = static_cast<uint32>(tri.vertexSet);
                     writeInts(tmp, 1);
                     // unsigned long vertIndex[3];
-                    tmp[0] = tri.vertIndex[0];
-                    tmp[1] = tri.vertIndex[1];
-                    tmp[2] = tri.vertIndex[2];
+                    tmp[0] = static_cast<uint32>(tri.vertIndex[0]);
+                    tmp[1] = static_cast<uint32>(tri.vertIndex[1]);
+                    tmp[2] = static_cast<uint32>(tri.vertIndex[2]);
                     writeInts(tmp, 3);
                     // unsigned long sharedVertIndex[3];
-                    tmp[0] = tri.sharedVertIndex[0];
-                    tmp[1] = tri.sharedVertIndex[1];
-                    tmp[2] = tri.sharedVertIndex[2];
+                    tmp[0] = static_cast<uint32>(tri.sharedVertIndex[0]);
+                    tmp[1] = static_cast<uint32>(tri.sharedVertIndex[1]);
+                    tmp[2] = static_cast<uint32>(tri.sharedVertIndex[2]);
                     writeInts(tmp, 3);
                     // float normal[4];
                     writeFloats(&(fni->x), 4);
@@ -3242,16 +3244,16 @@ namespace Ogre {
                         const EdgeData::Edge& edge = *ei;
                         uint32 tmp[2];
                         // unsigned long  triIndex[2]
-                        tmp[0] = edge.triIndex[0];
-                        tmp[1] = edge.triIndex[1];
+                        tmp[0] = static_cast<uint32>(edge.triIndex[0]);
+                        tmp[1] = static_cast<uint32>(edge.triIndex[1]);
                         writeInts(tmp, 2);
                         // unsigned long  vertIndex[2]
-                        tmp[0] = edge.vertIndex[0];
-                        tmp[1] = edge.vertIndex[1];
+                        tmp[0] = static_cast<uint32>(edge.vertIndex[0]);
+                        tmp[1] = static_cast<uint32>(edge.vertIndex[1]);
                         writeInts(tmp, 2);
                         // unsigned long  sharedVertIndex[2]
-                        tmp[0] = edge.sharedVertIndex[0];
-                        tmp[1] = edge.sharedVertIndex[1];
+                        tmp[0] = static_cast<uint32>(edge.sharedVertIndex[0]);
+                        tmp[1] = static_cast<uint32>(edge.sharedVertIndex[1]);
                         writeInts(tmp, 2);
                         // bool degenerate
                         writeBools(&(edge.degenerate), 1);

@@ -34,6 +34,7 @@
 #include "OgreSmallVector.h"
 #include "OgreMesh.h"
 #include "OgreLodConfig.h"
+#include "OgreLogManager.h"
 
 namespace Ogre
 {
@@ -42,24 +43,24 @@ class _OgreExport ProgressiveMeshGeneratorBase
 {
 public:
 	/**
-	 * @brief Generates the Lod levels for a mesh.
+	 * @brief Generates the LOD levels for a mesh.
 	 * 
-	 * @param lodConfig Specification of the requested Lod levels.
+	 * @param lodConfig Specification of the requested LOD levels.
 	 */
 	virtual void generateLodLevels(LodConfig& lodConfig) = 0;
 
 	/**
-	 * @brief Generates the Lod levels for a mesh without configuring it.
+	 * @brief Generates the LOD levels for a mesh without configuring it.
 	 *
-	 * @param mesh Generate the Lod for this mesh.
+	 * @param mesh Generate the LOD for this mesh.
 	 */
 	virtual void generateAutoconfiguredLodLevels(MeshPtr& mesh);
 
 	/**
-	 * @brief Fills Lod Config with a config, which works on any mesh.
+	 * @brief Fills LOD Config with a config, which works on any mesh.
 	 *
 	 * @param inMesh Optimize for this mesh.
-	 * @param outLodConfig Lod configuration storing the output.
+	 * @param outLodConfig LOD configuration storing the output.
 	 */
 	virtual void getAutoconfig(MeshPtr& inMesh, LodConfig& outLodConfig);
 
@@ -153,19 +154,19 @@ protected:
 	struct _OgrePrivate PMVertex {
 		Vector3 position;
 		VEdges edges;
-		VTriangles triangles; // Triangle ID set, which are using this vertex.
+		VTriangles triangles; /// Triangle ID set, which are using this vertex.
 
 		PMVertex* collapseTo;
 		bool seam;
-		CollapseCostHeap::iterator costHeapPosition; // Iterator pointing to the position in the mCollapseCostSet, which allows fast remove.
+		CollapseCostHeap::iterator costHeapPosition; /// Iterator pointing to the position in the mCollapseCostSet, which allows fast remove.
 	};
 
 	struct _OgrePrivate PMTriangle {
 		PMVertex* vertex[3];
 		Vector3 normal;
 		bool isRemoved;
-		unsigned short submeshID; // ID of the submesh. Usable with mMesh.getSubMesh() function.
-		unsigned int vertexID[3]; // Vertex ID in the buffer associated with the submeshID.
+		unsigned short submeshID; /// ID of the submesh. Usable with mMesh.getSubMesh() function.
+		unsigned int vertexID[3]; /// Vertex ID in the buffer associated with the submeshID.
 
 		void computeNormal();
 		bool hasVertex(const PMVertex* v) const;
@@ -214,9 +215,44 @@ protected:
 	size_t calcLodVertexCount(const LodLevel& lodConfig);
 	void tuneContainerSize();
 	void addVertexData(VertexData* vertexData, bool useSharedVertexLookup);
-	template<typename IndexType>
-	void addIndexDataImpl(IndexType* iPos, const IndexType* iEnd, VertexLookupList& lookup, unsigned short submeshID);
 	void addIndexData(IndexData* indexData, bool useSharedVertexLookup, unsigned short submeshID);
+    template<typename IndexType>
+    void addIndexDataImpl(IndexType* iPos, const IndexType* iEnd,
+                                                    VertexLookupList& lookup,
+                                                    unsigned short submeshID)
+    {
+
+        // Loop through all triangles and connect them to the vertices.
+        for (; iPos < iEnd; iPos += 3) {
+            // It should never reallocate or every pointer will be invalid.
+            OgreAssert(mTriangleList.capacity() > mTriangleList.size(), "");
+            mTriangleList.push_back(PMTriangle());
+            PMTriangle* tri = &mTriangleList.back();
+            tri->isRemoved = false;
+            tri->submeshID = submeshID;
+            for (int i = 0; i < 3; i++) {
+                // Invalid index: Index is bigger then vertex buffer size.
+                OgreAssert(iPos[i] < lookup.size(), "");
+                tri->vertexID[i] = iPos[i];
+                tri->vertex[i] = lookup[iPos[i]];
+            }
+            if (tri->isMalformed()) {
+#if OGRE_DEBUG_MODE
+                stringstream str;
+                str << "In " << mMeshName << " malformed triangle found with ID: " << getTriangleID(tri) << ". " <<
+                std::endl;
+                printTriangle(tri, str);
+                str << "It will be excluded from LOD level calculations.";
+                LogManager::getSingleton().stream() << str.str();
+#endif
+                tri->isRemoved = true;
+                mIndexBufferInfoList[tri->submeshID].indexCount -= 3;
+                continue;
+            }
+            tri->computeNormal();
+            addTriangleToEdges(tri);
+        }
+    }
 
 	void computeCosts();
 	bool isBorderVertex(const PMVertex* vertex) const;

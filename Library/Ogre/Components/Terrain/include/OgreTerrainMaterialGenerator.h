@@ -86,7 +86,10 @@ namespace Ogre
 				elementCount == e.elementCount;
 		}
 
-		TerrainLayerSamplerElement() {}
+		TerrainLayerSamplerElement() : 
+            source(0), semantic(TLSS_ALBEDO), elementStart(0), elementCount(0)
+        {}
+
 		TerrainLayerSamplerElement(uint8 src, TerrainLayerSamplerSemantic sem,
 			uint8 elemStart, uint8 elemCount)
 			: source(src), semantic(sem), elementStart(elemStart), elementCount(elemCount)
@@ -109,7 +112,10 @@ namespace Ogre
 			return alias == s.alias && format == s.format;
 		}
 
-		TerrainLayerSampler() {}
+        TerrainLayerSampler()
+            : alias(""), format(PF_UNKNOWN)
+        {
+        }
 
 		TerrainLayerSampler(const String& aliasName, PixelFormat fmt)
 			: alias(aliasName), format(fmt)
@@ -381,8 +387,7 @@ namespace Ogre
 		@param size The requested composite map size
 		@param rect The region of the composite map to update, in image space
 		@param mat The material to use to render the map
-		@param outBox The box region of the texture which has been updated, and
-			should be copied into your final texture
+		@param destCompositeMap A TexturePtr for the composite map to be written into
 		*/
 		virtual void _renderCompositeMap(size_t size, const Rect& rect, 
 			const MaterialPtr& mat, const TexturePtr& destCompositeMap);

@@ -28,7 +28,8 @@ set (HEADER_FILES
   include/OgreArchive.h
   include/OgreArchiveFactory.h
   include/OgreArchiveManager.h
-  include/OgreAtomicWrappers.h
+  include/OgreAtomicObject.h
+  include/OgreAtomicScalar.h
   include/OgreAutoParamDataSource.h
   include/OgreAxisAlignedBox.h
   include/OgreBillboard.h
@@ -137,6 +138,7 @@ set (HEADER_FILES
   include/OgreMeshSerializerImpl.h
   include/OgreMovableObject.h
   include/OgreMovablePlane.h
+  include/OgreNameGenerator.h
   include/OgreNode.h
   include/OgreNumerics.h
   include/OgreOptimisedUtil.h
@@ -147,7 +149,6 @@ set (HEADER_FILES
   include/OgreParticleEmitterCommands.h
   include/OgreParticleEmitterFactory.h
   include/OgreParticleIterator.h
-  include/OgreParticleScriptCompiler.h
   include/OgreParticleSystem.h
   include/OgreParticleSystemManager.h
   include/OgreParticleSystemRenderer.h
@@ -157,6 +158,7 @@ set (HEADER_FILES
   src/OgrePixelConversions.h
   include/OgrePixelCountLodStrategy.h
   include/OgrePixelFormat.h
+  include/OgrePixelFormatDescriptions.h
   include/OgrePlane.h
   include/OgrePlaneBoundedVolume.h
   include/OgrePlatform.h
@@ -268,6 +270,7 @@ set (SOURCE_FILES
   src/OgreAnimationState.cpp
   src/OgreAnimationTrack.cpp
   src/OgreArchiveManager.cpp
+  src/OgreAtomicScalar.cpp
   src/OgreAutoParamDataSource.cpp
   src/OgreAxisAlignedBox.cpp
   src/OgreBillboard.cpp
@@ -484,50 +487,50 @@ elseif (WIN32)
 
     set(PLATFORM_HEADER_INSTALL "WIN32")
   else ()
-  include_directories("include/WIN32")
-  set(PLATFORM_HEADERS
-    include/WIN32/OgreConfigDialogImp.h
-    include/WIN32/OgreErrorDialogImp.h
-    include/WIN32/OgreTimerImp.h
-    include/WIN32/OgreMinGWSupport.h
-  )
-  set(PLATFORM_SOURCE_FILES
-    src/WIN32/OgreConfigDialog.cpp
-    src/WIN32/OgreErrorDialog.cpp
-    src/WIN32/OgreFileSystemLayer.cpp
-    src/WIN32/OgreTimer.cpp
-    src/WIN32/resource.h
-    src/WIN32/winres.h
-  )  
-  set(RESOURCE_FILES
-    src/WIN32/resource.h
-    src/WIN32/OgreWin32Resources.rc
-    src/WIN32/winres.h
-  )
-  source_group(Resources FILES ${RESOURCE_FILES})
-  set(PLATFORM_HEADER_INSTALL "WIN32")
- 
-  if (MINGW) 
-    # Older CMake versions do not know how to deal with resource files on MinGW.
-	# Newer ones do, but pass along invalid command options to windres.
-    # This is a manual fix for the moment.
-    get_filename_component(OGRE_MINGW_PATH ${CMAKE_CXX_COMPILER} PATH)
-    #set(OGRE_MINGW_RC ${OGRE_MINGW_PATH}/windres.exe)
-	file(GLOB OGRE_MINGW_RC_NAMES "${OGRE_MINGW_PATH}/*windres*")
-	find_program(OGRE_MINGW_RC NAMES ${OGRE_MINGW_RC_NAMES} HINTS ${OGRE_MINGW_PATH} DOC "Path to MinGW resource compiler")
-	if (NOT OGRE_MINGW_RC)
-	  message(SEND_ERROR "Could not find MinGW resource compiler. Please specify path in OGRE_MINGW_RC.")
-	endif ()
-	mark_as_advanced(OGRE_MINGW_RC)
-	add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/OgreWin32Resources.rc.obj
-	  COMMAND ${OGRE_MINGW_RC} -I${CMAKE_CURRENT_SOURCE_DIR}/src/WIN32 
-	                           -i${CMAKE_CURRENT_SOURCE_DIR}/src/WIN32/OgreWin32Resources.rc
-							   -o${CMAKE_CURRENT_BINARY_DIR}/OgreWin32Resources.rc.obj
-      DEPENDS ${RESOURCE_FILES})
-	list(APPEND PLATFORM_SOURCE_FILES ${CMAKE_CURRENT_BINARY_DIR}/OgreWin32Resources.rc.obj)
-  else ()
-    list(APPEND PLATFORM_SOURCE_FILES src/WIN32/OgreWin32Resources.rc)
-  endif ()
+    include_directories("include/WIN32")
+    set(PLATFORM_HEADERS
+      include/WIN32/OgreConfigDialogImp.h
+      include/WIN32/OgreErrorDialogImp.h
+      include/WIN32/OgreTimerImp.h
+      include/WIN32/OgreMinGWSupport.h
+    )
+    set(PLATFORM_SOURCE_FILES
+      src/WIN32/OgreConfigDialog.cpp
+      src/WIN32/OgreErrorDialog.cpp
+      src/WIN32/OgreFileSystemLayer.cpp
+      src/WIN32/OgreTimer.cpp
+      src/WIN32/resource.h
+      src/WIN32/winres.h
+    )  
+    set(RESOURCE_FILES
+      src/WIN32/resource.h
+      src/WIN32/OgreWin32Resources.rc
+      src/WIN32/winres.h
+    )
+    source_group(Resources FILES ${RESOURCE_FILES})
+    set(PLATFORM_HEADER_INSTALL "WIN32")
+
+    if (MINGW) 
+      # Older CMake versions do not know how to deal with resource files on MinGW.
+      # Newer ones do, but pass along invalid command options to windres.
+      # This is a manual fix for the moment.
+      get_filename_component(OGRE_MINGW_PATH ${CMAKE_CXX_COMPILER} PATH)
+      #set(OGRE_MINGW_RC ${OGRE_MINGW_PATH}/windres.exe)
+      file(GLOB OGRE_MINGW_RC_NAMES "${OGRE_MINGW_PATH}/*windres*")
+      find_program(OGRE_MINGW_RC NAMES ${OGRE_MINGW_RC_NAMES} HINTS ${OGRE_MINGW_PATH} DOC "Path to MinGW resource compiler")
+      if (NOT OGRE_MINGW_RC)
+        message(SEND_ERROR "Could not find MinGW resource compiler. Please specify path in OGRE_MINGW_RC.")
+      endif ()
+      mark_as_advanced(OGRE_MINGW_RC)
+      add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/OgreWin32Resources.rc.obj
+        COMMAND ${OGRE_MINGW_RC} -I${CMAKE_CURRENT_SOURCE_DIR}/src/WIN32 
+                                 -i${CMAKE_CURRENT_SOURCE_DIR}/src/WIN32/OgreWin32Resources.rc
+                                 -o${CMAKE_CURRENT_BINARY_DIR}/OgreWin32Resources.rc.obj
+        DEPENDS ${RESOURCE_FILES})
+      list(APPEND PLATFORM_SOURCE_FILES ${CMAKE_CURRENT_BINARY_DIR}/OgreWin32Resources.rc.obj)
+    else ()
+      list(APPEND PLATFORM_SOURCE_FILES src/WIN32/OgreWin32Resources.rc)
+    endif ()
   endif ()
 
 elseif (APPLE)
@@ -569,7 +572,7 @@ elseif (APPLE)
       src/OSX/OgreTimer.cpp
       src/OSX/macUtils.mm
       src/OgreSearchOps.cpp
-	  include/OSX/ogrelogo.png
+      include/OSX/ogrelogo.png
     )
 
     set(RESOURCE_FILES
@@ -683,9 +686,7 @@ list(APPEND HEADER_FILES ${THREAD_HEADER_FILES})
 add_definitions(-DOGRE_NONCLIENT_BUILD -DFREEIMAGE_LIB -D_MT -D_USRDLL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/nedmalloc)
 
-set(LIBRARIES
-  ${PLATFORM_LIBS}
-)
+set(LIBRARIES ${PLATFORM_LIBS})
 
 if (OGRE_CONFIG_THREADS)
   list(APPEND LIBRARIES ${OGRE_THREAD_LIBRARIES})
@@ -708,8 +709,8 @@ if (OGRE_CONFIG_ENABLE_PVRTC)
 endif ()
 
 if (OGRE_CONFIG_ENABLE_ETC1)
-  list(APPEND HEADER_FILES include/OgreETC1Codec.h)
-  list(APPEND SOURCE_FILES src/OgreETC1Codec.cpp)
+  list(APPEND HEADER_FILES include/OgreETCCodec.h)
+  list(APPEND SOURCE_FILES src/OgreETCCodec.cpp)
 endif ()
 
 if (OGRE_CONFIG_ENABLE_ZIP)
@@ -737,7 +738,7 @@ endif ()
 set (TARGET_LINK_FLAGS "")
 
 # setup OgreMain target
-if (OGRE_BUILD_PLATFORM_WINRT)
+if (OGRE_BUILD_PLATFORM_WINRT OR OGRE_BUILD_PLATFORM_WINDOWS_PHONE)
 	# exclude OgreTimer.cpp from unity builds; causes problem
 	ogre_add_library(OgreMain ${OGRE_LIB_TYPE} ${PREC_HEADER} ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES} ${THREAD_HEADER_FILES} ${THREAD_SOURCE_FILES} SEPARATE "src/WIN32/OgreTimer.cpp")
 else ()
@@ -752,6 +753,10 @@ if(WIN32 AND MSVC10 AND CMAKE_CL_64)
                       )
 else()
   set_target_properties(OgreMain PROPERTIES VERSION ${OGRE_SOVERSION} SOVERSION ${OGRE_SOVERSION})
+endif()
+
+if(OGRE_GCC_VERSION VERSION_EQUAL 4.8 OR OGRE_GCC_VERSION VERSION_GREATER 4.8)
+  list(APPEND LIBRARIES "-latomic")
 endif()
 
 if (APPLE)

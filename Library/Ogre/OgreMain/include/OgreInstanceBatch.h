@@ -201,7 +201,7 @@ namespace Ogre
             the parameters, instead of using the object's own. This allows
             querying for a technique without requiering to actually build it.
         @param baseSubMesh The base submesh that will be using to build it.
-        @param flags @see InstanceManagerFlags
+        @param flags Flags to pass to the InstanceManager. @see InstanceManagerFlags
         @return The max instances limit
         */
         virtual size_t calculateMaxNumInstances( const SubMesh *baseSubMesh, uint16 flags ) const = 0;
@@ -258,7 +258,7 @@ namespace Ogre
         @param optimizeCulling true will call the DoCull version, false the NoCull
         @param usedEntities Array of InstancedEntities to parent with this batch. Those reparented
             are removed from this input vector
-			@param Array of Custom parameters correlated with the InstancedEntities in usedEntities.
+        @param usedParams Array of Custom parameters correlated with the InstancedEntities in usedEntities.
 			They follow the fate of the entities in that vector.
 		@remarks:
 			This function assumes caller holds data to mInstancedEntities! Otherwise

@@ -89,8 +89,8 @@ THE SOFTWARE.
 #if OGRE_NO_PVRTC_CODEC == 0
 #  include "OgrePVRTCCodec.h"
 #endif
-#if OGRE_NO_ETC1_CODEC == 0
-#  include "OgreETC1Codec.h"
+#if OGRE_NO_ETC_CODEC == 0
+#  include "OgreETCCodec.h"
 #endif
 
 namespace Ogre {
@@ -111,7 +111,7 @@ namespace Ogre {
 #endif
 
     //-----------------------------------------------------------------------
-    Root::Root(const String& pluginFileName, const String& configFileName, 
+    Root::Root(const String& pluginFileName, const String& configFileName,
 		const String& logFileName)
       : mQueuedEnd(false)
       , mLogManager(0)
@@ -132,7 +132,7 @@ namespace Ogre {
         mActiveRenderer = 0;
         mVersion = StringConverter::toString(OGRE_VERSION_MAJOR) + "." +
             StringConverter::toString(OGRE_VERSION_MINOR) + "." +
-            StringConverter::toString(OGRE_VERSION_PATCH) + 
+            StringConverter::toString(OGRE_VERSION_PATCH) +
 			OGRE_VERSION_SUFFIX + " " +
             "(" + OGRE_VERSION_NAME + ")";
 		mConfigFileName = configFileName;
@@ -143,7 +143,7 @@ namespace Ogre {
 			mLogManager = OGRE_NEW LogManager();
 			mLogManager->createLog(logFileName, true, true);
 		}
-        
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
         mAndroidLogger = OGRE_NEW AndroidLogListener();
         mLogManager->getDefaultLog()->addListener(mAndroidLogger);
@@ -203,7 +203,7 @@ namespace Ogre {
 
         mTimer = OGRE_NEW Timer();
 
-        // Lod strategy manager
+        // LOD strategy manager
         mLodStrategyManager = OGRE_NEW LodStrategyManager();
 
         // Queued Progressive Mesh Generator Worker
@@ -220,14 +220,14 @@ namespace Ogre {
 
 
         mFileSystemArchiveFactory = OGRE_NEW FileSystemArchiveFactory();
-        ArchiveManager::getSingleton().addArchiveFactory( mFileSystemArchiveFactory );        
+        ArchiveManager::getSingleton().addArchiveFactory( mFileSystemArchiveFactory );
 #   if OGRE_NO_ZIP_ARCHIVE == 0
         mZipArchiveFactory = OGRE_NEW ZipArchiveFactory();
         ArchiveManager::getSingleton().addArchiveFactory( mZipArchiveFactory );
         mEmbeddedZipArchiveFactory = OGRE_NEW EmbeddedZipArchiveFactory();
         ArchiveManager::getSingleton().addArchiveFactory( mEmbeddedZipArchiveFactory );
 #   endif
-        
+
 #if OGRE_NO_DDS_CODEC == 0
 		// Register image codecs
 		DDSCodec::startup();
@@ -239,11 +239,12 @@ namespace Ogre {
 #if OGRE_NO_PVRTC_CODEC == 0
         PVRTCCodec::startup();
 #endif
-#if OGRE_NO_ETC1_CODEC == 0
-        ETC1Codec::startup();
+#if OGRE_NO_ETC_CODEC == 0
+        ETCCodec::startup();
 #endif
 
-        
+
+
         mHighLevelGpuProgramManager = OGRE_NEW HighLevelGpuProgramManager();
 
 		mExternalTextureSourceManager = OGRE_NEW ExternalTextureSourceManager();
@@ -303,8 +304,8 @@ namespace Ogre {
 #if OGRE_NO_PVRTC_CODEC == 0
 		PVRTCCodec::shutdown();
 #endif
-#if OGRE_NO_ETC1_CODEC == 0
-        ETC1Codec::shutdown();
+#if OGRE_NO_ETC_CODEC == 0
+        ETCCodec::shutdown();
 #endif
 #if OGRE_PROFILING
         OGRE_DELETE mProfiler;
@@ -315,13 +316,13 @@ namespace Ogre {
 		OGRE_DELETE mPMInjector;
 
         OGRE_DELETE mArchiveManager;
-        
+
 #   if OGRE_NO_ZIP_ARCHIVE == 0
         OGRE_DELETE mZipArchiveFactory;
         OGRE_DELETE mEmbeddedZipArchiveFactory;
 #   endif
         OGRE_DELETE mFileSystemArchiveFactory;
-        
+
         OGRE_DELETE mSkeletonManager;
         OGRE_DELETE mMeshManager;
         OGRE_DELETE mParticleManager;
@@ -349,12 +350,12 @@ namespace Ogre {
 		OGRE_DELETE mTimer;
 
         OGRE_DELETE mDynLibManager;
-        
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
         mLogManager->getDefaultLog()->removeListener(mAndroidLogger);
         OGRE_DELETE mAndroidLogger;
 #endif
-        
+
         OGRE_DELETE mLogManager;
 
 		OGRE_DELETE mCompilerManager;
@@ -446,12 +447,12 @@ namespace Ogre {
 
             // This might be the first run because there is no config file in the
             // Documents directory.  It could also mean that a config file isn't being used at all
-            
+
             // Try the path passed into initialise
             configFp.open(mConfigFileName.c_str(), std::ios::in);
 
             // If we can't open this file then we have no default config file to work with
-            // Use the documents dir then. 
+            // Use the documents dir then.
             if(!configFp.is_open())
             {
                 // Check to see if one was included in the app bundle
@@ -460,7 +461,7 @@ namespace Ogre {
                 configFp.open(mConfigFileName.c_str(), std::ios::in);
 
                 // If we can't open this file then we have no default config file to work with
-                // Use the Documents dir then. 
+                // Use the Documents dir then.
                 if(!configFp.is_open())
                     mConfigFileName = configFileName;
             }
@@ -470,7 +471,7 @@ namespace Ogre {
 
         fp.close();
 #endif
-        
+
         if (mConfigFileName.empty ())
             return true;
 
@@ -738,20 +739,20 @@ namespace Ogre {
 		return mSceneManagerEnum->getMetaData(typeName);
 	}
 	//-----------------------------------------------------------------------
-	SceneManagerEnumerator::MetaDataIterator 
+	SceneManagerEnumerator::MetaDataIterator
 	Root::getSceneManagerMetaDataIterator(void) const
 	{
 		return mSceneManagerEnum->getMetaDataIterator();
 
 	}
 	//-----------------------------------------------------------------------
-	SceneManager* Root::createSceneManager(const String& typeName, 
+	SceneManager* Root::createSceneManager(const String& typeName,
 		const String& instanceName)
 	{
 		return mSceneManagerEnum->createSceneManager(typeName, instanceName);
 	}
 	//-----------------------------------------------------------------------
-	SceneManager* Root::createSceneManager(SceneTypeMask typeMask, 
+	SceneManager* Root::createSceneManager(SceneTypeMask typeMask,
 		const String& instanceName)
 	{
 		return mSceneManagerEnum->createSceneManager(typeMask, instanceName);
@@ -789,87 +790,65 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     void Root::addFrameListener(FrameListener* newListener)
     {
-		// Check if the specified listener is scheduled for removal
-		set<FrameListener *>::type::iterator i = mRemovedFrameListeners.find(newListener);
-
-		// If yes, cancel the removal. Otherwise add it to other listeners.
-		if (i != mRemovedFrameListeners.end())
-			mRemovedFrameListeners.erase(*i);
-		else
-			mFrameListeners.insert(newListener); // Insert, unique only (set)
+        mRemovedFrameListeners.erase(newListener);
+        mAddedFrameListeners.insert(newListener);
     }
-
     //-----------------------------------------------------------------------
     void Root::removeFrameListener(FrameListener* oldListener)
     {
-		// Remove, 1 only (set), and only when this listener was added before.
-		if( mFrameListeners.find( oldListener ) != mFrameListeners.end() )
-			mRemovedFrameListeners.insert(oldListener);
+        mAddedFrameListeners.erase(oldListener);
+        mRemovedFrameListeners.insert(oldListener);
+    }
+    //-----------------------------------------------------------------------
+    void Root::_syncAddedRemovedFrameListeners()
+    {
+        for (set<FrameListener*>::type::iterator i = mRemovedFrameListeners.begin(); i != mRemovedFrameListeners.end(); i++)
+            mFrameListeners.erase(*i);
+        mRemovedFrameListeners.clear();
+
+        for (set<FrameListener*>::type::iterator i = mAddedFrameListeners.begin(); i != mAddedFrameListeners.end(); i++)
+            mFrameListeners.insert(*i);
+        mAddedFrameListeners.clear();
     }
     //-----------------------------------------------------------------------
     bool Root::_fireFrameStarted(FrameEvent& evt)
     {
 		OgreProfileBeginGroup("Frame", OGREPROF_GENERAL);
-
-        // Remove all marked listeners
-        set<FrameListener*>::type::iterator i;
-        for (i = mRemovedFrameListeners.begin();
-            i != mRemovedFrameListeners.end(); i++)
-        {
-            mFrameListeners.erase(*i);
-        }
-        mRemovedFrameListeners.clear();
+        _syncAddedRemovedFrameListeners();
 
         // Tell all listeners
-        for (i= mFrameListeners.begin(); i != mFrameListeners.end(); ++i)
+        for (set<FrameListener*>::type::iterator i = mFrameListeners.begin(); i != mFrameListeners.end(); ++i)
         {
             if (!(*i)->frameStarted(evt))
                 return false;
         }
 
         return true;
-
     }
 	//-----------------------------------------------------------------------
     bool Root::_fireFrameRenderingQueued(FrameEvent& evt)
     {
 		// Increment next frame number
 		++mNextFrame;
-
-        // Remove all marked listeners
-        set<FrameListener*>::type::iterator i;
-        for (i = mRemovedFrameListeners.begin();
-            i != mRemovedFrameListeners.end(); i++)
-        {
-            mFrameListeners.erase(*i);
-        }
-        mRemovedFrameListeners.clear();
+        _syncAddedRemovedFrameListeners();
 
         // Tell all listeners
-        for (i= mFrameListeners.begin(); i != mFrameListeners.end(); ++i)
+        for (set<FrameListener*>::type::iterator i = mFrameListeners.begin(); i != mFrameListeners.end(); ++i)
         {
             if (!(*i)->frameRenderingQueued(evt))
                 return false;
         }
 
         return true;
-
     }
     //-----------------------------------------------------------------------
     bool Root::_fireFrameEnded(FrameEvent& evt)
     {
-        // Remove all marked listeners
-        set<FrameListener*>::type::iterator i;
-        for (i = mRemovedFrameListeners.begin();
-            i != mRemovedFrameListeners.end(); i++)
-        {
-            mFrameListeners.erase(*i);
-        }
-        mRemovedFrameListeners.clear();
+        _syncAddedRemovedFrameListeners();
 
         // Tell all listeners
 		bool ret = true;
-        for (i= mFrameListeners.begin(); i != mFrameListeners.end(); ++i)
+        for (set<FrameListener*>::type::iterator i = mFrameListeners.begin(); i != mFrameListeners.end(); ++i)
         {
             if (!(*i)->frameEnded(evt))
 			{
@@ -1099,7 +1078,10 @@ namespace Ogre {
         for (PluginLibList::reverse_iterator i = mPluginLibs.rbegin(); i != mPluginLibs.rend(); ++i)
         {
             // Call plugin shutdown
-            DLL_STOP_PLUGIN pFunc = (DLL_STOP_PLUGIN)(*i)->getSymbol("dllStopPlugin");
+            #ifdef __GNUC__
+            __extension__
+            #endif
+            DLL_STOP_PLUGIN pFunc = reinterpret_cast<DLL_STOP_PLUGIN>((*i)->getSymbol("dllStopPlugin"));
 			// this will call uninstallPlugin
             pFunc();
             // Unload library & destroy
@@ -1111,7 +1093,7 @@ namespace Ogre {
 		// now deal with any remaining plugins that were registered through other means
 		for (PluginInstanceList::reverse_iterator i = mPlugins.rbegin(); i != mPlugins.rend(); ++i)
 		{
-			// Note this does NOT call uninstallPlugin - this shutdown is for the 
+			// Note this does NOT call uninstallPlugin - this shutdown is for the
 			// detail objects
 			(*i)->uninstall();
 		}
@@ -1132,7 +1114,7 @@ namespace Ogre {
 			name, groupName);
 	}
 	//---------------------------------------------------------------------
-	DataStreamPtr Root::createFileStream(const String& filename, const String& groupName, 
+	DataStreamPtr Root::createFileStream(const String& filename, const String& groupName,
 		bool overwrite, const String& locationPattern)
 	{
 		// Does this file include path specifiers?
@@ -1152,7 +1134,7 @@ namespace Ogre {
 
 		}
 
-		if (stream.isNull())		
+		if (stream.isNull())
 		{
 			// save direct in filesystem
 			std::fstream* fs = OGRE_NEW_T(std::fstream, MEMCATEGORY_GENERAL);
@@ -1160,7 +1142,7 @@ namespace Ogre {
 			if (!*fs)
 			{
 				OGRE_DELETE_T(fs, basic_fstream, MEMCATEGORY_GENERAL);
-				OGRE_EXCEPT(Exception::ERR_CANNOT_WRITE_TO_FILE, 
+				OGRE_EXCEPT(Exception::ERR_CANNOT_WRITE_TO_FILE,
 				"Can't open " + filename + " for writing", __FUNCTION__);
 			}
 
@@ -1171,7 +1153,7 @@ namespace Ogre {
 
 	}
 	//---------------------------------------------------------------------
-	DataStreamPtr Root::openFileStream(const String& filename, const String& groupName, 
+	DataStreamPtr Root::openFileStream(const String& filename, const String& groupName,
 		const String& locationPattern)
 	{
 		DataStreamPtr stream;
@@ -1231,7 +1213,7 @@ namespace Ogre {
 
     }
 	//-----------------------------------------------------------------------
-	bool Root::createRenderWindows(const RenderWindowDescriptionList& renderWindowDescriptions, 
+	bool Root::createRenderWindows(const RenderWindowDescriptionList& renderWindowDescriptions,
 		RenderWindowList& createdWindows)
 	{
 		if (!mActiveRenderer)
@@ -1242,8 +1224,8 @@ namespace Ogre {
 		}
 
 		bool success;
-		
-		success = mActiveRenderer->_createRenderWindows(renderWindowDescriptions, createdWindows);		
+
+		success = mActiveRenderer->_createRenderWindows(renderWindowDescriptions, createdWindows);
 		if(success && !mFirstTimePostWindowInit)
 		{
 			oneTimePostWindowInit();
@@ -1251,7 +1233,7 @@ namespace Ogre {
 		}
 
 		return success;
-	}	
+	}
     //-----------------------------------------------------------------------
     RenderTarget* Root::detachRenderTarget(RenderTarget* target)
     {
@@ -1320,7 +1302,7 @@ namespace Ogre {
 	void Root::uninstallPlugin(Plugin* plugin)
 	{
 		LogManager::getSingleton().logMessage("Uninstalling plugin: " + plugin->getName());
-		PluginInstanceList::iterator i = 
+		PluginInstanceList::iterator i =
 			std::find(mPlugins.begin(), mPlugins.end(), plugin);
 		if (i != mPlugins.end())
 		{
@@ -1345,6 +1327,9 @@ namespace Ogre {
 			mPluginLibs.push_back(lib);
 
 			// Call startup function
+                        #ifdef __GNUC__
+                        __extension__
+                        #endif
 			DLL_START_PLUGIN pFunc = (DLL_START_PLUGIN)lib->getSymbol("dllStartPlugin");
 
 			if (!pFunc)
@@ -1367,6 +1352,9 @@ namespace Ogre {
 			if ((*i)->getName() == pluginName)
 			{
 				// Call plugin shutdown
+                                #ifdef __GNUC__
+                                __extension__
+                                #endif
 				DLL_STOP_PLUGIN pFunc = (DLL_STOP_PLUGIN)(*i)->getSymbol("dllStopPlugin");
 				// this must call uninstallPlugin
 				pFunc();
@@ -1412,7 +1400,7 @@ namespace Ogre {
 		// give client app opportunity to use queued GPU time
 		bool ret = _fireFrameRenderingQueued();
 		// block for final swap
-		mActiveRenderer->_swapAllRenderTargetBuffers(mActiveRenderer->getWaitForVerticalBlank());
+		mActiveRenderer->_swapAllRenderTargetBuffers();
 
         // This belongs here, as all render targets must be updated before events are
         // triggered, otherwise targets could be mismatched.  This could produce artifacts,
@@ -1430,7 +1418,7 @@ namespace Ogre {
 		// give client app opportunity to use queued GPU time
 		bool ret = _fireFrameRenderingQueued(evt);
 		// block for final swap
-		mActiveRenderer->_swapAllRenderTargetBuffers(mActiveRenderer->getWaitForVerticalBlank());
+		mActiveRenderer->_swapAllRenderTargetBuffers();
 
 		// This belongs here, as all render targets must be updated before events are
 		// triggered, otherwise targets could be mismatched.  This could produce artifacts,

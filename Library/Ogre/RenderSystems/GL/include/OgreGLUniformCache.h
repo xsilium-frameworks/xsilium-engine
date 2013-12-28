@@ -1,10 +1,10 @@
 /*
 -----------------------------------------------------------------------------
 This source file is part of OGRE
-(Object-oriented Graphics Rendering Engine)
+    (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2013 Torus Knot Software Ltd
+Copyright (c) 2000-2012 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,48 +26,36 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#include <QuickTime/QuickTime.h>
-#include "OgreLogManager.h"
-#include "OgreConfigDialog.h"
+#ifndef __GLUniformCache_H__
+#define __GLUniformCache_H__
 
-namespace Ogre {
+#include "OgreGLPrerequisites.h"
 
-	ConfigDialog* dlg = NULL;
-	ConfigDialog::ConfigDialog() 
-	{
-		dlg = this;
-	}
-	
-	ConfigDialog::~ConfigDialog()
-	{
-	}
-	
-	void ConfigDialog::initialise()
-	{
-	}
-	
-	bool ConfigDialog::display()
-	{
-		// TODO: Fix OS X Config dialog
-		const RenderSystemList& renderers = Root::getSingleton().getAvailableRenderers();
-		RenderSystem* renderer = renderers.front();
+typedef Ogre::GeneralAllocatedObject UniformCacheAlloc;
 
-		// WARNING: restoreConfig() should not be invoked here as Root calls
-		// it before this method anyway, and invoking restoreConfig() here
-		// forces the client application to use Ogre.cfg, while it may have
-		// different plans.
-		if(!Root::getSingleton().restoreConfig())
-		{
-			// Set some defaults
-			renderer->setConfigOption("Video Mode", "800 x 600");
-			renderer->setConfigOption("Colour Depth", "32");
-			renderer->setConfigOption("FSAA", "0");
-			renderer->setConfigOption("Full Screen", "No");
-			renderer->setConfigOption("RTT Preferred Mode", "FBO");
-			// Set the rendersystem and save the config.
-			Root::getSingleton().setRenderSystem(renderer);
-		}
-		return true;
-	}
+namespace Ogre
+{
+	class GLUniformCacheImp;
 
-};
+    /** An in memory cache of the OpenGL uniforms. */
+    class _OgreGLExport GLUniformCache : public UniformCacheAlloc
+    {
+    private:
+		GLUniformCacheImp* mImp;
+
+    public:
+        GLUniformCache(void);
+        ~GLUniformCache(void);
+
+        /** Clears all cached values
+        */
+        void clearCache();
+		
+        /** Update a uniform
+         @return A boolean value indicating whether this uniform needs to be updated in the GL.
+         */
+        bool updateUniform(GLint location, const void *value, GLsizei length);
+    };
+}
+
+#endif

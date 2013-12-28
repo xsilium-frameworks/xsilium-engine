@@ -70,11 +70,10 @@ namespace Ogre {
         // Detach all objects, do this manually to avoid needUpdate() call 
         // which can fail because of deleted items
 		ObjectMap::iterator itr;
-		MovableObject* ret;
-		for ( itr = mObjectsByName.begin(); itr != mObjectsByName.end(); itr++ )
+		for ( itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
 		{
-		  ret = itr->second;
-		  ret->_notifyAttached((SceneNode*)0);
+            MovableObject* ret = itr->second;
+            ret->_notifyAttached((SceneNode*)0);
 		}
         mObjectsByName.clear();
 
@@ -135,7 +134,8 @@ namespace Ogre {
             mObjectsByName.insert(ObjectMap::value_type(obj->getName(), obj));
         assert(insresult.second && "Object was not attached because an object of the "
             "same name was already attached to this node.");
-
+        (void)insresult;
+        
         // Make sure bounds get updated (must go right to the top)
         needUpdate();
     }
@@ -178,7 +178,6 @@ namespace Ogre {
     //-----------------------------------------------------------------------
     MovableObject* SceneNode::detachObject(unsigned short index)
     {
-        MovableObject* ret;
         if (index < mObjectsByName.size())
         {
 
@@ -186,7 +185,7 @@ namespace Ogre {
             // Increment (must do this one at a time)            
             while (index--)++i;
 
-            ret = i->second;
+            MovableObject* ret = i->second;
             mObjectsByName.erase(i);
             ret->_notifyAttached((SceneNode*)0);
 
@@ -194,7 +193,6 @@ namespace Ogre {
             needUpdate();
 
             return ret;
-
         }
         else
         {
@@ -243,11 +241,10 @@ namespace Ogre {
     void SceneNode::detachAllObjects(void)
     {
 		ObjectMap::iterator itr;
-		MovableObject* ret;
-		for ( itr = mObjectsByName.begin(); itr != mObjectsByName.end(); itr++ )
+		for ( itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
 		{
-		  ret = itr->second;
-		  ret->_notifyAttached((SceneNode*)0);
+            MovableObject* ret = itr->second;
+            ret->_notifyAttached((SceneNode*)0);
 		}
         mObjectsByName.clear();
         // Make sure bounds get updated (must go right to the top)

@@ -32,7 +32,8 @@ THE SOFTWARE.
 #include "OgreString.h"
 #include "OgreSharedPtr.h"
 #include "OgreStringInterface.h"
-#include "OgreAtomicWrappers.h"
+#include "OgreAtomicScalar.h"
+#include "Threading/OgreThreadHeaders.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre {
@@ -78,7 +79,7 @@ namespace Ogre {
 	class _OgreExport Resource : public StringInterface, public ResourceAlloc
     {
 	public:
-		OGRE_AUTO_MUTEX // public to allow external locking
+        OGRE_AUTO_MUTEX; // public to allow external locking
 		class Listener
 		{
 		public:
@@ -89,13 +90,13 @@ namespace Ogre {
 			@deprecated
 				Use loadingComplete instead.
 			*/
-			virtual void backgroundLoadingComplete(Resource*) {}
+			OGRE_DEPRECATED virtual void backgroundLoadingComplete(Resource*) {}
 
 			/** Callback to indicate that background preparing has completed.
 			@deprecated
 				Use preparingComplete instead.
 			*/
-			virtual void backgroundPreparingComplete(Resource*) {}
+			OGRE_DEPRECATED virtual void backgroundPreparingComplete(Resource*) {}
 
 			/** Called whenever the resource finishes loading. 
 			@remarks
@@ -108,7 +109,7 @@ namespace Ogre {
 			virtual void loadingComplete(Resource*) {}
 
 
-			/** called whenever the resource finishes preparing (paging into memory).
+			/** Called whenever the resource finishes preparing (paging into memory).
 			@remarks
 				If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded)
 				the call does not itself occur in the thread which is doing the preparing;
@@ -164,7 +165,7 @@ namespace Ogre {
 
 		typedef set<Listener*>::type ListenerList;
 		ListenerList mListenerList;
-		OGRE_MUTEX(mListenerListMutex)
+		OGRE_MUTEX(mListenerListMutex);
 
 		/** Protected unnamed constructor to prevent default construction. 
 		*/
@@ -215,8 +216,6 @@ namespace Ogre {
 			whether this resource is being loaded from a ManualResourceLoader. 
 		*/
 		virtual void unloadImpl(void) = 0;
-		/** Calculate the size of a resource; this will only be called after 'load' */
-		virtual size_t calculateSize(void) const = 0;
 
     public:
 		/** Standard constructor.
@@ -366,8 +365,8 @@ namespace Ogre {
 		virtual bool isBackgroundLoaded(void) const { return mIsBackgroundLoaded; }
 
 		/** Tells the resource whether it is background loaded or not.
-		@remarks
-			@see Resource::isBackgroundLoaded . Note that calling this only
+
+         @see Resource::isBackgroundLoaded. Note that calling this only
 			defers the normal on-demand loading behaviour of a resource, it
 			does not actually set up a thread to make sure the resource gets
 			loaded in the background. You should use ResourceBackgroundLoadingQueue
@@ -466,6 +465,8 @@ namespace Ogre {
 		*/
 		virtual void _fireUnloadingComplete(void);
 
+		/** Calculate the size of a resource; this will only be called after 'load' */
+		virtual size_t calculateSize(void) const;
 
     };
 

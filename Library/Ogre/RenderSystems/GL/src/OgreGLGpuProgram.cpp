@@ -140,6 +140,19 @@ bool GLGpuProgram::isAttributeValid(VertexElementSemantic semantic, uint index)
     return false;
 }
 
+//-----------------------------------------------------------------------------
+size_t GLGpuProgram::calculateSize(void) const
+{
+    size_t memSize = 0;
+
+    // Delegate Names
+    memSize += sizeof(GLuint);
+    memSize += sizeof(GLenum);
+    memSize += GpuProgram::calculateSize();
+    
+    return memSize;
+}
+
 GLArbGpuProgram::GLArbGpuProgram(ResourceManager* creator, const String& name, 
     ResourceHandle handle, const String& group, bool isManual, 
     ManualResourceLoader* loader) 
@@ -185,7 +198,7 @@ void GLArbGpuProgram::bindProgramParameters(GpuProgramParametersSharedPtr params
 	{
 		if (i->second.variability & mask)
 		{
-			size_t logicalIndex = i->first;
+			GLuint logicalIndex = static_cast<GLuint>(i->first);
 			const float* pFloat = params->getFloatPointer(i->second.physicalIndex);
 			// Iterate over the params, set in 4-float chunks (low-level)
 			for (size_t j = 0; j < i->second.currentSize; j+=4)
@@ -220,7 +233,7 @@ void GLArbGpuProgram::unloadImpl(void)
 void GLArbGpuProgram::loadFromSource(void)
 {
     if (GL_INVALID_OPERATION == glGetError()) {
-        LogManager::getSingleton().logMessage("Invalid Operation before loading program "+mName);
+        LogManager::getSingleton().logMessage("Invalid Operation before loading program "+mName, LML_CRITICAL);
 
     }
     glBindProgramARB(mProgramType, mProgramID);
@@ -231,7 +244,7 @@ void GLArbGpuProgram::loadFromSource(void)
         GLint errPos;
         glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errPos);
 		String errPosStr = StringConverter::toString(errPos);
-        char* errStr = (char*)glGetString(GL_PROGRAM_ERROR_STRING_ARB);
+		const char* errStr = (const char*)glGetString(GL_PROGRAM_ERROR_STRING_ARB);
         // XXX New exception code?
         OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
             "Cannot load GL vertex program " + mName + 
@@ -240,4 +253,5 @@ void GLArbGpuProgram::loadFromSource(void)
     glBindProgramARB(mProgramType, 0);
 }
 
+    
 }

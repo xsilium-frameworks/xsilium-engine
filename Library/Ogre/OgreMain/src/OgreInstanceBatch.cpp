@@ -53,6 +53,7 @@ namespace Ogre
 				mBoundsUpdated( false ),
 				mCurrentCamera( 0 ),
 				mMaterialLodIndex( 0 ),
+                mDirtyAnimation(true),
 				mTechnSupportsSkeletal( true ),
 				mCachedCamera( 0 ),
 				mTransformSharingDirty(true),
@@ -197,7 +198,7 @@ namespace Ogre
 	//-----------------------------------------------------------------------
 	InstancedEntity* InstanceBatch::generateInstancedEntity(size_t num)
 	{
-		return OGRE_NEW InstancedEntity( this, num);
+		return OGRE_NEW InstancedEntity(this, static_cast<uint32>(num));
 	}
 	//-----------------------------------------------------------------------
 	void InstanceBatch::deleteAllInstancedEntities()
@@ -496,7 +497,7 @@ namespace Ogre
 		//Now calculate Material LOD
         /*const LodStrategy *materialStrategy = m_material->getLodStrategy();
         
-        //Calculate lod value for given strategy
+        //Calculate LOD value for given strategy
         Real lodValue = materialStrategy->getValue( this, cam );*/
 
         //Get the index at this depth
@@ -511,10 +512,10 @@ namespace Ogre
         subEntEvt.previousLodIndex = m_materialLodIndex;
         subEntEvt.newLodIndex = idx;
 
-        //Notify lod event listeners
+        //Notify LOD event listeners
         cam->getSceneManager()->_notifyEntityMaterialLodChanged(subEntEvt);*/
 
-        //Change lod index
+        //Change LOD index
         mMaterialLodIndex = idx;
 
 		MovableObject::_notifyCurrentCamera( cam );

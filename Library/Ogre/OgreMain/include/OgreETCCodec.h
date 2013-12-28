@@ -25,8 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
-#ifndef __OgreETC1Codec_H__
-#define __OgreETC1Codec_H__
+#ifndef __OgreETCCodec_H__
+#define __OgreETCCodec_H__
 
 #include "OgreImageCodec.h"
 
@@ -38,12 +38,12 @@ namespace Ogre {
 	*  @{
 	*/
 
-    /** Codec specialized in loading ETC1 (Ericsson Texture Compression) images.
+    /** Codec specialized in loading ETC (Ericsson Texture Compression) images.
 	@remarks
-		We implement our own codec here since we need to be able to keep ETC1
+		We implement our own codec here since we need to be able to keep ETC
 		data compressed if the card supports it.
     */
-    class _OgreExport ETC1Codec : public ImageCodec
+    class _OgreExport ETCCodec : public ImageCodec
     {
     protected:
         String mType;
@@ -52,16 +52,17 @@ namespace Ogre {
 	    void flipEndian(void * pData, size_t size) const;
 
 		/// Single registered codec instance
-		static ETC1Codec* msInstance;
+        static ETCCodec* msPKMInstance;
+        static ETCCodec* msKTXInstance;
 
 	public:
-        ETC1Codec();
-        virtual ~ETC1Codec() { }
+        ETCCodec(const String &type);
+        virtual ~ETCCodec() { }
 
-        /// @copydoc Codec::code
-        DataStreamPtr code(MemoryDataStreamPtr& input, CodecDataPtr& pData) const;
-        /// @copydoc Codec::codeToFile
-        void codeToFile(MemoryDataStreamPtr& input, const String& outFileName, CodecDataPtr& pData) const;
+        /// @copydoc Codec::encode
+        DataStreamPtr encode(MemoryDataStreamPtr& input, CodecDataPtr& pData) const;
+        /// @copydoc Codec::encodeToFile
+        void encodeToFile(MemoryDataStreamPtr& input, const String& outFileName, CodecDataPtr& pData) const;
         /// @copydoc Codec::decode
         DecodeResult decode(DataStreamPtr& input) const;
 		/// @copydoc Codec::magicNumberToFileExt
@@ -69,10 +70,13 @@ namespace Ogre {
         
         virtual String getType() const;        
 
-		/// Static method to startup and register the PVRTC codec
+		/// Static method to startup and register the ETC codec
 		static void startup(void);
-		/// Static method to shutdown and unregister the PVRTC codec
+		/// Static method to shutdown and unregister the ETC codec
 		static void shutdown(void);
+    private:
+        bool decodePKM(DataStreamPtr& input, DecodeResult& result) const;
+        bool decodeKTX(DataStreamPtr& input, DecodeResult& result) const;
 
     };
 	/** @} */

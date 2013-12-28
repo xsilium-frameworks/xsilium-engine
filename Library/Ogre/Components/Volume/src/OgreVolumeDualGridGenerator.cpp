@@ -461,7 +461,7 @@ namespace Volume {
 
     //-----------------------------------------------------------------------
 
-    DualGridGenerator::DualGridGenerator(): mDualGrid(0)
+    DualGridGenerator::DualGridGenerator(): mDualGrid(0), mRoot(0), mSaveDualCells(0), mIs(0), mMb(0), mMaxMSDistance(0)
     {
     }
     
@@ -514,7 +514,7 @@ namespace Volume {
             manual->estimateVertexCount(mDualCells.size() * 8);
             manual->estimateIndexCount(mDualCells.size() * 24);
 
-            size_t baseIndex = 0;
+            uint32 baseIndex = 0;
             for (VecDualCell::iterator it = mDualCells.begin(); it != mDualCells.end(); ++it)
             {
                 MeshBuilder::addCubeToManualObject(

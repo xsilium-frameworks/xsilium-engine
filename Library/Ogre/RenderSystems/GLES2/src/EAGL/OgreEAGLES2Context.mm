@@ -27,6 +27,7 @@ THE SOFTWARE.
 */
 
 #include "OgreEAGLES2Context.h"
+#include "OgreEAGL2Support.h"
 #include "OgreGLES2RenderSystem.h"
 #include "OgreRoot.h"
 
@@ -46,15 +47,20 @@ namespace Ogre {
 
         mDrawable = [drawable retain];
 
+#if OGRE_NO_GLES3_SUPPORT == 0
+        NSUInteger renderingAPI = kEAGLRenderingAPIOpenGLES3;
+#else
+        NSUInteger renderingAPI = kEAGLRenderingAPIOpenGLES2;
+#endif
         // If the group argument is not NULL, then we assume that an externally created EAGLSharegroup
         // is to be used and a context is created using that group.
         if(group)
         {
-            mContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:group];
+            mContext = [[EAGLContext alloc] initWithAPI:renderingAPI sharegroup:group];
         }
         else
         {
-            mContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+            mContext = [[EAGLContext alloc] initWithAPI:renderingAPI];
         }
 
         if (!mContext || ![EAGLContext setCurrentContext:mContext])
@@ -106,10 +112,10 @@ namespace Ogre {
         OGRE_CHECK_GL_ERROR(glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &mBackingHeight));
         OGRE_CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mViewRenderbuffer));
 
-#if GL_APPLE_framebuffer_multisample
+#if GL_APPLE_framebuffer_multisample || OGRE_NO_GLES3_SUPPORT == 0
         if(mIsMultiSampleSupported && mNumSamples > 0)
         {
-            // Determine how many MSAS samples to use
+            // Determine how many MSAA samples to use
             GLint maxSamplesAllowed;
             glGetIntegerv(GL_MAX_SAMPLES_APPLE, &maxSamplesAllowed);
             int samplesToUse = (mNumSamples > maxSamplesAllowed) ? maxSamplesAllowed : mNumSamples;
@@ -128,7 +134,7 @@ namespace Ogre {
             // Create the FSAA depth buffer
             OGRE_CHECK_GL_ERROR(glGenRenderbuffers(1, &mDepthRenderbuffer));
             OGRE_CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mDepthRenderbuffer));
-            OGRE_CHECK_GL_ERROR(glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, samplesToUse, GL_DEPTH_COMPONENT24_OES, mBackingWidth, mBackingHeight));
+            OGRE_CHECK_GL_ERROR(glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, samplesToUse, GL_DEPTH_COMPONENT16, mBackingWidth, mBackingHeight));
             OGRE_CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthRenderbuffer));
 
             // Validate the FSAA framebuffer
@@ -150,6 +156,7 @@ namespace Ogre {
             OGRE_CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthRenderbuffer));
         }
 
+        OGRE_CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mViewRenderbuffer));
         OGRE_CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, mViewFramebuffer));
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
@@ -198,24 +205,16 @@ namespace Ogre {
                         "Failed to make context current",
                         __FUNCTION__);
         }
-        OGRE_CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, mViewFramebuffer));
-        OGRE_CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mViewRenderbuffer));
     }
 
     void EAGLES2Context::endCurrent()
     {
-        BOOL ret = [EAGLContext setCurrentContext:0];
-        if (!ret)
-        {
-            OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR,
-                        "Failed to end current context",
-                        __FUNCTION__);
-        }
+        // Do nothing
     }
 
     GLES2Context * EAGLES2Context::clone() const
     {
-		return new EAGLES2Context(getDrawable(), getContext().sharegroup);
+		return new EAGLES2Context(mDrawable, [mContext sharegroup]);
     }
 
 	CAEAGLLayer * EAGLES2Context::getDrawable() const

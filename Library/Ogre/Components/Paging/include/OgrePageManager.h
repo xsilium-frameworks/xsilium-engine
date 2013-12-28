@@ -35,6 +35,7 @@ THE SOFTWARE.
 #include "OgreCommon.h"
 #include "OgreCamera.h"
 #include "OgreFrameListener.h"
+#include "OgreNameGenerator.h"
 
 namespace Ogre
 {
@@ -443,7 +444,7 @@ namespace Ogre
 			WorldMap* pWorldMap;
 			CameraList* pCameraList;
 
-			EventRouter() {}
+			EventRouter() : pManager(0), pWorldMap(0), pCameraList(0) {}
 			~EventRouter() {}
 
 			void cameraPreRenderScene(Camera* cam);

@@ -197,7 +197,7 @@ namespace Ogre
 				* Not implemented. (see HWInstancingVTF's recommendation)
 			ShaderBased:
 				* Not supported.
-		@param Number of custom parameters each instance will have. Default: 0
+		@param numCustomParams Number of custom parameters each instance will have. Default: 0
 		*/
 		void setNumCustomParams( unsigned char numCustomParams );
 
@@ -216,7 +216,7 @@ namespace Ogre
             per batch
         @param materialName Name of the material to base on
         @param suggestedSize Suggested amount of instances per batch
-        @param flags @see InstanceManagerFlags
+        @param flags Flags to pass to the InstanceManager. @see InstanceManagerFlags
         @return The max/best amount of instances per batch given the suggested size and flags
         */
         size_t getMaxOrBestNumInstancesPerBatch( String materialName, size_t suggestedSize, uint16 flags );
@@ -310,7 +310,11 @@ namespace Ogre
         InstanceBatchIterator getInstanceBatchIterator( const String &materialName ) const
         {
             InstanceBatchMap::const_iterator it = mInstanceBatches.find( materialName );
-            return InstanceBatchIterator( it->second.begin(), it->second.end() );
+            if(it != mInstanceBatches.end())
+                return InstanceBatchIterator( it->second.begin(), it->second.end() );
+            else
+                OGRE_EXCEPT(Exception::ERR_INVALID_STATE, "Cannot create instance batch iterator. "
+                            "Material " + materialName + " cannot be found.", "InstanceManager::getInstanceBatchIterator");
         }
     };
 } // namespace Ogre

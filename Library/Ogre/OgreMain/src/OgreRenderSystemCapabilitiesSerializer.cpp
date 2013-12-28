@@ -76,6 +76,7 @@ namespace Ogre
         file << "\t" << "cubemapping " << StringConverter::toString(caps->hasCapability(RSC_CUBEMAPPING)) << endl;
         file << "\t" << "hwstencil " << StringConverter::toString(caps->hasCapability(RSC_HWSTENCIL)) << endl;
         file << "\t" << "vbo " << StringConverter::toString(caps->hasCapability(RSC_VBO)) << endl;
+        file << "\t" << "32bit_index " << StringConverter::toString(caps->hasCapability(RSC_32BIT_INDEX)) << endl;
         file << "\t" << "vertex_program " << StringConverter::toString(caps->hasCapability(RSC_VERTEX_PROGRAM)) << endl;
         file << "\t" << "fragment_program " << StringConverter::toString(caps->hasCapability(RSC_FRAGMENT_PROGRAM)) << endl;
         file << "\t" << "geometry_program " << StringConverter::toString(caps->hasCapability(RSC_GEOMETRY_PROGRAM)) << endl;
@@ -103,7 +104,10 @@ namespace Ogre
         file << "\t" << "texture_compression_dxt " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_DXT)) << endl;
         file << "\t" << "texture_compression_vtc " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_VTC)) << endl;
         file << "\t" << "texture_compression_pvrtc " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_PVRTC)) << endl;
-        file << "\t" << "texture_compression_bc4_bc5 " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_BC4_BC5)) << endl;
+        file << "\t" << "texture_compression_atc " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_ATC)) << endl;
+        file << "\t" << "texture_compression_etc1 " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_ETC1)) << endl;
+        file << "\t" << "texture_compression_etc2 " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_ETC2)) << endl;
+		file << "\t" << "texture_compression_bc4_bc5 " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_BC4_BC5)) << endl;
         file << "\t" << "texture_compression_bc6h_bc7 " << StringConverter::toString(caps->hasCapability(RSC_TEXTURE_COMPRESSION_BC6H_BC7)) << endl;
         file << "\t" << "gl1_5_novbo " << StringConverter::toString(caps->hasCapability(RSC_GL1_5_NOVBO)) << endl;
         file << "\t" << "fbo " << StringConverter::toString(caps->hasCapability(RSC_FBO)) << endl;
@@ -451,6 +455,9 @@ namespace Ogre
         addKeywordType("texture_compression_dxt", SET_CAPABILITY_ENUM_BOOL);
         addKeywordType("texture_compression_vtc", SET_CAPABILITY_ENUM_BOOL);
         addKeywordType("texture_compression_pvrtc", SET_CAPABILITY_ENUM_BOOL);
+        addKeywordType("texture_compression_atc", SET_CAPABILITY_ENUM_BOOL);
+        addKeywordType("texture_compression_etc1", SET_CAPABILITY_ENUM_BOOL);
+        addKeywordType("texture_compression_etc2", SET_CAPABILITY_ENUM_BOOL);
         addKeywordType("texture_compression_bc4_bc5", SET_CAPABILITY_ENUM_BOOL);
         addKeywordType("texture_compression_bc6h_bc7", SET_CAPABILITY_ENUM_BOOL);
         addKeywordType("gl1_5_novbo", SET_CAPABILITY_ENUM_BOOL);
@@ -471,6 +478,7 @@ namespace Ogre
         addCapabilitiesMapping("cubemapping", RSC_CUBEMAPPING);
         addCapabilitiesMapping("hwstencil", RSC_HWSTENCIL);
         addCapabilitiesMapping("vbo", RSC_VBO);
+        addCapabilitiesMapping("32bit_index", RSC_32BIT_INDEX);
         addCapabilitiesMapping("vertex_program", RSC_VERTEX_PROGRAM);
 		addCapabilitiesMapping("geometry_program", RSC_GEOMETRY_PROGRAM);
         addCapabilitiesMapping("fragment_program", RSC_FRAGMENT_PROGRAM);
@@ -498,6 +506,9 @@ namespace Ogre
         addCapabilitiesMapping("texture_compression_dxt", RSC_TEXTURE_COMPRESSION_DXT);
         addCapabilitiesMapping("texture_compression_vtc", RSC_TEXTURE_COMPRESSION_VTC);
         addCapabilitiesMapping("texture_compression_pvrtc", RSC_TEXTURE_COMPRESSION_PVRTC);
+        addCapabilitiesMapping("texture_compression_atc", RSC_TEXTURE_COMPRESSION_ATC);
+        addCapabilitiesMapping("texture_compression_etc1", RSC_TEXTURE_COMPRESSION_ETC1);
+        addCapabilitiesMapping("texture_compression_etc2", RSC_TEXTURE_COMPRESSION_ETC2);
         addCapabilitiesMapping("texture_compression_bc4_bc5", RSC_TEXTURE_COMPRESSION_BC4_BC5);
         addCapabilitiesMapping("texture_compression_bc6h_bc7", RSC_TEXTURE_COMPRESSION_BC6H_BC7);
 		addCapabilitiesMapping("hwrender_to_vertex_buffer", RSC_HWRENDER_TO_VERTEX_BUFFER);

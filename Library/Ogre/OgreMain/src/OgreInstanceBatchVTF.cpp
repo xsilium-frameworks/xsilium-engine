@@ -50,6 +50,7 @@ namespace Ogre
 										const Mesh::IndexMap *indexToBoneMap, const String &batchName) :
 				InstanceBatch( creator, meshReference, material, instancesPerBatch,
 								indexToBoneMap, batchName ),
+                mMatricesPerInstance(0),
 				mNumWorldMatrices( instancesPerBatch ),
 				mWidthFloatsPadding( 0 ),
 				mMaxFloatsPerLine( std::numeric_limits<size_t>::max() ),
@@ -269,7 +270,7 @@ namespace Ogre
 		
 		size_t texWidth			= std::min<size_t>( mNumWorldMatrices * mRowLength, c_maxTexWidth );
 		size_t maxUsableWidth	= texWidth;
-		if( matricesToghetherPerRow() )
+		if( matricesTogetherPerRow() )
 		{
 			//The technique requires all matrices from the same instance in the same row
 			//i.e. 4094 -> 4095 -> skip 4096 -> 0 (next row) contains data from a new instance 
@@ -446,7 +447,7 @@ namespace Ogre
 			}
 		}
 
-		return OGRE_NEW InstancedEntity( this, num, sharedTransformEntity);
+		return OGRE_NEW InstancedEntity(this, static_cast<uint32>(num), sharedTransformEntity);
 	}
 
 
@@ -614,7 +615,7 @@ namespace Ogre
 				if( indexType == HardwareIndexBuffer::IT_16BIT )
 					*thisBuf16++ = static_cast<uint16>(originalVal) + vertexOffset;
 				else
-					*thisBuf32++ = originalVal + vertexOffset;
+					*thisBuf32++ = static_cast<uint32>(originalVal + vertexOffset);
 			}
 		}
 

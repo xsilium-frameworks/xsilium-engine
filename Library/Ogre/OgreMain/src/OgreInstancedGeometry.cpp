@@ -66,7 +66,8 @@ namespace Ogre {
         mRenderQueueIDSet(false),
 		mObjectCount(0),
 		mInstancedGeometryInstance(0),
-		mSkeletonInstance(0)
+		mSkeletonInstance(0),
+        mAnimationState(0)
 	{
 		mBaseSkeleton.setNull();
 	}
@@ -323,7 +324,7 @@ namespace Ogre {
 		{
 			LogManager::getSingleton().logMessage(
 				"WARNING (InstancedGeometry): Manual LOD is not supported. "
-				"Using only highest LOD level for mesh " + msh->getName());
+				"Using only highest LOD level for mesh " + msh->getName(), LML_CRITICAL);
 		}
 
 		//get the skeleton of the entity, if that's not already done
@@ -439,12 +440,10 @@ namespace Ogre {
 		// and while we're at it, build the remap we can use later
 		bool use32bitIndexes =
 			id->indexBuffer->getType() == HardwareIndexBuffer::IT_32BIT;
-		uint16 *p16;
-		uint32 *p32;
 		IndexRemap indexRemap;
 		if (use32bitIndexes)
 		{
-			p32 = static_cast<uint32*>(id->indexBuffer->lock(
+			uint32 *p32 = static_cast<uint32*>(id->indexBuffer->lock(
 				id->indexStart, 
 				id->indexCount * id->indexBuffer->getIndexSize(), 
 				HardwareBuffer::HBL_READ_ONLY));
@@ -453,7 +452,7 @@ namespace Ogre {
 		}
 		else
 		{
-			p16 = static_cast<uint16*>(id->indexBuffer->lock(
+			uint16 *p16 = static_cast<uint16*>(id->indexBuffer->lock(
 				id->indexStart, 
 				id->indexCount * id->indexBuffer->getIndexSize(), 
 				HardwareBuffer::HBL_READ_ONLY));
@@ -665,7 +664,7 @@ namespace Ogre {
 		ret->mBoundingRadius = lastBatchInstance->mBoundingRadius ;
 		//now create  news instanced objects
 		BatchInstance::ObjectsMap::iterator objIt;
-		for(objIt=lastBatchInstance->getInstancesMap().begin();objIt!=lastBatchInstance->getInstancesMap().end();objIt++)
+		for(objIt=lastBatchInstance->getInstancesMap().begin();objIt!=lastBatchInstance->getInstancesMap().end();++objIt)
 		{
 			InstancedObject* instancedObject = ret->isInstancedObjectPresent(objIt->first);
 			if(instancedObject == NULL)
@@ -686,19 +685,19 @@ namespace Ogre {
 
 
 		BatchInstance::LODIterator lodIterator = lastBatchInstance->getLODIterator();
-		//parse all the lod buckets of the BatchInstance
+		//parse all the LOD buckets of the BatchInstance
 		while (lodIterator.hasMoreElements())
 		{
 		
 			LODBucket* lod = lodIterator.getNext();
-			//create a new lod bucket for the new BatchInstance
+			//create a new LOD bucket for the new BatchInstance
 			LODBucket* lodBucket= OGRE_NEW LODBucket(ret, lod->getLod(), lod->getLodValue());
 
-			//add the lod bucket to the BatchInstance list
+			//add the LODBucket to the BatchInstance list
 			ret->updateContainers(lodBucket);
 			
 			LODBucket::MaterialIterator matIt = lod->getMaterialIterator();
-			//parse all the material buckets of the lod bucket
+			//parse all the material buckets of the LOD bucket
 			while (matIt.hasMoreElements())
 			{
 				
@@ -707,7 +706,7 @@ namespace Ogre {
 				String materialName=mat->getMaterialName();
 				MaterialBucket* matBucket = OGRE_NEW MaterialBucket(lodBucket,materialName);
 
-				//add the material bucket to the lod buckets list and map
+				//add the material bucket to the LOD buckets list and map
 				lodBucket->updateContainers(matBucket, materialName);
 
 				MaterialBucket::GeometryIterator geomIt = mat->getGeometryIterator();
@@ -726,7 +725,7 @@ namespace Ogre {
 					geomBucket->getAABB()=geom->getAABB();
 					geomBucket->setBoundingBox(	geom->getBoundingBox());
 					//now setups the news InstancedObjects.
-					for(objIt=ret->getInstancesMap().begin();objIt!=ret->getInstancesMap().end();objIt++)
+					for(objIt=ret->getInstancesMap().begin();objIt!=ret->getInstancesMap().end();++objIt)
 					{
 						//get the destination IntanciedObject
 						InstancedObject*obj=objIt->second;
@@ -1136,8 +1135,7 @@ namespace Ogre {
 		SceneManager* mgr, uint32 BatchInstanceID)
 		: MovableObject(name), mParent(parent), mSceneMgr(mgr), mNode(0),
 		mBatchInstanceID(BatchInstanceID), mBoundingRadius(0.0f),
-		mCurrentLod(0),
-        mLodStrategy(0)
+		mCurrentLod(0), mCamera(0), mLodStrategy(0)
 	{
 	}
 	//--------------------------------------------------------------------------
@@ -1158,7 +1156,7 @@ namespace Ogre {
 		mLodBucketList.clear();
 		ObjectsMap::iterator o;
 
-		for(o=mInstancesMap.begin();o!=mInstancesMap.end();o++)
+		for(o=mInstancesMap.begin();o!=mInstancesMap.end();++o)
 		{
 			OGRE_DELETE o->second;
 		}
@@ -1170,13 +1168,13 @@ namespace Ogre {
 	{
 		mQueuedSubMeshes.push_back(qmesh);
 
-        // Set/check lod strategy
+        // Set/check LOD strategy
         const LodStrategy *lodStrategy = qmesh->submesh->parent->getLodStrategy();
         if (mLodStrategy == 0)
         {
             mLodStrategy = lodStrategy;
 
-            // First LOD mandatory, and always from base lod value
+            // First LOD mandatory, and always from base LOD value
             mLodValues.push_back(mLodStrategy->getBaseValue());
         }
         else
@@ -1186,7 +1184,7 @@ namespace Ogre {
                     "InstancedGeometry::InstancedObject::assign");
         }
 
-		// update lod values
+		// update LOD values
 		ushort lodLevels = qmesh->submesh->parent->getNumLodLevels();
 		assert(qmesh->geometryLodList->size() == lodLevels);
 
@@ -1273,7 +1271,7 @@ namespace Ogre {
 				vMax = objIt->second->getPosition() + aabb.getMaximum();
 			}
 
-			for( objIt=mInstancesMap.begin(); objIt!=mInstancesMap.end(); objIt++ )
+			for( objIt=mInstancesMap.begin(); objIt!=mInstancesMap.end(); ++objIt )
 			{
 				const Vector3 &position = objIt->second->getPosition();
 				const Vector3 &scale	= objIt->second->getScale();
@@ -1310,14 +1308,6 @@ namespace Ogre {
 			}
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
 	//--------------------------------------------------------------------------
 	void InstancedGeometry::BatchInstance::addInstancedObject(unsigned short index,InstancedObject* object)
 	{
@@ -1352,20 +1342,20 @@ namespace Ogre {
         // Cache squared view depth for use by GeometryBucket
         mSquaredViewDepth = mParentNode->getSquaredViewDepth(cam->getLodCamera());
 
-        // No lod strategy set yet, skip (this indicates that there are no submeshes)
+        // No LOD strategy set yet, skip (this indicates that there are no submeshes)
         if (mLodStrategy == 0)
             return;
 
         // Sanity check
         assert(!mLodValues.empty());
 
-        // Calculate lod value
+        // Calculate LOD value
         Real lodValue = mLodStrategy->getValue(this, cam);
 
-        // Store lod value for this strategy
+        // Store LOD value for this strategy
         mLodValue = lodValue;
 
-        // Get lod index
+        // Get LOD index
         mCurrentLod = mLodStrategy->getIndex(lodValue, mLodValues);
 	}
 	//--------------------------------------------------------------------------
@@ -1566,7 +1556,7 @@ namespace Ogre {
 		, mTechnique(0)
 		, mLastIndex(0)
 	{
-						mMaterial = MaterialManager::getSingleton().getByName(mMaterialName);
+		mMaterial = MaterialManager::getSingleton().getByName(mMaterialName);
 	}
 	//--------------------------------------------------------------------------
 	InstancedGeometry::MaterialBucket::~MaterialBucket()
@@ -1641,10 +1631,10 @@ namespace Ogre {
         // Get batch instance
         BatchInstance *batchInstance = mParent->getParent();
 
-        // Get material lod strategy
+        // Get material LOD strategy
         const LodStrategy *materialLodStrategy = mMaterial->getLodStrategy();
 
-        // If material strategy doesn't match, recompute lod value with correct strategy
+        // If material strategy doesn't match, recompute LOD value with correct strategy
         if (materialLodStrategy != batchInstance->mLodStrategy)
             lodValue = materialLodStrategy->getValue(batchInstance, batchInstance->mCamera);
 

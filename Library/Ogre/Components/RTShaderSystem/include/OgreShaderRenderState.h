@@ -29,7 +29,6 @@ THE SOFTWARE.
 
 #include "OgreShaderPrerequisites.h"
 #include "OgreShaderSubRenderState.h"
-#include "OgreSharedPtr.h"
 
 namespace Ogre {
 namespace RTShader {
@@ -169,10 +168,6 @@ protected:
 
 	/** Sort the sub render states composing this render state. */
 	void sortSubRenderStates();
-
-	/** Comparison function of the sub render states. */
-	static int sSubRenderStateCompare(const void * p0, const void *p1);
-
 	
 	/** Create CPU programs that represent this render state. 	
 	*/

@@ -105,6 +105,10 @@ namespace Ogre {
                 // 3. The name
                 if(paramTokens.size() == 3)
                 {
+					StringUtil::trim(paramTokens[0]);
+					StringUtil::trim(paramTokens[1]);
+					StringUtil::trim(paramTokens[2]);
+
                     Operand::OpSemantic semantic = Operand::OPS_IN;
                     GpuConstantType gpuType = GCT_UNKNOWN;
 
@@ -181,18 +185,26 @@ namespace Ogre {
                 {
                     StringVector moreTokens = StringUtil::split(*it, " ");
 
+					if (!moreTokens.empty())
+					{
                     FunctionMap::const_iterator itFuncCache = mFunctionCacheMap.begin();
-                    for (; itFuncCache != mFunctionCacheMap.end(); ++itFuncCache)
-                    {
-                        if(itFuncCache->first.getFunctionName() == moreTokens.back())
-                        {
-                            // Add the function declaration
-                            depVector.push_back(FunctionInvocation((*itFuncCache).first));
 
-                            discoverFunctionDependencies(itFuncCache->first, depVector);
-                        }
-                    }
-                }
+						for (; itFuncCache != mFunctionCacheMap.end(); ++itFuncCache)
+						{
+
+							FunctionInvocation fi = itFuncCache->first;
+						
+							if(fi.getFunctionName() == moreTokens.back())
+							{
+								// Add the function declaration
+								depVector.push_back(FunctionInvocation((*itFuncCache).first));
+
+								discoverFunctionDependencies(itFuncCache->first, depVector);
+							}
+						}
+					}
+				}
+                
             }
             else
             {
@@ -210,9 +222,19 @@ namespace Ogre {
             mGpuConstTypeMap[GCT_FLOAT4] = "vec4";
             mGpuConstTypeMap[GCT_SAMPLER1D] = "sampler2D";
             mGpuConstTypeMap[GCT_SAMPLER2D] = "sampler2D";
+            mGpuConstTypeMap[GCT_SAMPLER3D] = "sampler3D";
+        	mGpuConstTypeMap[GCT_SAMPLER2DARRAY] = "sampler2DArray";
             mGpuConstTypeMap[GCT_SAMPLERCUBE] = "samplerCube";
+            mGpuConstTypeMap[GCT_SAMPLER1DSHADOW] = "sampler1DShadow";
+            mGpuConstTypeMap[GCT_SAMPLER2DSHADOW] = "sampler2DShadow";
             mGpuConstTypeMap[GCT_MATRIX_2X2] = "mat2";
+            mGpuConstTypeMap[GCT_MATRIX_2X3] = "mat2x3";
+            mGpuConstTypeMap[GCT_MATRIX_2X4] = "mat2x4";
+            mGpuConstTypeMap[GCT_MATRIX_3X2] = "mat3x2";
             mGpuConstTypeMap[GCT_MATRIX_3X3] = "mat3";
+            mGpuConstTypeMap[GCT_MATRIX_3X4] = "mat3x4";
+            mGpuConstTypeMap[GCT_MATRIX_4X2] = "mat4x2";
+            mGpuConstTypeMap[GCT_MATRIX_4X3] = "mat4x3";
             mGpuConstTypeMap[GCT_MATRIX_4X4] = "mat4";
             mGpuConstTypeMap[GCT_INT1] = "int";
             mGpuConstTypeMap[GCT_INT2] = "int2";
@@ -260,11 +282,25 @@ namespace Ogre {
             UniformParameterConstIterator itUniformParam = parameterList.begin();
             
             // Write the current version (this forces the driver to fulfill the glsl es standard)
-            os << "#version "<< mGLSLVersion << std::endl;
+            os << "#version "<< mGLSLVersion;
+
+            // Starting with ES 3.0 the version must contain the string "es" after the version number with a space separating them
+            if(mGLSLVersion > 100)
+                os << " es";
+
+            os << std::endl;
 
             // Default precision declaration is required in fragment and vertex shaders.
             os << "precision highp float;" << std::endl;
             os << "precision highp int;" << std::endl;
+
+            // Redefine texture functions to maintain reusability
+            if(mGLSLVersion > 100)
+            {
+                os << "#define texture2D texture" << std::endl;
+                os << "#define texture3D texture" << std::endl;
+                os << "#define textureCube texture" << std::endl;
+            }
 
             // Generate source code header.
             writeProgramTitle(os, program);
@@ -526,7 +562,16 @@ namespace Ogre {
 				
 				if (gpuType == GPT_FRAGMENT_PROGRAM)
 				{
-					os << "\tgl_FragColor = outputColor;" << std::endl;
+                    // GLSL fragment program has to write always gl_FragColor (but this is also deprecated after version 130)
+                    // Always add gl_FragColor as an output.  The name is for compatibility.
+                    if(mGLSLVersion > 100)
+                    {
+                        os << "\tfragColour = outputColor;" << std::endl;
+                    }
+                    else
+                    {
+                        os << "\tgl_FragColor = outputColor;" << std::endl;
+                    }
 				}
 				else if (gpuType == GPT_VERTEX_PROGRAM)
 				{
@@ -567,7 +612,11 @@ namespace Ogre {
                     paramName.replace(paramName.begin(), paramName.begin() + 1, "o");	
                     mInputToGLStatesMap[pParam->getName()] = paramName;
 
-                    os << "varying\t";
+                    if(mGLSLVersion > 100)
+                        os << "in\t";
+                    else
+                        os << "varying\t";
+
                     os << mGpuConstTypeMap[pParam->getType()];
                     os << "\t";	
                     os << paramName;
@@ -579,7 +628,10 @@ namespace Ogre {
                     // Due the fact that glsl does not have register like cg we have to rename the params
                     // according their content.
                     mInputToGLStatesMap[paramName] = mContentToPerVertexAttributes[paramContent];
-                    os << "attribute\t"; 
+                    if(mGLSLVersion > 100)
+                        os << "in\t";
+                    else
+                        os << "attribute\t";
 
                     // All uv texcoords passed by OGRE are vec4
                     if (paramContent == Parameter::SPC_TEXTURE_COORDINATE0 ||
@@ -636,7 +688,10 @@ namespace Ogre {
                     }
                     else
                     {
-                        os << "varying\t";
+                        if(mGLSLVersion > 100)
+                            os << "out\t";
+                        else
+                            os << "varying\t";
                         os << mGpuConstTypeMap[pParam->getType()];
                         os << "\t";
                         os << pParam->getName();
@@ -649,7 +704,10 @@ namespace Ogre {
                 }
                 else if(gpuType == GPT_FRAGMENT_PROGRAM &&
                         pParam->getSemantic() == Parameter::SPS_COLOR)
-                {					
+                {
+                    if(mGLSLVersion > 100)
+                        os << "out vec4 fragColour;" << std::endl;
+
                     // GLSL ES fragment program has to always write gl_FragColor
                     mInputToGLStatesMap[pParam->getName()] = "outputColor";
                 }
@@ -922,7 +980,7 @@ namespace Ogre {
                         // First, look for a return type
                         if(isBasicType(tokens[0]) && ((tokens.size() < 3) || (tokens[2] != "=")) )
                         {
-                            String functionSig = "";
+                            String functionSig;
                             String functionBody = "";
                             FunctionInvocation *functionInvoc = NULL;
 

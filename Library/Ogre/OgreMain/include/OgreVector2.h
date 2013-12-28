@@ -54,6 +54,10 @@ namespace Ogre
         Real x, y;
 
     public:
+        /** Default constructor.
+            @note
+                It does <b>NOT</b> initialize the vector for efficiency.
+        */
         inline Vector2()
         {
         }
@@ -505,14 +509,13 @@ namespace Ogre
                 vector will not be normalised, normalise it if you wish
                 afterwards.
         */
-        inline Vector2 randomDeviant(Real angle) const
+        inline Vector2 randomDeviant(Radian angle) const
         {
-
-            angle *=  Math::UnitRandom() * Math::TWO_PI;
-            Real cosa = cos(angle);
-            Real sina = sin(angle);
-            return  Vector2(cosa * x - sina * y,
-                            sina * x + cosa * y);
+            angle *= Math::RangeRandom(-1, 1);
+            Real cosa = Math::Cos(angle);
+            Real sina = Math::Sin(angle);
+            return Vector2(cosa * x - sina * y,
+                           sina * x + cosa * y);
         }
 
         /** Returns true if this vector is zero length. */

@@ -10,10 +10,10 @@ DemoApp::DemoApp()
 
 DemoApp::~DemoApp()
 {
-#ifdef USE_RTSHADER_SYSTEM
+#ifdef INCLUDE_RTSHADER_SYSTEM
     mShaderGenerator->removeSceneManager(OgreFramework::getSingletonPtr()->m_pSceneMgr);
     
-    finalizeRTShaderSystem();
+    destroyRTShaderSystem();
 #endif
     
     delete OgreFramework::getSingletonPtr();
@@ -21,12 +21,12 @@ DemoApp::~DemoApp()
 
 //|||||||||||||||||||||||||||||||||||||||||||||||
 
-#ifdef USE_RTSHADER_SYSTEM
+#ifdef INCLUDE_RTSHADER_SYSTEM
 
 /*-----------------------------------------------------------------------------
  | Initialize the RT Shader system.	
  -----------------------------------------------------------------------------*/
-bool DemoApp::initializeRTShaderSystem(Ogre::SceneManager* sceneMgr)
+bool DemoApp::initialiseRTShaderSystem(Ogre::SceneManager* sceneMgr)
 {			
     if (Ogre::RTShader::ShaderGenerator::initialize())
     {
@@ -79,9 +79,9 @@ bool DemoApp::initializeRTShaderSystem(Ogre::SceneManager* sceneMgr)
 }
 
 /*-----------------------------------------------------------------------------
- | Finalize the RT Shader system.	
+ | Destroy the RT Shader system.
  -----------------------------------------------------------------------------*/
-void DemoApp::finalizeRTShaderSystem()
+void DemoApp::destroyRTShaderSystem()
 {
     // Restore default scheme.
     Ogre::MaterialManager::getSingleton().setActiveScheme(Ogre::MaterialManager::DEFAULT_SCHEME_NAME);
@@ -94,14 +94,14 @@ void DemoApp::finalizeRTShaderSystem()
         mMaterialMgrListener = NULL;
     }
     
-    // Finalize RTShader system.
+    // Destroy RTShader system.
     if (mShaderGenerator != NULL)
     {				
-        Ogre::RTShader::ShaderGenerator::finalize();
+        Ogre::RTShader::ShaderGenerator::destroy();
         mShaderGenerator = NULL;
     }
 }
-#endif // USE_RTSHADER_SYSTEM
+#endif // INCLUDE_RTSHADER_SYSTEM
 
 void DemoApp::startDemo()
 {
@@ -113,8 +113,8 @@ void DemoApp::startDemo()
     
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Demo initialized!");
 	
-#ifdef USE_RTSHADER_SYSTEM
-    initializeRTShaderSystem(OgreFramework::getSingletonPtr()->m_pSceneMgr);
+#ifdef INCLUDE_RTSHADER_SYSTEM
+    initialiseRTShaderSystem(OgreFramework::getSingletonPtr()->m_pSceneMgr);
     Ogre::MaterialPtr baseWhite = Ogre::MaterialManager::getSingleton().getByName("BaseWhite", Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME);				
     baseWhite->setLightingEnabled(false);
     mShaderGenerator->createShaderBasedTechnique(

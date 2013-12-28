@@ -107,6 +107,12 @@ namespace Ogre {
 		pLog->logMessage(
 			" * Hardware vertex / index buffers: "
 			+ StringConverter::toString(hasCapability(RSC_VBO), true));
+		if(hasCapability(RSC_VBO))
+		{
+			pLog->logMessage(
+				" * 32-bit index buffers: "
+				+ StringConverter::toString(hasCapability(RSC_32BIT_INDEX), true));
+		}
 		pLog->logMessage(
 			" * Vertex programs: "
 			+ StringConverter::toString(hasCapability(RSC_VERTEX_PROGRAM), true));
@@ -201,6 +207,15 @@ namespace Ogre {
 			pLog->logMessage(
                  "   - PVRTC: "
                  + StringConverter::toString(hasCapability(RSC_TEXTURE_COMPRESSION_PVRTC), true));
+			pLog->logMessage(
+                 "   - ATC: "
+                 + StringConverter::toString(hasCapability(RSC_TEXTURE_COMPRESSION_ATC), true));
+			pLog->logMessage(
+                 "   - ETC1: "
+                 + StringConverter::toString(hasCapability(RSC_TEXTURE_COMPRESSION_ETC1), true));
+			pLog->logMessage(
+                 "   - ETC2: "
+                 + StringConverter::toString(hasCapability(RSC_TEXTURE_COMPRESSION_ETC2), true));
 			pLog->logMessage(
                  "   - BC4/BC5: "
                  + StringConverter::toString(hasCapability(RSC_TEXTURE_COMPRESSION_BC4_BC5), true));

@@ -61,6 +61,7 @@ namespace Ogre {
           mSkelAnimVertexData(0),
 		  mSoftwareVertexAnimVertexData(0),
 		  mHardwareVertexAnimVertexData(0),
+          mVertexAnimationAppliedThisFrame(false),
           mPreparedForShadowVolumes(false),
           mBoneWorldMatrices(NULL),
           mBoneMatrices(NULL),
@@ -99,6 +100,7 @@ namespace Ogre {
 		mSkelAnimVertexData(0),
 		mSoftwareVertexAnimVertexData(0),
 		mHardwareVertexAnimVertexData(0),
+        mVertexAnimationAppliedThisFrame(false),
         mPreparedForShadowVolumes(false),
         mBoneWorldMatrices(NULL),
         mBoneMatrices(NULL),
@@ -395,11 +397,11 @@ namespace Ogre {
         // Calculate the LOD
         if (mParentNode)
         {
-            // Get mesh lod strategy
+            // Get mesh LOD strategy
             const LodStrategy *meshStrategy = mMesh->getLodStrategy();
-            // Get the appropriate lod value
+            // Get the appropriate LOD value
             Real lodValue = meshStrategy->getValue(this, cam);
-            // Bias the lod value
+            // Bias the LOD value
             Real biasedMeshLodValue = lodValue * mMeshLodFactorTransformed;
 
 
@@ -418,10 +420,10 @@ namespace Ogre {
             evt.previousLodIndex = mMeshLodIndex;
             evt.newLodIndex = newMeshLodIndex;
 
-            // Notify lod event listeners
+            // Notify LOD event listeners
             cam->getSceneManager()->_notifyEntityMeshLodChanged(evt);
 
-            // Change lod index
+            // Change LOD index
             mMeshLodIndex = evt.newLodIndex;
 
             // Now do material LOD
@@ -434,12 +436,12 @@ namespace Ogre {
             for (i = mSubEntityList.begin(); i != iend; ++i)
             {
                 // Get sub-entity material
-                const MaterialPtr& material = (*i)->mMaterial;
+                const MaterialPtr& material = (*i)->getMaterial();
                 
-                // Get material lod strategy
+                // Get material LOD strategy
                 const LodStrategy *materialStrategy = material->getLodStrategy();
                 
-                // Recalculate lod value if strategies do not match
+                // Recalculate LOD value if strategies do not match
                 Real biasedMaterialLodValue;
                 if (meshStrategy == materialStrategy)
                     biasedMaterialLodValue = lodValue;
@@ -461,10 +463,10 @@ namespace Ogre {
                 subEntEvt.previousLodIndex = (*i)->mMaterialLodIndex;
                 subEntEvt.newLodIndex = idx;
 
-                // Notify lod event listeners
+                // Notify LOD event listeners
                 cam->getSceneManager()->_notifyEntityMaterialLodChanged(subEntEvt);
 
-                // Change lod index
+                // Change LOD index
                 (*i)->mMaterialLodIndex = subEntEvt.newLodIndex;
 
 				// Also invalidate any camera distance cache
@@ -476,7 +478,7 @@ namespace Ogre {
         // Notify any child objects
         ChildObjectList::iterator child_itr = mChildObjectList.begin();
         ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-        for( ; child_itr != child_itr_end; child_itr++)
+        for( ; child_itr != child_itr_end; ++child_itr)
         {
             (*child_itr).second->_notifyCurrentCamera(cam);
         }
@@ -506,10 +508,10 @@ namespace Ogre {
 
         ChildObjectList::const_iterator child_itr = mChildObjectList.begin();
         ChildObjectList::const_iterator child_itr_end = mChildObjectList.end();
-        for( ; child_itr != child_itr_end; child_itr++)
+        for( ; child_itr != child_itr_end; ++child_itr)
         {
             aa_box = child_itr->second->getBoundingBox();
-            TagPoint* tp = (TagPoint*)child_itr->second->getParentNode();
+            TagPoint* tp = static_cast<TagPoint*>(child_itr->second->getParentNode());
             // Use transform local to skeleton since world xform comes later
             aa_box.transformAffine(tp->_getFullLocalTransform());
 
@@ -526,7 +528,7 @@ namespace Ogre {
 			// derive child bounding boxes
 			ChildObjectList::const_iterator child_itr = mChildObjectList.begin();
 			ChildObjectList::const_iterator child_itr_end = mChildObjectList.end();
-			for( ; child_itr != child_itr_end; child_itr++)
+			for( ; child_itr != child_itr_end; ++child_itr)
 			{
 				child_itr->second->getWorldBoundingBox(true);
 			}
@@ -541,7 +543,7 @@ namespace Ogre {
 			// derive child bounding boxes
 			ChildObjectList::const_iterator child_itr = mChildObjectList.begin();
 			ChildObjectList::const_iterator child_itr_end = mChildObjectList.end();
-			for( ; child_itr != child_itr_end; child_itr++)
+			for( ; child_itr != child_itr_end; ++child_itr)
 			{
 				child_itr->second->getWorldBoundingSphere(true);
 			}
@@ -570,13 +572,13 @@ namespace Ogre {
             // Use alternate entity
             assert( static_cast< size_t >( mMeshLodIndex - 1 ) < mLodEntityList.size() &&
                 "No LOD EntityList - did you build the manual LODs after creating the entity?");
-            // index - 1 as we skip index 0 (original lod)
+            // index - 1 as we skip index 0 (original LOD)
             if (hasSkeleton() && mLodEntityList[mMeshLodIndex - 1]->hasSkeleton())
             {
-                // Copy the animation state set to lod entity, we assume the lod
+                // Copy the animation state set to LOD entity, we assume the LOD
                 // entity only has a subset animation states
                 AnimationStateSet* targetState = mLodEntityList[mMeshLodIndex - 1]->mAnimationState;
-				if (mAnimationState != targetState) // only copy if lods use different skeleton instances
+				if (mAnimationState != targetState) // only copy if LODs use different skeleton instances
 				{
 					if (mAnimationState->getDirtyFrameNumber() != targetState->getDirtyFrameNumber()) // only copy if animation was updated
 						mAnimationState->copyMatchingState(targetState);
@@ -642,7 +644,7 @@ namespace Ogre {
             //--- pass this point,  we are sure that the transformation matrix of each bone and tagPoint have been updated
             ChildObjectList::iterator child_itr = mChildObjectList.begin();
             ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-            for( ; child_itr != child_itr_end; child_itr++)
+            for( ; child_itr != child_itr_end; ++child_itr)
             {
                 MovableObject* child = child_itr->second;
                 bool visible = child->isVisible();
@@ -690,10 +692,6 @@ namespace Ogre {
                 }
             }
         }
-
-
-
-
     }
     //-----------------------------------------------------------------------
     AnimationState* Entity::getAnimationState(const String& name) const
@@ -912,7 +910,7 @@ namespace Ogre {
             //--- Update the child object's transforms
             ChildObjectList::iterator child_itr = mChildObjectList.begin();
             ChildObjectList::iterator child_itr_end = mChildObjectList.end();
-            for( ; child_itr != child_itr_end; child_itr++)
+            for( ; child_itr != child_itr_end; ++child_itr)
             {
                 (*child_itr).second->getParentNode()->_update(true, true);
             }
@@ -1407,14 +1405,12 @@ namespace Ogre {
     {
         // Create SubEntities
         unsigned short i, numSubMeshes;
-        SubMesh* subMesh;
-        SubEntity* subEnt;
 
         numSubMeshes = mesh->getNumSubMeshes();
         for (i = 0; i < numSubMeshes; ++i)
         {
-            subMesh = mesh->getSubMesh(i);
-            subEnt = OGRE_NEW SubEntity(this, subMesh);
+            SubMesh* subMesh = mesh->getSubMesh(i);
+            SubEntity* subEnt = OGRE_NEW SubEntity(this, subMesh);
             if (subMesh->isMatInitialised())
                 subEnt->setMaterialName(subMesh->getMaterialName(), mesh->getGroup());
             sublist->push_back(subEnt);
@@ -1845,7 +1841,7 @@ namespace Ogre {
     ShadowCaster::ShadowRenderableListIterator
         Entity::getShadowVolumeRenderableIterator(
         ShadowTechnique shadowTechnique, const Light* light,
-        HardwareIndexBufferSharedPtr* indexBuffer,
+        HardwareIndexBufferSharedPtr* indexBuffer, size_t* indexBufferUsedSize,
         bool extrude, Real extrusionDistance, unsigned long flags)
     {
         assert(indexBuffer && "Only external index buffers are supported right now");
@@ -1858,10 +1854,10 @@ namespace Ogre {
             // Use alternate entity
             assert( static_cast< size_t >( mMeshLodIndex - 1 ) < mLodEntityList.size() &&
                 "No LOD EntityList - did you build the manual LODs after creating the entity?");
-            // delegate, we're using manual LOD and not the top lod index
+            // delegate, we're using manual LOD and not the top LOD index
             if (hasSkeleton() && mLodEntityList[mMeshLodIndex - 1]->hasSkeleton())
             {
-                // Copy the animation state set to lod entity, we assume the lod
+                // Copy the animation state set to LOD entity, we assume the lod
                 // entity only has a subset animation states
                 AnimationStateSet* targetState = mLodEntityList[mMeshLodIndex - 1]->mAnimationState;
 				if (mAnimationState != targetState) // only copy if lods have different skeleton instances
@@ -1871,8 +1867,8 @@ namespace Ogre {
 				}
             }
             return mLodEntityList[mMeshLodIndex-1]->getShadowVolumeRenderableIterator(
-                shadowTechnique, light, indexBuffer, extrude,
-                extrusionDistance, flags);
+                shadowTechnique, light, indexBuffer, indexBufferUsedSize,
+                extrude, extrusionDistance, flags);
         }
 
 
@@ -2006,8 +2002,8 @@ namespace Ogre {
         updateEdgeListLightFacing(edgeList, lightPos);
 
         // Generate indexes and update renderables
-        generateShadowVolume(edgeList, *indexBuffer, light,
-            mShadowRenderables, flags);
+        generateShadowVolume(edgeList, *indexBuffer, *indexBufferUsedSize,
+            light, mShadowRenderables, flags);
 
 
         return ShadowRenderableListIterator(mShadowRenderables.begin(), mShadowRenderables.end());

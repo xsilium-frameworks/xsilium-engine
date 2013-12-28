@@ -91,6 +91,7 @@ mName(name),
 mRenderQueue(0),
 mLastRenderQueueInvocationCustom(false),
 mAmbientLight(ColourValue::Black),
+mCameraInProgress(0),
 mCurrentViewport(0),
 mSceneRoot(0),
 mSkyPlaneEntity(0),
@@ -129,6 +130,7 @@ mShadowStencilPass(0),
 mShadowModulativePass(0),
 mShadowMaterialInitDone(false),
 mShadowIndexBufferSize(51200),
+mShadowIndexBufferUsedSize(0),
 mFullScreenQuad(0),
 mShadowDirLightExtrudeDist(10000),
 mIlluminationStage(IRS_NONE),
@@ -198,7 +200,7 @@ SceneManager::~SceneManager()
 
 	// clear down movable object collection map
 	{
-		OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex)
+            OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex);
 		for (MovableObjectCollectionMap::iterator i = mMovableObjectCollectionMap.begin();
 			i != mMovableObjectCollectionMap.end(); ++i)
 		{
@@ -323,8 +325,10 @@ bool SceneManager::hasCamera(const String& name) const
 //-----------------------------------------------------------------------
 void SceneManager::destroyCamera(Camera *cam)
 {
-	destroyCamera(cam->getName());
+    if(!cam)
+        OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Cannot destroy a null Camera.", "SceneManager::destroyCamera");
 
+	destroyCamera(cam->getName());
 }
 
 //-----------------------------------------------------------------------
@@ -361,7 +365,7 @@ void SceneManager::destroyAllCameras(void)
 		bool dontDelete = false;
 		 // dont destroy shadow texture cameras here. destroyAllCameras is public
 		ShadowTextureCameraList::iterator camShadowTexIt = mShadowTextureCameras.begin( );
-		for( ; camShadowTexIt != mShadowTextureCameras.end(); camShadowTexIt++ )
+		for( ; camShadowTexIt != mShadowTextureCameras.end(); ++camShadowTexIt )
 		{
 			if( (*camShadowTexIt) == camIt->second )
 			{
@@ -371,7 +375,7 @@ void SceneManager::destroyAllCameras(void)
 		}
 
 		if( dontDelete )	// skip this camera
-			camIt++;
+			++camIt;
 		else 
 		{
 			destroyCamera(camIt->second);
@@ -888,8 +892,10 @@ void SceneManager::destroySceneNode(const String& name)
 //---------------------------------------------------------------------
 void SceneManager::destroySceneNode(SceneNode* sn)
 {
-	destroySceneNode(sn->getName());
+    if(!sn)
+        OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Cannot destroy a null SceneNode.", "SceneManager::destroySceneNode");
 
+	destroySceneNode(sn->getName());
 }
 //-----------------------------------------------------------------------
 SceneNode* SceneManager::getRootSceneNode(void)
@@ -1396,7 +1402,7 @@ void SceneManager::_renderScene(Camera* camera, Viewport* vp, bool includeOverla
 
 	{
 		// Lock scene graph mutex, no more changes until we're ready to render
-		OGRE_LOCK_MUTEX(sceneGraphMutex)
+            OGRE_LOCK_MUTEX(sceneGraphMutex);
 
 		// Update scene graph for this camera (can happen multiple times per frame)
 		{
@@ -1773,7 +1779,7 @@ void SceneManager::_setSkyBox(
 			!m->getBestTechnique()->getNumPasses())
 		{
 			LogManager::getSingleton().logMessage(
-				"Warning, skybox material " + materialName + " is not supported, defaulting.");
+				"Warning, skybox material " + materialName + " is not supported, defaulting.", LML_CRITICAL);
 			m = MaterialManager::getSingleton().getDefaultSettings();
 		}
 
@@ -3679,7 +3685,7 @@ void SceneManager::setDisplaySceneNodes(bool display)
 //-----------------------------------------------------------------------
 Animation* SceneManager::createAnimation(const String& name, Real length)
 {
-	OGRE_LOCK_MUTEX(mAnimationsListMutex)
+    OGRE_LOCK_MUTEX(mAnimationsListMutex);
 
     // Check name not used
     if (mAnimationsList.find(name) != mAnimationsList.end())
@@ -3697,7 +3703,7 @@ Animation* SceneManager::createAnimation(const String& name, Real length)
 //-----------------------------------------------------------------------
 Animation* SceneManager::getAnimation(const String& name) const
 {
-	OGRE_LOCK_MUTEX(mAnimationsListMutex)
+    OGRE_LOCK_MUTEX(mAnimationsListMutex);
 
 	AnimationList::const_iterator i = mAnimationsList.find(name);
     if (i == mAnimationsList.end())
@@ -3711,13 +3717,13 @@ Animation* SceneManager::getAnimation(const String& name) const
 //-----------------------------------------------------------------------
 bool SceneManager::hasAnimation(const String& name) const
 {
-	OGRE_LOCK_MUTEX(mAnimationsListMutex)
+    OGRE_LOCK_MUTEX(mAnimationsListMutex);
 	return (mAnimationsList.find(name) != mAnimationsList.end());
 }
 //-----------------------------------------------------------------------
 void SceneManager::destroyAnimation(const String& name)
 {
-	OGRE_LOCK_MUTEX(mAnimationsListMutex)
+    OGRE_LOCK_MUTEX(mAnimationsListMutex);
 
 	// Also destroy any animation states referencing this animation
 	mAnimationStates.removeAnimationState(name);
@@ -3739,7 +3745,7 @@ void SceneManager::destroyAnimation(const String& name)
 //-----------------------------------------------------------------------
 void SceneManager::destroyAllAnimations(void)
 {
-	OGRE_LOCK_MUTEX(mAnimationsListMutex)
+    OGRE_LOCK_MUTEX(mAnimationsListMutex);
     // Destroy all states too, since they cannot reference destroyed animations
     destroyAllAnimationStates();
 
@@ -3786,7 +3792,7 @@ void SceneManager::destroyAllAnimationStates(void)
 void SceneManager::_applySceneAnimations(void)
 {
 	// manual lock over states (extended duration required)
-	OGRE_LOCK_MUTEX(mAnimationStates.OGRE_AUTO_MUTEX_NAME)
+    OGRE_LOCK_MUTEX(mAnimationStates.OGRE_AUTO_MUTEX_NAME);
 
 	// Iterate twice, once to reset, once to apply, to allow blending
     ConstEnabledAnimationStateIterator stateIt = mAnimationStates.getEnabledAnimationStateIterator();
@@ -4256,7 +4262,7 @@ void SceneManager::setShadowTechnique(ShadowTechnique technique)
         {
             LogManager::getSingleton().logMessage(
                 "WARNING: Stencil shadows were requested, but this device does not "
-                "have a hardware stencil. Shadows disabled.");
+                "have a hardware stencil. Shadows disabled.", LML_CRITICAL);
             mShadowTechnique = SHADOWTYPE_NONE;
         }
         else if (mShadowIndexBuffer.isNull())
@@ -4408,7 +4414,7 @@ void SceneManager::findLightsAffectingFrustum(const Camera* camera)
 
 
 	{
-		OGRE_LOCK_MUTEX(lights->mutex)
+            OGRE_LOCK_MUTEX(lights->mutex);
 
 		// Pre-allocate memory
 		mTestLightInfos.clear();
@@ -5007,7 +5013,9 @@ const Pass* SceneManager::deriveShadowCasterPass(const Pass* pass)
 		}
         
 		// handle the case where there is no fixed pipeline support
-		retPass->getParent()->getParent()->compile();
+		if( retPass->getParent()->getParent()->getCompilationRequired() )
+			retPass->getParent()->getParent()->compile();
+
         Technique* btech = retPass->getParent()->getParent()->getBestTechnique();
         if( btech )
         {
@@ -5194,7 +5202,9 @@ const Pass* SceneManager::deriveShadowReceiverPass(const Pass* pass)
 		retPass->_load();
 
 		// handle the case where there is no fixed pipeline support
-		retPass->getParent()->getParent()->compile();
+		if( retPass->getParent()->getParent()->getCompilationRequired() )
+			retPass->getParent()->getParent()->compile();
+
         Technique* btech = retPass->getParent()->getParent()->getBestTechnique();
         if( btech )
         {
@@ -5631,8 +5641,8 @@ void SceneManager::renderShadowVolumesToStencil(const Light* light,
         // Get shadow renderables			
         ShadowCaster::ShadowRenderableListIterator iShadowRenderables =
             caster->getShadowVolumeRenderableIterator(mShadowTechnique,
-            light, &mShadowIndexBuffer, extrudeInSoftware, 
-            extrudeDist, flags);
+            light, &mShadowIndexBuffer, &mShadowIndexBufferUsedSize,
+            extrudeInSoftware, extrudeDist, flags);
 
         // Render a shadow volume here
         //  - if we have 2-sided stencil, one render with no culling
@@ -5864,6 +5874,7 @@ void SceneManager::setShadowIndexBufferSize(size_t size)
             false);
     }
     mShadowIndexBufferSize = size;
+	mShadowIndexBufferUsedSize = 0;
 }
 //---------------------------------------------------------------------
 void SceneManager::setShadowTextureConfig(size_t shadowIndex, unsigned short width, 
@@ -6362,11 +6373,11 @@ void SceneManager::prepareShadowTextures(Camera* cam, Viewport* vp, const LightL
 			shadowTextureIndex += textureCountPerLight;
 		}
 	}
-	catch (Exception& e) 
+	catch (Exception&) 
 	{
 		// we must reset the illumination stage if an exception occurs
 		mIlluminationStage = savedStage;
-		throw e;
+		throw;
 	}
     // Set the illumination stage, prevents recursive calls
     mIlluminationStage = savedStage;
@@ -6709,7 +6720,7 @@ void SceneManager::updateDirtyInstanceManagers(void)
 }
 //---------------------------------------------------------------------
 AxisAlignedBoxSceneQuery* 
-SceneManager::createAABBQuery(const AxisAlignedBox& box, unsigned long mask)
+SceneManager::createAABBQuery(const AxisAlignedBox& box, uint32 mask)
 {
     DefaultAxisAlignedBoxSceneQuery* q = OGRE_NEW DefaultAxisAlignedBoxSceneQuery(this);
     q->setBox(box);
@@ -6718,7 +6729,7 @@ SceneManager::createAABBQuery(const AxisAlignedBox& box, unsigned long mask)
 }
 //---------------------------------------------------------------------
 SphereSceneQuery* 
-SceneManager::createSphereQuery(const Sphere& sphere, unsigned long mask)
+SceneManager::createSphereQuery(const Sphere& sphere, uint32 mask)
 {
     DefaultSphereSceneQuery* q = OGRE_NEW DefaultSphereSceneQuery(this);
     q->setSphere(sphere);
@@ -6728,7 +6739,7 @@ SceneManager::createSphereQuery(const Sphere& sphere, unsigned long mask)
 //---------------------------------------------------------------------
 PlaneBoundedVolumeListSceneQuery* 
 SceneManager::createPlaneBoundedVolumeQuery(const PlaneBoundedVolumeList& volumes, 
-                                            unsigned long mask)
+                                            uint32 mask)
 {
     DefaultPlaneBoundedVolumeListSceneQuery* q = OGRE_NEW DefaultPlaneBoundedVolumeListSceneQuery(this);
     q->setVolumes(volumes);
@@ -6738,7 +6749,7 @@ SceneManager::createPlaneBoundedVolumeQuery(const PlaneBoundedVolumeList& volume
 
 //---------------------------------------------------------------------
 RaySceneQuery* 
-SceneManager::createRayQuery(const Ray& ray, unsigned long mask)
+SceneManager::createRayQuery(const Ray& ray, uint32 mask)
 {
     DefaultRaySceneQuery* q = OGRE_NEW DefaultRaySceneQuery(this);
     q->setRay(ray);
@@ -6747,7 +6758,7 @@ SceneManager::createRayQuery(const Ray& ray, unsigned long mask)
 }
 //---------------------------------------------------------------------
 IntersectionSceneQuery* 
-SceneManager::createIntersectionQuery(unsigned long mask)
+SceneManager::createIntersectionQuery(uint32 mask)
 {
 
     DefaultIntersectionSceneQuery* q = OGRE_NEW DefaultIntersectionSceneQuery(this);
@@ -6764,7 +6775,7 @@ SceneManager::MovableObjectCollection*
 SceneManager::getMovableObjectCollection(const String& typeName)
 {
 	// lock collection mutex
-	OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex)
+    OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex);
 
 	MovableObjectCollectionMap::iterator i = 
 		mMovableObjectCollectionMap.find(typeName);
@@ -6785,7 +6796,7 @@ const SceneManager::MovableObjectCollection*
 SceneManager::getMovableObjectCollection(const String& typeName) const
 {
 	// lock collection mutex
-	OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex)
+    OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex);
 
 	MovableObjectCollectionMap::const_iterator i = 
 		mMovableObjectCollectionMap.find(typeName);
@@ -6815,7 +6826,7 @@ MovableObject* SceneManager::createMovableObject(const String& name,
 	MovableObjectCollection* objectMap = getMovableObjectCollection(typeName);
 
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 
 		if (objectMap->map.find(name) != objectMap->map.end())
 		{
@@ -6851,7 +6862,7 @@ void SceneManager::destroyMovableObject(const String& name, const String& typeNa
 		Root::getSingleton().getMovableObjectFactory(typeName);
 
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 
 		MovableObjectMap::iterator mi = objectMap->map.find(name);
 		if (mi != objectMap->map.end())
@@ -6875,7 +6886,7 @@ void SceneManager::destroyAllMovableObjectsByType(const String& typeName)
 		Root::getSingleton().getMovableObjectFactory(typeName);
 	
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 		MovableObjectMap::iterator i = objectMap->map.begin();
 		for (; i != objectMap->map.end(); ++i)
 		{
@@ -6892,7 +6903,7 @@ void SceneManager::destroyAllMovableObjectsByType(const String& typeName)
 void SceneManager::destroyAllMovableObjects(void)
 {
 	// Lock collection mutex
-	OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex)
+    OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex);
 
 	MovableObjectCollectionMap::iterator ci = mMovableObjectCollectionMap.begin();
 
@@ -6901,7 +6912,7 @@ void SceneManager::destroyAllMovableObjects(void)
 		MovableObjectCollection* coll = ci->second;
 
 		// lock map mutex
-		OGRE_LOCK_MUTEX(coll->mutex)
+		OGRE_LOCK_MUTEX(coll->mutex);
 
 		if (Root::getSingleton().hasMovableObjectFactory(ci->first))
 		{
@@ -6933,7 +6944,7 @@ MovableObject* SceneManager::getMovableObject(const String& name, const String& 
 	const MovableObjectCollection* objectMap = getMovableObjectCollection(typeName);
 	
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 		MovableObjectMap::const_iterator mi = objectMap->map.find(name);
 		if (mi == objectMap->map.end())
 		{
@@ -6953,7 +6964,7 @@ bool SceneManager::hasMovableObject(const String& name, const String& typeName) 
 	{
 		return hasCamera(name);
 	}
-	OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex)
+	OGRE_LOCK_MUTEX(mMovableObjectCollectionMapMutex);
 
 	MovableObjectCollectionMap::const_iterator i = 
 		mMovableObjectCollectionMap.find(typeName);
@@ -6961,7 +6972,7 @@ bool SceneManager::hasMovableObject(const String& name, const String& typeName) 
 		return false;
 	
 	{
-		OGRE_LOCK_MUTEX(i->second->mutex)
+            OGRE_LOCK_MUTEX(i->second->mutex);
 		return (i->second->map.find(name) != i->second->map.end());
 	}
 }
@@ -6977,6 +6988,9 @@ SceneManager::getMovableObjectIterator(const String& typeName)
 //---------------------------------------------------------------------
 void SceneManager::destroyMovableObject(MovableObject* m)
 {
+    if(!m)
+        OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Cannot destroy a null MovableObject.", "SceneManager::destroyMovableObject");
+
 	destroyMovableObject(m->getName(), m->getMovableType());
 }
 //---------------------------------------------------------------------
@@ -6984,7 +6998,7 @@ void SceneManager::injectMovableObject(MovableObject* m)
 {
 	MovableObjectCollection* objectMap = getMovableObjectCollection(m->getMovableType());
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 
 		objectMap->map[m->getName()] = m;
 	}
@@ -6994,7 +7008,7 @@ void SceneManager::extractMovableObject(const String& name, const String& typeNa
 {
 	MovableObjectCollection* objectMap = getMovableObjectCollection(typeName);
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 		MovableObjectMap::iterator mi = objectMap->map.find(name);
 		if (mi != objectMap->map.end())
 		{
@@ -7014,7 +7028,7 @@ void SceneManager::extractAllMovableObjectsByType(const String& typeName)
 {
 	MovableObjectCollection* objectMap = getMovableObjectCollection(typeName);
 	{
-		OGRE_LOCK_MUTEX(objectMap->mutex)
+            OGRE_LOCK_MUTEX(objectMap->mutex);
 		// no deletion
 		objectMap->map.clear();
 	}
@@ -7188,7 +7202,8 @@ void SceneManager::setViewMatrix(const Matrix4& m)
 	if (mDestRenderSystem->areFixedFunctionLightsInViewSpace())
 	{
 		// reset light hash if we've got lights already set
-		mLastLightHash = mLastLightHash ? 0 : mLastLightHash;
+        if(mLastLightHash)
+            mLastLightHash = 0;
 	}
 }
 //---------------------------------------------------------------------

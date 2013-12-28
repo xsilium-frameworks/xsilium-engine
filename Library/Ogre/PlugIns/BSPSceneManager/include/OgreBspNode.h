@@ -42,7 +42,7 @@ namespace Ogre {
         it's children and these elements can either be further subdivided by planes,
         or they can be undivided spaces or 'leaf nodes' - these are the nodes which actually contain
         objects and world geometry.The leaves of the tree are the stopping point of any tree walking algorithm,
-        both for rendering and collision detection etc.</p>
+        both for rendering and collision detection etc.
         Ogre chooses not to represent splitting nodes and leaves as separate structures, but to merge the two for simplicity
         of the walking algorithm. If a node is a leaf, the isLeaf() method returns true and both getFront() and
         getBack() return null pointers. If the node is a partitioning plane isLeaf() returns false and getFront()
@@ -147,16 +147,16 @@ namespace Ogre {
         struct Brush
         {
 			list<Plane>::type planes;
-            SceneQuery::WorldFragment fragment; // For query reporting
+            SceneQuery::WorldFragment fragment; /// For query reporting
         };
-		typedef vector<Brush*>::type NodeBrushList; // Main brush memory held on level
+		typedef vector<Brush*>::type NodeBrushList; /// Main brush memory held on level
 
         /** Get the list of solid Brushes for this node.
         @remarks Only applicable for leaf nodes. 
         */
         const NodeBrushList& getSolidBrushes(void) const;
     protected:
-        BspLevel* mOwner; // Back-reference to containing level
+        BspLevel* mOwner; /// Back-reference to containing level
         bool mIsLeaf;
 
         // Node-only members

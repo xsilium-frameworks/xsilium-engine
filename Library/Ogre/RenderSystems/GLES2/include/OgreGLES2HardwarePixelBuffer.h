@@ -61,7 +61,7 @@ namespace Ogre {
         
         public:
             /// Should be called by HardwareBufferManager
-            GLES2HardwarePixelBuffer(size_t mWidth, size_t mHeight, size_t mDepth,
+            GLES2HardwarePixelBuffer(uint32 mWidth, uint32 mHeight, uint32 mDepth,
                                   PixelFormat mFormat,
                                   HardwareBuffer::Usage usage);
 
@@ -85,7 +85,7 @@ namespace Ogre {
             {
         public:
             /** Texture constructor */
-            GLES2TextureBuffer(const String &baseName, GLenum target, GLuint id, GLint width, GLint height, GLint internalFormat,
+            GLES2TextureBuffer(const String &baseName, GLenum target, GLuint id, GLint width, GLint height, GLint depth, GLint internalFormat,
                                GLint format, GLint face, GLint level, Usage usage, bool softwareMipmap, bool writeGamma, uint fsaa);
             virtual ~GLES2TextureBuffer();
 
@@ -131,6 +131,7 @@ namespace Ogre {
             GLenum mTarget;
             GLenum mFaceTarget; // same as mTarget in case of GL_TEXTURE_xD, but cubemap face for cubemaps
             GLuint mTextureID;
+            GLuint mBufferId;
             GLint mFace;
             GLint mLevel;
             bool mSoftwareMipmap;
@@ -146,7 +147,7 @@ namespace Ogre {
     class _OgreGLES2Export GLES2RenderBuffer: public GLES2HardwarePixelBuffer
     {
         public:
-            GLES2RenderBuffer(GLenum format, size_t width, size_t height, GLsizei numSamples);
+            GLES2RenderBuffer(GLenum format, uint32 width, uint32 height, GLsizei numSamples);
             virtual ~GLES2RenderBuffer();
 
             /// @copydoc GLES2HardwarePixelBuffer::bindToFramebuffer

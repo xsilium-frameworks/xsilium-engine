@@ -174,6 +174,27 @@ namespace Ogre {
         }
     }
     //-----------------------------------------------------------------------
+    size_t Material::calculateSize(void) const
+    {
+        size_t memSize = 0;
+
+        // Tally up techniques
+        Techniques::const_iterator i, iend;
+        iend = mTechniques.end();
+        for (i = mTechniques.begin(); i != iend; ++i)
+        {
+            memSize += (*i)->calculateSize();
+        }
+
+        memSize += sizeof(bool) * 3;
+        memSize += mUnsupportedReasons.size() * sizeof(char);
+        memSize += sizeof(LodStrategy);
+
+        memSize += Resource::calculateSize();
+
+        return memSize;
+    }
+    //-----------------------------------------------------------------------
     MaterialPtr Material::clone(const String& newName, bool changeGroup, 
 		const String& newGroup) const
     {
@@ -495,7 +516,7 @@ namespace Ogre {
         // Did we find any?
         if (mSupportedTechniques.empty())
         {
-			LogManager::getSingleton().stream()
+            LogManager::getSingleton().stream(LML_CRITICAL)
 				<< "WARNING: material " << mName << " has no supportable "
 				<< "Techniques and will be blank. Explanation: \n" << mUnsupportedReasons;
         }
@@ -825,7 +846,7 @@ namespace Ogre {
         assert(mLodValues.size());
         mLodValues[0] = mLodStrategy->getBaseValue();
 
-        // Re-transform all user lod values (starting at index 1, no need to transform base value)
+        // Re-transform all user LOD values (starting at index 1, no need to transform base value)
         for (size_t i = 1; i < mUserLodValues.size(); ++i)
             mLodValues[i] = mLodStrategy->transformUserValue(mUserLodValues[i]);
     }

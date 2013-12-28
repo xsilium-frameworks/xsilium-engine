@@ -148,7 +148,7 @@ namespace Ogre
 			/// The cFactor value used to calculate transitionDist
 			Real lastCFactor;
 
-			LodLevel() : gpuIndexData(0), maxHeightDelta(0), calcMaxHeightDelta(0),
+			LodLevel() : batchSize(0), gpuIndexData(0), maxHeightDelta(0), calcMaxHeightDelta(0),
 				lastTransitionDist(0), lastCFactor(0) {}
 		};
 		typedef vector<LodLevel*>::type LodLevelList;
@@ -272,17 +272,17 @@ namespace Ogre
 
 		uint16 mOffsetX, mOffsetY;
 		uint16 mBoundaryX, mBoundaryY;
-		/// the number of vertices at the original terrain resolution this node encompasses
+		/// The number of vertices at the original terrain resolution this node encompasses
 		uint16 mSize;
 		uint16 mBaseLod;
 		uint16 mDepth;
 		uint16 mQuadrant;
-		Vector3 mLocalCentre; // relative to terrain centre
-		AxisAlignedBox mAABB; //relative to mLocalCentre
-		Real mBoundingRadius; //relative to mLocalCentre
-		int mCurrentLod; // -1 = none (do not render)
+		Vector3 mLocalCentre; /// Relative to terrain centre
+		AxisAlignedBox mAABB; /// Relative to mLocalCentre
+		Real mBoundingRadius; /// Relative to mLocalCentre
+		int mCurrentLod; /// -1 = none (do not render)
 		unsigned short mMaterialLodIndex;
-		float mLodTransition; // 0-1 transition to lower LOD
+		float mLodTransition; /// 0-1 transition to lower LOD
 		/// The child with the largest height delta 
 		TerrainQuadTreeNode* mChildWithMaxHeightDelta;
 		bool mSelfOrChildRendered;
@@ -291,9 +291,9 @@ namespace Ogre
 		{
 			VertexData* cpuVertexData;
 			VertexData* gpuVertexData;
-			/// resolution of the data compared to the base terrain data (NOT number of vertices!)
+			/// Resolution of the data compared to the base terrain data (NOT number of vertices!)
 			uint16 resolution;
-			/// size of the data along one edge
+			/// Size of the data along one edge
 			uint16 size;
 			/// Number of quadtree levels (including this one) this data applies to
 			uint16 treeLevels;
@@ -306,7 +306,8 @@ namespace Ogre
 
 			VertexDataRecord(uint16 res, uint16 sz, uint16 lvls) 
 				: cpuVertexData(0), gpuVertexData(0), resolution(res), size(sz),
-				treeLevels(lvls), gpuVertexDataDirty(false) {}
+				treeLevels(lvls), numSkirtRowsCols(0),
+                skirtRowColSkip(0), gpuVertexDataDirty(false) {}
 		};
 		
 		TerrainQuadTreeNode* mNodeWithVertexData;

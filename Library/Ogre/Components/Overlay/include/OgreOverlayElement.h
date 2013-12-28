@@ -148,9 +148,9 @@ namespace Ogre {
         Real mPixelScaleX;
         Real mPixelScaleY;
 
-        // Parent pointer
+        /// Parent pointer
         OverlayContainer* mParent;
-        // Overlay attached to
+        /// Overlay attached to
         Overlay* mOverlay;
 
         // Derived positions from parent
@@ -163,20 +163,20 @@ namespace Ogre {
 		/// Flag indicating if the vertex uvs need recalculating
 		bool mGeomUVsOutOfDate;
 
-        // Zorder for when sending to render queue
-        // Derived from parent
+        /** Zorder for when sending to render queue.
+            Derived from parent */
         ushort mZOrder;
 
-        // world transforms
+        /// World transforms
         Matrix4 mXForm;
 
-        // is element enabled
+        /// Is element enabled?
         bool mEnabled;
 
-		// is element initialised
+		/// Is element initialised?
 		bool mInitialised;
 
-        // Used to see if this element is created from a Template
+        /// Used to see if this element is created from a Template
         OverlayElement* mSourceTemplate ;
 
         /** Internal method which is triggered when the positions of the element get updated,
@@ -325,17 +325,17 @@ namespace Ogre {
         /** Gets the clipping region of the element */
         virtual void _getClippingRegion(RealRect &clippingRegion);
 
-        /** Internal method to notify the element when Zorder of parent overlay
+        /** Internal method to notify the element when Z-order of parent overlay
         has changed.
         @remarks
-        Overlays have explicit Z orders. OverlayElements do not, they inherit the 
-        ZOrder of the overlay, and the Zorder is incremented for every container
+        Overlays have explicit Z-orders. OverlayElements do not, they inherit the 
+        Z-order of the overlay, and the Z-order is incremented for every container
         nested within this to ensure that containers are displayed behind contained
         items. This method is used internally to notify the element of a change in
-        final zorder which is used to render the element.
-		@return Return the next zordering number available. For single elements, this
-		is simply newZOrder + 1, but for containers, they increment it once for each
-		child (more if those children are also containers).
+        final Z-order which is used to render the element.
+		@return Return the next Z-ordering number available. For single elements, this
+		is simply 'newZOrder + 1', except for containers. They increment it once for each
+		child (or even more if those children are also containers with their own elements).
         */
         virtual ushort _notifyZOrder(ushort newZOrder);
 
@@ -483,7 +483,7 @@ namespace Ogre {
         virtual void copyFromTemplate(OverlayElement* templateOverlay);
         virtual OverlayElement* clone(const String& instanceName);
 
-        // Returns the SourceTemplate for this element
+        /// Returns the SourceTemplate for this element
         const OverlayElement* getSourceTemplate () const {
           return mSourceTemplate ;
         }

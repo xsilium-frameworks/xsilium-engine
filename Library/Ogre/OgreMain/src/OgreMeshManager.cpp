@@ -71,6 +71,11 @@ namespace Ogre
         ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
     }
     //-----------------------------------------------------------------------
+    MeshPtr MeshManager::getByName(const String& name, const String& groupName)
+    {
+        return getResourceByName(name, groupName).staticCast<Mesh>();
+    }
+    //-----------------------------------------------------------------------
     void MeshManager::_initialise(void)
     {
         // Create prefab objects
@@ -89,7 +94,7 @@ namespace Ogre
     {
         ResourceCreateOrRetrieveResult res = 
             ResourceManager::createOrRetrieve(name,group,isManual,loader,params);
-		MeshPtr pMesh = res.first;
+		MeshPtr pMesh = res.first.staticCast<Mesh>();
 		// Was it created?
         if (res.second)
         {
@@ -107,7 +112,7 @@ namespace Ogre
     {
 		MeshPtr pMesh = createOrRetrieve(filename,groupName,false,0,0,
                                          vertexBufferUsage,indexBufferUsage,
-                                         vertexBufferShadowed,indexBufferShadowed).first;
+                                         vertexBufferShadowed,indexBufferShadowed).first.staticCast<Mesh>();
 		pMesh->prepare();
         return pMesh;
     }
@@ -119,16 +124,23 @@ namespace Ogre
     {
 		MeshPtr pMesh = createOrRetrieve(filename,groupName,false,0,0,
                                          vertexBufferUsage,indexBufferUsage,
-                                         vertexBufferShadowed,indexBufferShadowed).first;
+                                         vertexBufferShadowed,indexBufferShadowed).first.staticCast<Mesh>();
 		pMesh->load();
         return pMesh;
+    }
+    //-----------------------------------------------------------------------
+    MeshPtr MeshManager::create (const String& name, const String& group,
+                                    bool isManual, ManualResourceLoader* loader,
+                                    const NameValuePairList* createParams)
+    {
+        return createResource(name,group,isManual,loader,createParams).staticCast<Mesh>();
     }
     //-----------------------------------------------------------------------
     MeshPtr MeshManager::createManual( const String& name, const String& groupName, 
         ManualResourceLoader* loader)
     {
 		// Don't try to get existing, create should fail if already exists
-        return create(name, groupName, true, loader);
+		return create(name, groupName, true, loader);
     }
     //-----------------------------------------------------------------------
     MeshPtr MeshManager::createPlane( const String& name, const String& groupName,
@@ -253,8 +265,7 @@ namespace Ogre
 		bool doubleSided, HardwareBuffer::Usage indexBufferUsage, bool indexShadowBuffer)
     {
         // The mesh is built, just make a list of indexes to spit out the triangles
-        unsigned short vInc, uInc, v, u, iterations;
-        unsigned short vCount, uCount;
+        unsigned short vInc, v, iterations;
 
         if (doubleSided)
         {
@@ -286,13 +297,13 @@ namespace Ogre
         while (iterations--)
         {
             // Make tris in a zigzag pattern (compatible with strips)
-            u = 0;
-            uInc = 1; // Start with moving +u
+            unsigned short u = 0;
+            unsigned short uInc = 1; // Start with moving +u
+            unsigned short vCount = meshHeight - 1;
 
-            vCount = meshHeight - 1;
             while (vCount--)
             {
-                uCount = meshWidth - 1;
+                unsigned short uCount = meshWidth - 1;
                 while (uCount--)
                 {
                     // First Tri in cell
@@ -941,7 +952,7 @@ namespace Ogre
         ResourcePtr res(pm);
         addImpl(res);
 
-        return res;
+        return res.staticCast<PatchMesh>();
     }
     //-----------------------------------------------------------------------
     void MeshManager::setPrepareAllMeshesForShadowVolumes(bool enable)

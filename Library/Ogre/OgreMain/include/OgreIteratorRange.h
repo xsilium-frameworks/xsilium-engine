@@ -31,17 +31,23 @@ THE SOFTWARE.
 #include "OgreHeaderPrefix.h"
 
 #if OGRE_USE_BOOST
-#   if OGRE_COMPILER == OGRE_COMPILER_CLANG || OGRE_COMPILER == OGRE_COMPILER_GCC
+#   if OGRE_COMPILER == OGRE_COMPILER_CLANG || OGRE_COMPILER == OGRE_COMPILER_GNUC
 #       pragma GCC diagnostic push
+#if OGRE_COMPILER == OGRE_COMPILER_GNUC
+#       pragma GCC diagnostic ignored "-Wpragmas"
+#elif OGRE_COMPILER == OGRE_COMPILER_CLANG
+#       pragma GCC diagnostic ignored "-Wdocumentation"
+#endif
 #       pragma GCC diagnostic ignored "-Wshadow"
 #       pragma GCC diagnostic ignored "-Wpadded"
 #       pragma GCC diagnostic ignored "-Wweak-vtables"
 #       pragma GCC diagnostic ignored "-Wall"
+#       pragma GCC diagnostic ignored "-Wundef"
 #   endif
 
 #   include <boost/range.hpp>
 
-#   if OGRE_COMPILER == OGRE_COMPILER_CLANG || OGRE_COMPILER == OGRE_COMPILER_GCC
+#   if OGRE_COMPILER == OGRE_COMPILER_CLANG || OGRE_COMPILER == OGRE_COMPILER_GNUC
 #       pragma GCC diagnostic pop
 #   endif
 #endif
@@ -50,9 +56,9 @@ namespace Ogre {
 
 /** 
  * 
- * \brief Base for an iterator_range
+ * @brief Base for an iterator_range
  * 
- * \param T iterator type   
+ * @tparam T iterator type
  * 
  * This class implements the minimal interface of the (boost::iterator_)range concept
  *\n Also it prepairs for direct usage of boost::iterator_range by providing the real used type via iterator_range::type
@@ -95,17 +101,17 @@ class iterator_range{
 		bool operator!=( const iterator_range& rhs ) const { return !operator==(rhs); }
 
 		/**
-		\brief typedef to fulfill container interface
+		@brief typedef to fulfill container interface
 		
-		\note there is no distinction between const_iterator and iterator.
+		@note there is no distinction between const_iterator and iterator.
 		
 		*/				
 		typedef T iterator;
 		
 		/**
-		\brief typedef to fulfill container interface
+		@brief typedef to fulfill container interface
 		
-		\note there is no distinction between const_iterator and iterator.
+		@note there is no distinction between const_iterator and iterator.
 		
 		*/						
 		typedef T const_iterator;
@@ -126,9 +132,9 @@ class iterator_range{
 
 /** 
  * 
- * \brief Predefined type
+ * @brief Predefined type
  * 
- * \param T iterator type   
+ * @tparam T iterator type
  *
  * compatility class for VectorIterator
 */
@@ -169,9 +175,9 @@ struct VectorRange : public iterator_range<typename T::iterator>::type
 
 /** 
  * 
- * \brief Predefined type
+ * @brief Predefined type
  * 
- * \param T iterator type   
+ * @tparam T iterator type
  *
  * compatility class for ConstVectorIterator
 */
@@ -230,9 +236,9 @@ struct ConstVectorRange : public iterator_range<typename T::const_iterator>::typ
 
 /** 
  * 
- * \brief Predefined type
+ * @brief Predefined type
  * 
- * \param T iterator type   
+ * @tparam T iterator type
  *
  * compatility class for MapIterator
 */
@@ -272,9 +278,9 @@ struct MapRange : public iterator_range<typename T::iterator>::type
 
 /** 
  * 
- * \brief Predefined type
+ * @brief Predefined type
  * 
- * \param T iterator type   
+ * @tparam T iterator type   
  *
  * compatility class for ConstMapIterator
 */

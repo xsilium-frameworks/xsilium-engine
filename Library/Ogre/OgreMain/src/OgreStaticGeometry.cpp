@@ -289,7 +289,7 @@ namespace Ogre {
 		{
 			LogManager::getSingleton().logMessage(
 				"WARNING (StaticGeometry): Manual LOD is not supported. "
-				"Using only highest LOD level for mesh " + msh->getName());
+				"Using only highest LOD level for mesh " + msh->getName(), LML_CRITICAL);
 		}
 
 		AxisAlignedBox sharedWorldBounds;
@@ -392,12 +392,10 @@ namespace Ogre {
 		// and while we're at it, build the remap we can use later
 		bool use32bitIndexes =
 			id->indexBuffer->getType() == HardwareIndexBuffer::IT_32BIT;
-		uint16 *p16;
-		uint32 *p32;
 		IndexRemap indexRemap;
 		if (use32bitIndexes)
 		{
-			p32 = static_cast<uint32*>(id->indexBuffer->lock(
+			uint32 *p32 = static_cast<uint32*>(id->indexBuffer->lock(
 				id->indexStart, 
 				id->indexCount * id->indexBuffer->getIndexSize(), 
 				HardwareBuffer::HBL_READ_ONLY));
@@ -406,7 +404,7 @@ namespace Ogre {
 		}
 		else
 		{
-			p16 = static_cast<uint16*>(id->indexBuffer->lock(
+			uint16 *p16 = static_cast<uint16*>(id->indexBuffer->lock(
 				id->indexStart, 
 				id->indexCount * id->indexBuffer->getIndexSize(), 
 				HardwareBuffer::HBL_READ_ONLY));
@@ -748,13 +746,13 @@ namespace Ogre {
 	{
 		mQueuedSubMeshes.push_back(qmesh);
 
-        // Set/check lod strategy
+        // Set/check LOD strategy
         const LodStrategy *lodStrategy = qmesh->submesh->parent->getLodStrategy();
         if (mLodStrategy == 0)
         {
             mLodStrategy = lodStrategy;
 
-            // First LOD mandatory, and always from base lod value
+            // First LOD mandatory, and always from base LOD value
             mLodValues.push_back(mLodStrategy->getBaseValue());
         }
         else
@@ -764,7 +762,7 @@ namespace Ogre {
                     "StaticGeometry::Region::assign");
         }
 
-		// update lod values
+		// update LOD values
 		ushort lodLevels = qmesh->submesh->parent->getNumLodLevels();
 		assert(qmesh->geometryLodList->size() == lodLevels);
 
@@ -818,7 +816,7 @@ namespace Ogre {
 
 
 
-					}
+	}
 	//--------------------------------------------------------------------------
 	const String& StaticGeometry::Region::getMovableType(void) const
 	{
@@ -834,20 +832,20 @@ namespace Ogre {
         // Cache squared view depth for use by GeometryBucket
         mSquaredViewDepth = mParentNode->getSquaredViewDepth(cam->getLodCamera());
 
-        // No lod strategy set yet, skip (this indicates that there are no submeshes)
+        // No LOD strategy set yet, skip (this indicates that there are no submeshes)
         if (mLodStrategy == 0)
             return;
 
         // Sanity check
         assert(!mLodValues.empty());
 
-        // Calculate lod value
+        // Calculate LOD value
         Real lodValue = mLodStrategy->getValue(this, cam);
 
-        // Store lod value for this strategy
+        // Store LOD value for this strategy
         mLodValue = lodValue;
 
-        // Get lod index
+        // Get LOD index
         mCurrentLod = mLodStrategy->getIndex(lodValue, mLodValues);
 	}
 	//--------------------------------------------------------------------------
@@ -898,7 +896,7 @@ namespace Ogre {
 	ShadowCaster::ShadowRenderableListIterator
 	StaticGeometry::Region::getShadowVolumeRenderableIterator(
 		ShadowTechnique shadowTechnique, const Light* light,
-		HardwareIndexBufferSharedPtr* indexBuffer,
+		HardwareIndexBufferSharedPtr* indexBuffer, size_t* indexBufferUsedSize,
 		bool extrude, Real extrusionDistance, unsigned long flags)
 	{
 		// Calculate the object space light details
@@ -920,8 +918,8 @@ namespace Ogre {
 		updateEdgeListLightFacing(edgeList, lightPos);
 
 		// Generate indexes and update renderables
-		generateShadowVolume(edgeList, *indexBuffer, light,
-			shadowRendList, flags);
+		generateShadowVolume(edgeList, *indexBuffer, *indexBufferUsedSize,
+			light, shadowRendList, flags);
 
 
 		return ShadowCaster::ShadowRenderableListIterator(shadowRendList.begin(), shadowRendList.end());
@@ -1121,8 +1119,8 @@ namespace Ogre {
 						if (p->hasVertexProgram())
 						{
 							mVertexProgramInUse = true;
-		}
-	}
+                        }
+                    }
 				}
 
 				while (geomIt.hasMoreElements())
@@ -1172,7 +1170,7 @@ namespace Ogre {
 	{
 		of << "LOD Bucket " << mLod << std::endl;
 		of << "------------------" << std::endl;
-		of << "Lod Value: " << mLodValue << std::endl;
+		of << "LOD Value: " << mLodValue << std::endl;
 		of << "Number of Materials: " << mMaterialBucketMap.size() << std::endl;
 		for (MaterialBucketMap::const_iterator i = mMaterialBucketMap.begin();
 			i != mMaterialBucketMap.end(); ++i)
@@ -1330,10 +1328,10 @@ namespace Ogre {
         // Get region
         Region *region = mParent->getParent();
 
-        // Get material lod strategy
+        // Get material LOD strategy
         const LodStrategy *materialLodStrategy = mMaterial->getLodStrategy();
 
-        // If material strategy doesn't match, recompute lod value with correct strategy
+        // If material strategy doesn't match, recompute LOD value with correct strategy
         if (materialLodStrategy != region->mLodStrategy)
             lodValue = materialLodStrategy->getValue(region, region->mCamera);
 
