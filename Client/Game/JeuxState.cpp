@@ -2,20 +2,11 @@
 
 
 using namespace Ogre;
-using namespace Forests;
 
 JeuxState::JeuxState()
-:    m_Loader(0),
-     m_TerrainImported(false),
-     m_SceneFile(Ogre::StringUtil::BLANK)
+:    m_Loader(0)
 {
-	m_MoveSpeed			= 1.0f;
-	m_RotateSpeed		= 0.3f;
-
 	m_bQuit             = false;
-	m_bLMouseDown = false;
-	m_bRMouseDown = false;
-
 	inputManager = InputManager::getSingletonPtr();
 	keyboardMap = KeyboardMap::getInstance();
 
