@@ -10,6 +10,7 @@ Chat::Chat(ControleInterface * controleInterface)
 	d_root = winMgr.loadLayoutFromFile("Console.layout");
 	d_root->setDestroyedByParent(false);
 
+
 	parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
 
 	// attach this window if parent is valid
@@ -147,7 +148,6 @@ void Chat::update()
 
 	if(event != NULL)
 	{
-
 		GuiInterface::EventGlobal();
 		switch(atoi(event->getProperty("eventType").c_str()))
 		{

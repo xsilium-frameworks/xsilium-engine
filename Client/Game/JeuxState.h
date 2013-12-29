@@ -5,11 +5,13 @@
 
 #include"Chat/GestionnaireChat/GestionnaireChat.h"
 
+
 #include "GestionnaireMeteo/GestionnaireMeteo.h"
 
 #include "Entite/Perso/Personnage.h"
 #include "Entite/GestionnaireEntite.h"
 #include "GestionnaireMouvement/GestionnaireMouvement.h"
+
 
 class JeuxState :public OIS::KeyListener, public GameState
 {
@@ -36,7 +38,7 @@ private:
 	bool						m_bQuit;
 
 	InputManager * inputManager;
-    DotSceneLoader* 			m_Loader;
+    	DotSceneLoader* 			m_Loader;
 
     GestionnaireMeteo* gestionnaireMeteo;
     Chat * chat;
