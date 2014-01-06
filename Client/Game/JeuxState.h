@@ -5,18 +5,6 @@
 
 #include"Chat/GestionnaireChat/GestionnaireChat.h"
 
-#include <OgreSubEntity.h>
-#include <OgreMaterialManager.h>
-#include <OgreTerrain.h>
-#include <OgreTerrainGroup.h>
-#include <OgreImage.h>
-
-
-#include "PagedGeometry.h"
-#include "GrassLoader.h"
-#include "BatchPage.h"
-#include "ImpostorPage.h"
-#include "TreeLoader3D.h"
 
 #include "GestionnaireMeteo/GestionnaireMeteo.h"
 
@@ -24,14 +12,6 @@
 #include "Entite/GestionnaireEntite.h"
 #include "GestionnaireMouvement/GestionnaireMouvement.h"
 
-class DotSceneLoader;
-
-namespace Forests
-{
-    class PagedGeometry;
-    class GrassLoader;
-    class GrassLayer;
-}
 
 class JeuxState :public OIS::KeyListener, public GameState
 {
@@ -57,32 +37,8 @@ private:
 
 	bool						m_bQuit;
 
-	Ogre::Vector3				m_TranslateVector;
-	Ogre::Real					m_MoveSpeed;
-	Ogre::Degree				m_RotateSpeed;
-	float						m_MoveScale;
-	Ogre::Degree				m_RotScale;
-
 	InputManager * inputManager;
-
-    std::vector<Ogre::String> 	mCamNames;
-    void 						switchCamera(int idx);
-
-
-    Ogre::TerrainGroup* 		mTerrainGroup;
-    bool 						m_TerrainImported;
-    Ogre::String 				m_SceneFile;
-
-    DotSceneLoader* 			m_Loader;
-
-	bool						m_bLMouseDown, m_bRMouseDown;
-
-    Forests::PagedGeometry* 	mPGHandle;                         /** Handle to Forests::PagedGeometry object */
-    Forests::GrassLoader* 		mGrassLoaderHandle;                /** Handle to Forests::GrassLoader object */
-    Forests::GrassLayer* 		mPGLayers[4];
-    float* 						mPGLayerData[4];
-    Ogre::Image 				mPGDensityMap;
-    Ogre::Rect 					mPGDirtyRect;
+    	DotSceneLoader* 			m_Loader;
 
     GestionnaireMeteo* gestionnaireMeteo;
     Chat * chat;

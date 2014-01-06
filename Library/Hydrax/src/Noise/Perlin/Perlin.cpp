@@ -25,6 +25,7 @@ Based on the perlin noise code from Claes Johanson thesis:
 http://graphics.cs.lth.se/theses/projects/projgrid/
 --------------------------------------------------------------------------------
 */
+#pragma warning(disable:4244)
 
 #include <Noise/Perlin/Perlin.h>
 

@@ -1,27 +1,24 @@
 #ifndef GUI_CHAT_UI_H_
 #define GUI_CHAT_UI_H_
 
-#include "Chat/GestionnaireChat/GestionnaireChat.h"
-
 #include "Interface/Interface.h"
 
-class GestionnaireChat;
 
 enum messageType
 {
-	ALL = 0,
+	ALL = LASTIDEVENTTYPE,
 };
 
 
 class Chat : public GuiInterface
 {
 public:
-    Chat();
+    Chat(ControleInterface * controleInterface);
     ~Chat();
 
-    bool setMessage(const char * message);
-
     void processMessage(Event * event);
+
+    void valideText();
 
 
     bool handleSubmit(const CEGUI::EventArgs& args);
@@ -36,7 +33,7 @@ public:
 private:
     int d_historyPos;
     std::vector<CEGUI::String> d_history;
-    GestionnaireChat * gestionnaireChat ;
+    ControleInterface * controleInterface ;
 
 
 };

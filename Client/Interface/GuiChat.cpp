@@ -2,28 +2,14 @@
 //Chat class
 
 
-Chat::Chat() :
-d_historyPos(0)
+Chat::Chat(ControleInterface * controleInterface)
 {
 
-	eventManager = new EventManager();
-
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
-
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-
 	d_root = winMgr.loadLayoutFromFile("Console.layout");
-
-	// we will destroy the console box windows ourselves
 	d_root->setDestroyedByParent(false);
 
-	gestionnaireChat = new GestionnaireChat(this);
-
-	// Do events wire-up
-	parent->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&Chat::handleKeyDown, this));
-
-	d_root->getChild("Editbox")->
-			subscribeEvent(CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber(&Chat::handleSubmit, this));
 
 	parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
 
@@ -36,8 +22,6 @@ d_historyPos(0)
 
 Chat::~Chat()
 {
-	delete gestionnaireChat;
-	delete eventManager;
 	if(d_root)
 	{
 		CEGUI::WindowManager::getSingleton().destroyWindow(d_root);
@@ -45,16 +29,11 @@ Chat::~Chat()
 	}
 }
 
-bool Chat::setMessage(const char * message)
+void Chat::valideText()
 {
-	std::string message_str(message);
-	Event event;
-	event.setProperty("eventType",ToString(ALL));
-	event.setProperty("message",message_str);
-	eventManager->addEvent(event);
-	return true;
 
 }
+
 void Chat::processMessage(Event * event)
 {
 	using namespace CEGUI;
@@ -90,7 +69,7 @@ bool Chat::handleSubmit(const CEGUI::EventArgs&)
 	// if the string is not empty
 	if (!edit_text.empty())
 	{
-		gestionnaireChat->sendMessageToChat(edit_text.c_str(),0);
+		//gestionnaireChat->sendMessageToChat(edit_text.c_str(),0);
 		// erase text in text entry box.
 		editbox->setText("");
 	}
@@ -169,7 +148,15 @@ void Chat::update()
 
 	if(event != NULL)
 	{
-		processMessage(event);
+		GuiInterface::EventGlobal();
+		switch(atoi(event->getProperty("eventType").c_str()))
+		{
+		case ALL:
+			processMessage(event);
+			break;
+		default:
+			break;
+		}
 		eventManager->removeEvent();
 	}
 }

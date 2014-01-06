@@ -27,7 +27,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 namespace Hydrax{namespace Noise
 {
     Noise::Noise(const Ogre::String &Name, const bool& GPUNormalMapSupported)
-		: mName(Name)
+		: mName(Name) 
 	    , mCreated(false)
 		, mGPUNormalMapSupported(GPUNormalMapSupported)
 		, mGPUNormalMapResourcesCreated(false)
@@ -87,11 +87,9 @@ namespace Hydrax{namespace Noise
 	{
 		if (CfgFile.getSetting("Noise") == mName)
 		{
-		    HydraxLOG(mName + " options entry found.");
 			return true;
 		}
 
-        HydraxLOG("Error (Noise::loadCfg):\t" + mName + " options entry can not be found.");
 		return false;
 	}
 }}

@@ -61,6 +61,12 @@ namespace Hydrax
 		 */
 		const bool save(const Ogre::String& File, const Ogre::String& Path = "") const;
 
+		/** Return current hydrax config as string 
+		    @param Data Destination string to save config in
+			@return false if an error has been ocurred(Check the log file in this case).
+		 */
+        const bool getSaveString(Ogre::String& Data) const;
+
 		/** <int> Get the cfg string
 		    @param Name Parameter name
 		    @param Value Parameter value
@@ -203,7 +209,7 @@ namespace Hydrax
 		    @return true if it's the same version, false if not.
 		 */
 		const bool _checkVersion(Ogre::ConfigFile& CfgFile) const;
-
+		    
 		/// Hydrax parent pointer
 		Hydrax* mHydrax;
 	};

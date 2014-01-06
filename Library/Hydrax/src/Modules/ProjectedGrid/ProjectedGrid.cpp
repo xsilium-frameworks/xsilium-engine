@@ -24,7 +24,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 Based on the Projected Grid concept from Claes Johanson thesis:
 http://graphics.cs.lth.se/theses/projects/projgrid/
 and Ren Cheng Ogre3D implementation:
-http://www.cnblogs.com/ArenAK/archive/2007/11/07/951713.html
+http://www.cnblogs.com/ArenAK/archive/2007/11/07/951713.html 
 --------------------------------------------------------------------------------
 */
 
@@ -56,7 +56,7 @@ namespace Hydrax{namespace Module
 	}
 
 	ProjectedGrid::ProjectedGrid(Hydrax *h, Noise::Noise *n, const Ogre::Plane &BasePlane, const MaterialManager::NormalMode& NormalMode)
-		: Module("ProjectedGrid" + _PG_getNormalModeString(NormalMode),
+		: Module("ProjectedGrid" + _PG_getNormalModeString(NormalMode), 
 		         n, Mesh::Options(256, Size(0), _PG_getVertexTypeFromNormalMode(NormalMode)), NormalMode)
 		, mHydrax(h)
 		, mVertices(0)
@@ -71,7 +71,7 @@ namespace Hydrax{namespace Module
 	}
 
 	ProjectedGrid::ProjectedGrid(Hydrax *h, Noise::Noise *n, const Ogre::Plane &BasePlane, const MaterialManager::NormalMode& NormalMode, const Options &Options)
-		: Module("ProjectedGrid" + _PG_getNormalModeString(NormalMode),
+		: Module("ProjectedGrid" + _PG_getNormalModeString(NormalMode), 
 		         n, Mesh::Options(Options.Complexity, Size(0), _PG_getVertexTypeFromNormalMode(NormalMode)), NormalMode)
 		, mHydrax(h)
 		, mVertices(0)
@@ -117,7 +117,7 @@ namespace Hydrax{namespace Module
 					HydraxLOG(mNoise->getName() + " doesn't support GPU Normal map generation.");
 				}
 			}
-
+			
 		    Ogre::String MaterialNameTmp = mHydrax->getMesh()->getMaterialName();
 		    mHydrax->getMesh()->remove();
 		    mHydrax->getMesh()->setOptions(getMeshOptions());
@@ -142,7 +142,7 @@ namespace Hydrax{namespace Module
 
 		if (getNormalMode() == MaterialManager::NM_VERTEX)
 		{
-		    mVertices = new Mesh::POS_NORM_VERTEX[mOptions.Complexity*mOptions.Complexity];
+		    mVertices = new Mesh::POS_NORM_VERTEX[mOptions.Complexity*mOptions.Complexity];	
 
 			Mesh::POS_NORM_VERTEX* Vertices = static_cast<Mesh::POS_NORM_VERTEX*>(mVertices);
 
@@ -182,12 +182,10 @@ namespace Hydrax{namespace Module
 			if (getNormalMode() == MaterialManager::NM_VERTEX)
 			{
 				delete [] static_cast<Mesh::POS_NORM_VERTEX*>(mVertices);
-				mVertices = 0;
 			}
 			else if (getNormalMode() == MaterialManager::NM_RTT)
 			{
 				delete [] static_cast<Mesh::POS_VERTEX*>(mVertices);
-				mVertices = 0;
 			}
 		}
 
@@ -226,7 +224,6 @@ namespace Hydrax{namespace Module
 			return false;
 		}
 
-        HydraxLOG("\tReading options...");
 		setOptions(
 			Options(CfgFileManager::_getIntValue(CfgFile,   "PG_Complexity"),
 			        CfgFileManager::_getFloatValue(CfgFile, "PG_Strength"),
@@ -235,8 +232,6 @@ namespace Hydrax{namespace Module
 					CfgFileManager::_getBoolValue(CfgFile,  "PG_ForceRecalculateGeometry"),
 					CfgFileManager::_getBoolValue(CfgFile,  "PG_ChoppyWaves"),
 					CfgFileManager::_getFloatValue(CfgFile, "PG_ChoopyStrength")));
-
-        HydraxLOG("\tOptions readed.");
 
 		return true;
 	}
@@ -252,7 +247,7 @@ namespace Hydrax{namespace Module
 
 		Ogre::Vector3 RenderingCameraPos = mRenderingCamera->getDerivedPosition();
 
-		if (mLastPosition    != RenderingCameraPos    ||
+		if (mLastPosition    != RenderingCameraPos    || 
 			mLastOrientation != mRenderingCamera->getDerivedOrientation() ||
 			mOptions.ForceRecalculateGeometry)
 		{
@@ -329,14 +324,14 @@ namespace Hydrax{namespace Module
 					for(v=1; v<(mOptions.Complexity-1); v++)
 					{
 						for(u=1; u<(mOptions.Complexity-1); u++)
-						{
-							Vertices[v*mOptions.Complexity + u].y =
+						{				
+							Vertices[v*mOptions.Complexity + u].y =	
 								 0.2f *
 								(Vertices[v    *mOptions.Complexity + u    ].y +
-								 Vertices[v    *mOptions.Complexity + (u+1)].y +
-								 Vertices[v    *mOptions.Complexity + (u-1)].y +
-								 Vertices[(v+1)*mOptions.Complexity + u    ].y +
-								 Vertices[(v-1)*mOptions.Complexity + u    ].y);
+								 Vertices[v    *mOptions.Complexity + (u+1)].y + 
+								 Vertices[v    *mOptions.Complexity + (u-1)].y + 
+								 Vertices[(v+1)*mOptions.Complexity + u    ].y + 
+								 Vertices[(v-1)*mOptions.Complexity + u    ].y);															
 						}
 					}
 				}
@@ -347,14 +342,14 @@ namespace Hydrax{namespace Module
 					for(v=1; v<(mOptions.Complexity-1); v++)
 					{
 						for(u=1; u<(mOptions.Complexity-1); u++)
-						{
-							Vertices[v*mOptions.Complexity + u].y =
+						{				
+							Vertices[v*mOptions.Complexity + u].y =	
 								 0.2f *
 								(Vertices[v    *mOptions.Complexity + u    ].y +
-								 Vertices[v    *mOptions.Complexity + (u+1)].y +
-								 Vertices[v    *mOptions.Complexity + (u-1)].y +
-								 Vertices[(v+1)*mOptions.Complexity + u    ].y +
-								 Vertices[(v-1)*mOptions.Complexity + u    ].y);
+								 Vertices[v    *mOptions.Complexity + (u+1)].y + 
+								 Vertices[v    *mOptions.Complexity + (u-1)].y + 
+								 Vertices[(v+1)*mOptions.Complexity + u    ].y + 
+								 Vertices[(v-1)*mOptions.Complexity + u    ].y);															
 						}
 					}
 				}
@@ -377,7 +372,7 @@ namespace Hydrax{namespace Module
 		t_corners1 = _calculeWorldPosition(Ogre::Vector2(+1.0f, 0.0f),m,_viewMat);
 		t_corners2 = _calculeWorldPosition(Ogre::Vector2( 0.0f,+1.0f),m,_viewMat);
 		t_corners3 = _calculeWorldPosition(Ogre::Vector2(+1.0f,+1.0f),m,_viewMat);
-
+	
 		float du  = 1.0f/(mOptions.Complexity-1),
 			  dv  = 1.0f/(mOptions.Complexity-1),
 			  u,v = 0.0f,
@@ -395,15 +390,15 @@ namespace Hydrax{namespace Module
 
 			for(iv=0; iv<mOptions.Complexity; iv++)
 			{
-				u = 0.0f;
+				u = 0.0f;	
 				_1_u = 1.0f;
 				for(iu=0; iu<mOptions.Complexity; iu++)
-				{
-					result.x = _1_v*(_1_u*t_corners0.x + u*t_corners1.x) + v*(_1_u*t_corners2.x + u*t_corners3.x);
-					result.z = _1_v*(_1_u*t_corners0.z + u*t_corners1.z) + v*(_1_u*t_corners2.z + u*t_corners3.z);
-					result.w = _1_v*(_1_u*t_corners0.w + u*t_corners1.w) + v*(_1_u*t_corners2.w + u*t_corners3.w);
+				{				
+					result.x = _1_v*(_1_u*t_corners0.x + u*t_corners1.x) + v*(_1_u*t_corners2.x + u*t_corners3.x);				
+					result.z = _1_v*(_1_u*t_corners0.z + u*t_corners1.z) + v*(_1_u*t_corners2.z + u*t_corners3.z);				
+					result.w = _1_v*(_1_u*t_corners0.w + u*t_corners1.w) + v*(_1_u*t_corners2.w + u*t_corners3.w);				
 
-					divide = 1.0f/result.w;
+					divide = 1.0f/result.w;				
 					result.x *= divide;
 					result.z *= divide;
 
@@ -433,15 +428,15 @@ namespace Hydrax{namespace Module
 
 			for(iv=0; iv<mOptions.Complexity; iv++)
 			{
-				u = 0.0f;
+				u = 0.0f;	
 				_1_u = 1.0f;
 				for(iu=0; iu<mOptions.Complexity; iu++)
-				{
-					result.x = _1_v*(_1_u*t_corners0.x + u*t_corners1.x) + v*(_1_u*t_corners2.x + u*t_corners3.x);
-					result.z = _1_v*(_1_u*t_corners0.z + u*t_corners1.z) + v*(_1_u*t_corners2.z + u*t_corners3.z);
-					result.w = _1_v*(_1_u*t_corners0.w + u*t_corners1.w) + v*(_1_u*t_corners2.w + u*t_corners3.w);
+				{				
+					result.x = _1_v*(_1_u*t_corners0.x + u*t_corners1.x) + v*(_1_u*t_corners2.x + u*t_corners3.x);				
+					result.z = _1_v*(_1_u*t_corners0.z + u*t_corners1.z) + v*(_1_u*t_corners2.z + u*t_corners3.z);				
+					result.w = _1_v*(_1_u*t_corners0.w + u*t_corners1.w) + v*(_1_u*t_corners2.w + u*t_corners3.w);				
 
-					divide = 1.0f/result.w;
+					divide = 1.0f/result.w;				
 					result.x *= divide;
 					result.z *= divide;
 
@@ -468,14 +463,14 @@ namespace Hydrax{namespace Module
 				for(iv=1; iv<(mOptions.Complexity-1); iv++)
 				{
 					for(iu=1; iu<(mOptions.Complexity-1); iu++)
-					{
-						Vertices[iv*mOptions.Complexity + iu].y =
+					{				
+						Vertices[iv*mOptions.Complexity + iu].y =	
 							 0.2f *
 							(Vertices[iv    *mOptions.Complexity + iu    ].y +
-							 Vertices[iv    *mOptions.Complexity + (iu+1)].y +
-							 Vertices[iv    *mOptions.Complexity + (iu-1)].y +
-							 Vertices[(iv+1)*mOptions.Complexity + iu    ].y +
-							 Vertices[(iv-1)*mOptions.Complexity + iu    ].y);
+							 Vertices[iv    *mOptions.Complexity + (iu+1)].y + 
+							 Vertices[iv    *mOptions.Complexity + (iu-1)].y + 
+							 Vertices[(iv+1)*mOptions.Complexity + iu    ].y + 
+							 Vertices[(iv-1)*mOptions.Complexity + iu    ].y);															
 					}
 				}
 			}
@@ -486,14 +481,14 @@ namespace Hydrax{namespace Module
 				for(iv=1; iv<(mOptions.Complexity-1); iv++)
 				{
 					for(iu=1; iu<(mOptions.Complexity-1); iu++)
-					{
-						Vertices[iv*mOptions.Complexity + iu].y =
+					{				
+						Vertices[iv*mOptions.Complexity + iu].y =	
 							 0.2f *
 							(Vertices[iv    *mOptions.Complexity + iu    ].y +
-							 Vertices[iv    *mOptions.Complexity + (iu+1)].y +
-							 Vertices[iv    *mOptions.Complexity + (iu-1)].y +
-							 Vertices[(iv+1)*mOptions.Complexity + iu    ].y +
-							 Vertices[(iv-1)*mOptions.Complexity + iu    ].y);
+							 Vertices[iv    *mOptions.Complexity + (iu+1)].y + 
+							 Vertices[iv    *mOptions.Complexity + (iu-1)].y + 
+							 Vertices[(iv+1)*mOptions.Complexity + iu    ].y + 
+							 Vertices[(iv-1)*mOptions.Complexity + iu    ].y);															
 					}
 				}
 			}
@@ -524,7 +519,7 @@ namespace Hydrax{namespace Module
 			{
 				vec1 = Ogre::Vector3(
 					Vertices[v*mOptions.Complexity + u + 1].x-Vertices[v*mOptions.Complexity + u - 1].x,
-					Vertices[v*mOptions.Complexity + u + 1].y-Vertices[v*mOptions.Complexity + u - 1].y,
+					Vertices[v*mOptions.Complexity + u + 1].y-Vertices[v*mOptions.Complexity + u - 1].y, 
 					Vertices[v*mOptions.Complexity + u + 1].z-Vertices[v*mOptions.Complexity + u - 1].z);
 
 				vec2 = Ogre::Vector3(
@@ -556,7 +551,7 @@ namespace Hydrax{namespace Module
 			Underwater = -1;
 		}
 
-		float Dis1,  Dis2;//,
+		float Dis1,  Dis2;//, 
 		   // Dis1_, Dis2_;
 
 		Ogre::Vector3 CameraDir, Norm;
@@ -589,7 +584,7 @@ namespace Hydrax{namespace Module
 			Dis1 = (Dis1+Dis1_)/2;*/
 
 			for(u=1; u<(mOptions.Complexity-1); u++)
-			{
+			{   
 				Dis2 = (Ogre::Vector2(mVerticesChoppyBuffer[v*mOptions.Complexity + u].x,
 					                  mVerticesChoppyBuffer[v*mOptions.Complexity + u].z) -
 					    Ogre::Vector2(mVerticesChoppyBuffer[v*mOptions.Complexity + u+1].x,
@@ -607,7 +602,7 @@ namespace Hydrax{namespace Module
 								     Vertices[v*mOptions.Complexity + u].nz).
 					   			     normalisedCopy();
 
-				Norm2 = Ogre::Vector2(Norm.x, Norm.z)  *
+				Norm2 = Ogre::Vector2(Norm.x, Norm.z)  * 
 					                 ( (Dir  * Dis1)   +
 					                   (Perp * Dis2))  *
 				 				      mOptions.ChoppyStrength;
@@ -618,9 +613,9 @@ namespace Hydrax{namespace Module
 		}
 	}
 
-	// Check the point of intersection with the plane (0,1,0,0) and return the position in homogenous coordinates
+	// Check the point of intersection with the plane (0,1,0,0) and return the position in homogenous coordinates 
 	Ogre::Vector4 ProjectedGrid::_calculeWorldPosition(const Ogre::Vector2 &uv, const Ogre::Matrix4& m, const Ogre::Matrix4& _viewMat)
-	{
+	{	
 		Ogre::Vector4 origin(uv.x,uv.y,-1,1);
 		Ogre::Vector4 direction(uv.x,uv.y,1,1);
 
@@ -655,7 +650,7 @@ namespace Hydrax{namespace Module
 			n_points = 0,
 			src, dst;
 
-		int cube[] =
+		int cube[] = 
 		   {0,1,	0,2,	2,3,	1,3,
 		    0,4,	2,6,	3,7,	1,5,
 		    4,6,	4,5,	5,7,	6,7};
@@ -686,7 +681,7 @@ namespace Hydrax{namespace Module
 		frustum[6] = invviewproj * Ogre::Vector3(-1,+1,+1);
 		frustum[7] = invviewproj * Ogre::Vector3(+1,+1,+1);
 
-		// Check intersections with upper_bound and lower_bound
+		// Check intersections with upper_bound and lower_bound	
 		for(i=0; i<12; i++)
 		{
 			src=cube[i*2]; dst=cube[i*2+1];
@@ -707,13 +702,13 @@ namespace Hydrax{namespace Module
 
 		// Check if any of the frustums vertices lie between the upper_bound and lower_bound planes
 		for(i=0; i<8; i++)
-		{
+		{	
 			if(mUpperBoundPlane.getDistance(frustum[i])/mLowerBoundPlane.getDistance(frustum[i]) < 0)
 			{
 				proj_points[n_points++] = frustum[i];
-			}
-		}
-
+			}		
+		}	
+	
 		// Set projecting camera parameters
 		mProjectingCamera->setFrustumOffset(mTmpRndrngCamera->getFrustumOffset());
 		mProjectingCamera->setAspectRatio(mTmpRndrngCamera->getAspectRatio());
@@ -723,14 +718,14 @@ namespace Hydrax{namespace Module
 		mProjectingCamera->setNearClipDistance(mTmpRndrngCamera->getNearClipDistance());
 		mProjectingCamera->setOrientation(mTmpRndrngCamera->getDerivedOrientation());
 		mProjectingCamera->setPosition(mTmpRndrngCamera->getDerivedPosition());
-
+	
 		// Make sure the camera isn't too close to the plane
 		float height_in_plane = mBasePlane.getDistance(mProjectingCamera->getRealPosition());
 
 		bool keep_it_simple = false,
 			 underwater     = false;
 
-		if (height_in_plane < 0.0f)
+		if (height_in_plane < 0.0f) 
 		{
 			underwater = true;
 		}
@@ -741,10 +736,10 @@ namespace Hydrax{namespace Module
 		}
 		else
 		{
-			Ogre::Vector3 aimpoint, aimpoint2;
+			Ogre::Vector3 aimpoint, aimpoint2;		
 
 			if (height_in_plane < (mOptions.Strength + mOptions.Elevation))
-			{
+			{					
 				if (underwater)
 				{
 					mProjectingCamera->setPosition(mProjectingCamera->getRealPosition()+mLowerBoundPlane.normal*(mOptions.Strength + mOptions.Elevation - 2*height_in_plane));
@@ -753,7 +748,7 @@ namespace Hydrax{namespace Module
 				{
 					mProjectingCamera->setPosition(mProjectingCamera->getRealPosition()+mLowerBoundPlane.normal*(mOptions.Strength + mOptions.Elevation - height_in_plane));
 				}
-			}
+			} 
 
 			// Aim the projector at the point where the camera view-vector intersects the plane
 			// if the camera is aimed away from the plane, mirror it's view-vector against the plane
@@ -766,7 +761,7 @@ namespace Hydrax{namespace Module
 				{
 					_result.second = -_result.second;
 				}
-
+				
 				aimpoint = mTmpRndrngCamera->getDerivedPosition() + _result.second * mTmpRndrngCamera->getDerivedDirection();
 			}
 			else
@@ -814,12 +809,12 @@ namespace Hydrax{namespace Module
 				if (proj_points[i].x < x_min) x_min = proj_points[i].x;
 				if (proj_points[i].y > y_max) y_max = proj_points[i].y;
 				if (proj_points[i].y < y_min) y_min = proj_points[i].y;
-			}
+			}		
 
 			// Build the packing matrix that spreads the grid across the "projection window"
 			Ogre::Matrix4 pack(x_max-x_min,	0,				0,		x_min,
 				               0,			y_max-y_min,	0,		y_min,
-				               0,			0,				1,		0,
+				               0,			0,				1,		0,	
 				               0,			0,				0,		1);
 
 			Ogre::Matrix4 invviewproj = (mProjectingCamera->getProjectionMatrixWithRSDepth()*mProjectingCamera->getViewMatrix()).inverse();

@@ -21,10 +21,11 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
+#pragma warning(disable:4244)
 
-#include <TextureManager.h>
+#include "TextureManager.h"
 
-#include <Hydrax.h>
+#include "Hydrax.h"
 
 namespace Hydrax
 {

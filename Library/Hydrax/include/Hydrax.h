@@ -42,7 +42,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Hydrax
 {
-    /** Main Hydrax class.
+    /** Main Hydrax class. 
 	    Hydrax is a plugin for the Ogre3D engine whose aim is rendering realistic water scenes.
 		Do not use two instances of the Hydrax class.
      */
@@ -125,7 +125,17 @@ namespace Hydrax
 			return mCfgFileManager->save(File, Path);
 		}
 
-		/** Load config from file
+		/** Save hydrax config to a string
+		    @param Data String to contain the output
+			@return false if an error has been ocurred(Check the log file in this case).
+			@remarks If module isn't set, module/noise options won't be saved.
+		 */
+		inline const bool saveCfg(Ogre::String &Data) const
+		{
+			return mCfgFileManager->getSaveString(Data);
+		}
+
+        /** Load config from file
 		    @param File File name
 			@return false if an error has been ocurred(Check the log file in this case).
 			@remarks The file must be registred in Hydrax resource group.
@@ -213,11 +223,6 @@ namespace Hydrax
          */
         void setDepthLimit(const Ogre::Real &DepthLimit);
 
-        /** Set distance limit underwater (occlusion)
-            @param DistLimit Distance limit
-         */
-        void setDistLimit(const Ogre::Real &DistLimit);
-
         /** Set smooth power
             @param SmoothPower Smooth power
             @remarks Less values more transition distance, hight values short transition values, 1-50 range(aprox.)
@@ -274,7 +279,7 @@ namespace Hydrax
 
 		/** Show/Hide hydrax water
 		    @param Visible true to show, false to hide
-			@remarks Resources aren't going to be realeased(Use remove() for this),
+			@remarks Resources aren't going to be realeased(Use remove() for this), 
 			         only RTT's are going to be stopped.
 		 */
 		void setVisible(const bool& Visible);
@@ -550,14 +555,6 @@ namespace Hydrax
             return mDepthLimit;
         }
 
-        /** Get distance limit (viewable underwater)
-            @return Distance limit
-         */
-        inline const Ogre::Real& getDistLimit() const
-        {
-            return mDistLimit;
-        }
-
         /** Get smooth power
             @return Smooth power
          */
@@ -703,8 +700,6 @@ namespace Hydrax
 
         /// Depth limit param
         Ogre::Real mDepthLimit;
-        /// Distance limit param (viewable underwater)
-        Ogre::Real mDistLimit;
 
         /// Smooth power param
         Ogre::Real mSmoothPower;

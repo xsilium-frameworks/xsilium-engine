@@ -21,6 +21,7 @@ Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
+#pragma warning(disable:4244)
 
 #include <Modules/RadialGrid/RadialGrid.h>
 
@@ -378,12 +379,10 @@ namespace Hydrax{namespace Module
 			if (getNormalMode() == MaterialManager::NM_VERTEX)
 			{
 				delete [] static_cast<Mesh::POS_NORM_VERTEX*>(mVertices);
-				mVertices = 0;
 			}
 			else if (getNormalMode() == MaterialManager::NM_RTT)
 			{
 				delete [] static_cast<Mesh::POS_VERTEX*>(mVertices);
-				mVertices = 0;
 			}
 		}
 

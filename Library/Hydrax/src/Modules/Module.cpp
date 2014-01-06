@@ -26,11 +26,11 @@ http://www.gnu.org/copyleft/lesser.txt.
 
 namespace Hydrax{namespace Module
 {
-	Module::Module(const Ogre::String &Name,
+	Module::Module(const Ogre::String &Name, 
 		           Noise::Noise *n,
 				   const Mesh::Options &MeshOptions,
 				   const MaterialManager::NormalMode &NormalMode)
-		: mName(Name)
+		: mName(Name) 
 		, mNoise(n)
 		, mMeshOptions(MeshOptions)
 		, mNormalMode(NormalMode)
@@ -106,11 +106,9 @@ namespace Hydrax{namespace Module
 	{
 		if (CfgFile.getSetting("Module") == mName)
 		{
-		    HydraxLOG(mName + " options entry found.");
 			return true;
 		}
 
-        HydraxLOG("Error (Module::loadCfg):\t" + mName + " options entry can not be found.");
 		return false;
 	}
 

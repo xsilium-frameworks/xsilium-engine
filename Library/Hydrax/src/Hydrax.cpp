@@ -20,16 +20,12 @@ this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 Place - Suite 330, Boston, MA 02111-1307, USA, or go to
 http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
-Contributors:
-    Jose Luis Cercós Pita <jlcercos@alumnos.upm.es>
---------------------------------------------------------------------------------
 */
 
 #pragma warning(disable:4355)
+#pragma warning(disable:4305)
 
-#include <Hydrax.h>
+#include "Hydrax.h"
 
 namespace Hydrax
 {
@@ -57,7 +53,6 @@ namespace Hydrax
             , mFoamStart(0)
             , mFoamTransparency(1)
             , mDepthLimit(0)
-            , mDistLimit(0)
             , mSmoothPower(30)
             , mCausticsScale(20)
             , mCausticsPower(15)
@@ -310,7 +305,7 @@ namespace Hydrax
             {
 				HydraxComponent s  = HYDRAX_COMPONENTS_NONE,
 			                    f  = HYDRAX_COMPONENTS_NONE,
-								u  = HYDRAX_COMPONENTS_NONE,
+								u  = HYDRAX_COMPONENTS_NONE, 
 				                ur = HYDRAX_COMPONENTS_NONE;
 
 				if (isComponent(HYDRAX_COMPONENT_SUN))
@@ -399,7 +394,7 @@ namespace Hydrax
 								d  = HYDRAX_COMPONENTS_NONE,
 								c  = HYDRAX_COMPONENTS_NONE,
 								sm = HYDRAX_COMPONENTS_NONE,
-								u  = HYDRAX_COMPONENTS_NONE,
+								u  = HYDRAX_COMPONENTS_NONE, 
 				                ur = HYDRAX_COMPONENTS_NONE;
 
 				if (isComponent(HYDRAX_COMPONENT_FOAM))
@@ -714,7 +709,7 @@ namespace Hydrax
 				mMesh->setMaterialName(mMaterialManager->getMaterial(MaterialManager::MAT_WATER)->getName());
 			}
 		}
-
+		
 	}
 
     void Hydrax::setPosition(const Ogre::Vector3 &Position)
@@ -811,7 +806,7 @@ namespace Hydrax
 			    "uGlobalTransparency", GlobalTransparency);
 		}
     }
-
+	  
 	void Hydrax::setWaterColor(const Ogre::Vector3 &WaterColor)
     {
         mWaterColor = WaterColor;
@@ -822,33 +817,16 @@ namespace Hydrax
 		}
 
 		Ogre::ColourValue WC = Ogre::ColourValue(WaterColor.x, WaterColor.y, WaterColor.z);
-
-		Ogre::TexturePtr tex;
-		if (isComponent(HYDRAX_COMPONENT_UNDERWATER_REFLECTIONS) || !_isCurrentFrameUnderwater())
+		
+		if (isComponent(HYDRAX_COMPONENT_UNDERWATER_REFLECTIONS) || !_isCurrentFrameUnderwater()) 
 		{
-			/* Fix from http://www.ogre3d.org/addonforums/viewtopic.php?f=20&t=10925 
 			mRttManager->getTexture(RttManager::RTT_REFLECTION)->
 				 getBuffer()->getRenderTarget()->getViewport(0)->
 					 setBackgroundColour(WC);
-			*/
-			tex = mRttManager->getTexture(RttManager::RTT_REFLECTION);
-			if(!tex.isNull()) 
-			{
-				tex->getBuffer()->getRenderTarget()->getViewport(0)->setBackgroundColour(WC);
-				tex.setNull();
-			}
 		}
-		/* Fix from http://www.ogre3d.org/addonforums/viewtopic.php?f=20&t=10925 
 	    mRttManager->getTexture(RttManager::RTT_REFRACTION)->
 			getBuffer()->getRenderTarget()->getViewport(0)->
 				 setBackgroundColour(WC);
-		*/
-		tex = mRttManager->getTexture(RttManager::RTT_REFRACTION);
-        if(!tex.isNull()) 
-		{
-            tex->getBuffer()->getRenderTarget()->getViewport(0)->setBackgroundColour(WC);
-			tex.setNull();
-		}
 
 		if (!isComponent(HYDRAX_COMPONENT_DEPTH))
         {
@@ -868,7 +846,6 @@ namespace Hydrax
 			//mMaterialManager->getCompositor(MaterialManager::COMP_UNDERWATER)->
 			//	getTechnique(0)->getTargetPass(0)->getPass(0)->setClearColour(WC);
 
-            /* Active creation/destruction
 			if (getHeigth(mCamera->getDerivedPosition()) > mCamera->getDerivedPosition().y-1.25f)
 			{
 				if (mMaterialManager->isCompositorEnable(MaterialManager::COMP_UNDERWATER))
@@ -877,7 +854,6 @@ namespace Hydrax
 					mMaterialManager->setCompositorEnable(MaterialManager::COMP_UNDERWATER, true);
 				}
 			}
-			*/
 		}
     }
 
@@ -1083,25 +1059,6 @@ namespace Hydrax
 		mMaterialManager->setGpuProgramParameter(
 			MaterialManager::GPUP_FRAGMENT, MaterialManager::MAT_DEPTH,
 			"uDepthLimit", 1/mDepthLimit);
-    }
-
-    void Hydrax::setDistLimit(const Ogre::Real &DistLimit)
-    {
-        if (!isComponent(HYDRAX_COMPONENT_DEPTH))
-        {
-            return;
-        }
-
-		mDistLimit = DistLimit;
-
-        if (mDistLimit <= 0)
-        {
-            mDistLimit = 1;
-        }
-
-		mMaterialManager->setGpuProgramParameter(
-			MaterialManager::GPUP_FRAGMENT, MaterialManager::MAT_DEPTH,
-			"uDistLimit", 1/mDistLimit);
     }
 
     void Hydrax::setSmoothPower(const Ogre::Real &SmoothPower)
