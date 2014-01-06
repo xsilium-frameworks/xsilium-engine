@@ -49,7 +49,7 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 				std::strcat(messageConsole,(const char *)typePacket->message);
 
 
-				chatUI->setMessage(messageConsole);
+				//chatUI->setMessage(messageConsole);
 
 			}
 		}
