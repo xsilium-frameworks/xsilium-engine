@@ -26,9 +26,13 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 if (MSVC)
+	add_definitions( -D_WINSOCKAPI_ )
+
 	add_definitions( -D_CRT_SECURE_NO_WARNINGS )
 	add_definitions( -D_CRT_SECURE_NO_DEPRECATE )
 	add_definitions( -DNOMINMAX)
+
+	add_definitions( -D_VARIADIC_MAX=10 ) #vs2012 tuple issue with gtest
 endif()
 
 if (XSILIUM_BUILD_IPHONE)    
@@ -45,6 +49,7 @@ set(CMAKE_MODULE_PATH
 include(CMakeDependentOption)
 include(CheckCXXCompilerFlag)
 include(ConfigXsilium)
+include(ConfigTargets)
 include(OgreAddTargets)
 
 configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
@@ -70,12 +75,12 @@ IF(MSVC)
 	                    CMAKE_C_FLAGS_MINSIZEREL 
 	                    CMAKE_C_FLAGS_RELWITHDEBINFO
 	                    )
-#		IF(${flag_var} MATCHES "/MD")
-#			STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-#		ENDIF(${flag_var} MATCHES "/MD")
-#		IF(${flag_var} MATCHES "/MDd")
-#			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
-#		ENDIF(${flag_var} MATCHES "/MDd")
+		IF(${flag_var} MATCHES "/MD")
+			STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MD")
+		IF(${flag_var} MATCHES "/MDd")
+			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MDd")
 	ENDFOREACH(flag_var)
 
 ENDIF(MSVC)

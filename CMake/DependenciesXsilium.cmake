@@ -24,32 +24,66 @@ if (UNIX AND NOT XSILIUM_BUILD_MOBILE)
 	mark_as_advanced(XAW_LIBRARY)
 endif ()
 
+
+if (OGREKIT_BUILD_MOBILE)
+	# Find OpenGLES
+	find_package(OpenGLES)
+	macro_log_feature(OPENGLES_FOUND "OpenGLES" "Support for the OpenGLES render system" "" FALSE "" "")
+
+	# Find OpenGLES2
+	find_package(OpenGLES2)
+	macro_log_feature(OPENGLES2_FOUND "OpenGLES2" "Support for the OpenGLES2 render system" "" FALSE "" "")
+else()
 	# Find OpenGL
 	find_package(OpenGL)
 	macro_log_feature(OPENGL_FOUND "OpenGL" "Support for the OpenGL render system" "http://www.opengl.org/" FALSE "" "")
+endif()
 
 
 # Find DirectX
 if (WIN32)
     # Find OpenGLES2
-	find_package(OpenGLES2)
+	#find_package(OpenGLES2)
+	
+	find_package(AngleGLES2)
+	
 	macro_log_feature(OPENGLES2_FOUND "OpenGLES2" "Support for the OpenGLES2 render system" "" FALSE "" "")
     
 	find_package(DirectX)
-	macro_log_feature(DirectX_FOUND "DirectX" "Support for the DirectX render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+	macro_log_feature(DirectX9_FOUND "DirectX" "Support for the DirectX9 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+
+	find_package(DirectXInput)
+	macro_log_feature(Direct_FOUND "DirectInput/XInput" "Support for the DirectInput/XInput" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+
+	find_package(DirectX11)
+	macro_log_feature(DirectX11_FOUND "DirectX11" "Support for the DirectX11 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+endif()
+
+if (OGREKIT_BUILD_NACL)
+	find_package(NaClGLES2)
 endif()
 
 
-# Find Cg (Disabled Not used right now!)
-find_package(Cg)
-macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
 
-if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID)
+# Find Cg (Disabled Not used right now!)
+# find_package(Cg)
+# macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
+
+if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID AND NOT OGREKIT_BUILD_NACL)
 	# Use static loader On win32 platforms 
 
 	# Find OpenAL
 	include(FindOpenAL)
 	macro_log_feature(OPENAL_FOUND "OpenAL" "Support for the OpenAL sound system" "http://connect.creativelabs.com/openal/default.aspx" FALSE "" "")
+endif()
+
+if(NOT OGREKIT_USE_STATIC_FREEIMAGE)
+	find_package(FreeImage)
+	macro_log_feature(FreeImage_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
+
+	find_package(ZLIB)
+	macro_log_feature(ZLIB_FOUND "ZLib" "Support for the ZLib library" "http://www.zlib.net/" FALSE "" "")
+
 endif()
 
 #######################################################################
@@ -76,7 +110,8 @@ if (NOT XSILIUM_BUILD_MOBILE)
 		${OPENGL_INCLUDE_DIRS}
 		${Cg_INCLUDE_DIRS}
 		${X11_INCLUDE_DIR}
-		${DirectX_INCLUDE_DIRS}
+		${DirectX9_INCLUDE_DIRS}
+		${DirectX11_INCLUDE_DIRS}
 		${Carbon_INCLUDE_DIRS}
 		${Cocoa_INCLUDE_DIRS}
 	)
@@ -85,7 +120,8 @@ if (NOT XSILIUM_BUILD_MOBILE)
 		${OPENGL_LIBRARY_DIRS}
 		${Cg_LIBRARY_DIRS}
 		${X11_LIBRARY_DIRS}
-		${DirectX_LIBRARY_DIRS}
+		${DirectX9_LIBRARY_DIRS}
+		${DirectX11_LIBRARY_DIRS}
 	)
 
 endif()

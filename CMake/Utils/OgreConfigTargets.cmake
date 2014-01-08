@@ -8,13 +8,34 @@
 #-------------------------------------------------------------------
 
 # Configure settings and install targets
+if(APPLE)
+  macro(set_xcode_property targ xc_prop_name xc_prop_val)
+    set_property( TARGET ${targ} PROPERTY XCODE_ATTRIBUTE_${xc_prop_name} ${xc_prop_val} )
+  endmacro(set_xcode_property)
+
+  set(MIN_IOS_VERSION "6.0")
+
+  if(NOT OGRE_BUILD_PLATFORM_ANDROID AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+    set(PLATFORM_NAME "macosx")
+  elseif(OGRE_BUILD_PLATFORM_APPLE_IOS)
+    set(PLATFORM_NAME "$(PLATFORM_NAME)")
+  endif()
+endif()
 
 # Default build output paths
 if (NOT OGRE_ARCHIVE_OUTPUT)
-  set(OGRE_ARCHIVE_OUTPUT ${OGRE_BINARY_DIR}/lib)
+  if(APPLE AND NOT OGRE_BUILD_PLATFORM_ANDROID)
+    set(OGRE_ARCHIVE_OUTPUT ${OGRE_BINARY_DIR}/lib/${PLATFORM_NAME})
+  else()
+    set(OGRE_ARCHIVE_OUTPUT ${OGRE_BINARY_DIR}/lib)
+  endif()
 endif ()
 if (NOT OGRE_LIBRARY_OUTPUT)
-  set(OGRE_LIBRARY_OUTPUT ${OGRE_BINARY_DIR}/lib)
+  if(APPLE AND NOT OGRE_BUILD_PLATFORM_ANDROID)
+    set(OGRE_LIBRARY_OUTPUT ${OGRE_BINARY_DIR}/lib/${PLATFORM_NAME})
+  else()
+    set(OGRE_LIBRARY_OUTPUT ${OGRE_BINARY_DIR}/lib)
+  endif()
 endif ()
 if (NOT OGRE_RUNTIME_OUTPUT)
   set(OGRE_RUNTIME_OUTPUT ${OGRE_BINARY_DIR}/bin)
@@ -30,7 +51,6 @@ if (WIN32)
   set(OGRE_LIB_MINSIZE_PATH "/MinSizeRel")
   set(OGRE_LIB_DEBUG_PATH "/Debug")
   set(OGRE_PLUGIN_PATH "/opt")
-  set(OGRE_SAMPLE_PATH "/opt/samples")
 elseif (UNIX)
   set(OGRE_RELEASE_PATH "")
   set(OGRE_RELWDBG_PATH "")
@@ -43,6 +63,9 @@ elseif (UNIX)
   set(OGRE_LIB_RELWDBG_PATH "")
   set(OGRE_LIB_MINSIZE_PATH "")
   set(OGRE_LIB_DEBUG_PATH "")
+  if(APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+    set(OGRE_RELEASE_PATH "/${PLATFORM_NAME}")
+  endif()
   if(APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
     set(OGRE_LIB_RELEASE_PATH "/Release")
   endif(APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
@@ -51,18 +74,6 @@ elseif (UNIX)
   else()
     set(OGRE_PLUGIN_PATH "/OGRE")
   endif(APPLE)
-  set(OGRE_SAMPLE_PATH "/OGRE/Samples")
-elseif (SYMBIAN)
-  set(OGRE_RELEASE_PATH ".")
-  set(OGRE_RELWDBG_PATH ".")
-  set(OGRE_MINSIZE_PATH ".")
-  set(OGRE_DEBUG_PATH ".")
-  set(OGRE_LIB_RELEASE_PATH ".")
-  set(OGRE_LIB_RELWDBG_PATH ".")
-  set(OGRE_LIB_MINSIZE_PATH ".")
-  set(OGRE_LIB_DEBUG_PATH ".")
-  set(OGRE_PLUGIN_PATH ".")
-  set(OGRE_SAMPLE_PATH ".")
 endif ()
 
 # create vcproj.user file for Visual Studio to set debug working directory
@@ -159,11 +170,33 @@ function(ogre_config_common TARGETNAME)
     RUNTIME_OUTPUT_DIRECTORY ${OGRE_RUNTIME_OUTPUT}
   )
   if(OGRE_BUILD_PLATFORM_APPLE_IOS)
+    set_xcode_property( ${TARGETNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+    set_property( TARGET ${TARGETNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
     set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
     set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
     set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
     set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
   endif(OGRE_BUILD_PLATFORM_APPLE_IOS)
+
+  if(NOT OGRE_STATIC AND (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
+    # add GCC visibility flags to shared library build
+    set_target_properties(${TARGETNAME} PROPERTIES COMPILE_FLAGS "${OGRE_GCC_VISIBILITY_FLAGS}")
+    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN}")
+    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN}")
+    #set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN[arch=x86_64] "YES")
+  endif()
+
+  if(OGRE_BUILD_PLATFORM_WINRT)
+    # enable WinRT features, support available since CMake 2.8.8
+    set_target_properties(${TARGETNAME} PROPERTIES VS_WINRT_EXTENSIONS "YES")
+    set_target_properties(${TARGETNAME} PROPERTIES COMPILE_FLAGS "/bigobj")
+
+    # WinRT uses precompiled headers by default, that needs to be overriden, but unfortunately CMake can`t do this
+    #if(NOT ${TARGET_NAME} STREQUAL "OgreMain")
+    #  set_target_properties(${TARGETNAME} PROPERTIES COMPILE_FLAGS "/Y-")
+    #endif(NOT ${TARGET_NAME} STREQUAL "OgreMain")
+  endif(OGRE_BUILD_PLATFORM_WINRT)
 
   ogre_create_vcproj_userfile(${TARGETNAME})
 endfunction(ogre_config_common)
@@ -175,12 +208,6 @@ function(ogre_config_lib LIBNAME EXPORT)
     # add static prefix, if compiling static version
     set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME}Static)
   else (OGRE_STATIC)
-    if (CMAKE_COMPILER_IS_GNUCXX)
-      # add GCC visibility flags to shared library build
-      set_target_properties(${LIBNAME} PROPERTIES COMPILE_FLAGS "${OGRE_GCC_VISIBILITY_FLAGS}")
-      set_target_properties(${LIBNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN}")
-      set_target_properties(${LIBNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN}")
-    endif (CMAKE_COMPILER_IS_GNUCXX)
 	if (MINGW)
 	  # remove lib prefix from DLL outputs
 	  set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
@@ -188,6 +215,11 @@ function(ogre_config_lib LIBNAME EXPORT)
   endif (OGRE_STATIC)
   ogre_install_target(${LIBNAME} "" ${EXPORT})
   
+  if(OGRE_BUILD_PLATFORM_APPLE_IOS)
+    set_xcode_property( ${LIBNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+    set_property( TARGET ${LIBNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
+  endif()
+
   if (OGRE_INSTALL_PDB)
     # install debug pdb files
     if (OGRE_STATIC)
@@ -235,7 +267,6 @@ function(ogre_config_framework LIBNAME)
   endif()
 endfunction(ogre_config_framework)
 
-
 # setup plugin build
 function(ogre_config_plugin PLUGINNAME)
   ogre_config_common(${PLUGINNAME})
@@ -245,19 +276,17 @@ function(ogre_config_plugin PLUGINNAME)
     set_target_properties(${PLUGINNAME} PROPERTIES OUTPUT_NAME ${PLUGINNAME}Static)
 
     if(OGRE_BUILD_PLATFORM_APPLE_IOS)
+      set_xcode_property( ${PLUGINNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+      set_property( TARGET ${PLUGINNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
       set_target_properties(${PLUGINNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
       set_target_properties(${PLUGINNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
       set_target_properties(${PLUGINNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
     endif(OGRE_BUILD_PLATFORM_APPLE_IOS)
   else (OGRE_STATIC)
-    if (CMAKE_COMPILER_IS_GNUCXX)
-      # add GCC visibility flags to shared library build
-      set_target_properties(${PLUGINNAME} PROPERTIES COMPILE_FLAGS "${OGRE_GCC_VISIBILITY_FLAGS}")
-      set_target_properties(${PLUGINNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN}")
-      set_target_properties(${PLUGINNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN}")
+    if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
       # disable "lib" prefix on Unix
       set_target_properties(${PLUGINNAME} PROPERTIES PREFIX "")
-	endif (CMAKE_COMPILER_IS_GNUCXX)	
+    endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif (OGRE_STATIC)
   # export only if static
   ogre_install_target(${PLUGINNAME} ${OGRE_PLUGIN_PATH} ${OGRE_STATIC})
@@ -285,105 +314,6 @@ function(ogre_config_plugin PLUGINNAME)
 	endif ()
   endif ()
 endfunction(ogre_config_plugin)
-
-# setup Ogre sample build
-function(ogre_config_sample_common SAMPLENAME)
-  ogre_config_common(${SAMPLENAME})
-
-  # set install RPATH for Unix systems
-  if (UNIX AND OGRE_FULL_RPATH)
-    set_property(TARGET ${SAMPLENAME} APPEND PROPERTY
-      INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${OGRE_LIB_DIRECTORY})
-    set_property(TARGET ${SAMPLENAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
-  endif ()
-  
-  if (APPLE)
-    # On OS X, create .app bundle
-    set_property(TARGET ${SAMPLENAME} PROPERTY MACOSX_BUNDLE TRUE)
-    if (NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-      # Add the path where the Ogre framework was found
-      if(${OGRE_FRAMEWORK_PATH})
-        set_target_properties(${SAMPLENAME} PROPERTIES
-          COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
-          LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
-        )
-      endif()
-    endif(NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-  endif (APPLE)
-  if (NOT OGRE_STATIC)
-    if (CMAKE_COMPILER_IS_GNUCXX)
-      # add GCC visibility flags to shared library build
-      set_target_properties(${SAMPLENAME} PROPERTIES COMPILE_FLAGS "${OGRE_GCC_VISIBILITY_FLAGS}")
-      set_target_properties(${SAMPLENAME} PROPERTIES XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN}")
-      set_target_properties(${SAMPLENAME} PROPERTIES XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN "${XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN}")
-      # disable "lib" prefix on Unix
-      set_target_properties(${SAMPLENAME} PROPERTIES PREFIX "")
-    endif (CMAKE_COMPILER_IS_GNUCXX)
-  endif()
-
-  if (OGRE_INSTALL_SAMPLES)
-	ogre_install_target(${SAMPLENAME} ${OGRE_SAMPLE_PATH} FALSE)
-  endif()
-  
-endfunction(ogre_config_sample_common)
-
-function(ogre_config_sample_exe SAMPLENAME)
-  ogre_config_sample_common(${SAMPLENAME})
-  if (OGRE_INSTALL_PDB AND OGRE_INSTALL_SAMPLES)
-	  # install debug pdb files - no _d on exe
-	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_DEBUG_PATH}/${SAMPLENAME}.pdb
-		  DESTINATION bin${OGRE_DEBUG_PATH}
-		  CONFIGURATIONS Debug
-		  )
-	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_RELWDBG_PATH}/${SAMPLENAME}.pdb
-		  DESTINATION bin${OGRE_RELWDBG_PATH}
-		  CONFIGURATIONS RelWithDebInfo
-		  )
-  endif ()
-
-  if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
-    # Add the path where the Ogre framework was found
-    if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "")
-      set_target_properties(${SAMPLENAME} PROPERTIES
-        COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
-        LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
-      )
-    endif()
-  endif(APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
-endfunction(ogre_config_sample_exe)
-
-function(ogre_config_sample_lib SAMPLENAME)
-  ogre_config_sample_common(${SAMPLENAME})
-  if (OGRE_INSTALL_PDB AND OGRE_INSTALL_SAMPLES)
-	  # install debug pdb files - with a _d on lib
-	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_DEBUG_PATH}/${SAMPLENAME}_d.pdb
-		  DESTINATION bin${OGRE_DEBUG_PATH}
-		  CONFIGURATIONS Debug
-		  )
-	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_RELWDBG_PATH}/${SAMPLENAME}.pdb
-		  DESTINATION bin${OGRE_RELWDBG_PATH}
-		  CONFIGURATIONS RelWithDebInfo
-		  )
-  endif ()
-
-  if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
-    # Add the path where the Ogre framework was found
-    if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "")
-      set_target_properties(${SAMPLENAME} PROPERTIES
-        COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
-        LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
-      )
-    endif()
-  endif(APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
-
-  # Add sample to the list of link targets
-  # Global property so that we can build this up across entire sample tree
-  # since vars are local to containing scope of directories / functions
-  get_property(OGRE_SAMPLES_LIST GLOBAL PROPERTY "OGRE_SAMPLES_LIST")
-  set_property (GLOBAL PROPERTY "OGRE_SAMPLES_LIST" ${OGRE_SAMPLES_LIST} ${SAMPLENAME})
-
-endfunction(ogre_config_sample_lib)
-
 
 # setup Ogre tool build
 function(ogre_config_tool TOOLNAME)

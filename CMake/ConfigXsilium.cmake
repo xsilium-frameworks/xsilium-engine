@@ -32,7 +32,6 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 	option(XSILIUM_COMPILE_SWIG				"Enable compile time SWIG generation."  OFF)
 	option(XSILIUM_COMPILE_OGRE_SCRIPTS		"Automatically convert Blender TX to Ogre (.material, .font, .overlay... etc)" ON)
-	option(XSILIUM_COMPILE_WXWIDGETS		"Enable / Disable wxWidgets builds" OFF)
 	option(XSILIUM_DEBUG_ASSERT				"Enable / Disable debug asserts." ON)
 	option(XSILIUM_HEADER_GENERATOR			"Build Blender DNA to C++ generator."   OFF)
 	option(XSILIUM_DISABLE_ZIP				"Disable external .zip resource loading" OFF)
@@ -77,6 +76,9 @@ macro (configure_xsilium ROOT OGREPATH)
 		option(OGRE_BUILD_COMPONENT_PROPERTY "Build Ogre Property Compoment(Required boost)" OFF)
 	endif()
 
+	include(OgreConfigTargets)
+	include(DependenciesXsilium)
+	include(MacroLogFeature)
 
 	set(OGRE_BUILD_PLUGIN_OCTREE TRUE CACHE BOOL "Forcing Plugins" )
 	set(OGRE_BUILD_PLUGIN_BSP TRUE CACHE BOOL "Forcing Plugins" )
@@ -105,6 +107,13 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 		if (NOT CMAKE_OSX_ARCHITECTURES)
 			set(CMAKE_OSX_ARCHITECTURES "i386")
+		endif()
+	  
+		# 10.6 sets x86_64 as the default architecture.
+		# Because Carbon isn't supported on 64-bit and we still need it, force the architectures to ppc and i386
+		if(CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" OR CMAKE_OSX_ARCHITECTURES MATCHES "ppc64")
+			string(REPLACE "x86_64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
+			string(REPLACE "ppc64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
 		endif()
 	
 		# Make sure that the OpenGL render system is selected for non-iPhone Apple builds

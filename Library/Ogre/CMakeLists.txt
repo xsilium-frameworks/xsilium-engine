@@ -10,27 +10,36 @@ endif()
 project(OGRELITE)
 include(PrecompiledHeader)
 
+find_package(Cg)
 
 set(OgreLite 1.0)
 set (OGRE_CONFIG_HEADER 1)
 set (OGRE_SDK_BUILD 1)
+set(OGRE_THREAD_PROVIDER  0)
+#set(OGRE_LIB_TYPE         STATIC)
 set(OGRE_LIB_TYPE         SHARED)
-set(OGRE_BINARY_DIR ${XSILIUM_BINARY_DIR})
+#set(OGRE_STATIC	FALSE)
+SET(OGRE_BINARY_DIR       ${XSILIUM_BINARY_DIR})
 SET(OGRE_SOURCE_DIR       ${OGRELITE_SOURCE_DIR})
-include(OgreConfigTargets)
-
- 
-# Configure settings
-set(OGRE_NO_ZIP_ARCHIVE 0)
-set(OGRE_CONFIG_ENABLE_ZIP TRUE)
-set(OGRE_CONFIG_ENABLE_FREEIMAGE TRUE)
-set(OGRE_CONFIG_ENABLE_DDS       TRUE)
-
-
-if (XSILIUM_USE_PARTICLE)
+set(OGRE_BUILD_COMPONENT_OVERLAY TRUE)
+if (OGREKIT_USE_PARTICLE)
 	set(OGRE_BUILD_PLUGIN_PFX        TRUE)
 else()
 	set(OGRE_BUILD_PLUGIN_PFX        FALSE)
+endif()
+	
+set(OGRE_CONFIG_ENABLE_FREEIMAGE TRUE)
+set(OGRE_CONFIG_ENABLE_DDS       TRUE)
+set(OGRE_SET_DISABLE_LIBCPP_SUPPORT 0)
+
+if (OGREKIT_DISABLE_ZIP)
+	set(OGRE_CONFIG_ENABLE_ZIP FALSE)
+else()
+	set(OGRE_CONFIG_ENABLE_ZIP TRUE)
+endif()
+
+if (OGREKIT_BUILD_ANDROID)
+	add_definitions(-DNO_MALLINFO=1) #disable nedmalloc struct mallinfo declaration
 endif()
 
 
@@ -52,58 +61,20 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
-
-
-
-# determine system endianess
-if (MSVC)
-  # This doesn't work on VS 2010
-  # MSVC only builds for intel anyway
-  set(OGRE_TEST_BIG_ENDIAN FALSE)
+# Configure settings
+if (OGREKIT_DISABLE_ZIP)
+	set(OGRE_NO_ZIP_ARCHIVE 1)
 else()
-  include(TestBigEndian)
-  test_big_endian(OGRE_TEST_BIG_ENDIAN)
+	set(OGRE_NO_ZIP_ARCHIVE 0)
 endif()
 
-# determine threading options
-include(PrepareThreadingOptions)
+set(OGRE_CONFIG_ENABLE_ETC TRUE)
 
-# configure threading options
-set(OGRE_THREAD_PROVIDER 0)
-if (OGRE_CONFIG_THREADS)
-	if (UNIX)
-		add_definitions(-pthread)
-	endif ()
 
-	if (OGRE_CONFIG_THREAD_PROVIDER STREQUAL "boost")
-		set(OGRE_THREAD_PROVIDER 1)
-		include_directories(${Boost_INCLUDE_DIRS})
-		# On MSVC Boost usually tries to autolink boost libraries. However since
-		# this behaviour is not available on all compilers, we need to find the libraries
-		# ourselves, anyway. Disable auto-linking to avoid mess-ups.
-		add_definitions(-DBOOST_ALL_NO_LIB)
-        if (MINGW AND Boost_USE_STATIC_LIBS)
-            # mingw needs this to link against static thread libraries
-            add_definitions(-DBOOST_THREAD_USE_LIB)
-        endif ()
-		set(OGRE_THREAD_LIBRARIES ${Boost_LIBRARIES})
-	endif ()
-
-	if (OGRE_CONFIG_THREAD_PROVIDER STREQUAL "poco")
-		set(OGRE_THREAD_PROVIDER 2)
-		include_directories(${POCO_INCLUDE_DIRS})
-		set(OGRE_THREAD_LIBRARIES ${POCO_LIBRARIES})
-	endif ()
-
-	if (OGRE_CONFIG_THREAD_PROVIDER STREQUAL "tbb")
-		set(OGRE_THREAD_PROVIDER 3)
-		include_directories(${TBB_INCLUDE_DIRS})
-		if (WIN32)
-			add_definitions(-D_WIN32_WINNT=0x0501)    
-		endif ()
-
-		set(OGRE_THREAD_LIBRARIES ${TBB_LIBRARIES})
-	endif ()
+if (Cg_FOUND AND NOT OGREKIT_BUILD_MOBILE) 
+    option(OGRE_BUILD_PLUGIN_CG                 "Enable / Disable Ogre cgProgramManager" ON)
+else()
+    set(OGRE_BUILD_PLUGIN_CG 0)
 endif()
 
 
@@ -113,18 +84,19 @@ set(OGRE_SET_CONTAINERS_USE_ALLOCATOR 0)
 set(OGRE_SET_STRING_USE_ALLOCATOR 0)
 set(OGRE_SET_MEMTRACK_DEBUG 0)
 set(OGRE_SET_MEMTRACK_RELEASE 0)
-set(OGRE_SET_THREADS ${OGRE_CONFIG_THREADS})
-set(OGRE_SET_THREAD_PROVIDER ${OGRE_THREAD_PROVIDER})
+set(OGRE_SET_THREADS 0)
 set(OGRE_SET_ALLOCATOR 4)
+set(OGRE_SET_THREAD_PROVIDER ${OGRE_THREAD_PROVIDER})
 set(OGRE_SET_DISABLE_FREEIMAGE 0)
 set(OGRE_SET_DISABLE_DDS 0)
 set(OGRE_SET_DISABLE_PVRTC 0)
-set(OGRE_SET_DISABLE_ETC1 0)
+set(OGRE_SET_DISABLE_ETC 0)
 set(OGRE_SET_DISABLE_ZIP 0)
-set(OGRE_SET_DISABLE_LIBCPP_SUPPORT 0)
 set(OGRE_SET_DISABLE_VIEWPORT_ORIENTATIONMODE 1)
 set(OGRE_SET_DISABLE_GLES2_CG_SUPPORT 0)
 #todo test this
+set(OGRE_SET_DISABLE_GLES2_VAO_SUPPORT 0)
+set(OGRE_SET_DISABLE_GL_STATE_CACHE_SUPPORT 1)
 set(OGRE_SET_DISABLE_GLES2_GLSL_OPTIMISER 0)
 set(OGRE_SET_NEW_COMPILERS 0)
 set(OGRE_STATIC_LIB 0)
@@ -154,14 +126,11 @@ endif()
 if (NOT OGRE_CONFIG_ENABLE_PVRTC)
   set(OGRE_SET_DISABLE_PVRTC 1)
 endif()
-if (NOT OGRE_CONFIG_ENABLE_ETC1)
-  set(OGRE_SET_DISABLE_ETC1 1)
+if (NOT OGRE_CONFIG_ENABLE_ETC)
+  set(OGRE_SET_DISABLE_ETC 1)
 endif()
 if (NOT OGRE_CONFIG_ENABLE_ZIP)
   set(OGRE_SET_DISABLE_ZIP 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_LIBCPP_SUPPORT)
-  set(OGRE_SET_DISABLE_LIBCPP_SUPPORT 1)
 endif() 
 if (OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE)
   set(OGRE_SET_DISABLE_VIEWPORT_ORIENTATIONMODE 0)
@@ -174,6 +143,12 @@ if (NOT OGRE_CONFIG_ENABLE_GLES2_GLSL_OPTIMISER)
 endif()
 if(OGRE_CONFIG_NEW_COMPILERS)
   set(OGRE_SET_NEW_COMPILERS 1)
+endif()
+if(NOT OGRE_CONFIG_ENABLE_GLES2_VAO_SUPPORT)
+  set(OGRE_SET_DISABLE_GLES2_VAO_SUPPORT 1)
+endif()
+if (NOT OGRE_CONFIG_ENABLE_GL_STATE_CACHE_SUPPORT)
+  set(OGRE_SET_DISABLE_GL_STATE_CACHE_SUPPORT 1)
 endif()
 if (OGRE_STATIC)
   set(OGRE_STATIC_LIB 1)
@@ -191,7 +166,8 @@ else ()
   set(OGRE_CONFIG_LITTLE_ENDIAN 1)
 endif ()
 
-
+set(OGRE_SET_DISABLE_GLES3_SUPPORT 1)
+#set(OGRE_NO_GLES3_SUPPORT TRUE CACHE BOOL "" FORCE)
 
 
 # determine Ogre version numbers
@@ -203,9 +179,8 @@ configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${XS
 
 
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
-
-include_directories(${XSILIUM_BINARY_DIR}/include)
-include_directories(${FREETYPE_H_PATH} ${FREEIMAGE_H_PATH} ${ZZIP_INCLUDE_DIR} ${ZLIB_INCLUDE_DIR} )
+include_directories(${OGREKIT_BINARY_DIR}/include)
+include_directories(${OGREKIT_FREETYPE_INCLUDE} ${OGREKIT_FREEIMAGE_INCLUDE} ${OGREKIT_ZZIP_INCLUDE} ${OGREKIT_ZLIB_INCLUDE} )
 
 if (APPLE)
   if (OGRE_BUILD_PLATFORM_IPHONE)

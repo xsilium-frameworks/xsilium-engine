@@ -15,52 +15,47 @@
 #
 # Once done this will define
 #  
-#  OPENGLES2_FOUND        - system has OpenGLES
-#  OPENGLES2_INCLUDE_DIR  - the GL include directory
-#  OPENGLES2_LIBRARIES    - Link these to use OpenGLES
+#  OPENGLES3_FOUND        - system has OpenGLES
+#  OPENGLES3_INCLUDE_DIR  - the GL include directory
+#  OPENGLES3_LIBRARIES    - Link these to use OpenGLES
 #
 #  EGL_FOUND        - system has EGL
 #  EGL_INCLUDE_DIR  - the EGL include directory
 #  EGL_LIBRARIES    - Link these to use EGL
 
-include(FindPkgMacros)
-
 IF (WIN32)
   IF (CYGWIN)
 
-    FIND_PATH(OPENGLES2_INCLUDE_DIR GLES2/gl2.h )
+    FIND_PATH(OPENGLES3_INCLUDE_DIR GLES3/gl3.h )
 
-    FIND_LIBRARY(OPENGLES2_gl_LIBRARY libGLESv2 )
+    FIND_LIBRARY(OPENGLES3_gl_LIBRARY libGLESv2 )
 
   ELSE (CYGWIN)
 
     IF(BORLAND)
-      SET (OPENGLES2_gl_LIBRARY import32 CACHE STRING "OpenGL ES 2.x library for win32")
+      SET (OPENGLES3_gl_LIBRARY import32 CACHE STRING "OpenGL ES 3.x library for win32")
     ELSE(BORLAND)
         getenv_path(AMD_SDK_ROOT)
         getenv_path(MALI_SDK_ROOT)
 
         SET(POWERVR_SDK_PATH "C:/Imagination/PowerVR/GraphicsSDK/SDK_3.1/Builds")
-        FIND_PATH(OPENGLES2_INCLUDE_DIR GLES2/gl2.h
+        FIND_PATH(OPENGLES3_INCLUDE_DIR GLES3/gl3.h
                         ${ENV_AMD_SDK_ROOT}/include
                         ${ENV_MALI_SDK_ROOT}/include
                         ${POWERVR_SDK_PATH}/Include
-                        "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/Include"
         )
 
         FIND_PATH(EGL_INCLUDE_DIR EGL/egl.h
                         ${ENV_AMD_SDK_ROOT}/include
                         ${ENV_MALI_SDK_ROOT}/include
                         ${POWERVR_SDK_PATH}/Include
-                        "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/Include"
         )
 
-        FIND_LIBRARY(OPENGLES2_gl_LIBRARY
+        FIND_LIBRARY(OPENGLES3_gl_LIBRARY
             NAMES libGLESv2
             PATHS ${ENV_AMD_SDK_ROOT}/x86
                   ${ENV_MALI_SDK_ROOT}/bin
                   ${POWERVR_SDK_PATH}/Windows/x86_32/Lib
-                 "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/WindowsX86/Lib"
         )
 
         FIND_LIBRARY(EGL_egl_LIBRARY
@@ -68,7 +63,6 @@ IF (WIN32)
             PATHS ${ENV_AMD_SDK_ROOT}/x86
                   ${ENV_MALI_SDK_ROOT}/bin
                   ${POWERVR_SDK_PATH}/Windows/x86_32/Lib
-                 "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/WindowsX86/Lib"
         )
     ENDIF(BORLAND)
 
@@ -78,15 +72,15 @@ ELSE (WIN32)
 
   IF (APPLE)
 
-    create_search_paths(/Developer/Platforms)
-    findpkg_framework(OpenGLES2)
-    set(OPENGLES2_gl_LIBRARY "-framework OpenGLES")
+	create_search_paths(/Developer/Platforms)
+	findpkg_framework(OpenGLES3)
+    set(OPENGLES3_gl_LIBRARY "-framework OpenGLES")
 
   ELSE(APPLE)
     getenv_path(AMD_SDK_ROOT)
     getenv_path(MALI_SDK_ROOT)
 
-    FIND_PATH(OPENGLES2_INCLUDE_DIR GLES2/gl2.h
+    FIND_PATH(OPENGLES2_INCLUDE_DIR GLES3/gl3.h
       ${ENV_AMD_SDK_ROOT}/include
       ${ENV_MALI_SDK_ROOT}/include
       /opt/Imagination/PowerVR/GraphicsSDK/SDK_3.1/Builds/Include
@@ -95,7 +89,7 @@ ELSE (WIN32)
       /usr/include
     )
 
-    FIND_LIBRARY(OPENGLES2_gl_LIBRARY
+    FIND_LIBRARY(OPENGLES3_gl_LIBRARY
       NAMES GLESv2
       PATHS ${ENV_AMD_SDK_ROOT}/x86
             ${ENV_MALI_SDK_ROOT}/bin
@@ -131,32 +125,32 @@ ELSE (WIN32)
     # think this is always true.
     # It's not true on OSX.
 
-    IF (OPENGLES2_gl_LIBRARY)
+    IF (OPENGLES3_gl_LIBRARY)
       IF(NOT X11_FOUND)
         INCLUDE(FindX11)
       ENDIF(NOT X11_FOUND)
       IF (X11_FOUND)
         IF (NOT APPLE)
-          SET (OPENGLES2_LIBRARIES ${X11_LIBRARIES})
+          SET (OPENGLES3_LIBRARIES ${X11_LIBRARIES})
         ENDIF (NOT APPLE)
       ENDIF (X11_FOUND)
-    ENDIF (OPENGLES2_gl_LIBRARY)
+    ENDIF (OPENGLES3_gl_LIBRARY)
 
   ENDIF(APPLE)
 ENDIF (WIN32)
 
-SET( OPENGLES2_FOUND "YES" )
-IF(OPENGLES2_gl_LIBRARY AND EGL_egl_LIBRARY)
+SET( OPENGLES3_FOUND "YES" )
+IF(OPENGLES3_gl_LIBRARY AND EGL_egl_LIBRARY)
 
-    SET( OPENGLES2_LIBRARIES ${OPENGLES2_gl_LIBRARY} ${OPENGLES2_LIBRARIES})
+    SET( OPENGLES3_LIBRARIES ${OPENGLES3_gl_LIBRARY} ${OPENGLES3_LIBRARIES})
     SET( EGL_LIBRARIES ${EGL_egl_LIBRARY} ${EGL_LIBRARIES})
-    SET( OPENGLES2_FOUND "YES" )
+    SET( OPENGLES3_FOUND "YES" )
 
-ENDIF(OPENGLES2_gl_LIBRARY AND EGL_egl_LIBRARY)
+ENDIF(OPENGLES3_gl_LIBRARY AND EGL_egl_LIBRARY)
 
 MARK_AS_ADVANCED(
-  OPENGLES2_INCLUDE_DIR
-  OPENGLES2_gl_LIBRARY
+  OPENGLES3_INCLUDE_DIR
+  OPENGLES3_gl_LIBRARY
   EGL_INCLUDE_DIR
   EGL_egl_LIBRARY
 )

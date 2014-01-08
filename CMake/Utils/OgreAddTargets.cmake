@@ -87,11 +87,9 @@ macro(create_unity_build_files TARGETNAME)
     endforeach()
     # don't forget the last set of files
     set(_FILENAME "${OGRE_BINARY_DIR}/${TARGETNAME}/compile_${TARGETNAME}_${_FILE_NUM}.cpp")
-    if (${_FILE_CNT} GREATER 0)
-        check_and_update_file(${_FILENAME} ${_FILE_CONTENTS})
-        list(APPEND _SOURCES ${_FILENAME})
-    endif()
-  endif ()
+    check_and_update_file(${_FILENAME} ${_FILE_CONTENTS})
+    list(APPEND _SOURCES ${_FILENAME})
+  endif()
 endmacro()
 
 
@@ -101,4 +99,35 @@ function(ogre_add_library TARGETNAME LIBTYPE)
   create_unity_build_files(${TARGETNAME} ${ARGN})
   add_library(${TARGETNAME} ${LIBTYPE} ${_SOURCES})
 endfunction(ogre_add_library)
+
+
+# add a new executable target
+# usage: ogre_add_executable(TARGETNAME [WIN32] [MACOSX_BUNDLE] SOURCE_FILES [SEPARATE SOURCE_FILES])
+function(ogrekit_add_executable TARGETNAME)
+  # test if WIN32 or MACOSX_BUNDLE options were provided
+  set(_WIN32 "")
+  set(_OSX "")
+  list(FIND ARGN "WIN32" _W32_IDX)
+  if (_W32_IDX GREATER "-1")
+    set(_WIN32 "WIN32")
+    list(REMOVE_AT ARGN ${_W32_IDX})
+  endif ()
+  list(FIND ARGN "MACOSX_BUNDLE" _OSX_IDX)
+  if (_OSX_IDX GREATER "-1")
+    set(_OSX "MACOSX_BUNDLE")
+    list(REMOVE_AT ARGN ${_OSX_IDX})
+  endif ()
+  create_unity_build_files(${TARGETNAME} ${ARGN})
+  add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${_SOURCES})
+endfunction()
+
+macro(ogrekit_add_library TARGETNAME LIBTYPE)  
+  set(IS_UNITY_BUILD ${OGREKIT_UNITY_BUILD})
+  create_unity_build_files(${TARGETNAME} ${ARGN})
+  add_library(${TARGETNAME} ${LIBTYPE} ${_SOURCES})
+endmacro()
+
+# function(ogrekit_add_executable TARGETNAME)
+  # ogre_add_executable(${TARGETNAME} ${ARGN})
+# endfunction()
 
