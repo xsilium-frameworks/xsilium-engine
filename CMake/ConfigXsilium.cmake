@@ -472,7 +472,7 @@ set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 		endif()
 	endif(APPLE)
 
-
+message(${OGRE_LIB} " test gne")
 
 set(XSILIUM_LIB XsiliumEngine 
 		${OGRE_LIB}
@@ -481,7 +481,6 @@ set(XSILIUM_LIB XsiliumEngine
 		CEGUIOgreRenderer 
 		${SKYX_LIBRARY}  
 		${HYDRAX_LIBRARY}   
-		${Boost_LIBRARIES} 
 		${Cg_LIBRARY_REL}
 		${OIS_LIBRARY_REL} 
 )
