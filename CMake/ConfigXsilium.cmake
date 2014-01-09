@@ -29,7 +29,6 @@ macro (configure_xsilium ROOT OGREPATH)
 	endif ()
 
 	set(XSILIUM_INSTALL_PREFIX ${ROOT})
-	
 	option(XSILIUM_COMPILE_SWIG				"Enable compile time SWIG generation."  OFF)
 	option(XSILIUM_COMPILE_OGRE_SCRIPTS		"Automatically convert Blender TX to Ogre (.material, .font, .overlay... etc)" ON)
 	option(XSILIUM_DEBUG_ASSERT				"Enable / Disable debug asserts." ON)
@@ -101,7 +100,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(XSILIUM_FREETYPE_TARGET freetype)
 	set(XSILIUM_OIS_TARGET OIS)
 	
-	set(XSILIUM_DEP_DIR ${ROOT}/Dependencies/Source)
+	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
 	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
 	
 	set(OGRE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/Bin)
@@ -110,7 +109,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
 	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
 	
-	set(OGRELITE_SOURCE_DIR ${OGREPATH})	
+	set(XSILIUM_SOURCE_DIR ${OGREPATH})	
 	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
 	
 	include(OgreConfigTargets)
@@ -286,8 +285,8 @@ macro (configure_xsilium ROOT OGREPATH)
 		include(TemplateCompiler)
 	endif()
 	
-	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/freetype/include)
-	set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
+	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/freetype/include)	
+set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 	set(XSILIUM_OIS_INCLUDE ${XSILIUM_DEP_DIR}/OIS/include)
 	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Overlay/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
 	

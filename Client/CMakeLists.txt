@@ -60,14 +60,12 @@ Shared
 .
 )
 
-message("${XSILIUM_LIB}")
-
 ADD_EXECUTABLE(XsiliumClient WIN32 MACOSX_BUNDLE ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES} )
 
 target_link_libraries(XsiliumClient ${XSILIUM_LIB})
 
-configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/resources.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg)
-configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/plugins.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg)
+configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg)
+configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg)
 
 
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)

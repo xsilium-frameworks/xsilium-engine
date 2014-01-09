@@ -173,14 +173,12 @@ set(OGRE_SET_DISABLE_GLES3_SUPPORT 1)
 include(OgreGetVersion)
 ogre_get_version(${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h)
 message(STATUS "Configuring OGRE ${OGRE_VERSION}")
-
-configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h)
+configure_file(${OGRE_TEMPLATES_DIR}/OgreBuildSettings.h.in ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h)
 
 
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
 include_directories(${XSILIUM_BINARY_DIR}/include)
-message(${XSILIUM_BINARY_DIR})
 include_directories(${XSILIUM_FREETYPE_INCLUDE} ${XSILIUM_FREEIMAGE_INCLUDE} ${XSILIUM_ZZIP_INCLUDE} ${XSILIUM_ZLIB_INCLUDE} )
 
 if (APPLE)
