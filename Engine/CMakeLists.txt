@@ -141,7 +141,6 @@ ${Entite_H}
 ${CallBack_H}
 ${ModuleActif_H}
 )
-message(${XSILIUM_INCLUDE} " XSILIUM_INCLUDE")
 include_directories(
 ${XSILIUM_INCLUDE}
 .

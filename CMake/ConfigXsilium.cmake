@@ -111,6 +111,15 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 	set(XSILIUM_SOURCE_DIR ${ROOT})	
 	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
+
+	set(OGRE_USE_BOOST TRUE CACHE BOOL "Forcing use BOOST" ) 
+
+	set(Boost_ADDITIONAL_VERSIONS "1.52.0 1.49.0 1.48.0")
+
+	set(OGRE_BOOST_COMPONENTS thread date_time system filesystem)
+	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
+
+	include_directories("${Boost_INCLUDE_DIRS}")
 	
 	include(OgreConfigTargets)
 	include(DependenciesXsilium)
@@ -481,6 +490,7 @@ set(XSILIUM_LIB XsiliumEngine
 		CEGUIOgreRenderer 
 		${SKYX_LIBRARY}  
 		${HYDRAX_LIBRARY}   
+		${Boost_LIBRARIES} 
 		${Cg_LIBRARY_REL}
 		${OIS_LIBRARY_REL} 
 )
