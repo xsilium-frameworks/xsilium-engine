@@ -109,7 +109,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
 	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
 	
-	set(XSILIUM_SOURCE_DIR ${OGREPATH})	
+	set(XSILIUM_SOURCE_DIR ${ROOT})	
 	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
 	
 	include(OgreConfigTargets)
@@ -288,7 +288,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/freetype/include)	
 set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 	set(XSILIUM_OIS_INCLUDE ${XSILIUM_DEP_DIR}/OIS/include)
-	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Overlay/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
+	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Overlay/include ${OGREPATH}/Components/Paging/include ${OGREPATH}/Components/Terrain/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
 	
 	set(XSILIUM_TINYXML_INCLUDE ${XSILIUM_DEP_DIR}/TinyXml)
 
