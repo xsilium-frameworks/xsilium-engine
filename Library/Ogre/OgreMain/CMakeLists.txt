@@ -17,11 +17,10 @@ include(PrecompiledHeader)
 
 # define header and source files for the library
 file(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
-list(APPEND HEADER_FILES ${CMAKE_BINARY_DIR}/include/OgreBuildSettings.h
+list(APPEND HEADER_FILES ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h
     src/OgreImageResampler.h
     src/OgrePixelConversions.h
     src/OgreSIMDHelper.h)
-
 file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 # Remove optional header files
@@ -63,7 +62,6 @@ elseif (WIN32)
     set(PLATFORM_SOURCE_FILES
       src/WIN32/OgreConfigDialogWinRT.cpp
       src/WIN32/OgreErrorDialogWinRT.cpp
-      src/WIN32/OgreTimer.cpp
       src/WIN32/OgreTimer.cpp
 	  src/WIN32/OgreOptimisedUtilDirectXMath.cpp
     )  

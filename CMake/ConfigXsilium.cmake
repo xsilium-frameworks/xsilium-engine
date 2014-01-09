@@ -51,6 +51,20 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_COMPILE_OPTS				"Enable / Disable Opts builds" OFF)
        option(XSILIUM_BUILD_GL3PLUS				"Enable / Disable Opts builds" OFF)	
 	set(OGRE_UNITY_FILES_PER_UNIT "40" CACHE STRING "Number of files per compilation unit in Unity build.")
+	option(XSILIUM_CREATE_OGRE_DEPENDENCY_DIR	"Prepare Dependencies directory for Ogre prior to Ogre configuration and build" OFF)
+	
+	if (APPLE)
+		option(XSILIUM_BUILD_IPHONE	"Build GameKit on iOS SDK"	OFF)
+		option(XSILIUM_BUILD_IPHONE_UNIV "Support arm6 architecture for old devcie" OFF)
+	endif()
+
+	option(XSILIUM_BUILD_ANDROID	"Build GameKit on Android SDK" OFF)
+	option(XSILIUM_BUILD_NACL		"Build GameKit on NACL" OFF)
+
+	
+	if (XSILIUM_BUILD_ANDROID OR XSILIUM_BUILD_IPHONE OR XSILIUM_BUILD_NACL)
+		set(XSILIUM_BUILD_MOBILE 1) #Force use GLES2, not GL.
+	endif()
     
     	if (XSILIUM_BUILD_GLES2RS)
         	set(XSILIUM_USE_RTSHADER_SYSTEM TRUE CACHE BOOL "Forcing RTShaderSystem" FORCE)
@@ -64,43 +78,182 @@ macro (configure_xsilium ROOT OGREPATH)
 		set(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM TRUE)
 		set(RTSHADER_SYSTEM_BUILD_CORE_SHADERS 1)
 		set(RTSHADER_SYSTEM_BUILD_EXT_SHADERS 1)				
+		
+		if (XSILIUM_BUILD_MOBILE)
+			message(STATUS "mobile rtshader")
+			set(OGRE_BUILD_RENDERSYSTEM_GLES CACHE BOOL "Forcing OpenGLES" FORCE)
+			set(OGRE_BUILD_RENDERSYSTEM_GLES2 TRUE CACHE BOOL "Forcing OpenGLES2" FORCE)
+
+			set(XSILIUM_BUILD_GLESRS  CACHE BOOL "Forcing remove GLES"   FORCE)
+			set(XSILIUM_BUILD_GLES2RS TRUE CACHE BOOL "Forcing OpenGLES2" FORCE)
+        endif()
 	endif()	
 	
 	
 	if (XSILIUM_COMPILE_OGRE_COMPONENTS)
 		option(OGRE_BUILD_COMPONENT_PAGING "Build Ogre Paging Compoment" ON)
 		option(OGRE_BUILD_COMPONENT_TERRAIN "Build Ogre Terrain Compoment" ON)
-		option(OGRE_BUILD_COMPONENT_OVERLAY "Build Ogre Overlay Compoment" ON)
-		option(OGRE_BUILD_COMPONENT_VOLUME "Build Ogre Volume Compoment" ON)
-		option(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM "Build Ogre RTShaderSystem Compoment" OFF)
+		#option(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM "Build Ogre RTShaderSystem Compoment" OFF)
 		option(OGRE_BUILD_COMPONENT_PROPERTY "Build Ogre Property Compoment(Required boost)" OFF)
 	endif()
-
+	
+	set(XSILIUM_ZZIP_TARGET ZZipLib)
+	set(XSILIUM_FREETYPE_TARGET freetype)
+	set(XSILIUM_OIS_TARGET OIS)
+	
+	set(XSILIUM_DEP_DIR ${ROOT}/Dependencies/Source)
+	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
+	
+	set(OGRE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/Bin)
+	SET(OGRE_SOURCE_DIR ${OGREPATH})
+	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
+	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
+	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
+	
+	set(OGRELITE_SOURCE_DIR ${OGREPATH})	
+	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
+	
 	include(OgreConfigTargets)
 	include(DependenciesXsilium)
 	include(MacroLogFeature)
 
-	set(OGRE_BUILD_PLUGIN_OCTREE TRUE CACHE BOOL "Forcing Plugins" )
-	set(OGRE_BUILD_PLUGIN_BSP TRUE CACHE BOOL "Forcing Plugins" )
-	set(OGRE_BUILD_PLUGIN_PFX TRUE CACHE BOOL "Forcing Plugins" )
-	set(OGRE_BUILD_PLUGIN_PCZ TRUE CACHE BOOL "Forcing Plugins" )
-	set(OGRE_BUILD_PLUGIN_CG TRUE CACHE BOOL "Forcing Plugins" )
 
-
-	set(OGRE_USE_BOOST TRUE CACHE BOOL "Forcing use BOOST" ) 
-
-	set(Boost_ADDITIONAL_VERSIONS "1.52.0 1.49.0 1.48.0")
-
-	set(OGRE_BOOST_COMPONENTS thread date_time system filesystem)
-	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
-
-	include_directories("${Boost_INCLUDE_DIRS}")
+	if (NOT XSILIUM_USE_STATIC_FREEIMAGE)
+	
+		if(ZLIB_FOUND)
+			set(XSILIUM_ZLIB_TARGET	${ZLIB_LIBRARY})
+			set(XSILIUM_FREEIMAGE_INCLUDE	${ZLIB_INCLUDE_DIR})
+		else()
+			message("Zlib not found.")
+			message("Package is mandatory, please install it or enable static FreeImage compilation.")
+		endif()
 		
-	include(DependenciesXsilium)
-	include(MacroLogFeature)
 		
+		if(FreeImage_FOUND)
+			set(XSILIUM_FREEIMAGE_TARGET	${FreeImage_LIBRARY})	
+			set(XSILIUM_FREEIMAGE_INCLUDE	${FreeImage_INCLUDE_DIR})
+		else()
+			message("FreeImage not found")
+			message("Package is mandatory, please install it or enable static FreeImage compilation.")
+		endif()
+		
+	else()
+	
+		set(XSILIUM_ZLIB_TARGET	ZLib)
+		set(XSILIUM_FREEIMAGE_TARGET FreeImage)
+		set(XSILIUM_ZLIB_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/ZLib)
+		set(XSILIUM_FREEIMAGE_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage)        
+		
+	endif()
+
 
 	if (APPLE)
+		set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")	
+		if (OGRE_BUILD_PLATFORM_IPHONE)
+			option(XSILIUM_USE_COCOA "Use Cocoa" ON)
+			set(XSILIUM_PLATFORM ${OGREPATH}/OgreMain/include/IPhone )
+		else()
+			set(XSILIUM_PLATFORM ${OGREPATH}/OgreMain/include/OSX )
+		endif()
+		
+	else()
+	
+		if (UNIX)
+			set(XSILIUM_PLATFORM ${OGREPATH}/OgreMain/include/GLX )
+		elseif (WIN32)
+			set(XSILIUM_PLATFORM ${OGREPATH}/OgreMain/include/WIN32 )
+		endif()
+		
+	endif()
+	
+	
+	if (XSILIUM_COMPILE_SWIG OR XSILIUM_GENERATE_BUILTIN_RES)
+		set(XSILIUM_COMPILE_TCL TRUE CACHE BOOL "Forcing TCL"  FORCE)
+	endif()
+	
+	if (XSILIUM_BUILD_MOBILE)
+	   set(XSILIUM_BUILD_GLRS    CACHE BOOL "Forcing remove GL"   FORCE)
+	endif()
+		
+
+	if (XSILIUM_BUILD_ANDROID)
+	
+		set(OGRE_BUILD_PLATFORM_ANDROID TRUE)
+
+		set(XSILIUM_OPENAL_SOUND   CACHE BOOL "Forcing remove OpenAL"   FORCE)
+		set(XSILIUM_BUILD_GLRS    FALSE CACHE BOOL "Forcing GLRS"   FORCE)
+		set(XSILIUM_BUILD_GLESRS  FALSE CACHE BOOL "Forcing remove GLESRS"   FORCE)
+        set(XSILIUM_BUILD_GLES2RS TRUE  CACHE BOOL "Forcing remove GLES2RS"   FORCE)
+        
+		set(XSILIUM_USE_RTSHADER_SYSTEM TRUE CACHE BOOL "Forcing RTShaderSystem for Android" FORCE)
+		set(OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE TRUE CACHE BOOL "Forcing viewport orientation support for Android" FORCE)
+		if (OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE)
+			set(OGRE_SET_DISABLE_VIEWPORT_ORIENTATIONMODE 0)
+		endif()
+
+		#message(${XSILIUM_BUILD_GLRS} "---" ${XSILIUM_BUILD_GLESRS} " --- " ${OPENGLES2_gl_LIBRARY})
+		
+		elseif (XSILIUM_BUILD_NACL)
+	
+		set(OGRE_BUILD_PLATFORM_NACL TRUE)
+		include_directories(${OPENGLES2_INCLUDE_DIR})
+		#include_directories(${OGRE_SOURCE_DIR}/RenderSystems/GLES2/include)
+		include_directories(${NACL_SDK_ROOT}/include)
+
+		set(XSILIUM_OPENAL_SOUND   CACHE BOOL "Forcing remove OpenAL"   FORCE)
+		
+		set(XSILIUM_BUILD_GLRS    FALSE CACHE BOOL "Forcing GLRS"   FORCE)
+		set(XSILIUM_BUILD_GLESRS  FALSE CACHE BOOL "Forcing remove GLESRS"   FORCE)
+        set(XSILIUM_BUILD_GLES2RS TRUE  CACHE BOOL "Forcing remove GLES2RS"   FORCE)
+
+		set(XSILIUM_MINIMAL_FREEIMAGE_CODEC  TRUE CACHE BOOL "Forcing FreeImage minimal codec" FORCE)
+        
+		set(XSILIUM_USE_RTSHADER_SYSTEM TRUE CACHE BOOL "Forcing RTShaderSystem for Android" FORCE)
+	
+	elseif (XSILIUM_BUILD_IPHONE)
+	
+		set(OGRE_BUILD_PLATFORM_IPHONE TRUE) #TODO: replace to OGRE_BUILD_APPLE_IOS 
+		set(OGRE_BUILD_PLATFORM_APPLE_IOS TRUE)
+		
+		#copy from ogre3d build
+		# Set up iPhone overrides.
+		include_directories("${OGREPATH}/OgreMain/include/iPhone")
+	
+		# Set build variables
+		set(CMAKE_OSX_SYSROOT iphoneos)
+		set(CMAKE_OSX_DEPLOYMENT_TARGET "")
+		set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework CoreGraphics -framework QuartzCore -framework UIKit")
+		set(XCODE_ATTRIBUTE_SDKROOT iphoneos)
+		set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.yourcompany.\${PRODUCT_NAME:rfc1034identifier}")
+		set(OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE TRUE CACHE BOOL "Forcing viewport orientation support for iPhone" FORCE)
+	
+		# CMake 2.8.1 added the ability to specify per-target architectures.
+		# As a side effect, it creates corrupt Xcode projects if you try do it for the whole project.
+		if(VERSION STRLESS "2.8.1")
+			set(CMAKE_OSX_ARCHITECTURES $(ARCHS_STANDARD_32_BIT))
+		else()
+			if (XSILIUM_BUILD_IPHONE_UNIV)
+				set(CMAKE_OSX_ARCHITECTURES "armv6;armv7;i386")
+			else()
+				set(CMAKE_OSX_ARCHITECTURES "armv7;i386")
+			endif()
+		endif()
+	
+		add_definitions(-fno-regmove)
+		remove_definitions(-msse)
+	
+		if (OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE)
+			set(OGRE_SET_DISABLE_VIEWPORT_ORIENTATIONMODE 0)
+		endif()
+	
+		if (XSILIUM_BUILD_GLES2RS)
+			set(XSILIUM_BUILD_GLESRS FALSE CACHE BOOL "Forcing remove GLESRS"   FORCE)
+		else()
+			set(XSILIUM_BUILD_GLESRS TRUE CACHE BOOL "Forcing GLESRS"   FORCE)
+		endif()
+		
+
+	elseif (APPLE)
 	
 		# Set 10.4 as the base SDK by default
 		set(XCODE_ATTRIBUTE_SDKROOT macosx10.4)
@@ -123,19 +276,72 @@ macro (configure_xsilium ROOT OGREPATH)
         	set(XSILIUM_BUILD_GLES2RS FALSE CACHE BOOL "Forcing remove GLES2RS"   FORCE)
 	endif ()
 
-	set(OGRE_H_PATH 
-	   ${OGREPATH}/OgreMain/include 
-           ${OGREPATH}/Components/Terrain/include 
-	   ${OGREPATH}/Components/Paging/include/
-	   ${OGREPATH}/Components/Overlay/include 
-	   ${OGREPATH}/Components/Volume/include 
-           ${XSILIUM_BINARY_DIR}/include 
-           ${XSILIUM_PLATFORM})	
+
+	if (XSILIUM_COMPILE_SWIG)
+		include(RunSwig)
+	endif()
+
+
+	if (XSILIUM_COMPILE_TCL)	
+		include(TemplateCompiler)
+	endif()
+	
+	set(XSILIUM_FREETYPE_INCLUDE ${XSILIUM_DEP_DIR}/FreeType/include)
+	set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
+	set(XSILIUM_OIS_INCLUDE ${XSILIUM_DEP_DIR}/OIS/include)
+	set(XSILIUM_OGRE_INCLUDE ${OGREPATH}/OgreMain/include ${OGREPATH}/Components/Overlay/include ${XSILIUM_BINARY_DIR}/include ${XSILIUM_PLATFORM})	
+	
+	set(XSILIUM_TINYXML_INCLUDE ${XSILIUM_DEP_DIR}/TinyXml)
+
+	set(XSILIUM_DEP_INCLUDE
+#		${XSILIUM_FREEIMAGE_INCLUDE}
+		${XSILIUM_FREETYPE_INCLUDE}
+		${XSILIUM_ZLIB_INCLUDE}
+		${XSILIUM_OIS_INCLUDE}	
+	)
+	
+	
+	
+	if (WIN32 AND NOT (XSILIUM_BUILD_ANDROID OR XSILIUM_BUILD_NACL))
+		# Use static library. No SDK needed at build time.
+		# Must have OpenAL32.dll installed on the system 
+		# In order to use OpenAL sound.
+		set(OPENAL_FOUND TRUE)
+	endif()
+
+
+	if (OPENAL_FOUND)
+		option(XSILIUM_OPENAL_SOUND "Enable building of the OpenAL subsystem" ON)
+		
+		if (WIN32)
+			add_definitions(-DAL_STATIC_LIB -DALC_STATIC_LIB)
+			set(XSILIUM_OPENAL_INCLUDE ${XSILIUM_DEP_DIR}/OpenAL/)
+			set(XSILIUM_OPENAL_LIBRARY OpenAL)
+		else()
+			set(XSILIUM_OPENAL_INCLUDE ${OPENAL_INCLUDE_DIR})
+			set(XSILIUM_OPENAL_LIBRARY ${OPENAL_LIBRARY})
+		endif()
+	else()
+		option(XSILIUM_OPENAL_SOUND "Enable building of the OpenAL subsystem" OFF)
+	endif()
 
 	set(XSILIUM_MINGW_DIRECT3D TRUE)
 	if (CMAKE_COMPILER_IS_GNUCXX)
 		# Some Issues with unresolved symbols
 		set(XSILIUM_MINGW_DIRECT3D FALSE)
+	endif()
+
+
+	if (WIN32)
+		if (NOT DirectX_FOUND OR NOT XSILIUM_MINGW_DIRECT3D)
+			# Default use OIS without dinput 
+
+			option(XSILIUM_OIS_WIN32_NATIVE "Enable building of the OIS Win32 backend" ON)
+		else ()
+			# Use standard OIS build.
+			# CAUTION: For now there are some missing symbols, which work with native fine. So for now lets set it to native as default
+			option(XSILIUM_OIS_WIN32_NATIVE "Enable building of the OIS Win32 backend" On)
+		endif()
 	endif()
 
 	
@@ -267,22 +473,7 @@ macro (configure_xsilium ROOT OGREPATH)
 		endif()
 	endif(APPLE)
 
-# ---------------------------------------------------------
-# Common base paths
-set(XSILIUM_INCLUDE ${OGRE_H_PATH}
-                    ${XSILIUM_SOURCE_DIR}/Engine
-                    ${OIS_INCLUDE_DIR}
-		     ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
-		     ${XSILIUM_SOURCE_DIR}/Library/Boost
-		     ${XSILIUM_SOURCE_DIR}/Library/Enet
-		     ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
-		     ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
-		     ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
-		     ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
-		     ${XSILIUM_SOURCE_DIR}/Library/SkyX/Include
-		     ${Cg_INCLUDE_DIR}
-                    ${RAPIDXML_H_PATH}
-)
+
 
 set(XSILIUM_LIB XsiliumEngine 
 		${OGRE_LIB}

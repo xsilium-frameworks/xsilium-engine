@@ -27,7 +27,6 @@ if (OGREKIT_USE_PARTICLE)
 else()
 	set(OGRE_BUILD_PLUGIN_PFX        FALSE)
 endif()
-	
 set(OGRE_CONFIG_ENABLE_FREEIMAGE TRUE)
 set(OGRE_CONFIG_ENABLE_DDS       TRUE)
 set(OGRE_SET_DISABLE_LIBCPP_SUPPORT 0)
@@ -175,11 +174,13 @@ include(OgreGetVersion)
 ogre_get_version(${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h)
 message(STATUS "Configuring OGRE ${OGRE_VERSION}")
 
-configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${XSILIUM_BINARY_DIR}/include/OgreBuildSettings.h)
+configure_file(${XSILIUM_SOURCE_DIR}/CMake/Templates/OgreBuildSettings.h.in ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h)
 
 
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
-include_directories(${OGREKIT_BINARY_DIR}/include)
+include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
+include_directories(${XSILIUM_BINARY_DIR}/include)
+message(${XSILIUM_BINARY_DIR})
 include_directories(${OGREKIT_FREETYPE_INCLUDE} ${OGREKIT_FREEIMAGE_INCLUDE} ${OGREKIT_ZZIP_INCLUDE} ${OGREKIT_ZLIB_INCLUDE} )
 
 if (APPLE)
