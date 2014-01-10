@@ -18,5 +18,5 @@ if (XSILIUM_USE_STATIC_FREEIMAGE)
 endif()
 
 if (NOT XSILIUM_DISABLE_ZIP)
-	subdirs(Source/zziplib)
+	subdirs(Source/ZZipLib)
 endif()

@@ -335,6 +335,7 @@ if (APPLE)
   # Framework is called 'Ogre'
   set_target_properties(OgreMain PROPERTIES	OUTPUT_NAME Ogre)
 endif ()
+message(${LIBRARIES} " : Librairies")
 target_link_libraries(OgreMain ${LIBRARIES})
 if (MINGW)
   # may need winsock htons functions for FreeImage

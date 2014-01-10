@@ -3,7 +3,7 @@
 ################################################################################
 include(FindPackageHandleStandardArgs)
 
-find_path(FREEIMAGE_H_PATH NAMES FreeImage.h)
+find_path(FreeImage_INCLUDE_DIR NAMES FreeImage.h)
 find_library(FREEIMAGE_LIB NAMES freeimage libfreeimage FreeImage libFreeImage PATH_SUFFIXES dynamic)
 find_library(FREEIMAGE_LIB_DBG NAMES freeimaged libfreeimaged FreeImage_d libFreeImage_d PATH_SUFFIXES dynamic)
 mark_as_advanced(FREEIMAGE_H_PATH FREEIMAGE_LIB FREEIMAGE_LIB_DBG)
