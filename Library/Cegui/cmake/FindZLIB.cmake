@@ -3,7 +3,7 @@
 ################################################################################
 include(FindPackageHandleStandardArgs)
 
-find_path(ZLIB_H_PATH NAMES zlib.h)
+find_path(ZLIB_INCLUDE_DIR NAMES zlib.h)
 find_library(ZLIB_LIB NAMES zlib zdll z PATH_SUFFIXES dynamic)
 find_library(ZLIB_LIB_DBG NAMES zlib_d zdll_d z_d PATH_SUFFIXES dynamic)
 mark_as_advanced(ZLIB_H_PATH ZLIB_LIB ZLIB_LIB_DBG)
