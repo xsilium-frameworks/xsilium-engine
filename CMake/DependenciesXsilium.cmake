@@ -25,7 +25,7 @@ if (UNIX AND NOT XSILIUM_BUILD_MOBILE)
 endif ()
 
 
-if (OGREKIT_BUILD_MOBILE)
+if (XSILIUM_BUILD_MOBILE)
 	# Find OpenGLES
 	find_package(OpenGLES)
 	macro_log_feature(OPENGLES_FOUND "OpenGLES" "Support for the OpenGLES render system" "" FALSE "" "")
@@ -59,7 +59,7 @@ if (WIN32)
 	macro_log_feature(DirectX11_FOUND "DirectX11" "Support for the DirectX11 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
 endif()
 
-if (OGREKIT_BUILD_NACL)
+if (XSILIUM_BUILD_NACL)
 	find_package(NaClGLES2)
 endif()
 
@@ -69,7 +69,7 @@ endif()
 # find_package(Cg)
 # macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
 
-if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID AND NOT OGREKIT_BUILD_NACL)
+if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID AND NOT XSILIUM_BUILD_NACL)
 	# Use static loader On win32 platforms 
 
 	# Find OpenAL
@@ -77,7 +77,8 @@ if(NOT WIN32 AND NOT XSILIUM_BUILD_ANDROID AND NOT OGREKIT_BUILD_NACL)
 	macro_log_feature(OPENAL_FOUND "OpenAL" "Support for the OpenAL sound system" "http://connect.creativelabs.com/openal/default.aspx" FALSE "" "")
 endif()
 
-if(NOT OGREKIT_USE_STATIC_FREEIMAGE)
+if(NOT XSILIUM_USE_STATIC_FREEIMAGE)
+	
 	find_package(FreeImage)
 	macro_log_feature(FreeImage_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
 
