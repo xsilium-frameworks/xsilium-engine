@@ -87,7 +87,7 @@ ENDIF(MSVC)
 
 
 include(InstallResources)
-message(${XSILIUM_SOURCE_DIR} " xsilium source dir")
+
 set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
 		    ${XSILIUM_SOURCE_DIR}/Library/Dependencies/Source/freetype/include
                     ${XSILIUM_SOURCE_DIR}/Engine/External/Ogre/supp

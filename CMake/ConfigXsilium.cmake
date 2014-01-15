@@ -485,8 +485,6 @@ set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 		endif()
 	endif(APPLE)
 
-message(${OGRE_LIB} " test gne")
-
 set(XSILIUM_LIB XsiliumEngine 
 		${OGRE_LIB}
 		CEGUIBase

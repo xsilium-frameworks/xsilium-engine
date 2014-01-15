@@ -33,8 +33,8 @@
 	SET(OPENGLES2_gl_LIBRARY ${NACL_LIB_PATH}/libppapi_gles2.a)
 	#SET(OPENGLES2_gl_LIBRARY ${ENV_NACL_SDK_ROOT}/lib/glibc_x86_32/Release/libppapi_gles2.a) #Find libGLESv2
 	#SET(EGL_egl_LIBRARY)
-	#SET(EGL_egl_LIBRARY ${OGREKIT_DEP_WIN_DIR}/gles2/lib/libEGL.lib) #Find libEGL
-	#SET(OPENGLES2_BIN_DIR ${OGREKIT_DEP_WIN_DIR}/gles2/bin)
+	#SET(EGL_egl_LIBRARY ${XSILIUM_DEP_WIN_DIR}/gles2/lib/libEGL.lib) #Find libEGL
+	#SET(OPENGLES2_BIN_DIR ${XSILIUM_DEP_WIN_DIR}/gles2/bin)
 	#message(STATUS "Add to your PATH: " ${OPENGLES2_INCLUDE_DIR})
 #ENDIF (MSVC)
 

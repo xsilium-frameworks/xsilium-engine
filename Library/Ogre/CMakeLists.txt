@@ -198,7 +198,6 @@ configure_file(${OGRE_TEMPLATES_DIR}/OgreBuildSettings.h.in ${OGRE_BINARY_DIR}/i
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
 include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
 include_directories(${XSILIUM_BINARY_DIR}/include)
-message(${XSILIUM_ZLIB_INCLUDE} " XSILIUM_ZLIB_INCLUDE")
 include_directories(${XSILIUM_FREETYPE_INCLUDE} ${XSILIUM_FREEIMAGE_INCLUDE} ${XSILIUM_ZZIP_INCLUDE} ${XSILIUM_ZLIB_INCLUDE} )
 
 if (APPLE)

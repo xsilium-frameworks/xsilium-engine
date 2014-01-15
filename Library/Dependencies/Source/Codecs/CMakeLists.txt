@@ -56,4 +56,4 @@ set(VORBIS
 	Vorbis/window.c
 )
 
-add_library(${OGREKIT_OGGVORBIS_TARGET} ${OGG} ${VORBIS})
+add_library(${XSILIUM_OGGVORBIS_TARGET} ${OGG} ${VORBIS})

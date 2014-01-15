@@ -19,11 +19,11 @@
 #  EGL_LIBRARIES    - Link these to use EGL
 
 IF (MSVC)  
-	SET(OPENGLES2_INCLUDE_DIR ${OGREKIT_DEP_WIN_DIR}/gles2/include) #Find GLES2/gl2.h			
-	SET(EGL_INCLUDE_DIR ${OGREKIT_DEP_WIN_DIR}/gles2/include) #Find EGL/egl.h	
-	SET(OPENGLES2_gl_LIBRARY ${OGREKIT_DEP_WIN_DIR}/gles2/lib/libGLESv2.lib) #Find libGLESv2
-	SET(EGL_egl_LIBRARY ${OGREKIT_DEP_WIN_DIR}/gles2/lib/libEGL.lib) #Find libEGL
-	SET(OPENGLES2_BIN_DIR ${OGREKIT_DEP_WIN_DIR}/gles2/bin)
+	SET(OPENGLES2_INCLUDE_DIR ${XSILIUM_DEP_WIN_DIR}/gles2/include) #Find GLES2/gl2.h			
+	SET(EGL_INCLUDE_DIR ${XSILIUM_DEP_WIN_DIR}/gles2/include) #Find EGL/egl.h	
+	SET(OPENGLES2_gl_LIBRARY ${XSILIUM_DEP_WIN_DIR}/gles2/lib/libGLESv2.lib) #Find libGLESv2
+	SET(EGL_egl_LIBRARY ${XSILIUM_DEP_WIN_DIR}/gles2/lib/libEGL.lib) #Find libEGL
+	SET(OPENGLES2_BIN_DIR ${XSILIUM_DEP_WIN_DIR}/gles2/bin)
 	message(STATUS "Add to your PATH: " ${OPENGLES2_BIN_DIR})
 ENDIF (MSVC)
 

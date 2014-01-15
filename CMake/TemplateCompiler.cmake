@@ -5,7 +5,7 @@
 #   Usage: ${TARGET} ${OUTFILE} ${SOURCE0} ... ${SOURCE[N]}                   #
 #                                                                             #
 # ----------------------------------------------------------------------------#
-subdirs(${OGREKIT_SOURCE_DIR}/Tools/TemplateCompiler)
+subdirs(${XSILIUM_SOURCE_DIR}/Tools/TemplateCompiler)
 set(TCL_EXECUTABLE tcl)
 # ----------------------------------------------------------------------------#
 #                                                                             #
