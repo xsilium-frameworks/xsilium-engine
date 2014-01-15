@@ -1,542 +1,888 @@
-project(FreeImage)
+include_directories( include )
+	
+set(FI_INCLUDE
+	${XSILIUM_FREEIMAGE_INCLUDE}
+	${XSILIUM_FREEIMAGE_INCLUDE}/DeprecationManager
+	${XSILIUM_FREEIMAGE_INCLUDE}/FreeImage
+	${XSILIUM_FREEIMAGE_INCLUDE}/LibJPEG
+	${XSILIUM_FREEIMAGE_INCLUDE}/LibMNG
+	${XSILIUM_FREEIMAGE_INCLUDE}/LibOpenJPEG
+	${XSILIUM_FREEIMAGE_INCLUDE}/LibPNG
+	${XSILIUM_FREEIMAGE_INCLUDE}/LibTIFF
+	${XSILIUM_FREEIMAGE_INCLUDE}/Metadata
+	${XSILIUM_FREEIMAGE_INCLUDE}/ZLib
+	${XSILIUM_FREEIMAGE_INCLUDE}/OpenEXR
+	${XSILIUM_FREEIMAGE_INCLUDE}/OpenEXR/Half
+	${XSILIUM_FREEIMAGE_INCLUDE}/OpenEXR/Iex
+	${XSILIUM_FREEIMAGE_INCLUDE}/OpenEXR/IlmImf
+	${XSILIUM_FREEIMAGE_INCLUDE}/OpenEXR/IlmThread
+	${XSILIUM_FREEIMAGE_INCLUDE}/OpenEXR/Imath
+	${XSILIUM_FREEIMAGE_INCLUDE}/LibRawLite
+	)
 
-set(FreeImage_SOURCES
-	Source/CacheFile.h
-	Source/DeprecationManager/Deprecated.cpp
-	Source/DeprecationManager/DeprecationMgr.cpp
-	Source/DeprecationManager/DeprecationMgr.h
-	Source/FreeImage.h
-	Source/FreeImage/BitmapAccess.cpp
-	Source/FreeImage/CacheFile.cpp
-	Source/FreeImage/ColorLookup.cpp
-	Source/FreeImage/Conversion.cpp
-	Source/FreeImage/Conversion16_555.cpp
-	Source/FreeImage/Conversion16_565.cpp
-	Source/FreeImage/Conversion24.cpp
-	Source/FreeImage/Conversion32.cpp
-    Source/FreeImage/ConversionFloat.cpp
-    Source/FreeImage/ConversionRGB16.cpp
-	Source/FreeImage/Conversion4.cpp
-	Source/FreeImage/Conversion8.cpp
-	Source/FreeImage/ConversionRGBF.cpp
-	Source/FreeImage/ConversionType.cpp
-    Source/FreeImage/ConversionUINT16.cpp
-	Source/FreeImage/FreeImage.cpp
-	Source/FreeImage/FreeImageIO.cpp
-	Source/FreeImage/GetType.cpp
-	Source/FreeImage/Halftoning.cpp
-	Source/FreeImage/J2KHelper.cpp
-	Source/FreeImage/MemoryIO.cpp
-    Source/FreeImage/MNGHelper.cpp
-	Source/FreeImage/MultiPage.cpp
-	Source/FreeImage/NNQuantizer.cpp
-	Source/FreeImage/PSDParser.cpp
-	Source/FreeImage/PSDParser.h
-	Source/FreeImage/PixelAccess.cpp
-	Source/FreeImage/Plugin.cpp
-	Source/FreeImage/PluginBMP.cpp
-	Source/FreeImage/PluginCUT.cpp
-	Source/FreeImage/PluginDDS.cpp
-	Source/FreeImage/PluginEXR.cpp
-	Source/FreeImage/PluginG3.cpp
-	Source/FreeImage/PluginGIF.cpp
-	Source/FreeImage/PluginHDR.cpp
-	Source/FreeImage/PluginICO.cpp
-	Source/FreeImage/PluginIFF.cpp
-	Source/FreeImage/PluginJ2K.cpp
-    Source/FreeImage/PluginJNG.cpp
-	Source/FreeImage/PluginJP2.cpp
-	Source/FreeImage/PluginJPEG.cpp
-	Source/FreeImage/PluginKOALA.cpp
-	Source/FreeImage/PluginMNG.cpp
-	Source/FreeImage/PluginPCD.cpp
-	Source/FreeImage/PluginPCX.cpp
-	Source/FreeImage/PluginPFM.cpp
-	Source/FreeImage/PluginPICT.cpp
-	Source/FreeImage/PluginPNG.cpp
-	Source/FreeImage/PluginPNM.cpp
-	Source/FreeImage/PluginPSD.cpp
-	Source/FreeImage/PluginRAS.cpp
-	Source/FreeImage/PluginRAW.cpp
-	Source/FreeImage/PluginSGI.cpp
-	Source/FreeImage/PluginTARGA.cpp
-	Source/FreeImage/PluginTIFF.cpp
-	Source/FreeImage/PluginWBMP.cpp
-	Source/FreeImage/PluginXBM.cpp
-	Source/FreeImage/PluginXPM.cpp
-	Source/FreeImage/TIFFLogLuv.cpp
-	Source/FreeImage/ToneMapping.cpp
-	Source/FreeImage/WuQuantizer.cpp
-	Source/FreeImage/ZLibInterface.cpp
-	Source/FreeImage/tmoColorConvert.cpp
-	Source/FreeImage/tmoDrago03.cpp
-	Source/FreeImage/tmoFattal02.cpp
-	Source/FreeImage/tmoReinhard05.cpp
-	Source/FreeImageIO.h
-	Source/FreeImageToolkit/BSplineRotate.cpp
-	Source/FreeImageToolkit/Background.cpp
-	Source/FreeImageToolkit/Channels.cpp
-	Source/FreeImageToolkit/ClassicRotate.cpp
-	Source/FreeImageToolkit/Colors.cpp
-	Source/FreeImageToolkit/CopyPaste.cpp
-	Source/FreeImageToolkit/Display.cpp
-	Source/FreeImageToolkit/Filters.h
-	Source/FreeImageToolkit/Flip.cpp
-	Source/FreeImageToolkit/JPEGTransform.cpp
-	Source/FreeImageToolkit/MultigridPoissonSolver.cpp
-	Source/FreeImageToolkit/Rescale.cpp
-	Source/FreeImageToolkit/Resize.cpp
-	Source/FreeImageToolkit/Resize.h
-	Source/LibJPEG/jaricom.c
-	Source/LibJPEG/jcapimin.c
-	Source/LibJPEG/jcapistd.c
-	Source/LibJPEG/jcarith.c
-	Source/LibJPEG/jccoefct.c
-	Source/LibJPEG/jccolor.c
-	Source/LibJPEG/jcdctmgr.c
-	Source/LibJPEG/jchuff.c
-	Source/LibJPEG/jcinit.c
-	Source/LibJPEG/jcmainct.c
-	Source/LibJPEG/jcmarker.c
-	Source/LibJPEG/jcmaster.c
-	Source/LibJPEG/jcomapi.c
-	Source/LibJPEG/jconfig.h
-	Source/LibJPEG/jcparam.c
-	Source/LibJPEG/jcprepct.c
-	Source/LibJPEG/jcsample.c
-	Source/LibJPEG/jctrans.c
-	Source/LibJPEG/jdapimin.c
-	Source/LibJPEG/jdapistd.c
-	Source/LibJPEG/jdarith.c
-	Source/LibJPEG/jdatadst.c
-	Source/LibJPEG/jdatasrc.c
-	Source/LibJPEG/jdcoefct.c
-	Source/LibJPEG/jdcolor.c
-	Source/LibJPEG/jdct.h
-	Source/LibJPEG/jddctmgr.c
-	Source/LibJPEG/jdhuff.c
-	Source/LibJPEG/jdinput.c
-	Source/LibJPEG/jdmainct.c
-	Source/LibJPEG/jdmarker.c
-	Source/LibJPEG/jdmaster.c
-	Source/LibJPEG/jdmerge.c
-	Source/LibJPEG/jdpostct.c
-	Source/LibJPEG/jdsample.c
-	Source/LibJPEG/jdtrans.c
-	Source/LibJPEG/jerror.c
-	Source/LibJPEG/jerror.h
-	Source/LibJPEG/jfdctflt.c
-	Source/LibJPEG/jfdctfst.c
-	Source/LibJPEG/jfdctint.c
-	Source/LibJPEG/jidctflt.c
-	Source/LibJPEG/jidctfst.c
-	Source/LibJPEG/jidctint.c
-	Source/LibJPEG/jinclude.h
-	Source/LibJPEG/jmemmgr.c
-	Source/LibJPEG/jmemnobs.c
-	Source/LibJPEG/jmemsys.h
-	Source/LibJPEG/jmorecfg.h
-	Source/LibJPEG/jpegint.h
-	Source/LibJPEG/jpeglib.h
-	Source/LibJPEG/jquant1.c
-	Source/LibJPEG/jquant2.c
-	Source/LibJPEG/jutils.c
-	Source/LibJPEG/jversion.h
-	Source/LibJPEG/transupp.c
-	Source/LibJPEG/transupp.h
-	Source/LibOpenJPEG/bio.c
-	Source/LibOpenJPEG/bio.h
-    Source/LibOpenJPEG/cidx_manager.c
-    Source/LibOpenJPEG/cidx_manager.h
-	Source/LibOpenJPEG/cio.c
-	Source/LibOpenJPEG/cio.h
-	Source/LibOpenJPEG/dwt.c
-	Source/LibOpenJPEG/dwt.h
-	Source/LibOpenJPEG/event.c
-	Source/LibOpenJPEG/event.h
-	Source/LibOpenJPEG/fix.h
-	Source/LibOpenJPEG/image.c
-	Source/LibOpenJPEG/image.h
-    Source/LibOpenJPEG/indexbox_manager.h
-	Source/LibOpenJPEG/int.h
-	Source/LibOpenJPEG/j2k.c
-	Source/LibOpenJPEG/j2k.h
-	Source/LibOpenJPEG/j2k_lib.c
-	Source/LibOpenJPEG/j2k_lib.h
-	Source/LibOpenJPEG/jp2.c
-	Source/LibOpenJPEG/jp2.h
-	Source/LibOpenJPEG/jpt.c
-	Source/LibOpenJPEG/jpt.h
-	Source/LibOpenJPEG/mct.c
-	Source/LibOpenJPEG/mct.h
-	Source/LibOpenJPEG/mqc.c
-	Source/LibOpenJPEG/mqc.h
-	Source/LibOpenJPEG/openjpeg.c
-	Source/LibOpenJPEG/openjpeg.h
-    Source/LibOpenJPEG/opj_config.h
-	Source/LibOpenJPEG/opj_includes.h
-	Source/LibOpenJPEG/opj_malloc.h
-    Source/LibOpenJPEG/phix_manager.c
-	Source/LibOpenJPEG/pi.c
-	Source/LibOpenJPEG/pi.h
-    Source/LibOpenJPEG/ppix_manager.c
-	Source/LibOpenJPEG/raw.c
-	Source/LibOpenJPEG/raw.h
-	Source/LibOpenJPEG/t1.c
-	Source/LibOpenJPEG/t1.h
-	Source/LibOpenJPEG/t1_luts.h
-	Source/LibOpenJPEG/t2.c
-	Source/LibOpenJPEG/t2.h
-	Source/LibOpenJPEG/tcd.c
-	Source/LibOpenJPEG/tcd.h
-	Source/LibOpenJPEG/tgt.c
-	Source/LibOpenJPEG/tgt.h
-    Source/LibOpenJPEG/thix_manager.c
-    Source/LibOpenJPEG/tpix_manager.c
-	Source/LibPNG/png.c
-	Source/LibPNG/png.h
-	Source/LibPNG/pngconf.h
-    Source/LibPNG/pngdebug.h
-	Source/LibPNG/pngerror.c
-	Source/LibPNG/pnggccrd.c
-	Source/LibPNG/pngget.c
-    Source/LibPNG/pnginfo.h
-    Source/LibPNG/pnglibconf.h
-	Source/LibPNG/pngmem.c
-	Source/LibPNG/pngpread.c
-	Source/LibPNG/pngread.c
-    Source/LibPNG/pngpriv.h
-	Source/LibPNG/pngrio.c
-	Source/LibPNG/pngrtran.c
-	Source/LibPNG/pngrutil.c
-	Source/LibPNG/pngset.c
-    Source/LibPNG/pngstruct.h
-	Source/LibPNG/pngtrans.c
-	Source/LibPNG/pngvcrd.c
-	Source/LibPNG/pngwio.c
-	Source/LibPNG/pngwrite.c
-	Source/LibPNG/pngwtran.c
-	Source/LibPNG/pngwutil.c
-	Source/LibRawLite/internal/dcraw_common.cpp
-	Source/LibRawLite/internal/dcraw_fileio.cpp
-	Source/LibRawLite/internal/defines.h
-    Source/LibRawLite/internal/demosaic_packs.cpp
-    Source/LibRawLite/internal/libraw_bytebuffer.h
-	Source/LibRawLite/internal/libraw_internal_funcs.h
-	Source/LibRawLite/internal/var_defines.h
-	Source/LibRawLite/libraw/libraw.h
-	Source/LibRawLite/libraw/libraw_alloc.h
-	Source/LibRawLite/libraw/libraw_const.h
-	Source/LibRawLite/libraw/libraw_datastream.h
-	Source/LibRawLite/libraw/libraw_internal.h
-	Source/LibRawLite/libraw/libraw_types.h
-	Source/LibRawLite/libraw/libraw_version.h
-	Source/LibRawLite/src/libraw_c_api.cpp
-	Source/LibRawLite/src/libraw_cxx.cpp
-    Source/LibRawLite/src/libraw_datastream.cpp
-	Source/LibTIFF4/t4.h
-	Source/LibTIFF4/tif_aux.c
-	Source/LibTIFF4/tif_close.c
-	Source/LibTIFF4/tif_codec.c
-	Source/LibTIFF4/tif_color.c
-	Source/LibTIFF4/tif_compress.c
-	Source/LibTIFF4/tif_config.h
-	Source/LibTIFF4/tif_dir.c
-	Source/LibTIFF4/tif_dir.h
-	Source/LibTIFF4/tif_dirinfo.c
-	Source/LibTIFF4/tif_dirread.c
-	Source/LibTIFF4/tif_dirwrite.c
-	Source/LibTIFF4/tif_dumpmode.c
-	Source/LibTIFF4/tif_error.c
-	Source/LibTIFF4/tif_extension.c
-	Source/LibTIFF4/tif_fax3.c
-	Source/LibTIFF4/tif_fax3.h
-	Source/LibTIFF4/tif_fax3sm.c
-	Source/LibTIFF4/tif_flush.c
-	Source/LibTIFF4/tif_getimage.c
-	Source/LibTIFF4/tif_jpeg.c
-    Source/LibTIFF4/tif_jpeg_12.c
-	Source/LibTIFF4/tif_luv.c
-    Source/LibTIFF4/tif_lzma.c
-	Source/LibTIFF4/tif_lzw.c
-	Source/LibTIFF4/tif_next.c
-	Source/LibTIFF4/tif_ojpeg.c
-	Source/LibTIFF4/tif_open.c
-	Source/LibTIFF4/tif_packbits.c
-	Source/LibTIFF4/tif_pixarlog.c
-	Source/LibTIFF4/tif_predict.c
-	Source/LibTIFF4/tif_predict.h
-	Source/LibTIFF4/tif_print.c
-	Source/LibTIFF4/tif_read.c
-	Source/LibTIFF4/tif_strip.c
-	Source/LibTIFF4/tif_swab.c
-	Source/LibTIFF4/tif_thunder.c
-	Source/LibTIFF4/tif_tile.c
-	Source/LibTIFF4/tif_version.c
-	Source/LibTIFF4/tif_warning.c
-	Source/LibTIFF4/tif_write.c
-	Source/LibTIFF4/tif_zip.c
-	Source/LibTIFF4/tiff.h
-	Source/LibTIFF4/tiffio.h
-	Source/LibTIFF4/tiffiop.h
-	Source/LibTIFF4/tiffvers.h
-	Source/LibTIFF4/uvcode.h
-	Source/Metadata/Exif.cpp
-	Source/Metadata/FIRational.cpp
-	Source/Metadata/FIRational.h
-	Source/Metadata/FreeImageTag.cpp
-	Source/Metadata/FreeImageTag.h
-	Source/Metadata/IPTC.cpp
-	Source/Metadata/TagConversion.cpp
-	Source/Metadata/TagLib.cpp
-	Source/Metadata/XTIFF.cpp
-	Source/OpenEXR/Half/eLut.h
-	Source/OpenEXR/Half/half.cpp
-	Source/OpenEXR/Half/half.h
-	Source/OpenEXR/Half/halfFunction.h
-	Source/OpenEXR/Half/halfLimits.h
-	Source/OpenEXR/Half/toFloat.h
-	Source/OpenEXR/Iex/Iex.h
-	Source/OpenEXR/Iex/IexBaseExc.cpp
-	Source/OpenEXR/Iex/IexBaseExc.h
-	Source/OpenEXR/Iex/IexErrnoExc.h
-	Source/OpenEXR/Iex/IexMacros.h
-	Source/OpenEXR/Iex/IexMathExc.h
-	Source/OpenEXR/Iex/IexThrowErrnoExc.cpp
-	Source/OpenEXR/Iex/IexThrowErrnoExc.h
-	Source/OpenEXR/IlmBaseConfig.h
-    Source/OpenEXR/IlmImf/b44ExpLogTable.h
-    Source/OpenEXR/IlmImf/ImfAcesFile.cpp
-    Source/OpenEXR/IlmImf/ImfAcesFile.h
-	Source/OpenEXR/IlmImf/ImfArray.h
-	Source/OpenEXR/IlmImf/ImfAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfAttribute.h
-	Source/OpenEXR/IlmImf/ImfAutoArray.h
-	Source/OpenEXR/IlmImf/ImfB44Compressor.cpp
-	Source/OpenEXR/IlmImf/ImfB44Compressor.h
-	Source/OpenEXR/IlmImf/ImfBoxAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfBoxAttribute.h
-	Source/OpenEXR/IlmImf/ImfCRgbaFile.cpp
-	Source/OpenEXR/IlmImf/ImfCRgbaFile.h
-	Source/OpenEXR/IlmImf/ImfChannelList.cpp
-	Source/OpenEXR/IlmImf/ImfChannelList.h
-	Source/OpenEXR/IlmImf/ImfChannelListAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfChannelListAttribute.h
-	Source/OpenEXR/IlmImf/ImfChromaticities.cpp
-	Source/OpenEXR/IlmImf/ImfChromaticities.h
-	Source/OpenEXR/IlmImf/ImfChromaticitiesAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfChromaticitiesAttribute.h
-	Source/OpenEXR/IlmImf/ImfCompression.h
-	Source/OpenEXR/IlmImf/ImfCompressionAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfCompressionAttribute.h
-	Source/OpenEXR/IlmImf/ImfCompressor.cpp
-	Source/OpenEXR/IlmImf/ImfCompressor.h
-	Source/OpenEXR/IlmImf/ImfConvert.cpp
-	Source/OpenEXR/IlmImf/ImfConvert.h
-	Source/OpenEXR/IlmImf/ImfDoubleAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfDoubleAttribute.h
-	Source/OpenEXR/IlmImf/ImfEnvmap.cpp
-	Source/OpenEXR/IlmImf/ImfEnvmap.h
-	Source/OpenEXR/IlmImf/ImfEnvmapAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfEnvmapAttribute.h
-	Source/OpenEXR/IlmImf/ImfFloatAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfFloatAttribute.h
-	Source/OpenEXR/IlmImf/ImfFrameBuffer.cpp
-	Source/OpenEXR/IlmImf/ImfFrameBuffer.h
-	Source/OpenEXR/IlmImf/ImfFramesPerSecond.cpp
-	Source/OpenEXR/IlmImf/ImfFramesPerSecond.h
-	Source/OpenEXR/IlmImf/ImfHeader.cpp
-	Source/OpenEXR/IlmImf/ImfHeader.h
-	Source/OpenEXR/IlmImf/ImfHuf.cpp
-	Source/OpenEXR/IlmImf/ImfHuf.h
-	Source/OpenEXR/IlmImf/ImfIO.cpp
-	Source/OpenEXR/IlmImf/ImfIO.h
-	Source/OpenEXR/IlmImf/ImfInputFile.cpp
-	Source/OpenEXR/IlmImf/ImfInputFile.h
-	Source/OpenEXR/IlmImf/ImfInt64.h
-	Source/OpenEXR/IlmImf/ImfIntAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfIntAttribute.h
-	Source/OpenEXR/IlmImf/ImfKeyCode.cpp
-	Source/OpenEXR/IlmImf/ImfKeyCode.h
-	Source/OpenEXR/IlmImf/ImfKeyCodeAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfKeyCodeAttribute.h
-	Source/OpenEXR/IlmImf/ImfLineOrder.h
-	Source/OpenEXR/IlmImf/ImfLineOrderAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfLineOrderAttribute.h
-	Source/OpenEXR/IlmImf/ImfLut.cpp
-	Source/OpenEXR/IlmImf/ImfLut.h
-	Source/OpenEXR/IlmImf/ImfMatrixAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfMatrixAttribute.h
-	Source/OpenEXR/IlmImf/ImfMisc.cpp
-	Source/OpenEXR/IlmImf/ImfMisc.h
-    Source/OpenEXR/IlmImf/ImfMultiView.cpp
-    Source/OpenEXR/IlmImf/ImfMultiView.h
-	Source/OpenEXR/IlmImf/ImfName.h
-	Source/OpenEXR/IlmImf/ImfOpaqueAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfOpaqueAttribute.h
-	Source/OpenEXR/IlmImf/ImfOutputFile.cpp
-	Source/OpenEXR/IlmImf/ImfOutputFile.h
-	Source/OpenEXR/IlmImf/ImfPixelType.h
-	Source/OpenEXR/IlmImf/ImfPizCompressor.cpp
-	Source/OpenEXR/IlmImf/ImfPizCompressor.h
-	Source/OpenEXR/IlmImf/ImfPreviewImage.cpp
-	Source/OpenEXR/IlmImf/ImfPreviewImage.h
-	Source/OpenEXR/IlmImf/ImfPreviewImageAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfPreviewImageAttribute.h
-	Source/OpenEXR/IlmImf/ImfPxr24Compressor.cpp
-	Source/OpenEXR/IlmImf/ImfPxr24Compressor.h
-	Source/OpenEXR/IlmImf/ImfRational.cpp
-	Source/OpenEXR/IlmImf/ImfRational.h
-	Source/OpenEXR/IlmImf/ImfRationalAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfRationalAttribute.h
-	Source/OpenEXR/IlmImf/ImfRgba.h
-	Source/OpenEXR/IlmImf/ImfRgbaFile.cpp
-	Source/OpenEXR/IlmImf/ImfRgbaFile.h
-	Source/OpenEXR/IlmImf/ImfRgbaYca.cpp
-	Source/OpenEXR/IlmImf/ImfRgbaYca.h
-	Source/OpenEXR/IlmImf/ImfRleCompressor.cpp
-	Source/OpenEXR/IlmImf/ImfRleCompressor.h
-	Source/OpenEXR/IlmImf/ImfScanLineInputFile.cpp
-	Source/OpenEXR/IlmImf/ImfScanLineInputFile.h
-	Source/OpenEXR/IlmImf/ImfStandardAttributes.cpp
-	Source/OpenEXR/IlmImf/ImfStandardAttributes.h
-	Source/OpenEXR/IlmImf/ImfStdIO.cpp
-	Source/OpenEXR/IlmImf/ImfStdIO.h
-	Source/OpenEXR/IlmImf/ImfStringAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfStringAttribute.h
-    Source/OpenEXR/IlmImf/ImfStringVectorAttribute.cpp
-    Source/OpenEXR/IlmImf/ImfStringVectorAttribute.h
-	Source/OpenEXR/IlmImf/ImfTestFile.cpp
-	Source/OpenEXR/IlmImf/ImfTestFile.h
-	Source/OpenEXR/IlmImf/ImfThreading.cpp
-	Source/OpenEXR/IlmImf/ImfThreading.h
-	Source/OpenEXR/IlmImf/ImfTileDescription.h
-	Source/OpenEXR/IlmImf/ImfTileDescriptionAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfTileDescriptionAttribute.h
-	Source/OpenEXR/IlmImf/ImfTileOffsets.cpp
-	Source/OpenEXR/IlmImf/ImfTileOffsets.h
-	Source/OpenEXR/IlmImf/ImfTiledInputFile.cpp
-	Source/OpenEXR/IlmImf/ImfTiledInputFile.h
-	Source/OpenEXR/IlmImf/ImfTiledMisc.cpp
-	Source/OpenEXR/IlmImf/ImfTiledMisc.h
-	Source/OpenEXR/IlmImf/ImfTiledOutputFile.cpp
-	Source/OpenEXR/IlmImf/ImfTiledOutputFile.h
-	Source/OpenEXR/IlmImf/ImfTiledRgbaFile.cpp
-	Source/OpenEXR/IlmImf/ImfTiledRgbaFile.h
-	Source/OpenEXR/IlmImf/ImfTimeCode.cpp
-	Source/OpenEXR/IlmImf/ImfTimeCode.h
-	Source/OpenEXR/IlmImf/ImfTimeCodeAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfTimeCodeAttribute.h
-	Source/OpenEXR/IlmImf/ImfVecAttribute.cpp
-	Source/OpenEXR/IlmImf/ImfVecAttribute.h
-	Source/OpenEXR/IlmImf/ImfVersion.cpp
-	Source/OpenEXR/IlmImf/ImfVersion.h
-	Source/OpenEXR/IlmImf/ImfWav.cpp
-	Source/OpenEXR/IlmImf/ImfWav.h
-	Source/OpenEXR/IlmImf/ImfXdr.h
-	Source/OpenEXR/IlmImf/ImfZipCompressor.cpp
-	Source/OpenEXR/IlmImf/ImfZipCompressor.h
-	Source/OpenEXR/IlmThread/IlmThread.cpp
-	Source/OpenEXR/IlmThread/IlmThread.h
-	Source/OpenEXR/IlmThread/IlmThreadMutex.cpp
-	Source/OpenEXR/IlmThread/IlmThreadMutex.h
-	Source/OpenEXR/IlmThread/IlmThreadPool.cpp
-	Source/OpenEXR/IlmThread/IlmThreadPool.h
-	Source/OpenEXR/IlmThread/IlmThreadSemaphore.cpp
-	Source/OpenEXR/IlmThread/IlmThreadSemaphore.h
-	Source/OpenEXR/Imath/ImathBox.cpp
-	Source/OpenEXR/Imath/ImathBox.h
-	Source/OpenEXR/Imath/ImathBoxAlgo.h
-	Source/OpenEXR/Imath/ImathColor.h
-	Source/OpenEXR/Imath/ImathColorAlgo.cpp
-	Source/OpenEXR/Imath/ImathColorAlgo.h
-	Source/OpenEXR/Imath/ImathEuler.h
-	Source/OpenEXR/Imath/ImathExc.h
-	Source/OpenEXR/Imath/ImathFrame.h
-	Source/OpenEXR/Imath/ImathFrustum.h
-	Source/OpenEXR/Imath/ImathFun.cpp
-	Source/OpenEXR/Imath/ImathFun.h
-	Source/OpenEXR/Imath/ImathGL.h
-	Source/OpenEXR/Imath/ImathGLU.h
-	Source/OpenEXR/Imath/ImathHalfLimits.h
-	Source/OpenEXR/Imath/ImathInt64.h
-	Source/OpenEXR/Imath/ImathInterval.h
-	Source/OpenEXR/Imath/ImathLimits.h
-	Source/OpenEXR/Imath/ImathLine.h
-	Source/OpenEXR/Imath/ImathLineAlgo.h
-	Source/OpenEXR/Imath/ImathMath.h
-	Source/OpenEXR/Imath/ImathMatrix.h
-	Source/OpenEXR/Imath/ImathMatrixAlgo.cpp
-	Source/OpenEXR/Imath/ImathMatrixAlgo.h
-	Source/OpenEXR/Imath/ImathPlane.h
-	Source/OpenEXR/Imath/ImathPlatform.h
-	Source/OpenEXR/Imath/ImathQuat.h
-	Source/OpenEXR/Imath/ImathRandom.cpp
-	Source/OpenEXR/Imath/ImathRandom.h
-	Source/OpenEXR/Imath/ImathRoots.h
-	Source/OpenEXR/Imath/ImathShear.cpp
-	Source/OpenEXR/Imath/ImathShear.h
-	Source/OpenEXR/Imath/ImathSphere.h
-	Source/OpenEXR/Imath/ImathVec.cpp
-	Source/OpenEXR/Imath/ImathVec.h
-	Source/OpenEXR/Imath/ImathVecAlgo.h
-	Source/OpenEXR/OpenEXRConfig.h
-	Source/Plugin.h
-	Source/Quantizers.h
-	Source/ToneMapping.h
-	Source/Utilities.h
-	Source/ZLib/adler32.c
-	Source/ZLib/compress.c
-	Source/ZLib/crc32.c
-	Source/ZLib/crc32.h
-	Source/ZLib/deflate.c
-	Source/ZLib/deflate.h
-    Source/ZLib/gzclose.c
-    Source/ZLib/gzguts.h
-    Source/ZLib/gzlib.c
-    Source/ZLib/gzread.c
-    Source/ZLib/gzwrite.c
-	Source/ZLib/infback.c
-	Source/ZLib/inffast.c
-	Source/ZLib/inffast.h
-	Source/ZLib/inffixed.h
-	Source/ZLib/inflate.c
-	Source/ZLib/inflate.h
-	Source/ZLib/inftrees.c
-	Source/ZLib/inftrees.h
-	Source/ZLib/trees.c
-	Source/ZLib/trees.h
-	Source/ZLib/uncompr.c
-	Source/ZLib/zconf.h
-	Source/ZLib/zlib.h
-	Source/ZLib/zutil.c
-	Source/ZLib/zutil.h
+
+add_definitions(-DFREEIMAGE_LIB -DLIBRAW_NODLL -DOPJ_STATIC)
+include_directories(${FI_INCLUDE})
+
+# ---------------------------------------------------------
+subdirs(ZLib)
+
+# ---------------------------------------------------------
+# FreeImage	SubDir
+set(fi_CORE_SRCS
+	FreeImage/BitmapAccess.cpp
+	FreeImage/CacheFile.cpp
+	FreeImage/ColorLookup.cpp
+	FreeImage/Conversion.cpp
+	FreeImage/Conversion16_555.cpp
+	FreeImage/Conversion16_565.cpp
+	FreeImage/Conversion24.cpp
+	FreeImage/Conversion32.cpp
+	FreeImage/Conversion4.cpp
+	FreeImage/Conversion8.cpp
+	FreeImage/ConversionRGBF.cpp
+	FreeImage/ConversionType.cpp
+	FreeImage/FreeImage.cpp
+	FreeImage/FreeImageIO.cpp
+	FreeImage/GetType.cpp
+	FreeImage/Halftoning.cpp
+	FreeImage/J2KHelper.cpp
+	FreeImage/MemoryIO.cpp
+	FreeImage/MultiPage.cpp
+	FreeImage/NNQuantizer.cpp
+	#FreeImage/PSDParser.cpp
+	FreeImage/PixelAccess.cpp
+	FreeImage/Plugin.cpp
+	#FreeImage/PluginBMP.cpp
+	#FreeImage/PluginCUT.cpp
+	#FreeImage/PluginDDS.cpp
+	#FreeImage/PluginEXR.cpp
+	#FreeImage/PluginG3.cpp
+	#FreeImage/PluginGIF.cpp
+	#FreeImage/PluginHDR.cpp
+	#FreeImage/PluginICO.cpp
+	#FreeImage/PluginIFF.cpp
+	#FreeImage/PluginJ2K.cpp
+	#FreeImage/PluginJP2.cpp
+	FreeImage/PluginJPEG.cpp
+	#FreeImage/PluginKOALA.cpp
+	#FreeImage/PluginMNG.cpp
+	#FreeImage/PluginPCD.cpp
+	#FreeImage/PluginPCX.cpp
+	#FreeImage/PluginPFM.cpp
+	#FreeImage/PluginPICT.cpp
+	FreeImage/PluginPNG.cpp
+	#FreeImage/PluginPNM.cpp
+	#FreeImage/PluginPSD.cpp
+	#FreeImage/PluginRAS.cpp
+	#FreeImage/PluginRAW.cpp
+	#FreeImage/PluginSGI.cpp
+	FreeImage/PluginTARGA.cpp
+	#FreeImage/PluginTIFF.cpp
+	#FreeImage/PluginWBMP.cpp
+	#FreeImage/PluginXBM.cpp
+	#FreeImage/PluginXPM.cpp
+	#FreeImage/TIFFLogLuv.cpp
+	#FreeImage/ToneMapping.cpp
+	#FreeImage/WuQuantizer.cpp
+	FreeImage/ZLibInterface.cpp
+	#FreeImage/tmoColorConvert.cpp
+	#FreeImage/tmoDrago03.cpp
+	#FreeImage/tmoFattal02.cpp
+	#FreeImage/tmoReinhard05.cpp
 )
 
-# need include directories for FreeImage and all the sub libs
-include_directories(Source)
-include_directories(Source/FreeImageToolkit)
-include_directories(Source/LibJPEG)
-include_directories(Source/LibMNG)
-include_directories(Source/LibOpenJPEG)
-include_directories(Source/LibPNG)
-include_directories(Source/LibRawLite)
-include_directories(Source/LibTIFF)
-include_directories(Source/OpenEXR)
-include_directories(Source/OpenEXR/Half)
-include_directories(Source/OpenEXR/Iex)
-include_directories(Source/OpenEXR/IlmImf)
-include_directories(Source/OpenEXR/IlmThread)
-include_directories(Source/OpenEXR/Imath)
-include_directories(Source/ZLib)
+set(fi_CORE_HDRS
+	CacheFile.h
+	FreeImage.h
+	FreeImageIO.h
+	Plugin.h
+	Quantizers.h
+)	
 
-add_definitions(-DOPJ_STATIC -DLIBRAW_NODLL -DLIBRAW_LIBRARY_BUILD -DFREEIMAGE_LIB -DNO_LCMS)
-add_library(FreeImage STATIC ${FreeImage_SOURCES})
-if(WIN32)
-	target_link_libraries( FreeImage wsock32 ws2_32)
+set(fi_OTHER_HDRS	
+	ToneMapping.h
+	Utilities.h
+	DeprecationManager/DeprecationMgr.h
+	FreeImage/PSDParser.h
+)	
+
+set(fi_OTHER_SRCS
+	FreeImage/PSDParser.cpp
+	
+	FreeImage/PluginBMP.cpp
+	FreeImage/PluginCUT.cpp
+	FreeImage/PluginDDS.cpp
+	FreeImage/PluginEXR.cpp
+	FreeImage/PluginG3.cpp
+	FreeImage/PluginGIF.cpp
+	FreeImage/PluginHDR.cpp
+	FreeImage/PluginICO.cpp
+	FreeImage/PluginIFF.cpp
+	FreeImage/PluginJ2K.cpp
+	FreeImage/PluginJP2.cpp
+	
+	FreeImage/PluginKOALA.cpp
+	FreeImage/PluginMNG.cpp
+	FreeImage/PluginPCD.cpp
+	FreeImage/PluginPCX.cpp
+	FreeImage/PluginPFM.cpp
+	FreeImage/PluginPICT.cpp
+	
+	FreeImage/PluginPNM.cpp
+	FreeImage/PluginPSD.cpp
+	FreeImage/PluginRAS.cpp
+	FreeImage/PluginRAW.cpp
+	FreeImage/PluginSGI.cpp
+	#FreeImage/PluginTARGA.cpp
+	FreeImage/PluginTIFF.cpp
+	FreeImage/PluginWBMP.cpp
+	FreeImage/PluginXBM.cpp
+	FreeImage/PluginXPM.cpp
+	FreeImage/TIFFLogLuv.cpp
+	FreeImage/ToneMapping.cpp
+	FreeImage/WuQuantizer.cpp
+	
+	FreeImage/tmoColorConvert.cpp
+	FreeImage/tmoDrago03.cpp
+	FreeImage/tmoFattal02.cpp
+	FreeImage/tmoReinhard05.cpp
+)
+
+if (APPLE)
+	source_group(FreeImageCore  FILES ${fi_CORE_SRCS} ${fi_CORE_HDRS})
+	source_group(FreeImageOther FILES ${fi_OTHER_SRCS} ${fi_OTHER_HDRS})
+else()
+	source_group(FreeImage\\Core\\Source FILES ${fi_CORE_SRCS})
+	source_group(FreeImage\\Core\\Header FILES ${fi_CORE_HDRS})
+	source_group(FreeImage\\Other\\Source FILES ${fi_OTHER_SRCS})
+	source_group(FreeImage\\Other\\Header FILES ${fi_OTHER_HDRS})
+endif()
+
+
+# ---------------------------------------------------------
+# FreeImageToolKit SubDir
+set(fitk_SRCS
+	FreeImageToolkit/BSplineRotate.cpp
+	FreeImageToolkit/Background.cpp
+	FreeImageToolkit/Channels.cpp
+	FreeImageToolkit/ClassicRotate.cpp
+	FreeImageToolkit/Colors.cpp
+	FreeImageToolkit/CopyPaste.cpp
+	FreeImageToolkit/Display.cpp
+	FreeImageToolkit/Flip.cpp
+	FreeImageToolkit/JPEGTransform.cpp
+	FreeImageToolkit/MultigridPoissonSolver.cpp
+	FreeImageToolkit/Rescale.cpp
+	FreeImageToolkit/Resize.cpp
+)
+
+set(fitk_HDRS 
+	FreeImageToolkit/Filters.h
+	FreeImageToolkit/Resize.h
+)
+
+if (APPLE)
+	source_group(ToolKit FILES ${fitk_SRCS} ${fitk_HDRS})
+else()
+	source_group(ToolKit\\Source FILES ${fitk_SRCS})
+	source_group(ToolKit\\Header FILES ${fitk_HDRS})
+endif()	
+
+# ---------------------------------------------------------
+# LibJPEG SubDir
+
+set(fi_LibJPEG_HDRS
+	LibJPEG/cderror.h
+	LibJPEG/cdjpeg.h
+	LibJPEG/jchuff.h
+	LibJPEG/jconfig.h
+	LibJPEG/jdct.h
+	LibJPEG/jdhuff.h
+	LibJPEG/jerror.h
+	LibJPEG/jinclude.h
+	LibJPEG/jmemsys.h
+	LibJPEG/jmorecfg.h
+	LibJPEG/jpegint.h
+	LibJPEG/jpeglib.h
+	LibJPEG/jversion.h
+	LibJPEG/transupp.h
+)	
+
+set(fi_LibJPEG_SRCS
+	#LibJPEG/cdjpeg.c
+	LibJPEG/jaricom.c
+	LibJPEG/jcapimin.c
+	LibJPEG/jcapistd.c
+	LibJPEG/jcarith.c
+	LibJPEG/jccoefct.c
+	LibJPEG/jccolor.c
+	LibJPEG/jcdctmgr.c
+	LibJPEG/jchuff.c
+	LibJPEG/jcinit.c
+	LibJPEG/jcmainct.c
+	LibJPEG/jcmarker.c
+	LibJPEG/jcmaster.c
+	LibJPEG/jcomapi.c
+	LibJPEG/jcparam.c
+	LibJPEG/jcphuff.c
+	LibJPEG/jcprepct.c
+	LibJPEG/jcsample.c
+	LibJPEG/jctrans.c
+	LibJPEG/jdapimin.c
+	LibJPEG/jdapistd.c
+	LibJPEG/jdarith.c
+	LibJPEG/jdatadst.c
+	LibJPEG/jdatasrc.c
+	LibJPEG/jdcoefct.c
+	LibJPEG/jdcolor.c
+	LibJPEG/jddctmgr.c
+	LibJPEG/jdhuff.c
+	LibJPEG/jdinput.c
+	LibJPEG/jdmainct.c
+	LibJPEG/jdmarker.c
+	LibJPEG/jdmaster.c
+	LibJPEG/jdmerge.c
+	LibJPEG/jdphuff.c
+	LibJPEG/jdpostct.c
+	LibJPEG/jdsample.c
+	LibJPEG/jdtrans.c
+	LibJPEG/jerror.c
+	LibJPEG/jfdctflt.c
+	LibJPEG/jfdctfst.c
+	LibJPEG/jfdctint.c
+	LibJPEG/jidctflt.c
+	LibJPEG/jidctfst.c
+	LibJPEG/jidctint.c
+	#LibJPEG/jidctred.c
+	LibJPEG/jmemansi.c
+	#LibJPEG/jmemdos.c
+	LibJPEG/jmemmgr.c
+	#LibJPEG/jmemname.c
+	#LibJPEG/jmemnobs.c
+	LibJPEG/jquant1.c
+	LibJPEG/jquant2.c
+	LibJPEG/jutils.c
+	LibJPEG/rdbmp.c
+	LibJPEG/rdcolmap.c
+	LibJPEG/rdgif.c
+	LibJPEG/rdppm.c
+	LibJPEG/rdrle.c
+	LibJPEG/rdswitch.c
+	LibJPEG/rdtarga.c
+	LibJPEG/transupp.c
+	LibJPEG/wrbmp.c
+	LibJPEG/wrgif.c
+	LibJPEG/wrppm.c
+	LibJPEG/wrrle.c
+	LibJPEG/wrtarga.c
+)
+
+if (APPLE)
+	source_group(LibJPEG FILES ${fi_LibJPEG_SRCS} ${fi_LibJPEG_HDRS})
+else()
+	source_group(LibJPEG\\Source FILES ${fi_LibJPEG_SRCS})
+	source_group(LibJPEG\\Header FILES ${fi_LibJPEG_HDRS})
+endif()	
+
+
+# ---------------------------------------------------------
+# LibMNG SubDir
+set(fi_LibMNG_SRCS
+	LibMNG/libmng_callback_xs.c
+	LibMNG/libmng_chunk_descr.c
+	LibMNG/libmng_chunk_io.c
+	LibMNG/libmng_chunk_prc.c
+	LibMNG/libmng_chunk_xs.c
+	LibMNG/libmng_cms.c
+	LibMNG/libmng_display.c
+	LibMNG/libmng_dither.c
+	LibMNG/libmng_error.c
+	LibMNG/libmng_filter.c
+	LibMNG/libmng_hlapi.c
+	LibMNG/libmng_jpeg.c
+	LibMNG/libmng_object_prc.c
+	LibMNG/libmng_pixels.c
+	LibMNG/libmng_prop_xs.c
+	LibMNG/libmng_read.c
+	LibMNG/libmng_trace.c
+	LibMNG/libmng_write.c
+	LibMNG/libmng_zlib.c
+)
+set(fi_LibMNG_HDRS
+	LibMNG/libmng.h
+	LibMNG/libmng_chunk_descr.h
+	LibMNG/libmng_chunk_io.h
+	LibMNG/libmng_chunk_prc.h
+	LibMNG/libmng_chunks.h
+	LibMNG/libmng_cms.h
+	LibMNG/libmng_conf.h
+	LibMNG/libmng_data.h
+	LibMNG/libmng_display.h
+	LibMNG/libmng_dither.h
+	LibMNG/libmng_error.h
+	LibMNG/libmng_filter.h
+	LibMNG/libmng_jpeg.h
+	LibMNG/libmng_memory.h
+	LibMNG/libmng_object_prc.h
+	LibMNG/libmng_objects.h
+	LibMNG/libmng_pixels.h
+	LibMNG/libmng_read.h
+	LibMNG/libmng_trace.h
+	LibMNG/libmng_types.h
+	LibMNG/libmng_write.h
+	LibMNG/libmng_zlib.h
+)
+
+if (APPLE)
+	source_group(LibMNG FILES ${fi_LibMNG_SRCS} ${fi_LibMNG_HDRS})
+else()
+	source_group(LibMNG\\Source FILES ${fi_LibMNG_SRCS})
+	source_group(LibMNG\\Header FILES ${fi_LibMNG_HDRS})
+endif()	
+
+# ---------------------------------------------------------
+# LibOpenJPEG SubDir
+set(fi_LibOpenJPEG_SRCS	
+	LibOpenJPEG/bio.c
+	LibOpenJPEG/cio.c
+	LibOpenJPEG/dwt.c
+	LibOpenJPEG/event.c
+	LibOpenJPEG/image.c
+	LibOpenJPEG/j2k.c
+	LibOpenJPEG/j2k_lib.c
+	LibOpenJPEG/jp2.c
+	LibOpenJPEG/jpt.c
+	LibOpenJPEG/mct.c
+	LibOpenJPEG/mqc.c
+	LibOpenJPEG/openjpeg.c
+	LibOpenJPEG/pi.c
+	LibOpenJPEG/raw.c
+	LibOpenJPEG/t1.c
+	LibOpenJPEG/t2.c
+	LibOpenJPEG/tcd.c
+	LibOpenJPEG/tgt.c
+)
+set(fi_LibOpenJPEG_HDRS	
+	LibOpenJPEG/bio.h
+	LibOpenJPEG/cio.h
+	LibOpenJPEG/dwt.h
+	LibOpenJPEG/event.h
+	LibOpenJPEG/fix.h
+	LibOpenJPEG/image.h
+	LibOpenJPEG/int.h
+	LibOpenJPEG/j2k.h
+	LibOpenJPEG/j2k_lib.h
+	LibOpenJPEG/jp2.h
+	LibOpenJPEG/jpt.h
+	LibOpenJPEG/mct.h
+	LibOpenJPEG/mqc.h
+	LibOpenJPEG/openjpeg.h
+	LibOpenJPEG/opj_includes.h
+	LibOpenJPEG/opj_malloc.h
+	LibOpenJPEG/pi.h
+	LibOpenJPEG/raw.h
+	LibOpenJPEG/t1.h
+	LibOpenJPEG/t1_luts.h
+	LibOpenJPEG/t2.h
+	LibOpenJPEG/tcd.h
+	LibOpenJPEG/tgt.h
+)
+
+if (APPLE)
+	source_group(LibOpenJPEG FILES ${fi_LibOpenJPEG_SRCS} ${fi_LibOpenJPEG_HDRS})
+else()	
+	source_group(LibOpenJPEG\\Source FILES ${fi_LibOpenJPEG_SRCS})
+	source_group(LibOpenJPEG\\Header FILES ${fi_LibOpenJPEG_HDRS})
+endif()	
+
+# ---------------------------------------------------------
+# LibPNG SubDir
+set(fi_LibPNG_SRCS
+	LibPNG/png.c
+	LibPNG/pngerror.c
+	LibPNG/pnggccrd.c
+	LibPNG/pngget.c
+	LibPNG/pngmem.c
+	LibPNG/pngpread.c
+	LibPNG/pngread.c
+	LibPNG/pngrio.c
+	LibPNG/pngrtran.c
+	LibPNG/pngrutil.c
+	LibPNG/pngset.c
+	LibPNG/pngtrans.c
+	LibPNG/pngvcrd.c
+	LibPNG/pngwio.c
+	LibPNG/pngwrite.c
+	LibPNG/pngwtran.c
+	LibPNG/pngwutil.c
+)
+
+set(fi_LibPNG_HDRS 
+	LibPNG/png.h
+	LibPNG/pngconf.h
+)
+
+if (APPLE)
+	source_group(LibPNG FILES ${fi_LibPNG_SRCS} ${fi_LibPNG_HDRS})
+else()
+	source_group(LibPNG\\Source FILES ${fi_LibPNG_SRCS})
+	source_group(LibPNG\\Header FILES ${fi_LibPNG_HDRS})
+endif()	
+
+# ---------------------------------------------------------
+# LibTIFF SubDir
+
+set(fi_LibTIFF_SRCS	
+	LibTIFF/tif_aux.c
+	LibTIFF/tif_close.c
+	LibTIFF/tif_codec.c
+	LibTIFF/tif_color.c
+	LibTIFF/tif_compress.c
+	LibTIFF/tif_dir.c
+	LibTIFF/tif_dirinfo.c
+	LibTIFF/tif_dirread.c
+	LibTIFF/tif_dirwrite.c
+	LibTIFF/tif_dumpmode.c
+	LibTIFF/tif_error.c
+	LibTIFF/tif_extension.c
+	LibTIFF/tif_fax3.c
+	LibTIFF/tif_fax3sm.c
+	LibTIFF/tif_flush.c
+	LibTIFF/tif_getimage.c
+	LibTIFF/tif_jbig.c
+	LibTIFF/tif_jpeg.c
+	LibTIFF/tif_luv.c
+	LibTIFF/tif_lzw.c
+	LibTIFF/tif_next.c
+	LibTIFF/tif_ojpeg.c
+	LibTIFF/tif_open.c
+	LibTIFF/tif_packbits.c
+	LibTIFF/tif_pixarlog.c
+	LibTIFF/tif_predict.c
+	LibTIFF/tif_print.c
+	LibTIFF/tif_read.c
+	LibTIFF/tif_strip.c
+	LibTIFF/tif_swab.c
+	LibTIFF/tif_thunder.c
+	LibTIFF/tif_tile.c
+	LibTIFF/tif_version.c
+	LibTIFF/tif_warning.c
+	LibTIFF/tif_write.c
+	LibTIFF/tif_zip.c)
+
+#set(fi_LibTIFF_HDRS	
+#	LibTIFF/tiff.h
+#	)
+	
+set(fi_LibTIFF_HDRS
+	LibTIFF/t4.h
+	LibTIFF/tiff.h
+	LibTIFF/tiffconf.vc.h
+	LibTIFF/tiffconf.wince.h
+	LibTIFF/tiffio.h
+	LibTIFF/tiffiop.h
+	LibTIFF/tiffvers.h
+	LibTIFF/tif_config.h
+	LibTIFF/tif_config.vc.h
+	LibTIFF/tif_config.wince.h
+	LibTIFF/tif_dir.h
+	LibTIFF/tif_fax3.h
+	LibTIFF/tif_predict.h
+	LibTIFF/uvcode.h
+)	
+
+if (APPLE)
+	source_group(LibTIFF FILES ${fi_LibTIFF_SRCS} ${fi_LibTIFF_HDRS})
+else()
+	source_group(LibTIFF\\Source FILES ${fi_LibTIFF_SRCS})
+	source_group(LibTIFF\\Header FILES ${fi_LibTIFF_HDRS})
+endif()	
+
+# ---------------------------------------------------------
+# Metadata SubDir
+
+set(fi_Metadata_SRCS
+	Metadata/Exif.cpp
+	Metadata/FIRational.cpp
+	Metadata/FreeImageTag.cpp
+	Metadata/IPTC.cpp
+	Metadata/TagConversion.cpp
+	Metadata/TagLib.cpp
+	Metadata/XTIFF.cpp
+)
+
+set(fi_Metadata_HDRS 
+	Metadata/FIRational.h
+	Metadata/FreeImageTag.h
+)
+
+if (APPLE)
+	source_group(FreeImage/Metadata FILES ${fi_Metadata_SRCS} ${fi_Metadata_HDRS})
+else()
+	source_group(FreeImage\\Metadata\\Source FILES ${fi_Metadata_SRCS})
+	source_group(FreeImage\\Metadata\\Header FILES ${fi_Metadata_HDRS})
+endif()	
+
+# ---------------------------------------------------------
+# LibRawLite SubDir
+
+set(fi_LibRawLite_SRCS 
+	LibRawLite/src/libraw_cxx.cpp
+	LibRawLite/src/libraw_c_api.cpp
+	LibRawLite/internal/dcraw_common.cpp
+	LibRawLite/internal/dcraw_fileio.cpp
+	)
+
+
+set(fi_LibRawLite_HDRS
+	LibRawLite/internal/defines.h
+	LibRawLite/internal/libraw_internal_funcs.h
+	LibRawLite/internal/var_defines.h
+	LibRawLite/libraw/libraw.h
+	LibRawLite/libraw/libraw_alloc.h
+	LibRawLite/libraw/libraw_const.h
+	LibRawLite/libraw/libraw_datastream.h
+	LibRawLite/libraw/libraw_internal.h
+	LibRawLite/libraw/libraw_types.h
+	LibRawLite/libraw/libraw_version.h
+)	
+
+if (APPLE)
+	source_group(LibRawLite FILES ${fi_LibRawLite_SRCS} ${fi_LibRawLite_HDRS})
+else()	
+	source_group(LibRawLite\\Source FILES ${fi_LibRawLite_SRCS})
+	source_group(LibRawLite\\Header FILES ${fi_LibRawLite_HDRS})
+endif()	
+	
+
+# ---------------------------------------------------------
+# OpenEXR SubDir
+
+set(fi_half_SRCS OpenEXR/Half/half.cpp)
+set(fi_half_HDRS 
+	OpenEXR/Half/half.h
+	OpenEXR/Half/halfFunction.h
+	OpenEXR/Half/halfLimits.h
+)
+
+if (APPLE)
+	source_group(OpenEXR/Half FILES ${fi_half_SRCS} ${fi_half_HDRS})
+else()	
+	source_group(OpenEXR\\Half\\Source FILES ${fi_half_SRCS})
+	source_group(OpenEXR\\Half\\Header FILES ${fi_half_HDRS})
+endif()	
+
+set(fi_Iex_SRCS
+	OpenEXR/Iex/IexBaseExc.cpp
+	OpenEXR/Iex/IexThrowErrnoExc.cpp
+)
+
+set(fi_Iex_HDRS
+	OpenEXR/Iex/Iex.h
+	OpenEXR/Iex/IexBaseExc.h
+	OpenEXR/Iex/IexErrnoExc.h
+	OpenEXR/Iex/IexMacros.h
+	OpenEXR/Iex/IexMathExc.h
+	OpenEXR/Iex/IexThrowErrnoExc.h
+)
+
+if (APPLE)
+	source_group(OpenEXR/Iex FILES ${fi_Iex_SRCS} ${fi_Iex_HDRS})
+else()	
+	source_group(OpenEXR\\Iex\\Source FILES ${fi_Iex_SRCS})
+	source_group(OpenEXR\\Iex\\Header FILES ${fi_Iex_HDRS})
+endif()	
+
+set(fi_IlmImf_SRCS
+	OpenEXR/IlmImf/ImfAttribute.cpp
+	OpenEXR/IlmImf/ImfB44Compressor.cpp
+	OpenEXR/IlmImf/ImfBoxAttribute.cpp
+	OpenEXR/IlmImf/ImfCRgbaFile.cpp
+	OpenEXR/IlmImf/ImfChannelList.cpp
+	OpenEXR/IlmImf/ImfChannelListAttribute.cpp
+	OpenEXR/IlmImf/ImfChromaticities.cpp
+	OpenEXR/IlmImf/ImfChromaticitiesAttribute.cpp
+	OpenEXR/IlmImf/ImfCompressionAttribute.cpp
+	OpenEXR/IlmImf/ImfCompressor.cpp
+	OpenEXR/IlmImf/ImfConvert.cpp
+	OpenEXR/IlmImf/ImfDoubleAttribute.cpp
+	OpenEXR/IlmImf/ImfEnvmap.cpp
+	OpenEXR/IlmImf/ImfEnvmapAttribute.cpp
+	OpenEXR/IlmImf/ImfFloatAttribute.cpp
+	OpenEXR/IlmImf/ImfFrameBuffer.cpp
+	OpenEXR/IlmImf/ImfFramesPerSecond.cpp
+	OpenEXR/IlmImf/ImfHeader.cpp
+	OpenEXR/IlmImf/ImfHuf.cpp
+	OpenEXR/IlmImf/ImfIO.cpp
+	OpenEXR/IlmImf/ImfInputFile.cpp
+	OpenEXR/IlmImf/ImfIntAttribute.cpp
+	OpenEXR/IlmImf/ImfKeyCode.cpp
+	OpenEXR/IlmImf/ImfKeyCodeAttribute.cpp
+	OpenEXR/IlmImf/ImfLineOrderAttribute.cpp
+	OpenEXR/IlmImf/ImfLut.cpp
+	OpenEXR/IlmImf/ImfMatrixAttribute.cpp
+	OpenEXR/IlmImf/ImfMisc.cpp
+	OpenEXR/IlmImf/ImfOpaqueAttribute.cpp
+	OpenEXR/IlmImf/ImfOutputFile.cpp
+	OpenEXR/IlmImf/ImfPizCompressor.cpp
+	OpenEXR/IlmImf/ImfPreviewImage.cpp
+	OpenEXR/IlmImf/ImfPreviewImageAttribute.cpp
+	OpenEXR/IlmImf/ImfPxr24Compressor.cpp
+	OpenEXR/IlmImf/ImfRational.cpp
+	OpenEXR/IlmImf/ImfRationalAttribute.cpp
+	OpenEXR/IlmImf/ImfRgbaFile.cpp
+	OpenEXR/IlmImf/ImfRgbaYca.cpp
+	OpenEXR/IlmImf/ImfRleCompressor.cpp
+	OpenEXR/IlmImf/ImfScanLineInputFile.cpp
+	OpenEXR/IlmImf/ImfStandardAttributes.cpp
+	OpenEXR/IlmImf/ImfStdIO.cpp
+	OpenEXR/IlmImf/ImfStringAttribute.cpp
+	OpenEXR/IlmImf/ImfTestFile.cpp
+	OpenEXR/IlmImf/ImfThreading.cpp
+	OpenEXR/IlmImf/ImfTileDescriptionAttribute.cpp
+	OpenEXR/IlmImf/ImfTileOffsets.cpp
+	OpenEXR/IlmImf/ImfTiledInputFile.cpp
+	OpenEXR/IlmImf/ImfTiledMisc.cpp
+	OpenEXR/IlmImf/ImfTiledOutputFile.cpp
+	OpenEXR/IlmImf/ImfTiledRgbaFile.cpp
+	OpenEXR/IlmImf/ImfTimeCode.cpp
+	OpenEXR/IlmImf/ImfTimeCodeAttribute.cpp
+	OpenEXR/IlmImf/ImfVecAttribute.cpp
+	OpenEXR/IlmImf/ImfVersion.cpp
+	OpenEXR/IlmImf/ImfWav.cpp
+	OpenEXR/IlmImf/ImfZipCompressor.cpp
+	#OpenEXR/IlmImf/b44ExpLogTable.cpp
+)
+set(fi_IlmImf_HDRS
+	OpenEXR/IlmImf/ImfArray.h
+	OpenEXR/IlmImf/ImfAttribute.h
+	OpenEXR/IlmImf/ImfAutoArray.h
+	OpenEXR/IlmImf/ImfB44Compressor.h
+	OpenEXR/IlmImf/ImfBoxAttribute.h
+	OpenEXR/IlmImf/ImfCRgbaFile.h
+	OpenEXR/IlmImf/ImfChannelList.h
+	OpenEXR/IlmImf/ImfChannelListAttribute.h
+	OpenEXR/IlmImf/ImfChromaticities.h
+	OpenEXR/IlmImf/ImfChromaticitiesAttribute.h
+	OpenEXR/IlmImf/ImfCompression.h
+	OpenEXR/IlmImf/ImfCompressionAttribute.h
+	OpenEXR/IlmImf/ImfCompressor.h
+	OpenEXR/IlmImf/ImfConvert.h
+	OpenEXR/IlmImf/ImfDoubleAttribute.h
+	OpenEXR/IlmImf/ImfEnvmap.h
+	OpenEXR/IlmImf/ImfEnvmapAttribute.h
+	OpenEXR/IlmImf/ImfFloatAttribute.h
+	OpenEXR/IlmImf/ImfFrameBuffer.h
+	OpenEXR/IlmImf/ImfFramesPerSecond.h
+	OpenEXR/IlmImf/ImfHeader.h
+	OpenEXR/IlmImf/ImfHuf.h
+	OpenEXR/IlmImf/ImfIO.h
+	OpenEXR/IlmImf/ImfInputFile.h
+	OpenEXR/IlmImf/ImfInt64.h
+	OpenEXR/IlmImf/ImfIntAttribute.h
+	OpenEXR/IlmImf/ImfKeyCode.h
+	OpenEXR/IlmImf/ImfKeyCodeAttribute.h
+	OpenEXR/IlmImf/ImfLineOrder.h
+	OpenEXR/IlmImf/ImfLineOrderAttribute.h
+	OpenEXR/IlmImf/ImfLut.h
+	OpenEXR/IlmImf/ImfMatrixAttribute.h
+	OpenEXR/IlmImf/ImfMisc.h
+	OpenEXR/IlmImf/ImfName.h
+	OpenEXR/IlmImf/ImfOpaqueAttribute.h
+	OpenEXR/IlmImf/ImfOutputFile.h
+	OpenEXR/IlmImf/ImfPixelType.h
+	OpenEXR/IlmImf/ImfPizCompressor.h
+	OpenEXR/IlmImf/ImfPreviewImage.h
+	OpenEXR/IlmImf/ImfPreviewImageAttribute.h
+	OpenEXR/IlmImf/ImfPxr24Compressor.h
+	OpenEXR/IlmImf/ImfRational.h
+	OpenEXR/IlmImf/ImfRationalAttribute.h
+	OpenEXR/IlmImf/ImfRgba.h
+	OpenEXR/IlmImf/ImfRgbaFile.h
+	OpenEXR/IlmImf/ImfRgbaYca.h
+	OpenEXR/IlmImf/ImfRleCompressor.h
+	OpenEXR/IlmImf/ImfScanLineInputFile.h
+	OpenEXR/IlmImf/ImfStandardAttributes.h
+	OpenEXR/IlmImf/ImfStdIO.h
+	OpenEXR/IlmImf/ImfStringAttribute.h
+	OpenEXR/IlmImf/ImfTestFile.h
+	OpenEXR/IlmImf/ImfThreading.h
+	OpenEXR/IlmImf/ImfTileDescription.h
+	OpenEXR/IlmImf/ImfTileDescriptionAttribute.h
+	OpenEXR/IlmImf/ImfTileOffsets.h
+	OpenEXR/IlmImf/ImfTiledInputFile.h
+	OpenEXR/IlmImf/ImfTiledMisc.h
+	OpenEXR/IlmImf/ImfTiledOutputFile.h
+	OpenEXR/IlmImf/ImfTiledRgbaFile.h
+	OpenEXR/IlmImf/ImfTimeCode.h
+	OpenEXR/IlmImf/ImfTimeCodeAttribute.h
+	OpenEXR/IlmImf/ImfVecAttribute.h
+	OpenEXR/IlmImf/ImfVersion.h
+	OpenEXR/IlmImf/ImfWav.h
+	OpenEXR/IlmImf/ImfXdr.h
+	OpenEXR/IlmImf/ImfZipCompressor.h
+	#OpenEXR/IlmImf/b44ExpLogTable.h
+)
+
+if (APPLE)
+	source_group(OpenEXR/IlmImf FILES ${fi_IlmImf_SRCS} ${fi_IlmImf_HDRS})
+else()	
+	source_group(OpenEXR\\IlmImf\\Source FILES ${fi_IlmImf_SRCS})
+	source_group(OpenEXR\\IlmImf\\Header FILES ${fi_IlmImf_HDRS})
+endif()	
+
+set(fi_IlmThread_SRCS
+	OpenEXR/IlmThread/IlmThreadPool.cpp
+)
+
+if (WIN32)
+	set(fi_IlmThread_SRCS_PLAT
+			OpenEXR/IlmThread/IlmThreadMutexWin32.cpp
+			OpenEXR/IlmThread/IlmThreadSemaphoreWin32.cpp
+			OpenEXR/IlmThread/IlmThreadWin32.cpp
+			)
+else (WIN32)			   
+	set(fi_IlmThread_SRCS_PLAT
+            OpenEXR/IlmThread/IlmThreadSemaphore.cpp
+		    OpenEXR/IlmThread/IlmThread.cpp
+            OpenEXR/IlmThread/IlmThreadMutex.cpp
+			OpenEXR/IlmThread/IlmThreadPosix.cpp
+			OpenEXR/IlmThread/IlmThreadMutexPosix.cpp
+			OpenEXR/IlmThread/IlmThreadSemaphorePosix.cpp
+			OpenEXR/IlmThread/IlmThreadSemaphorePosixCompat.cpp
+			)
+endif (WIN32)
+
+set(fi_IlmThread_HDRS
+	OpenEXR/IlmThread/IlmThread.h
+	OpenEXR/IlmThread/IlmThreadMutex.h
+	OpenEXR/IlmThread/IlmThreadPool.h
+	OpenEXR/IlmThread/IlmThreadSemaphore.h
+)
+
+if (APPLE)
+	source_group(OpenEXR/IlmThread FILES ${fi_IlmThread_SRCS} ${fi_IlmThread_HDRS} ${fi_IlmThread_SRCS_PLAT})
+else()	
+	source_group(OpenEXR\\IlmThread\\Source FILES ${fi_IlmThread_SRCS})
+	source_group(OpenEXR\\IlmThread\\Source\\Win32 FILES ${fi_IlmThread_SRCS_PLAT})
+	source_group(OpenEXR\\IlmThread\\Header FILES ${fi_IlmThread_HDRS})
+endif()	
+
+set(fi_Imath_SRCS 
+	OpenEXR/Imath/ImathBox.cpp
+	OpenEXR/Imath/ImathColorAlgo.cpp
+	OpenEXR/Imath/ImathFun.cpp
+	OpenEXR/Imath/ImathMatrixAlgo.cpp
+	OpenEXR/Imath/ImathRandom.cpp
+	OpenEXR/Imath/ImathShear.cpp
+	OpenEXR/Imath/ImathVec.cpp
+)
+set(fi_Imath_HDRS
+	OpenEXR/Imath/ImathBox.h
+	OpenEXR/Imath/ImathBoxAlgo.h
+	OpenEXR/Imath/ImathColor.h
+	OpenEXR/Imath/ImathColorAlgo.h
+	OpenEXR/Imath/ImathEuler.h
+	OpenEXR/Imath/ImathExc.h
+	OpenEXR/Imath/ImathFrame.h
+	OpenEXR/Imath/ImathFrustum.h
+	OpenEXR/Imath/ImathFun.h
+	OpenEXR/Imath/ImathGL.h
+	OpenEXR/Imath/ImathGLU.h
+	OpenEXR/Imath/ImathHalfLimits.h
+	OpenEXR/Imath/ImathInt64.h
+	OpenEXR/Imath/ImathInterval.h
+	OpenEXR/Imath/ImathLimits.h
+	OpenEXR/Imath/ImathLine.h
+	OpenEXR/Imath/ImathLineAlgo.h
+	OpenEXR/Imath/ImathMath.h
+	OpenEXR/Imath/ImathMatrix.h
+	OpenEXR/Imath/ImathMatrixAlgo.h
+	OpenEXR/Imath/ImathPlane.h
+	OpenEXR/Imath/ImathPlatform.h
+	OpenEXR/Imath/ImathQuat.h
+	OpenEXR/Imath/ImathRandom.h
+	OpenEXR/Imath/ImathRoots.h
+	OpenEXR/Imath/ImathShear.h
+	OpenEXR/Imath/ImathSphere.h
+	OpenEXR/Imath/ImathVec.h
+	OpenEXR/Imath/ImathVecAlgo.h
+)
+
+if (APPLE)
+	source_group(OpenEXR/Imath FILES ${fi_Imath_SRCS} ${fi_Imath_HDRS})
+else()	
+	source_group(OpenEXR\\Imath\\Source FILES ${fi_Imath_SRCS})
+	source_group(OpenEXR\\Imath\\Header FILES ${fi_Imath_HDRS})
+endif()	
+
+
+
+if (WIN32)
+	if (CMAKE_COMPILER_IS_GNUCXX)
+		# FreeImage LibRawLite dependency 
+		link_libraries(ws2_32)
+	endif (CMAKE_COMPILER_IS_GNUCXX)
 endif(WIN32)
-set(FREEIMAGE_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Source" CACHE PATH "" FORCE)
-set(FREEIMAGE_LIB_DBG "FreeImage" CACHE STRING "" FORCE)
-set(FREEIMAGE_LIB "FreeImage" CACHE STRING "" FORCE)
-mark_as_advanced(FREEIMAGE_H_PATH FREEIMAGE_LIB_DBG FREEIMAGE_LIB)
 
+# ---------------------------------------------------------
+set(CORE_SOURCE
+	${fi_CORE_SRCS}			${fi_CORE_HDRS}
+	
+	${fi_LibJPEG_SRCS}		${fi_LibJPEG_HDRS}
+	${fi_LibOpenJPEG_SRCS}	${fi_LibOpenJPEG_HDRS}
+	${fi_LibPNG_SRCS}		${fi_LibPNG_HDRS}
+	
+	${fi_Metadata_SRCS}		${fi_Metadata_HDRS}
+	${fitk_SRCS}			${fitk_HDRS}
+)
+
+set(OTHER_SOURCE
+	${fi_OTHER_SRCS}		${fi_OTHER_HDRS}
+	${fi_LibTIFF_SRCS}		${fi_LibTIFF_HDRS}
+	
+	#${fi_LibJPEG_SRCS}
+	#${fi_LibJPEG_PLAT}
+	${fi_LibMNG_SRCS}		${fi_LibMNG_HDRS}
+	#${fi_LibOpenJPEG_SRCS}
+	#${fi_LibPNG_SRCS}
+	
+	
+	
+	
+	
+	# ${fi_rLibRawLite_SRCS} ${fi_LibRawLite_HDRS}
+)
+	
+set(EXR_SOURCE
+	${fi_half_SRCS}			${fi_half_HDRS}	
+	${fi_Iex_SRCS}			${fi_Iex_HDRS}	
+	${fi_IlmImf_SRCS}		${fi_IlmImf_HDRS}
+	${fi_Imath_SRCS} 		${fi_Imath_HDRS}
+	
+	${fi_IlmThread_SRCS}	${fi_IlmThread_HDRS}	${fi_IlmThread_SRCS_PLAT}
+)	
+	
+set(ALL_SOURCE	${CORE_SOURCE})
+
+	
+if (XSILIUM_MINIMAL_FREEIMAGE_CODEC)
+	add_definitions(-DXSILIUM_MINIMAL_FREEIMAGE_CODEC=1)
+else()
+	list(APPEND ALL_SOURCE ${OTHER_SOURCE})
+	list(APPEND ALL_SOURCE ${EXR_SOURCE})
+endif()	
+
+add_library(${XSILIUM_FREEIMAGE_TARGET}	${ALL_SOURCE})
+
+config_xsilium_target(${XSILIUM_FREEIMAGE_TARGET} TRUE)
+
+if (XSILIUM_CREATE_OGRE_DEPENDENCY_DIR)
+	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/FreeImage.h DESTINATION ${OGRE_PREBUILT_DEPENDENCY_INCLUDE_DIR})
+	GET_TARGET_PROPERTY(FILEPATH ${XSILIUM_FREEIMAGE_TARGET} LOCATION)
+	ADD_CUSTOM_COMMAND(TARGET ${XSILIUM_FREEIMAGE_TARGET} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${FILEPATH} ${OGRE_PREBUILT_DEPENDENCY_LIB_DIR}/libfreeimage.a
+		COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${FILEPATH} ${OGRE_PREBUILT_DEPENDENCY_LIB_DIR}/libFreeImage.a
+	)
+endif()

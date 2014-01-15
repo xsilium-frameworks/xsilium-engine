@@ -122,7 +122,7 @@ function(ogrekit_add_executable TARGETNAME)
 endfunction()
 
 macro(ogrekit_add_library TARGETNAME LIBTYPE)  
-  set(IS_UNITY_BUILD ${OGREKIT_UNITY_BUILD})
+  set(IS_UNITY_BUILD ${XSILIUM_UNITY_BUILD})
   create_unity_build_files(${TARGETNAME} ${ARGN})
   add_library(${TARGETNAME} ${LIBTYPE} ${_SOURCES})
 endmacro()

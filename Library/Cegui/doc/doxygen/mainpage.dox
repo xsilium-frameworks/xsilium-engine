@@ -2,7 +2,7 @@
 @mainpage Crazy Eddie's GUI System Mk-2: Developer Documentation
 http://www.cegui.org.uk
 
-Copyright (c) 2004 - 2012 Paul D Turner & The CEGUI Development Team
+Copyright (c) 2004 - 2013 Paul D Turner & The CEGUI Development Team
 
 This is Crazy Eddie's GUI System Mk-2; a free library providing windowing and
 widgets for graphics APIs and engines where such functionality is not natively
@@ -36,9 +36,8 @@ The documentation for CEGUI is split into the following sections:
     - @ref window_tutorial
     - @ref input_tutorial
 
-- Porting Guides and Future Changes
+- Porting Guides
     - @ref porting6to7
-    - @ref futurechanges
 
 - Additional reference material
     - @ref xml_imageset

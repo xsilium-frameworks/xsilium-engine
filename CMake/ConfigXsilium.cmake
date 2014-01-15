@@ -42,6 +42,9 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_USE_PROCESSMANAGER       "Enable / Disable ProcessManager build" ON)
 	option(XSILIUM_COMPILE_SOFTBODY			"Eanble / Disable Bullet Softbody build" OFF)
 	option(XSILIUM_USE_NNODE				"Use Logic Node(It's Nodal Logic, not Blender LogicBrick)" OFF)
+	option(XSILIUM_USE_OCTREE				"Use Octree SceneManager" ON)
+	option(XSILIUM_USE_BSP					"USE BSP SceneManager"	ON)	
+	option(XSILIUM_USE_PCZ					"USE PCZ SceneManager"	ON)
 	option(XSILIUM_USE_PARTICLE				"Use Paritcle" ON)
 	option(XSILIUM_COMPILE_OGRE_COMPONENTS	"Eanble compile additional Ogre components (RTShader, Terrain, Paging, ... etc)" ON)
 	option(XSILIUM_USE_RTSHADER_SYSTEM		"Eanble shader system instead of fixed piped functions." OFF)
@@ -149,8 +152,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 		set(XSILIUM_ZLIB_TARGET	ZLib)
 		set(XSILIUM_FREEIMAGE_TARGET FreeImage)
-		set(XSILIUM_ZLIB_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/Source/ZLib)
-		set(XSILIUM_FREEIMAGE_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/Source)        
+		set(XSILIUM_ZLIB_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/ZLib)
+		set(XSILIUM_FREEIMAGE_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage)        
 		
 	endif()
 
@@ -481,8 +484,6 @@ set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 			endif()
 		endif()
 	endif(APPLE)
-
-message(${OGRE_LIB} " test gne")
 
 set(XSILIUM_LIB XsiliumEngine 
 		${OGRE_LIB}

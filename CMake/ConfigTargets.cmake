@@ -1,11 +1,11 @@
 
-function(config_ogrekit_target1 targetname is_library)   
+function(config_xsilium_target1 targetname is_library)   
 	#MESSAGE(STATUS "target:" ${targetname})
 	if (is_library)
 		 ogre_config_common(${targetname})
 	endif()
 
-	if (OGREKIT_BUILD_IPHONE)
+	if (XSILIUM_BUILD_IPHONE)
 		include_directories("include/iOS")
 		set_target_properties(${targetname} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
 		set_target_properties(${targetname} PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
@@ -21,6 +21,6 @@ function(config_ogrekit_target1 targetname is_library)
 endfunction()
 
 
-function(config_ogrekit_target targetname is_library)   
-	config_ogrekit_target1(${targetname} ${is_library})
+function(config_xsilium_target targetname is_library)   
+	config_xsilium_target1(${targetname} ${is_library})
 endfunction()
