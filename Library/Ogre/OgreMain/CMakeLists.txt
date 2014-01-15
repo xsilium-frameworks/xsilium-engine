@@ -336,6 +336,7 @@ if (APPLE)
   set_target_properties(OgreMain PROPERTIES	OUTPUT_NAME Ogre)
 endif ()
 message(${LIBRARIES} " : Librairies")
+message(${PLATFORM_LIBS} " : PLATFORM_LIBS")
 target_link_libraries(OgreMain ${LIBRARIES})
 if (MINGW)
   # may need winsock htons functions for FreeImage

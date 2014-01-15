@@ -149,8 +149,8 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 		set(XSILIUM_ZLIB_TARGET	ZLib)
 		set(XSILIUM_FREEIMAGE_TARGET FreeImage)
-		set(XSILIUM_ZLIB_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/Source/ZLib)
-		set(XSILIUM_FREEIMAGE_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/Source)        
+		set(XSILIUM_ZLIB_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage/ZLib)
+		set(XSILIUM_FREEIMAGE_INCLUDE ${XSILIUM_DEP_DIR}/FreeImage)        
 		
 	endif()
 

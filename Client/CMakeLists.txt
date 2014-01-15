@@ -45,6 +45,8 @@ set(CORE_HEADER_FILES
     Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h
     Game/JeuxState.h
 )
+set( CEGUI_OGRE_RENDERER_LIBNAME CEGUIOgreRenderer)
+set( CEGUI_BASE_LIBNAME CEGUIBase )
 
 if (APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" )
 
@@ -62,7 +64,7 @@ Shared
 
 ADD_EXECUTABLE(XsiliumClient WIN32 MACOSX_BUNDLE ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES} )
 
-target_link_libraries(XsiliumClient ${XSILIUM_LIB})
+target_link_libraries(XsiliumClient ${XSILIUM_LIB} ${XSILIUM_ZZIP_TARGET})
 message(${XSILIUM_LIB} " :xsilium libraries XSILIUM_LIB...")
 
 configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg)
