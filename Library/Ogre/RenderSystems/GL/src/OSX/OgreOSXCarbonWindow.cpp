@@ -70,7 +70,7 @@ namespace Ogre
         if( miscParams )
         {
 #if OGRE_NO_LIBCPP_SUPPORT == 0
-            NameValuePairList::const_iterator opt{};
+            NameValuePairList::const_iterator opt;{};
 #else
             NameValuePairList::const_iterator opt;
 #endif
@@ -117,7 +117,7 @@ namespace Ogre
             createAGLContext(fsaa_samples, depth);
 
 #if OGRE_NO_LIBCPP_SUPPORT == 0
-            NameValuePairList::const_iterator opt{};
+            NameValuePairList::const_iterator opt;{};
 #else
             NameValuePairList::const_iterator opt;
 #endif
