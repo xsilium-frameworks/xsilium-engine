@@ -159,6 +159,7 @@ macro (configure_xsilium ROOT OGREPATH)
 
 	set(FreeImage_LIBRARIES	${XSILIUM_FREEIMAGE_TARGET})
 	set(ZLIB_LIBRARIES	${XSILIUM_ZLIB_TARGET})	
+	set(ZZip_LIBRARIES	${XSILIUM_ZZIP_TARGET})
 
 	if (APPLE)
 		set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")	
