@@ -75,12 +75,12 @@ IF(MSVC)
 	                    CMAKE_C_FLAGS_MINSIZEREL 
 	                    CMAKE_C_FLAGS_RELWITHDEBINFO
 	                    )
-		IF(${flag_var} MATCHES "/MD")
-			STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-		ENDIF(${flag_var} MATCHES "/MD")
-		IF(${flag_var} MATCHES "/MDd")
-			STRING(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
-		ENDIF(${flag_var} MATCHES "/MDd")
+		IF(${flag_var} MATCHES "/MT")
+			STRING(REGEX REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MT")
+		IF(${flag_var} MATCHES "/MTd")
+			STRING(REGEX REPLACE "/MTd" "/MDd" ${flag_var} "${${flag_var}}")
+		ENDIF(${flag_var} MATCHES "/MTd")
 	ENDFOREACH(flag_var)
 
 ENDIF(MSVC)

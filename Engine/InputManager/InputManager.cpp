@@ -49,7 +49,7 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
 
 		// Get window handle
 #if defined OIS_WIN32_PLATFORM
-		renderWindow->getCustomAttribute( "HWND", &windowHnd );
+		renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
 #else
 		renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
 #endif
