@@ -139,11 +139,11 @@ if (APPLE)
 		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml
                 ${XSILIUM_CONTENTS_PATH}/Resources/
 
-		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/datafiles
-                ${XSILIUM_CONTENTS_PATH}/Resources/
+		#COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/datafiles
+                #${XSILIUM_CONTENTS_PATH}/Resources/
 
-		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Media
-                ${XSILIUM_CONTENTS_PATH}/Resources/
+		#COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Media
+                #${XSILIUM_CONTENTS_PATH}/Resources/
                 )
 
         # now plugins
