@@ -31,7 +31,8 @@ set(OIS_PREFIX_PATH ${OIS_HOME} ${ENV_OIS_HOME}
   ${OGRE_SOURCE}/iOSDependencies ${ENV_OGRE_SOURCE}/iOSDependencies
   ${OGRE_SOURCE}/Dependencies ${ENV_OGRE_SOURCE}/Dependencies
   ${OGRE_SDK} ${ENV_OGRE_SDK}
-  ${OGRE_HOME} ${ENV_OGRE_HOME})
+  ${OGRE_HOME} ${ENV_OGRE_HOME}
+  )
 create_search_paths(OIS)
 # redo search if prefix path changed
 clear_if_changed(OIS_PREFIX_PATH
@@ -62,7 +63,6 @@ endif()
 find_path(OIS_INCLUDE_DIR NAMES OIS.h HINTS ${OIS_INC_SEARCH_PATH} ${OIS_PKGC_INCLUDE_DIRS} PATH_SUFFIXES OIS)
 find_library(OIS_LIBRARY_REL NAMES ${OIS_LIBRARY_NAMES} HINTS ${OIS_LIB_SEARCH_PATH} ${OIS_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" Release RelWithDebInfo MinSizeRel)
 find_library(OIS_LIBRARY_DBG NAMES ${OIS_LIBRARY_NAMES_DBG} HINTS ${OIS_LIB_SEARCH_PATH} ${OIS_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" Debug)
-
 make_library_set(OIS_LIBRARY)
 
 if (WIN32)

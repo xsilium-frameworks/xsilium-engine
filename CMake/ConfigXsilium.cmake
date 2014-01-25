@@ -118,8 +118,12 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(OGRE_USE_BOOST TRUE CACHE BOOL "Forcing use BOOST" ) 
 
 	set(Boost_ADDITIONAL_VERSIONS "1.52.0 1.49.0 1.48.0")
+	set(Boost_USE_STATIC_LIBS        OFF)
+	set(Boost_USE_MULTITHREADED      ON)
+	set(Boost_USE_STATIC_RUNTIME     OFF)
+	set(BOOST_ALL_DYN_LINK           ON)
 
-	set(OGRE_BOOST_COMPONENTS thread date_time system filesystem)
+	set(OGRE_BOOST_COMPONENTS chrono thread date_time system filesystem)
 	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 
 	include_directories("${Boost_INCLUDE_DIRS}")
@@ -495,10 +499,15 @@ set(XSILIUM_LIB XsiliumEngine
 		${HYDRAX_LIBRARY}   
 		${Boost_LIBRARIES} 
 		${Cg_LIBRARY_REL}
-		${OIS_LIBRARY_REL} 
+		${OIS_LIBRARY_REL}
+		${XSILIUM_OIS_TARGET}
 )
 
-
+if(WIN32 AND DirectX_FOUND)
+list(APPEND XSILIUM_LIB ${XSILIUM_D3D9_LIBS}
+		${XSILIUM_D3D11_LIBS}
+)
+endif()
 
 endmacro(configure_xsilium)
 

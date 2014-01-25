@@ -63,7 +63,6 @@ Shared
 )
 
 ADD_EXECUTABLE(XsiliumClient WIN32 MACOSX_BUNDLE ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES} )
-
 target_link_libraries(XsiliumClient ${XSILIUM_LIB} ${XSILIUM_ZZIP_TARGET})
 
 configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg)
