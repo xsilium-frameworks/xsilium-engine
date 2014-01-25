@@ -67,7 +67,10 @@ endif()
 
 # Find Cg 
 if (NOT XSILIUM_BUILD_MOBILE)
- find_package(Cg)
+	if(WIN32)
+		set(Cg_HOME "$ENV{PROGRAMFILES}/NVIDIA\ Corporation/Cg/include" )	
+	endif()
+find_package(Cg)
  macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
 endif()
 
