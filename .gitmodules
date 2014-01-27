@@ -1,0 +1,3 @@
+[submodule "Client/dist/bin/Data"]
+	path = Client/dist/bin/Data
+	url = /Users/joda/git/media
