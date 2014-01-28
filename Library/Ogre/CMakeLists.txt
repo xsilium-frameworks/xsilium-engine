@@ -187,6 +187,12 @@ endif ()
 set(OGRE_SET_DISABLE_GLES3_SUPPORT 1)
 #set(OGRE_NO_GLES3_SUPPORT TRUE CACHE BOOL "" FORCE)
 
+#generation de plugins et resource 
+include(InstallResources)
+
+configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_BINARY_DIR}/Client/dist/bin/resources.cfg)
+configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${CMAKE_BINARY_DIR}/Client/dist/bin/plugins.cfg)
+
 
 # determine Ogre version numbers
 include(OgreGetVersion)

@@ -1,10 +1,6 @@
 # ---------------------------------------------------------
 cmake_minimum_required(VERSION 2.6)
 
-configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg)
-
-
 set(CONTENT
 	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/datafiles
 	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
