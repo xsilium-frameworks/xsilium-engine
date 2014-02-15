@@ -82,7 +82,7 @@ link_libraries(
 
 if (APPLE)
 
-	ogrekit_add_executable(
+	xsilium_add_executable(
 		${TargetName} 
 		MACOSX_BUNDLE
 		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib
@@ -91,7 +91,7 @@ if (APPLE)
 
 else ()
 
-	ogrekit_add_executable(${TargetName} ${SRC})
+	xsilium_add_executable(${TargetName} ${SRC})
 	
 	
 #	IF (NOT INTERNAL_CREATE_DISTRIBUTABLE_MSVC_PROJECTFILES)

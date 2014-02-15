@@ -103,7 +103,7 @@ endfunction(ogre_add_library)
 
 # add a new executable target
 # usage: ogre_add_executable(TARGETNAME [WIN32] [MACOSX_BUNDLE] SOURCE_FILES [SEPARATE SOURCE_FILES])
-function(ogrekit_add_executable TARGETNAME)
+function(xsilium_add_executable TARGETNAME)
   # test if WIN32 or MACOSX_BUNDLE options were provided
   set(_WIN32 "")
   set(_OSX "")
@@ -121,7 +121,7 @@ function(ogrekit_add_executable TARGETNAME)
   add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${_SOURCES})
 endfunction()
 
-macro(ogrekit_add_library TARGETNAME LIBTYPE)  
+macro(xsilium_add_library TARGETNAME LIBTYPE)  
   set(IS_UNITY_BUILD ${XSILIUM_UNITY_BUILD})
   create_unity_build_files(${TARGETNAME} ${ARGN})
   add_library(${TARGETNAME} ${LIBTYPE} ${_SOURCES})
