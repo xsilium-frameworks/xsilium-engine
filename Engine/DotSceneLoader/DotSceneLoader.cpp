@@ -173,8 +173,8 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 	}
 	// Process terrain (?)
 	pElement = XMLRoot->first_node("terrain");
-	if(pElement)
-		processTerrain(pElement);
+//	if(pElement)
+//		processTerrain(pElement);
 
 }
 
