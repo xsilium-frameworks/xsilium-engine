@@ -12,6 +12,8 @@
 #include "Entite/GestionnaireEntite.h"
 #include "GestionnaireMouvement/GestionnaireMouvement.h"
 
+#include "Interface/GestionnaireInterface.h"
+
 
 class JeuxState :public OIS::KeyListener, public GameState
 {

@@ -8,7 +8,7 @@ LoginState::LoginState()
 	m_bQuit         = false;
 	changeState 	= false;
 	NetworkManager::getInstance()->createConnexion();
-	gestionnaireAuth = new GestionnaireAuth(this);
+    gestionnaireAuth = NULL;
 }
 
 LoginState::~LoginState()
@@ -17,6 +17,10 @@ LoginState::~LoginState()
 void LoginState::enter()
 {
 	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
+    
+    GestionnaireInterface::getInstance()->interfacePrincipal();
+    
+    gestionnaireAuth = new GestionnaireAuth(this);
 
 	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "LoginSceneMgr");
 	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));

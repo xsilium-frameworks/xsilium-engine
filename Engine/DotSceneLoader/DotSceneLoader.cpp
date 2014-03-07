@@ -299,7 +299,6 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 	mTerrainGroup->loadAllTerrains();
 
 	mTerrainGroup->freeTemporaryResources();
-	//mTerrain->setPosition(mTerrainPosition);
 }
 
 void DotSceneLoader::processTerrainPage(rapidxml::xml_node<>* XMLNode)

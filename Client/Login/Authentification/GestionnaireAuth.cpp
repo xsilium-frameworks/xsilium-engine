@@ -14,9 +14,8 @@ GestionnaireAuth::GestionnaireAuth(LoginState * loginState) {
 	inputManager = InputManager::getSingletonPtr();
 
 	compte = Compte::getInstance();
-
-	gestionnaireInterface = GestionnaireInterface::getInstance();
-	gestionnaireInterface->interfacePrincipal();
+    
+    gestionnaireInterface = GestionnaireInterface::getInstance();
 
 	this->loginState = loginState;
 

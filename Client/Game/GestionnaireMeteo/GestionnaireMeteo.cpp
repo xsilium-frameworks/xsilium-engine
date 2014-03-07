@@ -51,8 +51,10 @@ GestionnaireMeteo::~GestionnaireMeteo() {
 
 	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
 	XsiliumFramework::getInstance()->getRenderWindow()->removeListener(mSkyX);
-	delete mSkyX;
-	delete mHydrax ;
+    if(mSkyX)
+        delete mSkyX;
+	if(mHydrax)
+        delete mHydrax ;
 }
 
 bool GestionnaireMeteo::frameStarted(const Ogre::FrameEvent& evt)
@@ -107,10 +109,10 @@ void GestionnaireMeteo::create()
 	mHydrax->loadCfg("HydraxDemo.hdx");
 
 	// Create water
-	mHydrax->create();
+//	mHydrax->create();
 
 	// Add the Hydrax Rtt listener
-	mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
+//	mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
 
 
 

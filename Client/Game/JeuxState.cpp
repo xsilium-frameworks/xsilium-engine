@@ -23,6 +23,8 @@ void JeuxState::enter()
 
 
 	XsiliumFramework::getInstance()->getLog()->logMessage("Entering JeuxState...");
+    
+    GestionnaireInterface::getInstance()->interfacePrincipal();
 
 
 	createScene();
@@ -57,7 +59,7 @@ void JeuxState::exit()
 	delete gestionnaireEntite;
 
 //	delete chat;
-//	delete gestionnaireMeteo;
+	delete gestionnaireMeteo;
 
 	m_pSceneMgr->destroyCamera(m_pCamera);
 	if(m_pSceneMgr)
@@ -113,8 +115,8 @@ void JeuxState::createScene()
 	gestionnaireMouvement = new GestionnaireMouvement(m_pCamera);
 	gestionnaireMouvement->setEntities(perso);
 
-//	gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getSkyX());
-//	gestionnaireMeteo->create();
+	gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getSkyX());
+	gestionnaireMeteo->create();
 
 }
 
