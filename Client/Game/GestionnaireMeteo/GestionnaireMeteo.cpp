@@ -8,12 +8,18 @@
 
 #include "GestionnaireMeteo.h"
 
+ShadowConfig mShadowConfigList[] = {ShadowConfig(false, 0), ShadowConfig(true, 2048) };
+
 GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c, SkyX::SkyX* mSkyX) {
 
 	m_pSceneMgr = sm;
 	m_pCamera = c;
 	this->mSkyX = mSkyX;
+    
+    mForceDisableShadows = false;
+    mShadowMode = static_cast<int>(SM_HIGH);
 
+    
 	mBasicController = 0;
 	mHydrax = 0;
 	mLastPositionLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length() ;
@@ -57,6 +63,25 @@ GestionnaireMeteo::~GestionnaireMeteo() {
         delete mHydrax ;
 }
 
+void GestionnaireMeteo::setShadowMode(Ogre::SceneManager *sm, const ShadowMode& smode)
+{
+	//Ogre::MaterialPtr IslandMat = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName("Island"));
+    
+	if (mShadowConfigList[smode].Enable && !mForceDisableShadows)
+	{
+		sm->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
+		sm->setShadowTextureConfig(0, mShadowConfigList[smode].Size, mShadowConfigList[smode].Size, Ogre::PF_X8R8G8B8);
+	//	IslandMat->getTechnique(0)->setSchemeName("Default");
+	//	IslandMat->getTechnique(1)->setSchemeName("NoDefault");
+	}
+	else
+	{
+		sm->setShadowTechnique(Ogre::SHADOWTYPE_NONE);
+	//	IslandMat->getTechnique(0)->setSchemeName("NoDefault");
+	//	IslandMat->getTechnique(1)->setSchemeName("Default");
+	}
+}
+
 bool GestionnaireMeteo::frameStarted(const Ogre::FrameEvent& evt)
 {
 	// Update environment lighting
@@ -76,13 +101,27 @@ void GestionnaireMeteo::create()
 	Ogre::Light *mLight0 = m_pSceneMgr->getLight("Light#0");
 	mLight0->setDiffuseColour(1, 1, 1);
 	mLight0->setCastShadows(false);
+    
+    // Shadow caster
+    Ogre::Light *mLight1 = m_pSceneMgr->createLight("Light#1");
+    mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
 
 	mBasicController = (SkyX::BasicController *) mSkyX->getController();
 	mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
+    
+    mSkyX->setTimeMultiplier(0.2f);
 
 	mSkyX->create();
 
 	XsiliumFramework::getInstance()->getRenderWindow()->addListener(mSkyX);
+    
+    
+    // Shadows
+    m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(new Ogre::FocusedShadowCameraSetup()));
+   // m_pSceneMgr->setShadowTextureCasterMaterial("ShadowCaster");
+    m_pSceneMgr->getLight("Light#1")->setShadowFarDistance(1750);
+    
+    setShadowMode(m_pSceneMgr, static_cast<ShadowMode>(mShadowMode));
 
 	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0));
 
@@ -106,15 +145,17 @@ void GestionnaireMeteo::create()
 	// Remarks: The config file must be in Hydrax resource group.
 	// All parameters can be set/updated directly by code(Like previous versions),
 	// but due to the high number of customizable parameters, since 0.4 version, Hydrax allows save/load config files.
-	mHydrax->loadCfg("HydraxDemo.hdx");
+	mHydrax->loadCfg("Hydrax.hdx");
 
 	// Create water
-//	mHydrax->create();
+	mHydrax->create();
 
 	// Add the Hydrax Rtt listener
-//	mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
+	mHydrax->getRttManager()->addRttListener(new HydraxRttListener(mSkyX,mHydrax));
 
 
+    
+    
 
 	XsiliumFramework::getInstance()->getRoot()->addFrameListener(this);
 
@@ -128,6 +169,17 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 
 	bool day = time.x > time.y && time.x < time.z ;
 	Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
+    
+   // Ogre::Vector3 lightDir = mBasicController->getSunDirection() ;
+    
+    bool preForceDisableShadows = mForceDisableShadows;
+    mForceDisableShadows = (lightDir.y > 0.15f) ? true : false;
+    
+    if (preForceDisableShadows != mForceDisableShadows)
+    {
+        setShadowMode(m_pSceneMgr, static_cast<ShadowMode>(mShadowMode));
+    }
+    
 
 	if(day)
 		point = ( lightDir.y + 1.0f) / 2.0f;
@@ -140,9 +192,11 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() + lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
 	mHydrax->setSunPosition(sunPos);
 
-	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0");
+	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0"),
+                *Light1 = m_pSceneMgr->getLight("Light#1");
 
 	Light0->setPosition(m_pCamera->getDerivedPosition() + lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.02);
+    Light1->setDirection(lightDir);
 
 	Ogre::Vector3 sunCol = mSunGradient.getColor(point);
 	Light0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
@@ -158,6 +212,7 @@ void GestionnaireMeteo::updateEnvironmentLighting()
  */
 void GestionnaireMeteo::updateShadowFarDistance()
 {
+    Ogre::Light * Light1 = m_pSceneMgr->getLight("Light#1");
 	float currentLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length();
 
 	if (currentLength < 1000)
@@ -169,9 +224,11 @@ void GestionnaireMeteo::updateShadowFarDistance()
 	if (currentLength - mLastPositionLength > 100)
 	{
 		mLastPositionLength += 100;
+        Light1->setShadowFarDistance(Light1->getShadowFarDistance() + 100);
 	}
 	else if (currentLength - mLastPositionLength < -100)
 	{
 		mLastPositionLength -= 100;
+        Light1->setShadowFarDistance(Light1->getShadowFarDistance() - 100);
 	}
 }

@@ -17,6 +17,26 @@
 #include "HydraxRttListener/HydraxRttListener.h"
 
 
+// Shadow config struct
+struct ShadowConfig
+{
+	bool Enable;
+	int  Size;
+    
+	ShadowConfig(const bool& Enable_, const int& Size_)
+    : Enable(Enable_)
+    , Size(Size_)
+	{
+	}
+};
+
+// Shadow mode
+enum ShadowMode
+{
+	SM_NONE = 0,
+	SM_HIGH = 1
+};
+
 /*
  *
  */
@@ -31,6 +51,8 @@ public:
 
     void updateEnvironmentLighting();
     void updateShadowFarDistance();
+    
+    void setShadowMode(Ogre::SceneManager *sm, const ShadowMode& smode);
 
 private:
 	Ogre::SceneManager*			m_pSceneMgr;
@@ -48,6 +70,11 @@ private:
 						mAmbientGradient;
 
 	Ogre::Real mLastPositionLength;
+    
+    // Current shadow mode
+    int mShadowMode ;
+    // To disable shadows in night
+    bool mForceDisableShadows ;
 
 };
 

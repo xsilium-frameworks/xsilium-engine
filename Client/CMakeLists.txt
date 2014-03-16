@@ -6,6 +6,7 @@ set(CONTENT
 	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
 	${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg
 	${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg
+#    ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/configKey.xml
 )
 set(TargetName XsiliumClient)
 
@@ -49,11 +50,6 @@ set(CORE_HEADER_FILES
     Game/JeuxState.h
 )
 
-set(SRC 
-	${CONTENT} 
-	${CORE_SOURCE_FILES}  ${CORE_HEADER_FILES}
-	)
-
 if(WIN32)
 
 	source_group(Main\\Source FILES ${CORE_SOURCE_FILES})
@@ -63,10 +59,16 @@ if(WIN32)
 endif()
 
 if (APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" )
-
+	
+	set(CMAKE_CXX_FLAGS "-x objective-c++")
 	list(APPEND CORE_SOURCE_FILES "SDK/OSX/XsiliumApp.mm")
 
 endif()
+
+ set(SRC 
+	${CONTENT} 
+	${CORE_SOURCE_FILES}  ${CORE_HEADER_FILES}
+	)
 
 include_directories(
 ${XSILIUM_INCLUDE} 
