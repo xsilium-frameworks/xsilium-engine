@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.6)
 set(ZZIP_SRC zzip/dir.c zzip/fetch.c zzip/err.c zzip/file.c zzip/info.c zzip/plugin.c zzip/stat.c zzip/write.c zzip/zip.c)
 file(GLOB ZZIP_HDR "zzip/*.h")
 
-include_directories(./ zzip ${XSILIUM_ZLIB_INCLUDE})
+include_directories(. ${XSILIUM_ZLIB_INCLUDE})
 add_library(${XSILIUM_ZZIP_TARGET} ${ZZIP_SRC} ${ZZIP_HDR})
 
 config_xsilium_target(${XSILIUM_ZZIP_TARGET} TRUE)

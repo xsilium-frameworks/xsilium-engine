@@ -105,6 +105,8 @@ IF(NOT WIN32)
 	ENDIF()
 ENDIF()
 
+set(OGREPAGE_H_PATH "${PagedGeometry_SOURCE_DIR}/include" CACHE PATH "" FORCE)
+
 
 # now add the directories
 add_subdirectory(source)
