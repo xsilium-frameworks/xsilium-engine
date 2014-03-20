@@ -83,9 +83,9 @@ void JeuxState::createScene()
 
 
 	// Light
-	Ogre::Light *mLight0 = m_pSceneMgr->createLight("Light#0");
-	mLight0->setDiffuseColour(1, 1, 1);
-	mLight0->setCastShadows(false);
+	//Ogre::Light *mLight0 = m_pSceneMgr->createLight("Light#0");
+	//mLight0->setDiffuseColour(1, 1, 1);
+	//mLight0->setCastShadows(false);
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 

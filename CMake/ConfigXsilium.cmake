@@ -510,5 +510,25 @@ list(APPEND XSILIUM_LIB ${XSILIUM_D3D9_LIBS}
 )
 endif()
 
+set(XSILIUM_INCLUDE ${XSILIUM_OGRE_INCLUDE}
+		    ${XSILIUM_SOURCE_DIR}/Library/Dependencies/Source/freetype/include
+                    ${XSILIUM_SOURCE_DIR}/Engine/External/Ogre/supp
+                    ${XSILIUM_BULLET_INCLUDE}
+                    ${XSILIUM_DEP_INCLUDE}
+                    ${XSILIUM_SOURCE_DIR}/Engine
+                    ${OIS_INCLUDE_DIR}
+		            ${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include
+		            ${XSILIUM_SOURCE_DIR}/Library/Boost
+		            ${XSILIUM_SOURCE_DIR}/Library/Enet
+		            ${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include
+		            ${XSILIUM_SOURCE_DIR}/Library/OgrePaged/include
+		            ${XSILIUM_BINARY_DIR}/Library/OgrePaged/include
+		            ${XSILIUM_SOURCE_DIR}/Library/Hydrax/include
+		            ${XSILIUM_SOURCE_DIR}/Library/SkyX/Include
+		            ${Cg_INCLUDE_DIR}
+                    ${RAPIDXML_H_PATH}
+                    ${XSILIUM_GLRS_INCLUDE}
+                    )
+
 endmacro(configure_xsilium)
 

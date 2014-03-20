@@ -296,7 +296,7 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 			pPageElement = pPageElement->next_sibling("terrainPage");
 		}
 	}
-	mTerrainGroup->loadAllTerrains();
+	mTerrainGroup->loadAllTerrains(true);
 
 	mTerrainGroup->freeTemporaryResources();
 }
