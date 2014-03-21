@@ -145,7 +145,7 @@ if (MINGW)
 	  set_target_properties(OIS PROPERTIES PREFIX "")
 endif ()
 
-target_link_libraries(OIS ${OIS_PLATFORM_LIBS})
+target_link_libraries(OIS ${OIS_PLATFORM_LIBS} ${IOKit_LIBRARIES})
 
 if (APPLE)
   if(OGRE_BUILD_PLATFORM_APPLE_IOS)

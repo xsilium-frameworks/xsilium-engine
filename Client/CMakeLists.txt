@@ -6,7 +6,6 @@ set(CONTENT
 	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
 	${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg
 	${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg
-#    ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/configKey.xml
 )
 set(TargetName XsiliumClient)
 
@@ -65,9 +64,9 @@ if (APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" )
 
 endif()
 
- set(SRC 
-	${CONTENT} 
-	${CORE_SOURCE_FILES}  ${CORE_HEADER_FILES}
+ set(SRC  
+	${CORE_SOURCE_FILES} 
+	${CORE_HEADER_FILES}
 	)
 
 include_directories(
@@ -89,22 +88,35 @@ if (APPLE)
 		MACOSX_BUNDLE
 		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib
 		${SRC} 
+		${CONTENT}
 	)
+	SET(XSILIUM_APPS "${CMAKE_CURRENT_BINARY_DIR}/${TargetName}.app")
+	
+	add_custom_command(TARGET ${TargetName} POST_BUILD
+		COMMAND mkdir ARGS -p ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml ${XSILIUM_APPS}/Contents/Resources
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Ogre.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/OgreTerrain.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/OgrePaging.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/RenderSystem_GL.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_ParticleFX.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_BSPSceneManager.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_CgProgramManager.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_PCZSceneManager.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_OctreeZone.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_OctreeSceneManager.framework ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIExpatParser.dylib ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIBase.dylib ${XSILIUM_APPS}/Contents/Frameworks
+		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_APPS}/Contents/Frameworks
+		
+		)
 
 else ()
 
 	xsilium_add_executable(${TargetName} ${SRC})
-	
-	
-#	IF (NOT INTERNAL_CREATE_DISTRIBUTABLE_MSVC_PROJECTFILES)
-#		ADD_CUSTOM_COMMAND(
-#			TARGET ${TargetName} 
-#			POST_BUILD
-#			COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/Maps.blend ${CMAKE_CURRENT_BINARY_DIR}/Maps.blend
-#			COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/Momo.blend ${CMAKE_CURRENT_BINARY_DIR}/Momo.blend
-#			COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/Rat.blend ${CMAKE_CURRENT_BINARY_DIR}/Rat.blend
-#		)
-#	ENDIF ()
 
 endif()
+
+
 
