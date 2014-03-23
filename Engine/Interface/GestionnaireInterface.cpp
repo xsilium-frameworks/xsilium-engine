@@ -15,6 +15,7 @@ GestionnaireInterface::GestionnaireInterface() {
 
 	initialisationInterface();
 
+
 	CEGUI::GlobalEventSet::getSingleton( ).subscribeEvent( CEGUI::Window::EventNamespace + "/" + CEGUI::Window::EventActivated,
 			CEGUI::Event::Subscriber(&GestionnaireInterface::onWindowActivated, this) );
 	CEGUI::GlobalEventSet::getSingleton( ).subscribeEvent( CEGUI::Window::EventNamespace + "/" + CEGUI::Window::EventDeactivated,
@@ -31,7 +32,7 @@ GestionnaireInterface::~GestionnaireInterface() {
 
 void GestionnaireInterface::initialisationInterface()
 {
-	CEGUI::OgreRenderer* mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+	CEGUI::OgreRenderer::bootstrapSystem();
 
 	// set the default resource groups to be used
 	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");

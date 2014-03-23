@@ -61,6 +61,7 @@ private:
 
     Entite * entite;
     Ogre::SceneManager* sceneMgr;
+    bool clickgauche;
 };
 
 #endif /* GESTIONNAIREMOUVEMENT_H_ */

@@ -11,7 +11,11 @@
 
 #include "Network/NetworkManager.h"
 
+#include "Interface/GestionnaireInterface.h"
 #include "Interface/GuiChat.h"
+
+#include "Game/JeuxState.h"
+
 #include "Network/Opcode/Opcode.h"
 
 #include "Game/Chat/StructurePacket/PacketChat.h"
@@ -21,15 +25,21 @@
 #include "ModuleActif/ModuleActif.h"
 
 class Chat;
+class JeuxState;
 
 /*
  *
  */
-class GestionnaireChat {
+class GestionnaireChat : public ModuleActif , public ControleInterface {
 public:
-	GestionnaireChat(Chat * chatUI);
+	GestionnaireChat(JeuxState * jeuxState);
 	virtual ~GestionnaireChat();
 
+	void run();
+
+	void processPacket(ENetEvent * packet);
+
+	void retourInterface(int IDInterface,int retour);
 
 	void updateNetwork(int event ,ENetEvent * packet);
 
@@ -38,8 +48,10 @@ public:
 
 private:
 	NetworkManager * networkManager;
-	Chat * chatUI;
+	Chat * guichat;
 	Compte * compte;
+	JeuxState * jeuxState;
+	GestionnaireInterface * gestionnaireInterface;
 
 };
 

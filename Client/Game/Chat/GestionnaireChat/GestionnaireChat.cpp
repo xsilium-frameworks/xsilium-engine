@@ -8,11 +8,16 @@
 
 #include "Chat/GestionnaireChat/GestionnaireChat.h"
 
-GestionnaireChat::GestionnaireChat(Chat * chatUI) {
-	this->chatUI = chatUI ;
+GestionnaireChat::GestionnaireChat(JeuxState * jeuxState) {
+	this->jeuxState = jeuxState ;
 
 	networkManager = NetworkManager::getInstance();
+	gestionnaireInterface = GestionnaireInterface::getInstance();
 	compte = Compte::getInstance();
+
+
+	guichat = new Chat(this);
+	gestionnaireInterface->addInterface(guichat);
 
 	int messageErreur = networkManager->connexionToHost("85.25.143.49",60001);
 
@@ -22,13 +27,15 @@ GestionnaireChat::GestionnaireChat(Chat * chatUI) {
 	}
 	else
 	{
-		//networkManager->addNetworkListener(this,"Chat");
+		networkManager->addlistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT,boost::bind(&GestionnaireChat::setPacket, this));
 	}
 
 }
 
 GestionnaireChat::~GestionnaireChat() {
-	//networkManager->removeNetworkListener("Chat");
+	networkManager->removelistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT);
+	gestionnaireInterface->removeInterface(guichat);
+	delete guichat;
 }
 
 void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
@@ -49,7 +56,7 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 				std::strcat(messageConsole,(const char *)typePacket->message);
 
 
-				//chatUI->setMessage(messageConsole);
+				//guichat->setMessage(messageConsole);
 
 			}
 		}
@@ -57,6 +64,15 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 		default:
 			break;
 		}
+}
+
+void GestionnaireChat::retourInterface(int IDInterface,int retour)
+{
+}
+
+void GestionnaireChat::processPacket(ENetEvent * packet)
+{
+
 }
 
 void GestionnaireChat::sendMessageToChat(const char * message, int to)

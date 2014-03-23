@@ -9,6 +9,7 @@ JeuxState::JeuxState()
 	m_bQuit             = false;
 	inputManager = InputManager::getSingletonPtr();
 	keyboardMap = KeyboardMap::getInstance();
+	gestionnaireChat = NULL;
 
 }
 
@@ -70,7 +71,7 @@ void JeuxState::exit()
 
 void JeuxState::buildGUI()
 {
-	//chat = new Chat();
+	gestionnaireChat = new GestionnaireChat(this);
 }
 
 void JeuxState::createScene()

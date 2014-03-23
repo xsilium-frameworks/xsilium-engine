@@ -31,6 +31,8 @@ GestionnaireMouvement::GestionnaireMouvement(Ogre::Camera* cam) {
 	mPivotPitch = 0;
 	entite = 0;
 
+	clickgauche = false;
+
 
 	inputManager->addKeyListener(this,"GestionMouvementKey");
 	inputManager->addMouseListener(this,"GestionMouvementMouse");
@@ -86,15 +88,26 @@ bool GestionnaireMouvement::keyReleased(const OIS::KeyEvent &keyEventRef)
 
 bool GestionnaireMouvement::mouseMoved( const OIS::MouseEvent &event )
 {
-	updateCameraGoal(-0.05f * event.state.X.rel, -0.05f * event.state.Y.rel, -0.0005f * event.state.Z.rel);
+	if(clickgauche)
+	{
+		updateCameraGoal(-0.05f * event.state.X.rel, -0.05f * event.state.Y.rel, -0.0005f * event.state.Z.rel);
+	}
 	return true;
 }
 bool GestionnaireMouvement::mousePressed( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
+	if(id == OIS::MB_Left)
+	{
+		clickgauche = true;
+	}
 	return true;
 }
 bool GestionnaireMouvement::mouseReleased( const OIS::MouseEvent &event, OIS::MouseButtonID id )
 {
+	if(id == OIS::MB_Left)
+	{
+		clickgauche = false;
+	}
 	return true;
 }
 

@@ -17,9 +17,10 @@ LoginState::~LoginState()
 void LoginState::enter()
 {
 	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
-    
+
     GestionnaireInterface::getInstance()->interfacePrincipal();
-    
+
+
     gestionnaireAuth = new GestionnaireAuth(this);
 
 	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "LoginSceneMgr");
@@ -29,7 +30,6 @@ void LoginState::enter()
 	m_pCamera->setPosition(Vector3(0, 50, 100));
 	m_pCamera->lookAt(Vector3(0, 0, 0));
 	m_pCamera->setNearClipDistance(1);
-
 
 	m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->getActualWidth()) /
 			Real(XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->getActualHeight()));

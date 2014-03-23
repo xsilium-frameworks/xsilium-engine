@@ -50,13 +50,12 @@ GameState* GameStateManager::findByName(Ogre::String stateName)
 			return itr->state;
 	}
 
-	return 0;
+	return NULL;
 }
 
 void GameStateManager::start(GameState* state  )
 {
 	changeGameState(state);
-
 #if  (!__LP64__ || OGRE_PLATFORM != OGRE_PLATFORM_APPLE)
 
 	if (XsiliumFramework::getInstance()->getRoot()->getRenderSystem() != NULL)
@@ -70,6 +69,7 @@ void GameStateManager::start(GameState* state  )
 
 void GameStateManager::changeGameState(GameState* state)
 {
+
 	if(!m_ActiveStateStack.empty())
 	{
 		XsiliumFramework::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());

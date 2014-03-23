@@ -11,12 +11,14 @@ Chat::Chat(ControleInterface * controleInterface)
 	d_root->setDestroyedByParent(false);
 
 
-	parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
+	//parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
 
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
 	parent->activate();
+
+	this->controleInterface = controleInterface ;
 
 }
 

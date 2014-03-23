@@ -23,5 +23,5 @@ add_library(Hydrax SHARED ${Hydrax_SOURCES})
 target_link_libraries(Hydrax ${OGRE_LIB})
 
 
-set(HYDRAX_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Include" CACHE PATH "" FORCE)
+set(HYDRAX_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "" FORCE)
 set(HYDRAX_LIBRARY "Hydrax" CACHE STRING "" FORCE)

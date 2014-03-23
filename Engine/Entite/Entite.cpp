@@ -11,12 +11,16 @@
 Entite::Entite() {
 	vieEntite = 0;
 	nom = 0;
-	//charHeight = 0;
-	//turnSpeed = 0;
+	charHeight = 0;
+	turnSpeed = 0;
 	mBodyNode = 0;
 	mBodyEnt = 0;
 
 	sceneMgr = 0;
+
+	animation = 0;
+
+	runSpeed = 0;
 
 	eventManager = new EventManager();
 

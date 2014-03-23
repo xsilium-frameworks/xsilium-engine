@@ -14,6 +14,7 @@
 
 #include "Interface/GestionnaireInterface.h"
 
+class GestionnaireChat;
 
 class JeuxState :public OIS::KeyListener, public GameState
 {
@@ -43,7 +44,7 @@ private:
     	DotSceneLoader* 			m_Loader;
 
     GestionnaireMeteo* gestionnaireMeteo;
-    Chat * chat;
+    GestionnaireChat * gestionnaireChat;
 	KeyboardMap * keyboardMap ;
 
 	GestionnaireEntite * gestionnaireEntite;
