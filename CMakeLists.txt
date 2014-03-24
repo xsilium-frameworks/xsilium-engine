@@ -89,6 +89,7 @@ subdirs(Library)
 subdirs(Engine)
 #subdirs(Launcher)
 subdirs(Client)
+subdirs(SceneLoader)
 
 
 
