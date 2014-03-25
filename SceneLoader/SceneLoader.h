@@ -3,8 +3,8 @@
 #define __SceneLoader_h_
 
 #include "BaseApplication.h"
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
 #include <OgreImage.h>
 
 class DotSceneLoader;

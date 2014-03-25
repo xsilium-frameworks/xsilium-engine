@@ -20,9 +20,9 @@ if(UNIX)
 	  set(CMAKE_MODULE_PATH "/usr/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
 	  set(OGRE_SAMPLES_INCLUDEPATH "/usr/share/OGRE/samples/Common/include/") # Otherwise, this one
 
-	else ()
-	  message(SEND_ERROR "Failed to find module path.")
-	endif(EXISTS "/usr/local/lib/OGRE")
+	else()
+	  #message(SEND_ERROR "Failed to find module path.")
+	endif()
 endif(UNIX)
  
 if (CMAKE_BUILD_TYPE STREQUAL "")
@@ -96,6 +96,7 @@ include_directories( ${XSILIUM_INCLUDE} ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
 	${OGRE_Overlay_INCLUDE_DIRS}
+	/Users/joda/git/Ogre/Samples/Common/include/
 )
  
 add_executable(SceneLoader WIN32 ${HDRS} ${SRCS})
