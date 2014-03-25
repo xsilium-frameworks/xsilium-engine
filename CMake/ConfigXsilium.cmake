@@ -472,7 +472,7 @@ set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 	endif()
 	
 
-	set(OGRE_LIB OgreMain OgreTerrain )     	
+	set(OGRE_LIB OgreMain OgreTerrain OgreOverlay OgrePaging )     	
 
 	if (XSILIUM_USE_RTSHADER_SYSTEM)
 		list(APPEND OGRE_LIBS		OgreRTShaderSystem)

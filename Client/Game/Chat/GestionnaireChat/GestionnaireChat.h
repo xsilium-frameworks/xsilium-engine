@@ -41,8 +41,6 @@ public:
 
 	void retourInterface(int IDInterface,int retour);
 
-	void updateNetwork(int event ,ENetEvent * packet);
-
 	void sendMessageToChat(const char * message, int to);
 
 

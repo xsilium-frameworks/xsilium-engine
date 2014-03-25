@@ -25,10 +25,6 @@ GestionnaireChat::GestionnaireChat(JeuxState * jeuxState) {
 	{
 		printf("erreur de connection: %d \n",messageErreur);
 	}
-	else
-	{
-		networkManager->addlistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT,boost::bind(&GestionnaireChat::setPacket, this));
-	}
 
 }
 
@@ -38,7 +34,15 @@ GestionnaireChat::~GestionnaireChat() {
 	delete guichat;
 }
 
-void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
+void GestionnaireChat::run()
+{
+	networkManager->addlistenneur((XSILIUM_AUTH * 1000) + ID_CHAT,boost::bind(&GestionnaireChat::setPacket, this));
+
+	ModuleActif::run();
+}
+
+
+/*void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 {
 	switch(event)
 		{
@@ -64,7 +68,7 @@ void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
 		default:
 			break;
 		}
-}
+}*/
 
 void GestionnaireChat::retourInterface(int IDInterface,int retour)
 {
@@ -72,7 +76,21 @@ void GestionnaireChat::retourInterface(int IDInterface,int retour)
 
 void GestionnaireChat::processPacket(ENetEvent * packet)
 {
+	CHATPACKET_C * typePacket = (CHATPACKET_C *) packet->packet->data ;
+	if (typePacket->charTypePacket.structure_opcode.cmd == XSILIUM_KINGDOM)
+	{
+		printf("message recu %s \n",typePacket->message);
 
+
+		char messageConsole[576];
+		std::strcpy(messageConsole,(const char *)typePacket->perso); // copy string one into the result.
+		std::strcat(messageConsole," > ");
+		std::strcat(messageConsole,(const char *)typePacket->message);
+
+
+		//guichat->setMessage(messageConsole);
+
+	}
 }
 
 void GestionnaireChat::sendMessageToChat(const char * message, int to)
@@ -86,7 +104,8 @@ void GestionnaireChat::sendMessageToChat(const char * message, int to)
 	std::strcpy(messagePacket.perso,compte->getLogin());
 	std::strcpy(messagePacket.message,message);
 
-	//networkManager->sendToHost((const void *)&messagePacket,sizeof(messagePacket) + 1);
+	ENetPacket * packetAEnvoyer = enet_packet_create ((const void *)&message,sizeof(message) + 1,ENET_PACKET_FLAG_RELIABLE);
+	networkManager->sendPacket(packetAEnvoyer,0);
 
 }
 
