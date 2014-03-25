@@ -1,6 +1,22 @@
+#/*
+#-----------------------------------------------------------------------------
+#Filename:    CMakeLists.txt
+#-----------------------------------------------------------------------------
+#
+#This source file is part of the
+#   ___                 __    __ _ _    _ 
+#  /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
+# //  // _` | '__/ _ \ \ \/  \/ / | |/ / |
+#/ \_// (_| | | |  __/  \  /\  /| |   <| |
+#\___/ \__, |_|  \___|   \/  \/ |_|_|\_\_|
+#      |___/                              
+#      Tutorial Framework
+#      http://www.ogre3d.org/tikiwiki/
+#-----------------------------------------------------------------------------
+#*/
 cmake_minimum_required(VERSION 2.6)
  
-project(SceneLoader)
+project(OgreApp)
  
 if(WIN32)
 	set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
@@ -82,36 +98,32 @@ set(HDRS
 	./BaseApplication.h
 	./SceneLoader.h
 	./DotSceneLoader.h
+	./SdkTrays.h
+	./SdkCameraMan.h
 	./rapidxml.hpp
-
 )
  
 set(SRCS
 	./BaseApplication.cpp
 	./SceneLoader.cpp
-	./DotSceneLoader.cpp
 )
  
-include_directories( ${XSILIUM_INCLUDE} ${OIS_INCLUDE_DIRS}
-	${OGRE_INCLUDE_DIRS}
-	${OGRE_SAMPLES_INCLUDEPATH}
-	${OGRE_Overlay_INCLUDE_DIRS}
-)
+include_directories( ${XSILIUM_INCLUDE})
  
-add_executable(SceneLoader WIN32 ${HDRS} ${SRCS})
+add_executable(OgreApp WIN32 ${HDRS} ${SRCS})
  
-set_target_properties(SceneLoader PROPERTIES DEBUG_POSTFIX _d)
+set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(SceneLoader ${XSILIUM_LIB} ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
+target_link_libraries(OgreApp ${XSILIUM_LIB})
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
  
 # post-build copy for win32
 if(WIN32 AND NOT MINGW)
-	add_custom_command( TARGET SceneLoader PRE_BUILD
+	add_custom_command( TARGET OgreApp PRE_BUILD
 		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
-	add_custom_command( TARGET SceneLoader POST_BUILD
+	add_custom_command( TARGET OgreApp POST_BUILD
 		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
 endif(WIN32 AND NOT MINGW)
 
@@ -121,7 +133,7 @@ endif(MINGW OR UNIX)
  
 if(WIN32)
  
-	install(TARGETS SceneLoader
+	install(TARGETS OgreApp
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
@@ -177,7 +189,7 @@ endif(WIN32)
 
 if(UNIX)
  
-	install(TARGETS SceneLoader
+	install(TARGETS OgreApp
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
