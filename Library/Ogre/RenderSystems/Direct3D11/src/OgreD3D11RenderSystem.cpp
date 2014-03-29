@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2013 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -772,7 +772,7 @@ bail:
 
 			if(FAILED(hr))         
  			{
-				std::stringstream error;
+				StringStream error;
 #ifdef USE_DXERR_LIBRARY
 				error<<"Failed to create Direct3D11 object."<<std::endl<<DXGetErrorDescription(hr)<<std::endl;
 #else
@@ -3690,7 +3690,7 @@ bail:
 
 		if(FAILED(hr))
 		{
-			std::stringstream error;
+			StringStream error;
 #ifdef USE_DXERR_LIBRARY
 			error<<"Failed to create Direct3D11 object."<<std::endl<<DXGetErrorDescription(hr)<<std::endl;
 #else

@@ -12,8 +12,10 @@ set(TargetName XsiliumClient)
 if (APPLE)
 	SET(EXETYPE MACOSX_BUNDLE)
 	SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib  PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
+	SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/Info.plist  PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 	SET_SOURCE_FILES_PROPERTIES(${CONTENT} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
 	SET (NibFile ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib )
+	
 endif()
 
 set(CORE_SOURCE_FILES
@@ -57,7 +59,7 @@ if(WIN32)
 	source_group(Datafiles FILES ${CONTENT})
 endif()
 
-if (APPLE AND CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" )
+if (APPLE)
 	
 	set(CMAKE_CXX_FLAGS "-x objective-c++")
 	list(APPEND CORE_SOURCE_FILES "SDK/OSX/XsiliumApp.mm")
@@ -91,7 +93,7 @@ if (APPLE)
 		${CONTENT}
 	)
 	SET(XSILIUM_APPS "${CMAKE_CURRENT_BINARY_DIR}/${TargetName}.app")
-	
+	if(NOT CMAKE_GENERATOR STREQUAL Xcode)
 	add_custom_command(TARGET ${TargetName} POST_BUILD
 		COMMAND mkdir ARGS -p ${XSILIUM_APPS}/Contents/Frameworks
 		COMMAND cp ARGS -r ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml ${XSILIUM_APPS}/Contents/Resources
@@ -111,6 +113,7 @@ if (APPLE)
 		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_APPS}/Contents/Frameworks
 		
 		)
+		endif()
 
 else ()
 

@@ -21,6 +21,7 @@ list(APPEND HEADER_FILES ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h
     src/OgreImageResampler.h
     src/OgrePixelConversions.h
     src/OgreSIMDHelper.h)
+
 file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 # Remove optional header files
@@ -335,9 +336,7 @@ if (APPLE)
   # Framework is called 'Ogre'
   set_target_properties(OgreMain PROPERTIES	OUTPUT_NAME Ogre)
 endif ()
-
 target_link_libraries(OgreMain ${LIBRARIES})
-
 if (MINGW)
   # may need winsock htons functions for FreeImage
   target_link_libraries(OgreMain ws2_32)

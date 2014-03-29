@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2013 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,7 @@ THE SOFTWARE.
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
 #   include "OgreEAGL2Window.h"
+#   include "OgreEAGLES2Context.h"
 #elif OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
 #	include "OgreAndroidEGLWindow.h"
 #	include "OgreAndroidEGLContext.h"
@@ -382,8 +383,16 @@ namespace Ogre {
         rsc->setCapability(RSC_TEXTURE_3D);
 #endif
 
-        // ES 2 always supports NPOT textures
-        rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
+        // ES 3 always supports NPOT textures
+        if(mGLSupport->checkExtension("GL_OES_texture_npot") || mGLSupport->checkExtension("GL_ARB_texture_non_power_of_two") || gleswIsSupported(3, 0))
+        {
+            rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
+            rsc->setNonPOW2TexturesLimited(false);
+        }
+        else
+        {
+            rsc->setNonPOW2TexturesLimited(true);
+        }
 
         // Alpha to coverage always 'supported' when MSAA is available
         // although card may ignore it if it doesn't specifically support A2C
@@ -1091,6 +1100,10 @@ namespace Ogre {
 		// outside via the resource manager
 		unbindGpuProgram(GPT_VERTEX_PROGRAM);
 		unbindGpuProgram(GPT_FRAGMENT_PROGRAM);
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
+        static_cast<EAGLES2Context*>(mMainContext)->bindSampleFramebuffer();
+#endif
     }
 
     void GLES2RenderSystem::setVertexDeclaration(VertexDeclaration* decl)

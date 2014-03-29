@@ -31,7 +31,7 @@ FileSystem=@OGRE_MEDIA_DIR_REL@Media/Perso
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/SkyX
 
 [Hydrax]
-FileSystem=@OGRE_MEDIA_DIR_REL@Media/Hydrax
+FileSystem=@OGRE_MEDIA_DIR_REL@Media/basique_terrain1/Hydrax
 
 [Perso]
 FileSystem=@OGRE_MEDIA_DIR_REL@Media/Perso

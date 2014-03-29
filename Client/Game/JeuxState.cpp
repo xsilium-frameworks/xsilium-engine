@@ -76,7 +76,7 @@ void JeuxState::buildGUI()
 
 void JeuxState::createScene()
 {
-	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager("OctreeSceneManager", "GameSceneMgr");
+	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
 
 	m_Loader = new DotSceneLoader();

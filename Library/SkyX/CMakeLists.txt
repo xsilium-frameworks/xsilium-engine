@@ -66,7 +66,6 @@ source_group(Source\ Files\\VClouds FILES ${VCLOUDS_SOURCE_FILES})
 # Add include directory
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/Include")
 include_directories(${XSILIUM_INCLUDE}
-		    ${XSILIUM_FREETYPE_INCLUDE}
 )
 
 # Add needed definitions and nedmalloc include dir
@@ -80,21 +79,15 @@ set(LIBRARIES
   ${PLATFORM_LIBS}
 )
 
-link_directories(${CMAKE_BINARY_DIR})
-
 # setup SkyX target
-add_library(SkyX SHARED
+add_library(SkyX STATIC
   ${SKYX_HEADER_FILES}
   ${SKYX_SOURCE_FILES}
   ${VCLOUDS_HEADER_FILES}
   ${VCLOUDS_SOURCE_FILES}
 )
 
-target_link_libraries(SkyX ${OGRE_LIB})
-
-set_target_properties(SkyX PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-)
+target_link_libraries(SkyX ${XSILIUM_LIB})
 
 set(SKYX_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Include" CACHE PATH "" FORCE)
 

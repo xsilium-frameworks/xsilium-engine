@@ -8,7 +8,7 @@
 #include "Game/JeuxState.h"
 #include "Compte/Compte.h"
 
-#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
+#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE)
 #import <Cocoa/Cocoa.h>
 #import <OSX/OgreOSXCocoaView.h>
 #endif
@@ -30,7 +30,7 @@ private:
 
 #endif
 
-#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
+#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE)
 
 
 @interface XsiliumDelegate : NSObject <NSApplicationDelegate> {
