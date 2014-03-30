@@ -3,7 +3,6 @@
 
 #include "BaseApplication.h"
 
-#include "DotSceneLoader.h"
 
 class SceneLoader : public BaseApplication
 {
@@ -13,6 +12,16 @@ public:
 
 protected:
     virtual void createScene(void);
+
+private:
+    void defineTerrain(long x, long y);
+    void initBlendMaps(Ogre::Terrain* terrain);
+    void configureTerrainDefaults(Ogre::Light* light);
+
+    Ogre::TerrainGlobalOptions* mTerrainGlobals;
+    Ogre::TerrainGroup* mTerrainGroup;
+    bool mTerrainsImported;
+    OgreBites::Label* mInfoLabel;
 };
 
 #endif // #ifndef __SceneLoader_h_
