@@ -21,7 +21,7 @@ void SceneApplication::destroyScene(void)
 //-------------------------------------------------------------------------------------
 void getTerrainImage(bool flipX, bool flipY, Ogre::Image& img)
 {
-    img.load("xsilium_heightmap.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    img.load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     if (flipX)
         img.flipAroundY();
     if (flipY)
@@ -113,7 +113,7 @@ void SceneApplication::configureTerrainDefaults(Ogre::Light* light)
 //-------------------------------------------------------------------------------------
 void SceneApplication::createScene(void)
 {
-        mCamera->setPosition(Ogre::Vector3(1683, 50, 2116));
+    mCamera->setPosition(Ogre::Vector3(1683, 50, 2116));
     mCamera->lookAt(Ogre::Vector3(1963, 50, 1660));
     mCamera->setNearClipDistance(0.1);
     mCamera->setFarClipDistance(50000);

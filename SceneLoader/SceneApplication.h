@@ -2,8 +2,8 @@
 #define __SceneApplication_h_
 
 #include "BaseApplication.h"
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h>
+#include <OgreTerrain.h>
+#include <OgreTerrainGroup.h>
 
 class SceneApplication : public BaseApplication
 {
