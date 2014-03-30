@@ -1,26 +1,6 @@
-#/*
-#-----------------------------------------------------------------------------
-#Filename:    CMakeLists.txt
-#-----------------------------------------------------------------------------
-#
-#This source file is part of the
-#   ___                 __    __ _ _    _ 
-#  /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
-# //  // _` | '__/ _ \ \ \/  \/ / | |/ / |
-#/ \_// (_| | | |  __/  \  /\  /| |   <| |
-#\___/ \__, |_|  \___|   \/  \/ |_|_|\_\_|
-#      |___/                              
-#      Tutorial Framework
-#      http://www.ogre3d.org/tikiwiki/
-#-----------------------------------------------------------------------------
-#*/
 cmake_minimum_required(VERSION 2.6)
  
-project(OgreApp)
-
-if (APPLE)
-	SET(EXETYPE MACOSX_BUNDLE)
-endif()
+project(SceneLoader)
  
 if(WIN32)
 	set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
@@ -40,9 +20,9 @@ if(UNIX)
 	  set(CMAKE_MODULE_PATH "/usr/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
 	  set(OGRE_SAMPLES_INCLUDEPATH "/usr/share/OGRE/samples/Common/include/") # Otherwise, this one
 
-	else()
-	  #message(SEND_ERROR "Failed to find module path.")
-	endif()
+	else ()
+	  message(SEND_ERROR "Failed to find module path.")
+	endif(EXISTS "/usr/local/lib/OGRE")
 endif(UNIX)
  
 if (CMAKE_BUILD_TYPE STREQUAL "")
@@ -55,37 +35,79 @@ set(CMAKE_DEBUG_POSTFIX "_d")
  
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist")
  
+find_package(OGRE REQUIRED)
+ 
+#if(NOT "${OGRE_VERSION_NAME}" STREQUAL "Cthugha")
+#  message(SEND_ERROR "You need Ogre 1.7 Cthugha to build this.")
+#endif()
+ 
+find_package(OIS REQUIRED)
+ 
+if(NOT OIS_FOUND)
+	message(SEND_ERROR "Failed to find OIS.")
+endif()
+ 
+# Find Boost
+if (NOT OGRE_BUILD_PLATFORM_IPHONE)
+	if (WIN32 OR APPLE)
+		set(Boost_USE_STATIC_LIBS TRUE)
+	else ()
+		# Statically linking boost to a dynamic Ogre build doesn't work on Linux 64bit
+		set(Boost_USE_STATIC_LIBS ${OGRE_STATIC})
+	endif ()
+	if (MINGW)
+		# this is probably a bug in CMake: the boost find module tries to look for
+		# boost libraries with name libboost_*, but CMake already prefixes library
+		# search names with "lib". This is the workaround.
+		set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "")
+	endif ()
+	set(Boost_ADDITIONAL_VERSIONS "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40" "1.39.0" "1.39" "1.38.0" "1.38" "1.37.0" "1.37" )
+	# Components that need linking (NB does not include header-only components like bind)
+	set(OGRE_BOOST_COMPONENTS thread date_time)
+	find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
+	if (NOT Boost_FOUND)
+		# Try again with the other type of libs
+		set(Boost_USE_STATIC_LIBS NOT ${Boost_USE_STATIC_LIBS})
+		find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
+	endif()
+	find_package(Boost QUIET)
+ 
+	# Set up referencing of Boost
+	include_directories(${Boost_INCLUDE_DIR})
+	add_definitions(-DBOOST_ALL_NO_LIB)
+	set(OGRE_LIBRARIES ${OGRE_LIBRARIES} ${Boost_LIBRARIES})
+endif()
+ 
 set(HDRS
 	./BaseApplication.h
-	./SceneLoader.h
-	./DotSceneLoader.h
-	./SdkTrays.h
-	./SdkCameraMan.h
-	./rapidxml.hpp
+	./SceneApplication.h
 )
  
 set(SRCS
 	./BaseApplication.cpp
-	./SceneLoader.cpp
+	./SceneApplication.cpp
 )
  
-
-include_directories( ${XSILIUM_INCLUDE})
+include_directories( ${OIS_INCLUDE_DIRS}
+	${OGRE_INCLUDE_DIRS}
+	${OGRE_SAMPLES_INCLUDEPATH}
+	${OGRE_Overlay_INCLUDE_DIRS}
+)
  
-add_executable(OgreApp MACOSX_BUNDLE WIN32 ${HDRS} ${SRCS})
+add_executable(SceneLoader WIN32 ${HDRS} ${SRCS})
  
-set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
+set_target_properties(SceneLoader PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(OgreApp ${XSILIUM_LIB})
+target_link_libraries(SceneLoader ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES} ${OGRE_Terrain_LIBRARIES})
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
  
 # post-build copy for win32
 if(WIN32 AND NOT MINGW)
-	add_custom_command( TARGET OgreApp PRE_BUILD
+	add_custom_command( TARGET SceneLoader PRE_BUILD
 		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
-	add_custom_command( TARGET OgreApp POST_BUILD
+	add_custom_command( TARGET SceneLoader POST_BUILD
 		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
 endif(WIN32 AND NOT MINGW)
 
@@ -95,7 +117,7 @@ endif(MINGW OR UNIX)
  
 if(WIN32)
  
-	install(TARGETS OgreApp
+	install(TARGETS SceneLoader
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
@@ -119,17 +141,21 @@ if(WIN32)
         # NOTE: for the 1.7.1 sdk the OIS dll is called OIS.dll instead of libOIS.dll
         # so you'll have to change that to make it work with 1.7.1
 	install(FILES ${OGRE_PLUGIN_DIR_REL}/OgreMain.dll
+		${OGRE_PLUGIN_DIR_REL}/OgreOverlay.dll
+		${OGRE_PLUGIN_DIR_REL}/OgreTerrain.dll
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL.dll
-		${OGRE_PLUGIN_DIR_REL}/libOIS.dll
+		${OGRE_PLUGIN_DIR_REL}/OIS.dll
 		DESTINATION bin
 		CONFIGURATIONS Release RelWithDebInfo
 	)
  
 	install(FILES ${OGRE_PLUGIN_DIR_DBG}/OgreMain_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/OgreOverlay_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/OgreTerrain_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_GL_d.dll
-		${OGRE_PLUGIN_DIR_DBG}/libOIS_d.dll
+		${OGRE_PLUGIN_DIR_DBG}/OIS_d.dll
 		DESTINATION bin
 		CONFIGURATIONS Debug
 	)
@@ -149,9 +175,9 @@ if(WIN32)
    )
 endif(WIN32)
 
-if(UNIX AND NOT APPLE)
+if(UNIX)
  
-	install(TARGETS OgreApp
+	install(TARGETS SceneLoader
 		RUNTIME DESTINATION bin
 		CONFIGURATIONS All)
  
@@ -166,5 +192,5 @@ if(UNIX AND NOT APPLE)
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
  
-endif(UNIX AND NOT APPLE)
+endif(UNIX)
  

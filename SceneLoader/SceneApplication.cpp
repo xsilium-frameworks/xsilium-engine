@@ -1,26 +1,35 @@
-#include "SceneLoader.h"
-#include "DotSceneLoader.h"
+#include "SceneApplication.h"
 
 //-------------------------------------------------------------------------------------
-SceneLoader::SceneLoader(void)
+SceneApplication::SceneApplication(void)
+    :   mTerrainGlobals(0),
+    mTerrainGroup(0),
+    mTerrainsImported(false),
+    mInfoLabel(0)
 {
 }
 //-------------------------------------------------------------------------------------
-SceneLoader::~SceneLoader(void)
+SceneApplication::~SceneApplication(void)
 {
 }
-
-void SceneLoader::getTerrainImage(bool flipX, bool flipY, Ogre::Image& img)
+//-------------------------------------------------------------------------------------
+void SceneApplication::destroyScene(void)
 {
-    img.load("terrain.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	OGRE_DELETE mTerrainGroup;
+	OGRE_DELETE mTerrainGlobals;
+}
+//-------------------------------------------------------------------------------------
+void getTerrainImage(bool flipX, bool flipY, Ogre::Image& img)
+{
+    img.load("xsilium_heightmap.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     if (flipX)
         img.flipAroundY();
     if (flipY)
         img.flipAroundX();
-
+ 
 }
 //-------------------------------------------------------------------------------------
-void SceneLoader::defineTerrain(long x, long y)
+void SceneApplication::defineTerrain(long x, long y)
 {
     Ogre::String filename = mTerrainGroup->generateFilename(x, y);
     if (Ogre::ResourceGroupManager::getSingleton().resourceExists(mTerrainGroup->getResourceGroup(), filename))
@@ -36,7 +45,7 @@ void SceneLoader::defineTerrain(long x, long y)
     }
 }
 //-------------------------------------------------------------------------------------
-void SceneLoader::initBlendMaps(Ogre::Terrain* terrain)
+void SceneApplication::initBlendMaps(Ogre::Terrain* terrain)
 {
     Ogre::TerrainLayerBlendMap* blendMap0 = terrain->getLayerBlendMap(1);
     Ogre::TerrainLayerBlendMap* blendMap1 = terrain->getLayerBlendMap(2);
@@ -51,13 +60,13 @@ void SceneLoader::initBlendMaps(Ogre::Terrain* terrain)
         for (Ogre::uint16 x = 0; x < terrain->getLayerBlendMapSize(); ++x)
         {
             Ogre::Real tx, ty;
-
+ 
             blendMap0->convertImageToTerrainSpace(x, y, &tx, &ty);
             Ogre::Real height = terrain->getHeightAtTerrainPosition(tx, ty);
             Ogre::Real val = (height - minHeight0) / fadeDist0;
             val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
             *pBlend0++ = val;
-
+ 
             val = (height - minHeight1) / fadeDist1;
             val = Ogre::Math::Clamp(val, (Ogre::Real)0, (Ogre::Real)1);
             *pBlend1++ = val;
@@ -69,18 +78,18 @@ void SceneLoader::initBlendMaps(Ogre::Terrain* terrain)
     blendMap1->update();
 }
 //-------------------------------------------------------------------------------------
-void SceneLoader::configureTerrainDefaults(Ogre::Light* light)
+void SceneApplication::configureTerrainDefaults(Ogre::Light* light)
 {
     // Configure global
     mTerrainGlobals->setMaxPixelError(8);
     // testing composite map
     mTerrainGlobals->setCompositeMapDistance(3000);
-
+ 
     // Important to set these so that the terrain knows what to use for derived (non-realtime) data
     mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
     mTerrainGlobals->setCompositeMapAmbient(mSceneMgr->getAmbientLight());
     mTerrainGlobals->setCompositeMapDiffuse(light->getDiffuseColour());
-
+ 
     // Configure default import settings for if we use imported image
     Ogre::Terrain::ImportData& defaultimp = mTerrainGroup->getDefaultImportSettings();
     defaultimp.terrainSize = 513;
@@ -102,71 +111,110 @@ void SceneLoader::configureTerrainDefaults(Ogre::Light* light)
 }
 
 //-------------------------------------------------------------------------------------
-void SceneLoader::createScene(void)
+void SceneApplication::createScene(void)
 {
-	mCamera->setPosition(Ogre::Vector3(1683, 50, 2116));
-	    mCamera->lookAt(Ogre::Vector3(1963, 50, 1660));
-	    mCamera->setNearClipDistance(0.1);
-	    mCamera->setFarClipDistance(50000);
+        mCamera->setPosition(Ogre::Vector3(1683, 50, 2116));
+    mCamera->lookAt(Ogre::Vector3(1963, 50, 1660));
+    mCamera->setNearClipDistance(0.1);
+    mCamera->setFarClipDistance(50000);
+ 
+    if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
+    {
+        mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
+    }
+ 
+// Play with startup Texture Filtering options
+// Note: Pressing T on runtime will discarde those settings
+//  Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
+//  Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(7);
+ 
+    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
+    lightdir.normalise();
+ 
+    Ogre::Light* light = mSceneMgr->createLight("tstLight");
+    light->setType(Ogre::Light::LT_DIRECTIONAL);
+    light->setDirection(lightdir);
+    light->setDiffuseColour(Ogre::ColourValue::White);
+    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+ 
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+ 
+    mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
+ 
+    mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr, Ogre::Terrain::ALIGN_X_Z, 513, 12000.0f);
+    mTerrainGroup->setFilenameConvention(Ogre::String("BasicTutorial3Terrain"), Ogre::String("dat"));
+    mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
+ 
+    configureTerrainDefaults(light);
+ 
+    for (long x = 0; x <= 0; ++x)
+        for (long y = 0; y <= 0; ++y)
+            defineTerrain(x, y);
+ 
+    // sync load since we want everything in place when we start
+    mTerrainGroup->loadAllTerrains(true);
+ 
+    if (mTerrainsImported)
+    {
+        Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+        while(ti.hasMoreElements())
+        {
+            Ogre::Terrain* t = ti.getNext()->instance;
+            initBlendMaps(t);
+        }
+    }
+ 
+    mTerrainGroup->freeTemporaryResources();
+ 
+    Ogre::ColourValue fadeColour(0.9, 0.9, 0.9);
+    mSceneMgr->setFog(Ogre::FOG_LINEAR, fadeColour, 0.0, 10, 1200);
+    mWindow->getViewport(0)->setBackgroundColour(fadeColour);
+ 
+    Ogre::Plane plane;
+    plane.d = 100;
+    plane.normal = Ogre::Vector3::NEGATIVE_UNIT_Y;
+ 
+    //mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8, 500);
+    mSceneMgr->setSkyPlane(true, plane, "Examples/CloudySky", 500, 20, true, 0.5, 150, 150);
+}
 
-	    if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
-	    {
-	        mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
-	    }
-
-	// Play with startup Texture Filtering options
-	// Note: Pressing T on runtime will discarde those settings
-	//  Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(Ogre::TFO_ANISOTROPIC);
-	//  Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(7);
-
-	    Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
-	    lightdir.normalise();
-
-	    Ogre::Light* light = mSceneMgr->createLight("tstLight");
-	    light->setType(Ogre::Light::LT_DIRECTIONAL);
-	    light->setDirection(lightdir);
-	    light->setDiffuseColour(Ogre::ColourValue::White);
-	    light->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
-
-	    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
-
-	    mTerrainGlobals = OGRE_NEW Ogre::TerrainGlobalOptions();
-
-	    mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr, Ogre::Terrain::ALIGN_X_Z, 513, 12000.0f);
-	    mTerrainGroup->setFilenameConvention(Ogre::String("BasicTutorial3Terrain"), Ogre::String("dat"));
-	    mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
-
-	    configureTerrainDefaults(light);
-
-	    for (long x = 0; x <= 0; ++x)
-	        for (long y = 0; y <= 0; ++y)
-	            defineTerrain(x, y);
-
-	    // sync load since we want everything in place when we start
-	    mTerrainGroup->loadAllTerrains(true);
-
-	    if (mTerrainsImported)
-	    {
-	        Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-	        while(ti.hasMoreElements())
-	        {
-	            Ogre::Terrain* t = ti.getNext()->instance;
-	            initBlendMaps(t);
-	        }
-	    }
-
-	    mTerrainGroup->freeTemporaryResources();
-
-	    Ogre::ColourValue fadeColour(0.9, 0.9, 0.9);
-	    mSceneMgr->setFog(Ogre::FOG_LINEAR, fadeColour, 0.0, 10, 1200);
-	    mWindow->getViewport(0)->setBackgroundColour(fadeColour);
-
-	    Ogre::Plane plane;
-	    plane.d = 100;
-	    plane.normal = Ogre::Vector3::NEGATIVE_UNIT_Y;
-
-	    //mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8, 500);
-	    mSceneMgr->setSkyPlane(true, plane, "Examples/CloudySky", 500, 20, true, 0.5, 150, 150);
+//-------------------------------------------------------------------------------------
+void SceneApplication::createFrameListener(void)
+{
+    BaseApplication::createFrameListener();
+ 
+    mInfoLabel = mTrayMgr->createLabel(OgreBites::TL_TOP, "TInfo", "", 350);
+}
+//-------------------------------------------------------------------------------------
+bool SceneApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
+{
+    bool ret = BaseApplication::frameRenderingQueued(evt);
+ 
+    if (mTerrainGroup->isDerivedDataUpdateInProgress())
+    {
+        mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
+        mInfoLabel->show();
+        if (mTerrainsImported)
+        {
+            mInfoLabel->setCaption("Building terrain, please wait...");
+        }
+        else
+        {
+            mInfoLabel->setCaption("Updating textures, patience...");
+        }
+    }
+    else
+    {
+        mTrayMgr->removeWidgetFromTray(mInfoLabel);
+        mInfoLabel->hide();
+        if (mTerrainsImported)
+        {
+            mTerrainGroup->saveAllTerrains(true);
+            mTerrainsImported = false;
+        }
+    }
+ 
+    return ret;
 }
 
 
@@ -187,7 +235,7 @@ extern "C" {
 #endif
     {
         // Create application object
-        SceneLoader app;
+        SceneApplication app;
 
         try {
             app.go();
