@@ -81,6 +81,7 @@ Shared
 
 link_libraries(
 	${XSILIUM_LIB}
+	XsiliumEngine
 )
 
 if (APPLE)

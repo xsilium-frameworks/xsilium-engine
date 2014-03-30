@@ -10,14 +10,14 @@ set(Hydrax_SOURCES
 )
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-include_directories(${XSILIUM_INCLUDE} 
+include_directories(${XSILIUM_OGRE_INCLUDE} 
 )
 
 add_definitions(-DHYDRAX_LIB -D_USRDLL)
 
 add_library(Hydrax STATIC ${Hydrax_SOURCES})
 
-target_link_libraries(Hydrax ${XSILIUM_LIB})
+target_link_libraries(Hydrax ${OGRE_LIB})
 
 
 set(HYDRAX_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "" FORCE)

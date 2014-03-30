@@ -490,8 +490,7 @@ set(XSILIUM_ZZIP_INCLUDE ${XSILIUM_DEP_DIR}/ZZipLib)
 		endif()
 	endif(APPLE)
 
-set(XSILIUM_LIB XsiliumEngine 
-		${OGRE_LIB}
+set(XSILIUM_LIB ${OGRE_LIB}
 		CEGUIBase
 		PagedGeometry 
 		CEGUIOgreRenderer 
@@ -501,6 +500,7 @@ set(XSILIUM_LIB XsiliumEngine
 		${Cg_LIBRARY_REL}
 		${XSILIUM_OIS_TARGET}
 		${XSILIUM_ZZIP_TARGET}
+		${ENET_LIBRARY_REL}
 )
 
 if(WIN32 AND DirectX_FOUND)

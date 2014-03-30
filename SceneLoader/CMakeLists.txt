@@ -69,13 +69,15 @@ set(SRCS
 )
  
 
-include_directories(${XSILIUM_INCLUDE})
+include_directories(${XSILIUM_OGRE_INCLUDE}
+                    ${OIS_INCLUDE_DIR}
+                    )
  
 add_executable(OgreApp MACOSX_BUNDLE WIN32 ${HDRS} ${SRCS})
  
 set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(OgreApp ${XSILIUM_LIB})
+target_link_libraries(OgreApp ${OGRE_LIB} ${OIS_LIBRARY_REL})
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)

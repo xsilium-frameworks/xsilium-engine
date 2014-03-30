@@ -8,7 +8,7 @@ set(enet_SOURCES
     ${enet_SOURCES_H}
 )
 
-include_directories(.)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(enet STATIC ${enet_SOURCES})
 if(WIN32)
