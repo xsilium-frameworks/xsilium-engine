@@ -7,8 +7,9 @@ SET(Dependencies 1.0)
 include(NoWarn)
 subdirs(Source/ois)
 subdirs(Source/freetype)
-#subdirs(Source/xerces-c)
 subdirs(Source/rapidxml-1.13)
+subdirs(Source/ZLib)
+
 
 
 

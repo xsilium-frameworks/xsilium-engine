@@ -51,6 +51,7 @@ if (WIN32)
   set(OGRE_LIB_MINSIZE_PATH "/MinSizeRel")
   set(OGRE_LIB_DEBUG_PATH "/Debug")
   set(OGRE_PLUGIN_PATH "/opt")
+  set(OGRE_SAMPLE_PATH "/opt/samples")
 elseif (UNIX)
   set(OGRE_RELEASE_PATH "")
   set(OGRE_RELWDBG_PATH "")
@@ -74,18 +75,19 @@ elseif (UNIX)
   else()
     set(OGRE_PLUGIN_PATH "/OGRE")
   endif(APPLE)
+  set(OGRE_SAMPLE_PATH "/OGRE/Samples")
 endif ()
 
 # create vcproj.user file for Visual Studio to set debug working directory
 function(ogre_create_vcproj_userfile TARGETNAME)
   if (MSVC)
     configure_file(
-	  ${XSILIUM_SOURCE_DIR}/CMake/Templates/VisualStudioUserFile.vcproj.user.in
+	  ${OGRE_TEMPLATES_DIR}/VisualStudioUserFile.vcproj.user.in
 	  ${CMAKE_CURRENT_BINARY_DIR}/${TARGETNAME}.vcproj.user
 	  @ONLY
 	)
     configure_file(
-	  ${XSILIUM_SOURCE_DIR}/CMake/Templates/VisualStudioUserFile.vcxproj.user.in
+	  ${OGRE_TEMPLATES_DIR}/VisualStudioUserFile.vcxproj.user.in
 	  ${CMAKE_CURRENT_BINARY_DIR}/${TARGETNAME}.vcxproj.user
 	  @ONLY
 	)
@@ -314,6 +316,108 @@ function(ogre_config_plugin PLUGINNAME)
 	endif ()
   endif ()
 endfunction(ogre_config_plugin)
+
+# setup Ogre sample build
+function(ogre_config_sample_common SAMPLENAME)
+  ogre_config_common(${SAMPLENAME})
+
+  # set install RPATH for Unix systems
+  if (UNIX AND OGRE_FULL_RPATH)
+    set_property(TARGET ${SAMPLENAME} APPEND PROPERTY
+      INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${OGRE_LIB_DIRECTORY})
+    set_property(TARGET ${SAMPLENAME} PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+  endif ()
+  
+  if (APPLE)
+    # On OS X, create .app bundle
+    set_property(TARGET ${SAMPLENAME} PROPERTY MACOSX_BUNDLE TRUE)
+    if (NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+      # Add the path where the Ogre framework was found
+      if(${OGRE_FRAMEWORK_PATH})
+        set_target_properties(${SAMPLENAME} PROPERTIES
+          COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+          LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+        )
+      endif()
+    else()
+      set_xcode_property( ${SAMPLENAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+      set_property( TARGET ${SAMPLENAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
+    endif()
+  endif (APPLE)
+  if (NOT OGRE_STATIC)
+    if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      # disable "lib" prefix on Unix
+      set_target_properties(${SAMPLENAME} PROPERTIES PREFIX "")
+    endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  endif()
+
+  if (NOT WIN32)
+    set_target_properties(${SAMPLENAME} PROPERTIES VERSION ${OGRE_SOVERSION} SOVERSION ${OGRE_SOVERSION})
+  endif()
+
+  if (OGRE_INSTALL_SAMPLES)
+	ogre_install_target(${SAMPLENAME} ${OGRE_SAMPLE_PATH} FALSE)
+  endif()
+  
+endfunction(ogre_config_sample_common)
+
+function(ogre_config_sample_exe SAMPLENAME)
+  ogre_config_sample_common(${SAMPLENAME})
+  if (OGRE_INSTALL_PDB AND OGRE_INSTALL_SAMPLES)
+	  # install debug pdb files - no _d on exe
+	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_DEBUG_PATH}/${SAMPLENAME}.pdb
+		  DESTINATION bin${OGRE_DEBUG_PATH}
+		  CONFIGURATIONS Debug
+		  )
+	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_RELWDBG_PATH}/${SAMPLENAME}.pdb
+		  DESTINATION bin${OGRE_RELWDBG_PATH}
+		  CONFIGURATIONS RelWithDebInfo
+		  )
+  endif ()
+
+  if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
+    # Add the path where the Ogre framework was found
+    if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "")
+      set_target_properties(${SAMPLENAME} PROPERTIES
+        COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+        LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+      )
+    endif()
+  endif(APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
+endfunction(ogre_config_sample_exe)
+
+function(ogre_config_sample_lib SAMPLENAME)
+  ogre_config_sample_common(${SAMPLENAME})
+  if (OGRE_INSTALL_PDB AND OGRE_INSTALL_SAMPLES)
+	  # install debug pdb files - with a _d on lib
+	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_DEBUG_PATH}/${SAMPLENAME}_d.pdb
+		  DESTINATION bin${OGRE_DEBUG_PATH}
+		  CONFIGURATIONS Debug
+		  )
+	  install(FILES ${OGRE_BINARY_DIR}/bin${OGRE_RELWDBG_PATH}/${SAMPLENAME}.pdb
+		  DESTINATION bin${OGRE_RELWDBG_PATH}
+		  CONFIGURATIONS RelWithDebInfo
+		  )
+  endif ()
+
+  if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
+    # Add the path where the Ogre framework was found
+    if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "")
+      set_target_properties(${SAMPLENAME} PROPERTIES
+        COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+        LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+      )
+    endif()
+  endif(APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS AND OGRE_SDK_BUILD)
+
+  # Add sample to the list of link targets
+  # Global property so that we can build this up across entire sample tree
+  # since vars are local to containing scope of directories / functions
+  get_property(OGRE_SAMPLES_LIST GLOBAL PROPERTY "OGRE_SAMPLES_LIST")
+  set_property (GLOBAL PROPERTY "OGRE_SAMPLES_LIST" ${OGRE_SAMPLES_LIST} ${SAMPLENAME})
+
+endfunction(ogre_config_sample_lib)
+
 
 # setup Ogre tool build
 function(ogre_config_tool TOOLNAME)

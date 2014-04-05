@@ -1,218 +1,190 @@
 #------------OLD---------------------------------------------
 cmake_minimum_required(VERSION 2.6.2)
 
-# CMake 2.8.2 has a bug that creates unusable Xcode projects when using ARCHS_STANDARD_32_BIT
-# to specify both armv6 and armv7.
-if(OGRE_BUILD_PLATFORM_APPLE_IOS AND (CMAKE_VERSION VERSION_EQUAL 2.8.2) AND (CMAKE_GENERATOR STREQUAL "Xcode"))
-	message(FATAL_ERROR "CMake 2.8.2 cannot create compatible Xcode projects for iOS, please download the latest version or an older release from http://www.cmake.org/files/")
-endif()
-
-project(OGRELITE)
+project(OGRE)
+include(PrepareThreadingOptions)
 include(PrecompiledHeader)
-
-find_package(Cg)
-
-set(OgreLite 1.0)
-set (OGRE_CONFIG_HEADER 1)
-set (OGRE_SDK_BUILD 1)
-set(OGRE_THREAD_PROVIDER  0)
-#set(OGRE_LIB_TYPE         STATIC)
-set(OGRE_LIB_TYPE         SHARED)
-#set(OGRE_STATIC	FALSE)
-SET(OGRE_BINARY_DIR       ${XSILIUM_BINARY_DIR})
-SET(OGRE_SOURCE_DIR       ${OGRELITE_SOURCE_DIR})
-set(OGRE_BUILD_COMPONENT_OVERLAY TRUE)
-
-if (XSILIUM_USE_OCTREE)
-	set(OGRE_BUILD_PLUGIN_OCTREE	TRUE)
-else()
-	set(OGRE_BUILD_PLUGIN_OCTREE	FALSE)
-endif()
-
-if (XSILIUM_USE_BSP)
-	set(OGRE_BUILD_PLUGIN_BSP	TRUE)
-else()
-	set(OGRE_BUILD_PLUGIN_BSP	FALSE)
-endif()
-
-if (XSILIUM_USE_PCZ)
-	set(OGRE_BUILD_PLUGIN_PCZ	TRUE)
-else()
-	set(OGRE_BUILD_PLUGIN_PCZ	FALSE)
-endif()
-
-if (XSILIUM_USE_PARTICLE)
-	set(OGRE_BUILD_PLUGIN_PFX        TRUE)
-else()
-	set(OGRE_BUILD_PLUGIN_PFX        FALSE)
-endif()
-set(OGRE_CONFIG_ENABLE_FREEIMAGE TRUE)
-set(OGRE_CONFIG_ENABLE_DDS       TRUE)
-set(OGRE_SET_DISABLE_LIBCPP_SUPPORT 0)
-
-if (XSILIUM_DISABLE_ZIP)
-	set(OGRE_CONFIG_ENABLE_ZIP FALSE)
-else()
-	set(OGRE_CONFIG_ENABLE_ZIP TRUE)
-endif()
-
-if (XSILIUM_BUILD_ANDROID)
-	add_definitions(-DNO_MALLINFO=1) #disable nedmalloc struct mallinfo declaration
-endif()
-
-
-if (CMAKE_COMPILER_IS_GNUCXX)
-
-	check_cxx_compiler_flag(-msse OGRE_GCC_HAS_SSE)
-
-	if (OGRE_GCC_HAS_SSE AND NOT OGRE_BUILD_PLATFORM_IPHONE)
-		add_definitions(-msse)
-	endif()
-
-	if (WIN32)
-
-		# So Mingw w32api-3.14 can find 
-		# MonitorFromPoint in the Render system
-		add_definitions(-D_WIN32_WINNT=0x0500)
-
-	endif(WIN32)
-
-endif (CMAKE_COMPILER_IS_GNUCXX)
-
-# Configure settings
-if (XSILIUM_DISABLE_ZIP)
-	set(OGRE_NO_ZIP_ARCHIVE 1)
-else()
-	set(OGRE_NO_ZIP_ARCHIVE 0)
-endif()
-
-set(OGRE_CONFIG_ENABLE_ETC TRUE)
-
-
-if (Cg_FOUND AND NOT XSILIUM_BUILD_MOBILE) 
-    option(OGRE_BUILD_PLUGIN_CG                 "Enable / Disable Ogre cgProgramManager" ON)
-else()
-    set(OGRE_BUILD_PLUGIN_CG 0)
-endif()
-
-
-set(OGRE_SET_DOUBLE 0)
-set(OGRE_SET_ALLOCATOR ${OGRE_CONFIG_ALLOCATOR})
-set(OGRE_SET_CONTAINERS_USE_ALLOCATOR 0)
-set(OGRE_SET_STRING_USE_ALLOCATOR 0)
-set(OGRE_SET_MEMTRACK_DEBUG 0)
-set(OGRE_SET_MEMTRACK_RELEASE 0)
-set(OGRE_SET_THREADS 0)
-set(OGRE_SET_ALLOCATOR 4)
-set(OGRE_SET_THREAD_PROVIDER ${OGRE_THREAD_PROVIDER})
-set(OGRE_SET_DISABLE_FREEIMAGE 0)
-set(OGRE_SET_DISABLE_DDS 0)
-set(OGRE_SET_DISABLE_PVRTC 0)
-set(OGRE_SET_DISABLE_ETC 0)
-set(OGRE_SET_DISABLE_ZIP 0)
-set(OGRE_SET_DISABLE_VIEWPORT_ORIENTATIONMODE 1)
-set(OGRE_SET_DISABLE_GLES2_CG_SUPPORT 0)
-#todo test this
-set(OGRE_SET_DISABLE_GLES2_VAO_SUPPORT 0)
-set(OGRE_SET_DISABLE_GL_STATE_CACHE_SUPPORT 1)
-set(OGRE_SET_DISABLE_GLES2_GLSL_OPTIMISER 0)
-set(OGRE_SET_NEW_COMPILERS 0)
-set(OGRE_STATIC_LIB 0)
-set(OGRE_SET_USE_BOOST 0)
-set(OGRE_SET_PROFILING 0)
-if (OGRE_CONFIG_DOUBLE)
-  set(OGRE_SET_DOUBLE 1)
-endif()
-if (OGRE_CONFIG_CONTAINERS_USE_CUSTOM_ALLOCATOR)
-  set(OGRE_SET_CONTAINERS_USE_ALLOCATOR 1)
-endif ()
-if (OGRE_CONFIG_STRING_USE_CUSTOM_ALLOCATOR)
-  set(OGRE_SET_STRING_USE_ALLOCATOR 1)
-endif ()
-if (OGRE_CONFIG_MEMTRACK_DEBUG)
-  set(OGRE_SET_MEMTRACK_DEBUG 1)
-endif()
-if (OGRE_CONFIG_MEMTRACK_RELEASE)
-  set(OGRE_SET_MEMTRACK_RELEASE 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_FREEIMAGE)
-  set(OGRE_SET_DISABLE_FREEIMAGE 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_DDS)
-  set(OGRE_SET_DISABLE_DDS 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_PVRTC)
-  set(OGRE_SET_DISABLE_PVRTC 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_ETC)
-  set(OGRE_SET_DISABLE_ETC 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_ZIP)
-  set(OGRE_SET_DISABLE_ZIP 1)
-endif() 
-if (OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE)
-  set(OGRE_SET_DISABLE_VIEWPORT_ORIENTATIONMODE 0)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_GLES2_CG_SUPPORT)
-  set(OGRE_SET_DISABLE_GLES2_CG_SUPPORT 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_GLES2_GLSL_OPTIMISER)
-  set(OGRE_SET_DISABLE_GLES2_GLSL_OPTIMISER 1)
-endif()
-if(OGRE_CONFIG_NEW_COMPILERS)
-  set(OGRE_SET_NEW_COMPILERS 1)
-endif()
-if(NOT OGRE_CONFIG_ENABLE_GLES2_VAO_SUPPORT)
-  set(OGRE_SET_DISABLE_GLES2_VAO_SUPPORT 1)
-endif()
-if (NOT OGRE_CONFIG_ENABLE_GL_STATE_CACHE_SUPPORT)
-  set(OGRE_SET_DISABLE_GL_STATE_CACHE_SUPPORT 1)
-endif()
-if (OGRE_STATIC)
-  set(OGRE_STATIC_LIB 1)
-endif()
-if (OGRE_USE_BOOST)
-  set(OGRE_SET_USE_BOOST 1)
-endif()
-if (OGRE_PROFILING)
-  set(OGRE_SET_PROFILING 1)
-endif()
-
-if (OGRE_TEST_BIG_ENDIAN)
-  set(OGRE_CONFIG_BIG_ENDIAN 1)
-else ()
-  set(OGRE_CONFIG_LITTLE_ENDIAN 1)
-endif ()
-
-set(OGRE_SET_DISABLE_GLES3_SUPPORT 1)
-#set(OGRE_NO_GLES3_SUPPORT TRUE CACHE BOOL "" FORCE)
-
-#generation de plugins et resource 
-include(InstallResources)
-
-configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_BINARY_DIR}/Client/dist/bin/resources.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${CMAKE_BINARY_DIR}/Client/dist/bin/plugins.cfg)
-
+include(PreprocessorUtils)
 
 # determine Ogre version numbers
 include(OgreGetVersion)
 ogre_get_version(${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h)
 message(STATUS "Configuring OGRE ${OGRE_VERSION}")
-configure_file(${OGRE_TEMPLATES_DIR}/OgreBuildSettings.h.in ${OGRE_BINARY_DIR}/include/OgreBuildSettings.h)
+# Configure version file for use by scripts
+configure_file("${OGRE_TEMPLATES_DIR}/version.txt.in" "${OGRE_BINARY_DIR}/version.txt" @ONLY)
 
-
-include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
-include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include)
-include_directories(${XSILIUM_BINARY_DIR}/include)
-include_directories(${XSILIUM_FREETYPE_INCLUDE} ${XSILIUM_FREEIMAGE_INCLUDE} ${XSILIUM_ZZIP_INCLUDE} ${XSILIUM_ZLIB_INCLUDE} )
-
+# Add OgreMain include path
+include_directories("${OGRE_SOURCE_DIR}/OgreMain/include")
+include_directories("${OGRE_BINARY_DIR}/include")
 if (APPLE)
-  if (OGRE_BUILD_PLATFORM_IPHONE)
-	include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include/iPhone)
-	include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include/OSX)
+  if (OGRE_BUILD_PLATFORM_APPLE_IOS)
+    include_directories("${OGRE_SOURCE_DIR}/OgreMain/include/iOS")
+
+    # Set static early for proper dependency detection
+    set(OGRE_STATIC TRUE)
   else ()
-	include_directories(${OGRELITE_SOURCE_DIR}/OgreMain/include/OSX)
+    include_directories("${OGRE_SOURCE_DIR}/OgreMain/include/OSX")
+  endif ()
+endif (APPLE)
+
+if (WIN32 OR APPLE)
+  if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    # We don't want to install in default system location, install is really for the SDK, so call it that
+    set(CMAKE_INSTALL_PREFIX
+	  "${OGRE_BINARY_DIR}/sdk" CACHE PATH "OGRE install prefix" FORCE
+    )
+  endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+endif(WIN32 OR APPLE)
+
+# Set up iOS overrides.
+if (OGRE_BUILD_PLATFORM_APPLE_IOS)
+  include_directories("${OGRE_SOURCE_DIR}/OgreMain/include/iOS")
+
+  # Set build variables
+  set(XCODE_ATTRIBUTE_SDKROOT iphoneos)
+  if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    execute_process(COMMAND xcodebuild -version -sdk "${XCODE_ATTRIBUTE_SDKROOT}" Path | head -n 1 OUTPUT_VARIABLE CMAKE_OSX_SYSROOT)
+    string(REGEX REPLACE "(\r?\n)+$" "" CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}")
+  else()
+    set(CMAKE_OSX_SYSROOT iphoneos)
   endif()
+
+  set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework CoreGraphics -framework QuartzCore -framework UIKit")
+  set(XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
+  set(XCODE_ATTRIBUTE_LLVM_VECTORIZE_LOOPS "YES")
+  set(XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
+  set(XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
+  set(OGRE_BUILD_RENDERSYSTEM_GLES TRUE CACHE BOOL "Forcing OpenGL ES RenderSystem for iOS" FORCE)
+  set(OGRE_BUILD_RENDERSYSTEM_GLES2 TRUE CACHE BOOL "Forcing OpenGL ES 2 RenderSystem for iOS" FORCE)
+  set(OGRE_STATIC TRUE CACHE BOOL "Forcing static build for iOS" FORCE)
+  set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.yourcompany.\${PRODUCT_NAME:rfc1034identifier}")
+  add_definitions(-mno-thumb)
+
+  set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_INCLUDING_64_BIT)")
+  string (REPLACE "-msse" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+elseif (ANDROID)
+  set(TargetPlatform "Android")
+  set(OGRE_PLATFORM OGRE_PLATFORM_ANDROID)
+  set(OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE FALSE CACHE BOOL "Disable viewport orientation Android" FORCE)
+
+  if( NOT ANDROID_GLES_ONLY )
+   set(OGRE_CONFIG_ENABLE_GLES2_VAO_SUPPORT FALSE CACHE BOOL "Disable VAO on Android" FORCE)
+   set(OGRE_BUILD_RENDERSYSTEM_GLES2 TRUE CACHE BOOL "Forcing OpenGL ES 2 RenderSystem for Android" FORCE)
+   set(OGRE_BUILD_RENDERSYSTEM_GLES FALSE CACHE BOOL "Disable OpenGL ES 1 RenderSystem for Android" FORCE)
+  else()
+   set(OGRE_BUILD_RENDERSYSTEM_GLES2 FALSE CACHE BOOL "Disable OpenGL ES 2 RenderSystem for Android" FORCE)
+   set(OGRE_BUILD_RENDERSYSTEM_GLES TRUE CACHE BOOL "Forcing OpenGL ES 1 RenderSystem for Android" FORCE)
+   set(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM FALSE CACHE BOOL "Disable RTSS component on Android ES1" FORCE)
+   set(OGRE_BUILD_COMPONENT_VOLUME FALSE CACHE BOOL "Disable volume component on Android ES1" FORCE)
+   set(OGRE_BUILD_COMPONENT_PAGING FALSE CACHE BOOL "Disable paging component on FlashCC" FORCE)
+   set(OGRE_BUILD_COMPONENT_TERRAIN FALSE CACHE BOOL "Disable terrain component on FlashCC" FORCE)
+  endif()
+
+  set(OGRE_BUILD_PLUGIN_PCZ FALSE CACHE BOOL "Disable pcz on Android" FORCE)
+  set(OGRE_BUILD_PLUGIN_BSP FALSE CACHE BOOL "Disable bsp scenemanager on Android" FORCE)
+  set(OGRE_BUILD_TESTS FALSE CACHE BOOL "Disable tests on Android" FORCE)
+  set(OGRE_BUILD_TOOLS FALSE CACHE BOOL "Disable tools on Android" FORCE)
+  set(OGRE_STATIC TRUE CACHE BOOL "Forcing static build for Android" FORCE)
+elseif (FLASHCC)
+  set(__FLASHCC__ TRUE)
+  set(OGRE_PLATFORM OGRE_PLATFORM_FLASHCC)
+  set(OGRE_BUILD_RENDERSYSTEM_STAGE3D TRUE CACHE BOOL "Enable Stage3D RenderSystem for FlashCC" FORCE)
+  set(OGRE_BUILD_RENDERSYSTEM_GLES2 FALSE CACHE BOOL "Disable OpenGL ES 2 RenderSystem for FlashCC" FORCE)
+  set(OGRE_BUILD_RENDERSYSTEM_GLES FALSE CACHE BOOL "Disable OpenGL ES 1 RenderSystem for FlashCC" FORCE)
+  set(OGRE_BUILD_COMPONENT_PAGING FALSE CACHE BOOL "Disable paging component on FlashCC" FORCE)
+  set(OGRE_BUILD_COMPONENT_TERRAIN FALSE CACHE BOOL "Disable terrain component on FlashCC" FORCE)
+  set(OGRE_BUILD_COMPONENT_VOLUME FALSE CACHE BOOL "Disable volume component on FlashCC" FORCE)
+  set(OGRE_BUILD_PLUGIN_PCZ FALSE CACHE BOOL "Disable pcz on FlashCC" FORCE)
+  set(OGRE_BUILD_PLUGIN_BSP FALSE CACHE BOOL "Disable bsp scenemanager on FlashCC" FORCE)
+  set(OGRE_BUILD_TESTS FALSE CACHE BOOL "Disable tests on FlashCC" FORCE)
+  set(OGRE_BUILD_TOOLS FALSE CACHE BOOL "Disable tools on FlashCC" FORCE)
+  set(OGRE_STATIC TRUE CACHE BOOL "Forcing static build for FlashCC" FORCE)
+elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+
+  set(XCODE_ATTRIBUTE_SDKROOT macosx)
+  if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    execute_process(COMMAND xcodebuild -version -sdk "${XCODE_ATTRIBUTE_SDKROOT}" Path | head -n 1 OUTPUT_VARIABLE CMAKE_OSX_SYSROOT)
+    string(REGEX REPLACE "(\r?\n)+$" "" CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}")
+  else()
+    set(CMAKE_OSX_SYSROOT macosx)
+  endif()
+
+  if (NOT CMAKE_OSX_ARCHITECTURES)
+    if(OGRE_BUILD_RENDERSYSTEM_GL3PLUS)
+      if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+        set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD_64_BIT}")
+      else()
+        set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_64_BIT)")
+      endif()
+    else()
+      if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+        set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD_32_64_BIT}")
+      else()
+        set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_64_BIT)")
+      endif()
+    endif()
+  endif()
+
+  # 10.7 is the minimum for libc++ support
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
+
+  # Make sure that the OpenGL render system is selected for non-iOS Apple builds
+  set(OGRE_BUILD_RENDERSYSTEM_GLES FALSE)
+  set(OGRE_BUILD_RENDERSYSTEM_GLES2 FALSE)
+elseif (OGRE_BUILD_PLATFORM_WINRT)
+  set(OGRE_BUILD_RENDERSYSTEM_D3D11 TRUE CACHE BOOL "Forcing Direct3D11 RenderSystem for WinRT" FORCE)
+endif ()
+
+if(OGRE_CONFIG_ENABLE_GLES3_SUPPORT)
+  set(OGRE_CONFIG_ENABLE_GLES2_VAO_SUPPORT TRUE CACHE BOOL "Forcing VAO support for OpenGL ES 3" FORCE)
 endif()
 
-subdirs(OgreMain RenderSystems PlugIns Components)
+# Enable the PVRTC codec if OpenGL ES is being built
+if(OGRE_BUILD_RENDERSYSTEM_GLES OR OGRE_BUILD_RENDERSYSTEM_GLES2)
+  set(OGRE_CONFIG_ENABLE_PVRTC TRUE CACHE BOOL "Forcing PVRTC codec for OpenGL ES" FORCE)
+  set(OGRE_CONFIG_ENABLE_ETC TRUE CACHE BOOL "Forcing ETC codec for OpenGL ES" FORCE)
+endif()
+
+# Enable the ETC codec if OpenGL 3+ is being built
+if(OGRE_BUILD_RENDERSYSTEM_GL3PLUS)
+  set(OGRE_CONFIG_ENABLE_ETC TRUE CACHE BOOL "Forcing ETC codec for OpenGL 3+" FORCE)
+endif()
+
+###################################################################
+# configure global build settings based on selected build options
+###################################################################
+include(ConfigureBuild)
+
+###################################################################
+# disable (useless) compiler warnings on project level
+###################################################################
+if(MSVC)
+	add_definitions( /wd4786 /wd4503 /wd4251 /wd4275 /wd4290 /wd4661 /wd4996 /wd4127 /wd4100)
+endif()
+
+##################################################################
+# Now setup targets
+##################################################################
+
+# install resource files
+include(InstallResources)
+
+# Setup OgreMain project
+add_subdirectory(OgreMain)
+
+# Setup RenderSystems
+add_subdirectory(RenderSystems)
+
+# Setup Plugins
+add_subdirectory(PlugIns)
+
+# Setup Components
+add_subdirectory(Components)
+
+# Provide CPack packaging target
+include(Packaging)
+
+
+# Show feature summary
+include(FeatureSummary)
+

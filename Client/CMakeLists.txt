@@ -80,7 +80,6 @@ Shared
 )
 
 link_libraries(
-	${XSILIUM_LIB}
 	XsiliumEngine
 )
 
