@@ -2,7 +2,6 @@
 cmake_minimum_required(VERSION 2.6.2)
 
 project(OGRE)
-include(PrepareThreadingOptions)
 include(PrecompiledHeader)
 include(PreprocessorUtils)
 

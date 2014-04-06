@@ -21,6 +21,24 @@ macro (configure_xsilium ROOT OGREPATH)
 	  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
 	endif ()
 
+
+	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
+	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
+
+	include(OgreConfigTargets)
+	include(DependenciesXsilium)
+	
+	
+	set(OGRE_BINARY_DIR ${CMAKE_BINARY_DIR})
+	SET(OGRE_SOURCE_DIR ${OGREPATH})
+	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
+	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
+	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
+	
+	set(XSILIUM_SOURCE_DIR ${ROOT})	
+	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
+
+
 	
 	set(XSILIUM_INSTALL_PREFIX ${ROOT})
 	option(XSILIUM_COMPILE_SWIG				"Enable compile time SWIG generation."  OFF)
@@ -31,7 +49,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_USE_STATIC_ZLIB		"Compile and link statically ZLib and all its plugins" ON)	
 	option(XSILIUM_USE_STATIC_ZZIP		"Compile and link statically ZZip and all its plugins" ON)	
 	option(XSILIUM_USE_STATIC_FREEIMAGE		"Compile and link statically FreeImage and all its plugins" ON)
-	option(XSILIUM_USE_STATIC_FREETYPE		"Compile and link statically FreeImage and all its plugins" ON)		
+	option(XSILIUM_USE_STATIC_FREETYPE		"Compile and link statically freetype and all its plugins" ON)		
 	option(XSILIUM_MINIMAL_FREEIMAGE_CODEC	"Compile minimal FreeImage Codec(PNG/JPEG/TGA)" OFF)
 	option(XSILIUM_COMPILE_TINYXML			"Enable / Disable TinyXml builds" OFF)
 	option(XSILIUM_GENERATE_BUILTIN_RES		"Generate build-in resources" OFF)
@@ -58,7 +76,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_D3D9 "Build Direct3D9 RenderSystem" TRUE "WIN32;DirectX9_FOUND;NOT OGRE_BUILD_PLATFORM_WINRT;NOT OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_D3D11 "Build Direct3D11 RenderSystem [EXPERIMENTAL]" TRUE "WIN32;DirectX11_FOUND  OR OGRE_BUILD_PLATFORM_WINRT OR OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GL3PLUS "Build OpenGL 3+ RenderSystem [EXPERIMENTAL]" FALSE "OPENGL_FOUND; NOT OGRE_BUILD_RENDERSYSTEM_GLES; NOT OGRE_BUILD_RENDERSYSTEM_GLES2" FALSE)
-	#cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GL "Build OpenGL RenderSystem" TRUE "OPENGL_FOUND;NOT OGRE_BUILD_PLATFORM_APPLE_IOS;NOT OGRE_BUILD_PLATFORM_WINRT;NOT OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
+	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GL "Build OpenGL RenderSystem" TRUE "OPENGL_FOUND;NOT OGRE_BUILD_PLATFORM_APPLE_IOS;NOT OGRE_BUILD_PLATFORM_WINRT;NOT OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GLES "Build OpenGL ES 1.x RenderSystem" FALSE "OPENGLES_FOUND;NOT OGRE_BUILD_PLATFORM_WINRT;NOT OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GLES2 "Build OpenGL ES 2.x RenderSystem" FALSE "OPENGLES2_FOUND;NOT OGRE_BUILD_PLATFORM_WINRT;NOT OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_STAGE3D "Build Stage3D RenderSystem" FALSE "FLASHCC" FALSE)
@@ -72,14 +90,47 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(OGRE_BUILD_PLUGIN_PFX "Build ParticleFX plugin" TRUE)
 	cmake_dependent_option(OGRE_BUILD_PLUGIN_PCZ "Build PCZ SceneManager plugin" TRUE "" FALSE)
 	cmake_dependent_option(OGRE_BUILD_PLUGIN_CG "Build Cg plugin" TRUE "Cg_FOUND;NOT OGRE_BUILD_PLATFORM_APPLE_IOS" FALSE)
-	#cmake_dependent_option(OGRE_BUILD_COMPONENT_OVERLAY "Build Overlay component" TRUE "FREETYPE_FOUND OR OGRE_BUILD_PLATFORM_WINRT OR OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
+	cmake_dependent_option(OGRE_BUILD_COMPONENT_OVERLAY "Build Overlay component" TRUE "FREETYPE_FOUND OR OGRE_BUILD_PLATFORM_WINRT OR OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RTSHADERSYSTEM_CORE_SHADERS "Build RTShader System FFP core shaders" TRUE "OGRE_BUILD_COMPONENT_RTSHADERSYSTEM" FALSE)
 	cmake_dependent_option(OGRE_BUILD_RTSHADERSYSTEM_EXT_SHADERS "Build RTShader System extensions shaders" TRUE "OGRE_BUILD_COMPONENT_RTSHADERSYSTEM" FALSE)
 
-	set(OGRE_BUILD_COMPONENT_OVERLAY true)
-	set(OGRE_BUILD_RENDERSYSTEM_GL true)
-	
 
+	cmake_dependent_option(OGRE_CONFIG_CONTAINERS_USE_CUSTOM_ALLOCATOR "STL containers in Ogre use the custom allocator" TRUE "" FALSE)
+	option(OGRE_CONFIG_STRING_USE_CUSTOM_ALLOCATOR "Ogre String uses the custom allocator" FALSE)
+	option(OGRE_CONFIG_MEMTRACK_DEBUG "Enable Ogre's memory tracker in debug mode" FALSE)
+	option(OGRE_CONFIG_MEMTRACK_RELEASE "Enable Ogre's memory tracker in release mode" FALSE)
+	# determine threading options
+	include(PrepareThreadingOptions)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_FREEIMAGE "Build FreeImage codec. If you disable this option, you need to provide your own image handling codecs." TRUE "FreeImage_FOUND OR OGRE_BUILD_PLATFORM_WINRT OR OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
+	option(OGRE_CONFIG_ENABLE_DDS "Build DDS codec." TRUE)
+	option(OGRE_CONFIG_ENABLE_PVRTC "Build PVRTC codec." FALSE)
+	option(OGRE_CONFIG_ENABLE_ETC "Build ETC codec." FALSE)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_ZIP "Build ZIP archive support. If you disable this option, you cannot use ZIP archives resource locations. The samples won't work." TRUE "ZZip_FOUND OR OGRE_BUILD_PLATFORM_WINRT OR 	OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
+	option(OGRE_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE "Include Viewport orientation mode support." FALSE)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_GLES2_CG_SUPPORT "Enable Cg support to ES 2 render system" FALSE "OGRE_BUILD_RENDERSYSTEM_GLES2" FALSE)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_GLES2_GLSL_OPTIMISER "Enable GLSL optimiser use in GLES 2 render system" FALSE "OGRE_BUILD_RENDERSYSTEM_GLES2" FALSE)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_GLES2_VAO_SUPPORT "Use VertexArrayObjects if possible." FALSE "OGRE_BUILD_RENDERSYSTEM_GLES2" FALSE)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_GL_STATE_CACHE_SUPPORT "Enable OpenGL state cache management" FALSE "OGRE_BUILD_RENDERSYSTEM_GL OR OGRE_BUILD_RENDERSYSTEM_GLES OR OGRE_BUILD_RENDERSYSTEM_GLES2 OR OGRE_BUILD_RENDERSYSTEM_GL3PLUS" FALSE)
+	cmake_dependent_option(OGRE_CONFIG_ENABLE_GLES3_SUPPORT "Enable OpenGL ES 3.x Features" FALSE "OPENGLES3_FOUND;OGRE_BUILD_RENDERSYSTEM_GLES2;NOT OGRE_BUILD_PLATFORM_WINRT;NOT OGRE_BUILD_PLATFORM_WINDOWS_PHONE" FALSE)
+	cmake_dependent_option(OGRE_USE_BOOST "Use Boost extensions" TRUE "Boost_FOUND" FALSE)
+
+	cmake_dependent_option(OGRE_INSTALL_PDB "Install debug pdb files" TRUE "MSVC" FALSE)
+	cmake_dependent_option(OGRE_FULL_RPATH "Build executables with the full required RPATH to run from their install location." FALSE "NOT WIN32" FALSE)
+	option(OGRE_PROFILING "Enable internal profiling support." FALSE)
+	cmake_dependent_option(OGRE_CONFIG_STATIC_LINK_CRT "Statically link the MS CRT dlls (msvcrt)" FALSE "MSVC" FALSE)
+	set(OGRE_LIB_DIRECTORY "lib${LIB_SUFFIX}" CACHE STRING "Install path for libraries, e.g. 'lib64' on some 64-bit Linux distros.")
+	if (WIN32)
+		option(OGRE_INSTALL_VSPROPS "Install Visual Studio Property Page." FALSE)
+		if (OGRE_INSTALL_VSPROPS)
+			configure_file(${OGRE_TEMPLATES_DIR}/OGRE.props.in ${OGRE_BINARY_DIR}/OGRE.props)
+			install(FILES ${OGRE_BINARY_DIR}/OGRE.props DESTINATION "${CMAKE_INSTALL_PREFIX}")
+		endif ()
+	endif ()
+
+
+
+
+	
 	if (APPLE)
 		option(XSILIUM_BUILD_IPHONE	"Build GameKit on iOS SDK"	OFF)
 		option(XSILIUM_BUILD_IPHONE_UNIV "Support arm6 architecture for old devcie" OFF)
@@ -125,23 +176,6 @@ macro (configure_xsilium ROOT OGREPATH)
 		option(OGRE_BUILD_COMPONENT_VOLUME "Build Volume component" ON)
 		
 	endif()
-
-	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
-	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
-
-	include(OgreConfigTargets)
-	include(DependenciesXsilium)
-	
-	
-	set(OGRE_BINARY_DIR ${CMAKE_BINARY_DIR})
-	SET(OGRE_SOURCE_DIR ${OGREPATH})
-	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
-	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
-	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
-	
-	set(XSILIUM_SOURCE_DIR ${ROOT})	
-	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
-
 
 	#Configuration Ogre
 	# determine if we are compiling for a 32bit or 64bit system
