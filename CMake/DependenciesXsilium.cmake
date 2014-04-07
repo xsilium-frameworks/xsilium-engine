@@ -68,7 +68,7 @@ if(NOT XSILIUM_USE_STATIC_ZLIB)
 	find_package(ZLIB)
 	macro_log_feature(ZLIB_FOUND "ZLib" "Support for the ZLib library" "http://www.zlib.net/" FALSE "" "")
 else()
-	set(ZLIB_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/ZLib" )
+	set(ZLIB_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ZLib" )
 	set(ZLIB_LIBRARIES "ZLib")
 	set(ZLIB_FOUND 1)
 endif()
@@ -148,8 +148,19 @@ if(WIN32)
 	find_package(DirectX)
 	macro_log_feature(DirectX9_FOUND "DirectX9" "Support for the DirectX render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
 	
+	if(Directx9_FOUND)
+		set (DirectX_INCLUDE_DIRS ${DirectX9_LIBRARY } )
+		set (DirectX_LIBRARY_DIRS ${DirectX9_INCLUDE_DIR } )
+	endif()
+
 	find_package(DirectX11)
 	macro_log_feature(DirectX11_FOUND "DirectX11" "Support for the DirectX11 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+
+	if(Directx11_FOUND)
+		set (DirectX_INCLUDE_DIRS ${DirectX11_LIBRARY } )
+		set (DirectX_LIBRARY_DIRS ${Directx11_INCLUDE_DIR } )
+	endif()
+
 endif()
 
 #######################################################################

@@ -51,7 +51,7 @@ if (WIN32)
   )
   # need DirectX includes and libraries
   include_directories(${DirectX_INCLUDE_DIRS})
-  set(OIS_PLATFORM_LIBS ${DirectX_DINPUT8_LIBRARY} ${DirectX_DXGUID_LIBRARY})
+  set(OIS_PLATFORM_LIBS ${DirectX_LIBRARY_DIRS})
   if (MINGW)
     # standard MinGW cannot cope with the new Win32JoyStick implementation
 	# therefore we use the old one from OIS 1.2
