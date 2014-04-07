@@ -1,4 +1,4 @@
-#/*
+#/* binai
 #-----------------------------------------------------------------------------
 #Filename:    CMakeLists.txt
 #-----------------------------------------------------------------------------
@@ -74,9 +74,11 @@ add_executable(OgreApp MACOSX_BUNDLE WIN32 ${HDRS} ${SRCS})
  
 set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
 
-set_target_properties(OgreApp PROPERTIES LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon")
+if(APPLE)
+	set_target_properties(OgreApp PROPERTIES LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon")
+endif()
  
-target_link_libraries(OgreApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
+target_link_libraries(OgreApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OGRE_Overlay_LIBRARIES} ${DirectX11_D3D11_LIBRARIES} )
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)

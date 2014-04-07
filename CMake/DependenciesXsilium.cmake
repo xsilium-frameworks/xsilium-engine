@@ -147,19 +147,12 @@ macro_log_feature(OPENGLES3_FOUND "OpenGL ES 3.x" "Support for the OpenGL ES 2.x
 if(WIN32)
 	find_package(DirectX)
 	macro_log_feature(DirectX9_FOUND "DirectX9" "Support for the DirectX render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
-	
-	if(Directx9_FOUND)
-		set (DirectX_INCLUDE_DIRS ${DirectX9_LIBRARY } )
-		set (DirectX_LIBRARY_DIRS ${DirectX9_INCLUDE_DIR } )
-	endif()
 
 	find_package(DirectX11)
 	macro_log_feature(DirectX11_FOUND "DirectX11" "Support for the DirectX11 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
-
-	if(Directx11_FOUND)
-		set (DirectX_INCLUDE_DIRS ${DirectX11_LIBRARY } )
-		set (DirectX_LIBRARY_DIRS ${Directx11_INCLUDE_DIR } )
-	endif()
+	
+	find_package(DirectXInput)
+ 	macro_log_feature(Direct_FOUND "DirectInput/XInput" "Support for the DirectInput/XInput" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
 
 endif()
 
