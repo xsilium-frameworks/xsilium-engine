@@ -65,8 +65,8 @@ source_group(Source\ Files\\VClouds FILES ${VCLOUDS_SOURCE_FILES})
 
 # Add include directory
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/Include")
-include_directories(${XSILIUM_OGRE_INCLUDE}
-)
+include_directories("${OGRE_SOURCE_DIR}/OgreMain/include" "${CMAKE_BINARY_DIR}/Library/Ogre/include")
+
 
 # Add needed definitions and nedmalloc include dir
 add_definitions(-DSKYX_LIB -D_USRDLL)
@@ -83,7 +83,7 @@ add_library(SkyX STATIC
   ${VCLOUDS_SOURCE_FILES}
 )
 
-target_link_libraries(SkyX ${OGRE_LIB})
+target_link_libraries(SkyX ${OGRE_LIBRARIES})
 
 set(SKYX_H_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Include" CACHE PATH "" FORCE)
 

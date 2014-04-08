@@ -68,7 +68,7 @@ if(NOT XSILIUM_USE_STATIC_ZLIB)
 	find_package(ZLIB)
 	macro_log_feature(ZLIB_FOUND "ZLib" "Support for the ZLib library" "http://www.zlib.net/" FALSE "" "")
 else()
-	set(ZLIB_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/ZLib" )
+	set(ZLIB_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ZLib" )
 	set(ZLIB_LIBRARIES "ZLib")
 	set(ZLIB_FOUND 1)
 endif()
@@ -116,6 +116,7 @@ if (UNIX AND NOT APPLE AND NOT ANDROID AND NOT FLASHCC)
   macro_log_feature(XAW_LIBRARY "Xaw" "X11 Athena widget set" "http://www.x.org" TRUE "" "")
   mark_as_advanced(XAW_LIBRARY)
 endif ()
+
 
 #######################################################################
 # RenderSystem dependencies
@@ -232,6 +233,39 @@ macro_log_feature(GLSL_Optimizer_FOUND "GLSL Optimizer" "GLSL Optimizer" "http:/
 # HLSL2GLSL
 find_package(HLSL2GLSL)
 macro_log_feature(HLSL2GLSL_FOUND "HLSL2GLSL" "HLSL2GLSL" "http://hlsl2glslfork.googlecode.com/" FALSE "" "")
+
+#######################################################################
+# Cegui
+#######################################################################
+
+# Find PCRE
+find_package(PCRE)
+find_package(Minizip)
+find_package(Fribidi)
+if (NOT WIN32)
+    find_package(Iconv REQUIRED)
+endif()
+
+find_package(GLEW)
+find_package(GLM)
+find_package(GLFW)
+find_package(DirectXSDK)
+find_package(D3DX11Effects)
+find_package(DirectFB)
+
+find_package(RapidXML)
+
+find_package(DevIL)
+find_package(SILLY)
+find_package(Corona)
+find_package(PVRTools)
+
+find_package(Lua51)
+find_package(TOLUAPP)
+
+find_package(GTK2 COMPONENTS gtk)
+# set for consistency with other deps
+set (GTK2_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
 
 
 #######################################################################

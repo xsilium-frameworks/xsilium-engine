@@ -10,15 +10,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CEGUIMacros)
 include(CMakeDependentOption)
 
-if (APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
-    set( CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "Build architectures for Mac OS X")
-endif()
-
-# default to Release build (it's what most people will use, except cegui devs)
-if (NOT CMAKE_BUILD_TYPE)
-    set( CMAKE_BUILD_TYPE Release CACHE STRING "Sets the configuration to build (Release, Debug, etc...)")
-endif()
-
 ################################################################################
 # Start of main Project definitions
 ################################################################################
@@ -66,49 +57,7 @@ if ((WIN32 OR APPLE) AND NOT CMAKE_PREFIX_PATH)
     set (CMAKE_FIND_FRAMEWORK LAST)
 endif()
 
-# Look for packages
-find_package(PCRE)
-find_package(Freetype)
-find_package(Minizip)
-find_package(Fribidi)
-if (NOT WIN32)
-    find_package(Iconv REQUIRED)
-endif()
 
-find_package(OpenGL)
-find_package(GLEW)
-find_package(GLM)
-find_package(GLFW)
-find_package(DirectXSDK)
-find_package(D3DX11Effects)
-find_package(Irrlicht)
-find_package(Ogre)
-find_package(OIS)
-find_package(DirectFB)
-find_package(OpenGLES)
-
-find_package(EXPAT)
-find_package(XercesC)
-find_package(LibXml2)
-find_package(TinyXML)
-find_package(RapidXML)
-
-find_package(DevIL)
-find_package(FreeImage)
-find_package(SILLY)
-find_package(Corona)
-find_package(PVRTools)
-
-find_package(Lua51)
-find_package(TOLUAPP)
-find_package(PythonInterp)
-find_package(PythonLibs)
-find_package(Boost 1.36.0 COMPONENTS python unit_test_framework system)
-
-find_package(Doxygen)
-find_package(GTK2 COMPONENTS gtk)
-# set for consistency with other deps
-set (GTK2_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
 
 
 ################################################################################
