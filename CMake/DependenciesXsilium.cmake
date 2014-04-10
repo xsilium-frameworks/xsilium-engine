@@ -14,6 +14,7 @@
 # folder where the required dependencies may be found.
 set(OGRE_DEPENDENCIES_DIR "" CACHE PATH "Path to prebuilt OGRE dependencies")
 include(FindPkgMacros)
+include(CEGUIMacros)
 
 getenv_path(OGRE_DEPENDENCIES_DIR)
 if(OGRE_BUILD_PLATFORM_APPLE_IOS)
