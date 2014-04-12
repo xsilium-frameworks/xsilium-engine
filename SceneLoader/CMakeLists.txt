@@ -68,7 +68,7 @@ set(SRCS
 	./SceneApplication.cpp
 )
 
-include_directories("${OGRE_SOURCE_DIR}/OgreMain/include" "${CMAKE_BINARY_DIR}/Library/Ogre/include" "${OIS_INCLUDE_DIRS}" "${OGRE_SOURCE_DIR}/Components/Overlay/include" "${OGRE_SOURCE_DIR}/Components/Terrain/include" )
+include_directories("${OGRE_INCLUDE_DIR}" "${OIS_INCLUDE_DIRS}" "${OGRE_Overlay_INCLUDE_DIR}" "${OGRE_Terrain_INCLUDE_DIR}" )
 
 add_executable(OgreApp MACOSX_BUNDLE WIN32 ${HDRS} ${SRCS})
  

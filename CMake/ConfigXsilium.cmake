@@ -20,25 +20,6 @@ macro (configure_xsilium ROOT OGREPATH)
 	  # differentiation between debug and release builds.
 	  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
 	endif ()
-
-
-	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
-	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
-
-	include(OgreConfigTargets)
-	include(DependenciesXsilium)
-	
-	
-	set(OGRE_BINARY_DIR ${CMAKE_BINARY_DIR})
-	SET(OGRE_SOURCE_DIR ${OGREPATH})
-	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
-	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
-	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
-	
-	set(XSILIUM_SOURCE_DIR ${ROOT})	
-	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
-
-
 	
 	set(XSILIUM_INSTALL_PREFIX ${ROOT})
 	option(XSILIUM_COMPILE_SWIG				"Enable compile time SWIG generation."  OFF)
@@ -69,6 +50,28 @@ macro (configure_xsilium ROOT OGREPATH)
         option(XSILIUM_BUILD_GL3PLUS				"Enable / Disable Opts builds" OFF)	
 	set(OGRE_UNITY_FILES_PER_UNIT "40" CACHE STRING "Number of files per compilation unit in Unity build.")
 	option(XSILIUM_CREATE_OGRE_DEPENDENCY_DIR	"Prepare Dependencies directory for Ogre prior to Ogre configuration and build" OFF)
+
+
+
+
+	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
+	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
+
+	include(OgreConfigTargets)
+	include(DependenciesXsilium)
+	
+	
+	set(OGRE_BINARY_DIR ${CMAKE_BINARY_DIR})
+
+	SET(OGRE_SOURCE_DIR ${OGREPATH})
+	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
+	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
+	SET(OGRE_DEPENDENCIES_DIR ${XSILIUM_DEP_DIR})
+	set(OGRE_SDK_BUILD TRUE)
+	
+	set(XSILIUM_SOURCE_DIR ${ROOT})	
+	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
+
  
 	# Customise what to build
 	cmake_dependent_option(OGRE_STATIC "Static build" FALSE "" TRUE)
@@ -319,15 +322,6 @@ if (APPLE)
 	endif()
 	  
 endif ()
-
-# definitions for samples
-set(OGRE_LIBRARIES OgreMain)
-set(OGRE_Paging_LIBRARIES OgrePaging)
-set(OGRE_Terrain_LIBRARIES OgreTerrain)
-set(OGRE_Overlay_LIBRARIES OgreOverlay)
-set(OGRE_Volume_LIBRARIES OgreVolume)
-set(OGRE_Plugin_PCZSceneManager_LIBRARIES Plugin_PCZSceneManager)
-set(OGRE_Plugin_OctreeZone_LIBRARIES Plugin_OctreeZone)
 
 
 endmacro(configure_xsilium)

@@ -139,7 +139,7 @@ macro (cegui_add_dependency _TARGET_NAME _DEP_NAME)
         if (${_DEP_NAME}_DEFINITIONS_DYNAMIC)
             set_property( TARGET ${_TARGET_NAME} APPEND PROPERTY COMPILE_DEFINITIONS ${${_DEP_NAME}_DEFINITIONS_DYNAMIC} )
         endif()
-
+	
         cegui_add_dependency_dynamic_libs(${_TARGET_NAME} ${_DEP_NAME})
     endif()
 

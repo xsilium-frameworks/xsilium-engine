@@ -1,43 +1,44 @@
-################################################################################
-# Custom cmake module for CEGUI to find PCRE
-################################################################################
+# - Try to find the PCRE regular expression library
+# Once done this will define
+#
+#  PCRE_FOUND - system has the PCRE library
+#  PCRE_INCLUDE_DIR - the PCRE include directory
+#  PCRE_LIBRARIES - The libraries needed to use PCRE
+
+# Copyright (c) 2006, Alexander Neundorf, <neundorf@kde.org>
+#
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+
+if (PCRE_INCLUDE_DIR AND PCRE_PCREPOSIX_LIBRARY AND PCRE_PCRE_LIBRARY)
+  # Already in cache, be silent
+  set(PCRE_FIND_QUIETLY TRUE)
+endif (PCRE_INCLUDE_DIR AND PCRE_PCREPOSIX_LIBRARY AND PCRE_PCRE_LIBRARY)
+	
+if (NOT WIN32)
+  # use pkg-config to get the directories and then use these values
+  # in the FIND_PATH() and FIND_LIBRARY() calls
+  find_package(PkgConfig)
+  pkg_check_modules(PC_PCRE QUIET libpcre)
+  set(PCRE_DEFINITIONS ${PC_PCRE_CFLAGS_OTHER})
+endif (NOT WIN32)
+
+find_path(PCRE_INCLUDE_DIR pcre.h
+          HINTS ${PC_PCRE_INCLUDEDIR} ${PC_PCRE_INCLUDE_DIRS}
+          PATH_SUFFIXES pcre)
+
+find_library(PCRE_PCRE_LIBRARY NAMES pcre HINTS ${PC_PCRE_LIBDIR} ${PC_PCRE_LIBRARY_DIRS})
+
+find_library(PCRE_PCREPOSIX_LIBRARY NAMES pcreposix HINTS ${PC_PCRE_LIBDIR} ${PC_PCRE_LIBRARY_DIRS})
+
 include(FindPackageHandleStandardArgs)
 
-find_path(PCRE_H_PATH NAMES pcre.h)
-find_library(PCRE_LIB NAMES PCRE pcre libpcre PATH_SUFFIXES dynamic)
-find_library(PCRE_LIB_DBG NAMES pcre_d libpcre_d PATH_SUFFIXES dynamic)
-mark_as_advanced(PCRE_H_PATH PCRE_LIB PCRE_LIB_DBG)
-
-if (WIN32 OR APPLE)
-    find_library(PCRE_LIB_STATIC NAMES PCRE pcre libpcre PATH_SUFFIXES static)
-    find_library(PCRE_LIB_STATIC_DBG NAMES pcre_d libpcre_d PATH_SUFFIXES static)
-    set( PCRE_DEFINITIONS_STATIC "PCRE_STATIC" CACHE STRING "preprocessor definitions" )
-    mark_as_advanced(PCRE_LIB_STATIC PCRE_LIB_STATIC_DBG PCRE_DEFINITIONS)
-endif()
-
-cegui_find_package_handle_standard_args(PCRE PCRE_LIB PCRE_H_PATH)
-
-# set up output vars
-if (PCRE_FOUND)
-    set (PCRE_INCLUDE_DIR ${PCRE_H_PATH})
-    set (PCRE_LIBRARIES ${PCRE_LIB})
-
-    if (PCRE_LIB_DBG)
-        set (PCRE_LIBRARIES_DBG ${PCRE_LIB_DBG})
-    endif()
-
-    if (PCRE_LIB_STATIC)
-        set (PCRE_LIBRARIES_STATIC ${PCRE_LIB_STATIC})
-    endif()
-
-    if (PCRE_LIB_STATIC_DBG)
-        set (PCRE_LIBRARIES_STATIC_DBG ${PCRE_LIB_STATIC_DBG})
-    endif()
-else()
-    set (PCRE_INCLUDE_DIR)
-    set (PCRE_LIBRARIES)
-    set (PCRE_LIBRARIES_DBG)
-    set (PCRE_LIBRARIES_STATIC)
-    set (PCRE_LIBRARIES_STATIC_DBG)
-endif()
-
+IF(NOT WIN32)
+        find_package_handle_standard_args(PCRE DEFAULT_MSG PCRE_INCLUDE_DIR PCRE_PCRE_LIBRARY PCRE_PCREPOSIX_LIBRARY )
+        mark_as_advanced(PCRE_INCLUDE_DIR PCRE_LIBRARIES PCRE_PCREPOSIX_LIBRARY PCRE_PCRE_LIBRARY)
+        set(PCRE_LIBRARIES ${PCRE_PCRE_LIBRARY} ${PCRE_PCREPOSIX_LIBRARY})
+ELSE()
+        find_package_handle_standard_args(PCRE DEFAULT_MSG PCRE_INCLUDE_DIR PCRE_PCRE_LIBRARY  )
+        set(PCRE_LIBRARIES ${PCRE_PCRE_LIBRARY} )
+        mark_as_advanced(PCRE_INCLUDE_DIR PCRE_LIBRARIES PCRE_PCRE_LIBRARY)
+ENDIF()

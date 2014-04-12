@@ -865,6 +865,10 @@ if (XSILIUM_MINIMAL_FREEIMAGE_CODEC)
 else()
 	list(APPEND ALL_SOURCE ${OTHER_SOURCE})
 	list(APPEND ALL_SOURCE ${EXR_SOURCE})
-endif()	
+endif()
+
+include_directories(${ZLIB_INCLUDE_DIRS})	
+
+link_libraries(${ZLIB_LIBRARIES})
 
 add_library(FreeImage ${ALL_SOURCE})

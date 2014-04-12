@@ -6,7 +6,7 @@ if (POLICY CMP0017)
     cmake_policy(SET CMP0017 OLD)
 endif()
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(CEGUIMacros)
 include(CMakeDependentOption)
 
@@ -57,6 +57,16 @@ if ((WIN32 OR APPLE) AND NOT CMAKE_PREFIX_PATH)
     set (CMAKE_FIND_FRAMEWORK LAST)
 endif()
 
+
+
+file (STRINGS "${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h" _CEGUIOGREVERSIONDEFINES REGEX ".*#define OGRE_VERSION_.*[0-9]+")
+
+    foreach (ver MAJOR MINOR PATCH)
+        set (CEGUI_FOUND_OGRE_VERSION_${ver} 0)
+        if ("${_CEGUIOGREVERSIONDEFINES}" MATCHES ".*#define OGRE_VERSION_${ver} ([0-9]+).*")
+            set (CEGUI_FOUND_OGRE_VERSION_${ver} "${CMAKE_MATCH_1}")
+        endif()
+    endforeach()
 
 
 

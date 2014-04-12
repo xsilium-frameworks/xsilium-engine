@@ -90,12 +90,13 @@ endif ()
 if(NOT XSILIUM_USE_STATIC_FREEIMAGE)
 	
 	find_package(FreeImage)
-	macro_log_feature(FreeImage_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
+	macro_log_feature(FREEIMAGE_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
 
 else()
-	set(FreeImage_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage")
+	set(FREEIMAGE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage")
+	set(FREEIMAGE_LIBRARIES "FreeImage")
 	set(FreeImage_LIBRARIES "FreeImage")
-	set(FreeImage_FOUND 1)
+	set(FREEIMAGE_FOUND 1)
 endif()
 
 # Find FreeType
@@ -245,32 +246,55 @@ macro_log_feature(HLSL2GLSL_FOUND "HLSL2GLSL" "HLSL2GLSL" "http://hlsl2glslfork.
 
 # Find PCRE
 find_package(PCRE)
-find_package(Minizip)
 find_package(Fribidi)
+
 if (NOT WIN32)
     find_package(Iconv REQUIRED)
 endif()
 
-find_package(GLEW)
-find_package(GLM)
-find_package(GLFW)
-find_package(DirectXSDK)
-find_package(D3DX11Effects)
-find_package(DirectFB)
 
+set(RAPIDXML_H_PATH "${XSILIUM_DEP_DIR}/rapidxml-1.13")
 find_package(RapidXML)
-
-find_package(DevIL)
-find_package(SILLY)
-find_package(Corona)
-find_package(PVRTools)
 
 find_package(Lua51)
 find_package(TOLUAPP)
 
-find_package(GTK2 COMPONENTS gtk)
-# set for consistency with other deps
-set (GTK2_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
+
+#Ogre
+set(OGRE_FOUND 1)
+set(OGRE_INCLUDE_DIR "${OGRE_SOURCE_DIR}/OgreMain/include" "${OGRE_BINARY_DIR}/include" )
+set(OGRE_LIBRARIES OgreMain)
+
+#Component
+#OGRE_Paging
+set(OGRE_Paging_FOUND 1)
+set(OGRE_Paging_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Paging/include")
+set(OGRE_Paging_LIBRARIES OgrePaging)
+
+#OGRE_Terrain
+set(OGRE_Terrain_FOUND 1)
+set(OGRE_Terrain_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Terrain/include")
+set(OGRE_Terrain_LIBRARIES OgreTerrain)
+
+#OGRE_Overlay
+set(OGRE_Overlay_FOUND 1)
+set(OGRE_Overlay_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Overlay/include")
+set(OGRE_Overlay_LIBRARIES OgreOverlay)
+
+#OGRE_Volume
+set(OGRE_Volume_FOUND 1)
+set(OGRE_Volume_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Volume/include")
+set(OGRE_Volume_LIBRARIES OgreVolume)
+
+#OGRE_Property
+set(OGRE_Property_FOUND 1)
+set(OGRE_Property_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Property/include")
+set(OGRE_Property_LIBRARIES OgreProperty)
+
+#OGRE_RTShaderSystem
+set(OGRE_RTShaderSystem_FOUND 1)
+set(OGRE_RTShaderSystem_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/RTShaderSystem/include")
+set(OGRE_RTShaderSystem_LIBRARIES OgreRTShaderSystem)
 
 
 #######################################################################
@@ -289,7 +313,7 @@ MACRO_DISPLAY_FEATURE_LOG()
 include_directories(
   ${ZLIB_INCLUDE_DIRS}
   ${ZZip_INCLUDE_DIRS}
-  ${FreeImage_INCLUDE_DIRS}
+  ${FREEIMAGE_INCLUDE_DIRS}
   ${FREETYPE_INCLUDE_DIRS}
   ${OPENGL_INCLUDE_DIRS}
   ${OPENGLES_INCLUDE_DIRS}

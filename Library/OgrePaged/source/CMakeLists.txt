@@ -2,7 +2,7 @@
 include_directories(${PagedGeometry_SOURCE_DIR}/include)
 include_directories(${PagedGeometry_BINARY_DIR}/include)
 
-include_directories("${OGRE_SOURCE_DIR}/OgreMain/include" "${CMAKE_BINARY_DIR}/Library/Ogre/include")
+include_directories(${OGRE_INCLUDE_DIR})
 
 
 FILE(GLOB sources *.cpp ${PagedGeometry_SOURCE_DIR}/include/*.h)
