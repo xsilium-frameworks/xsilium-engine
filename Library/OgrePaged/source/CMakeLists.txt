@@ -10,5 +10,3 @@ FILE(GLOB sources *.cpp ${PagedGeometry_SOURCE_DIR}/include/*.h)
 set(LIBNAME "PagedGeometry")
 
 ADD_LIBRARY(${LIBNAME} STATIC ${sources})
-
-set(OGREPAGE_LIBRARY ${LIBNAME} )

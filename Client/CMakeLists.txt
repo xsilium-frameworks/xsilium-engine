@@ -97,6 +97,7 @@ link_libraries(
 	${OGRE_Terrain_LIBRARIES}
 	${OGRE_RenderSystems_LIBRARIES}
 	${OIS_LIBRARIES}
+	"PagedGeometry"
 )
 
 if (APPLE)
