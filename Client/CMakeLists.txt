@@ -96,8 +96,6 @@ link_libraries(
 	${HYDRAX_LIBRARY}
 	${OGRE_Terrain_LIBRARIES}
 	${OGRE_RenderSystems_LIBRARIES}
-	${CEGUI_BASE_LIBNAME}
-	${CEGUI_OGRE_RENDERER_LIBNAME}
 	${OIS_LIBRARIES}
 )
 
@@ -112,7 +110,7 @@ if (APPLE)
 	)
 	SET(XSILIUM_APPS "${CMAKE_CURRENT_BINARY_DIR}/${TargetName}.app")
 	if(NOT CMAKE_GENERATOR STREQUAL Xcode)
-	add_custom_command(TARGET ${TargetName} POST_BUILD
+		add_custom_command(TARGET ${TargetName} POST_BUILD
 		COMMAND mkdir ARGS -p ${XSILIUM_APPS}/Contents/Frameworks
 		COMMAND cp ARGS -r ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml ${XSILIUM_APPS}/Contents/Resources
 		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Ogre.framework ${XSILIUM_APPS}/Contents/Frameworks
@@ -131,7 +129,11 @@ if (APPLE)
 		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_APPS}/Contents/Frameworks
 		
 		)
-		endif()
+	endif()
+
+	if (NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+		set_target_properties(XsiliumClient PROPERTIES LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo ")
+	endif()
 
 else ()
 
