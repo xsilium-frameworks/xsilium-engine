@@ -20,7 +20,7 @@ EventManager::~EventManager() {
 
 void EventManager::addEvent(Event event)
 {
-	boost::mutex::scoped_lock lock(mutexList);
+	boost::unique_lock<boost::mutex> lock(mutexList);
 
 	listOfEvent.push_back(event);
 
@@ -28,14 +28,14 @@ void EventManager::addEvent(Event event)
 
 void EventManager::removeEvent()
 {
-	boost::mutex::scoped_lock lock(mutexList);
+	boost::unique_lock<boost::mutex> lock(mutexList);
 	listOfEvent.pop_front();
 }
 
 Event * EventManager::getEvent()
 {
-	boost::mutex::scoped_try_lock lock(mutexList);
-	if(lock)
+	boost::unique_lock<boost::mutex> lock(mutexList, boost::defer_lock);
+	if(lock.try_lock())
 	{
 		if(!listOfEvent.empty())
 			return &(listOfEvent.front());

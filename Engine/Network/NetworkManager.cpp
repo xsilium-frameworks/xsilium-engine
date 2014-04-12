@@ -79,13 +79,13 @@ ENetHost * NetworkManager::getClient()
 
 void NetworkManager::deletePacket(ENetPacket * packet)
 {
-	boost::mutex::scoped_lock lock(mutexDelete);
+	boost::unique_lock<boost::mutex> lock(mutexDelete);
 	enet_packet_destroy (packet);
 }
 
 void NetworkManager::sendPacket( ENetPacket * packet , enet_uint8 channel)
 {
-	boost::mutex::scoped_lock lock(mutexSend);
+	boost::unique_lock<boost::mutex> lock(mutexSend);
 	enet_peer_send(peer,channel,packet);
 }
 

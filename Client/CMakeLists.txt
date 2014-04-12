@@ -4,8 +4,6 @@ cmake_minimum_required(VERSION 2.6)
 set(CONTENT
 	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/datafiles
 	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
-	${CMAKE_CURRENT_BINARY_DIR}/dist/bin/plugins.cfg
-	${CMAKE_CURRENT_BINARY_DIR}/dist/bin/resources.cfg
 )
 set(TargetName XsiliumClient)
 
@@ -72,7 +70,17 @@ endif()
 	)
 
 include_directories(
-${XSILIUM_INCLUDE} 
+${XSILIUM_INCLUDE}
+${ENET_INCLUDE_DIR} 
+${CEGUI_INCLUDE_DIR}
+${CEGUI_BASE_LIBNAME}
+${OGRE_INCLUDE_DIR}
+${RAPIDXML_INCLUDE_DIR}
+${OGRE_Overlay_INCLUDE_DIR}
+${SKYX_H_PATH}
+${HYDRAX_H_PATH}
+${OGRE_Terrain_INCLUDE_DIR}
+${OGRE_RenderSystems_INCLUDE_DIR}
 Login
 Game
 Shared
@@ -80,7 +88,17 @@ Shared
 )
 
 link_libraries(
-	XsiliumEngine
+	${XSILIUM_LIBRARY}
+	${ENET_LIBRARY}
+	${OGRE_LIBRARIES}
+	${OGRE_Overlay_LIBRARIES}
+	${SKYX_LIBRARY}
+	${HYDRAX_LIBRARY}
+	${OGRE_Terrain_LIBRARIES}
+	${OGRE_RenderSystems_LIBRARIES}
+	${CEGUI_BASE_LIBNAME}
+	${CEGUI_OGRE_RENDERER_LIBNAME}
+	${OIS_LIBRARIES}
 )
 
 if (APPLE)

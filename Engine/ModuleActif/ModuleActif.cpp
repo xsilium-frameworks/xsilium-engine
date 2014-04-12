@@ -37,7 +37,7 @@ void ModuleActif::stopThread()
 
 ENetEvent ModuleActif::getPacket()
 {
-	boost::mutex::scoped_lock lock(mutexList);
+	boost::unique_lock<boost::mutex> lock(mutexList);
 	ENetEvent  packet = ListOfPacket.front();
 	ListOfPacket.pop();
 	return packet;
@@ -45,7 +45,7 @@ ENetEvent ModuleActif::getPacket()
 
 void ModuleActif::setPacket()
 {
-	boost::mutex::scoped_lock lock(mutexList);
+	boost::unique_lock<boost::mutex> lock(mutexList);
 
 	ListOfPacket.push(*(networkManager->getPacket()));
 	lock.unlock();
@@ -54,7 +54,7 @@ void ModuleActif::setPacket()
 
 bool ModuleActif::isEmpty()
 {
-	boost::mutex::scoped_lock lock(mutexList);
+	boost::unique_lock<boost::mutex> lock(mutexList);
 	if(ListOfPacket.empty())
 	{
 		condition_Queue.wait(lock);

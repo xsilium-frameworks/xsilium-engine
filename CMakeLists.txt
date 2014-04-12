@@ -33,9 +33,10 @@ include(MacroLogFeature)
 configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
 
 subdirs(Library)
-#subdirs(Engine)
+subdirs(Engine)
+
 #subdirs(Launcher)
-#subdirs(Client)
+subdirs(Client)
 subdirs(SceneLoader)
 
 

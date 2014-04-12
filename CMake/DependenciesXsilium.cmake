@@ -93,11 +93,16 @@ if(NOT XSILIUM_USE_STATIC_FREEIMAGE)
 	macro_log_feature(FREEIMAGE_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
 
 else()
-	set(FREEIMAGE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage")
-	set(FREEIMAGE_LIBRARIES "FreeImage")
+	set(FreeImage_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage")
 	set(FreeImage_LIBRARIES "FreeImage")
-	set(FREEIMAGE_FOUND 1)
+	set(FreeImage_FOUND 1)
 endif()
+
+set(FREEIMAGE_INCLUDE_DIRS "${FreeImage_INCLUDE_DIRS}")
+set(FREEIMAGE_LIBRARIES "${FreeImage_LIBRARIES}")
+set(FREEIMAGE_FOUND "${FreeImage_FOUND}")
+
+
 
 # Find FreeType
 if(NOT XSILIUM_USE_STATIC_FREETYPE)
@@ -182,7 +187,7 @@ if (APPLE AND OGRE_BUILD_PLATFORM_APPLE_IOS)
 endif()
 set(Boost_ADDITIONAL_VERSIONS "1.55" "1.55.0" "1.54" "1.54.0" "1.53" "1.53.0" "1.52" "1.52.0" "1.51" "1.51.0" "1.50" "1.50.0" "1.49" "1.49.0" "1.48" "1.48.0" "1.47" "1.47.0" "1.46" "1.46.0" "1.45" "1.45.0" "1.44" "1.44.0" "1.42" "1.42.0" "1.41.0" "1.41" "1.40.0" "1.40")
 # Components that need linking (NB does not include header-only components like bind)
-set(OGRE_BOOST_COMPONENTS thread date_time)
+set(OGRE_BOOST_COMPONENTS thread date_time system filesystem)
 find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 if (NOT Boost_FOUND)
 	# Try again with the other type of libs
@@ -196,9 +201,9 @@ endif()
 
 if(Boost_FOUND AND Boost_VERSION GREATER 104900)
     if(Boost_VERSION GREATER 105300)
-        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono)
+        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono filesystem)
     else()
-        set(OGRE_BOOST_COMPONENTS thread date_time system chrono)
+        set(OGRE_BOOST_COMPONENTS thread date_time system chrono filesystem)
     endif()
     find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 endif()
@@ -269,32 +274,37 @@ set(OGRE_LIBRARIES OgreMain)
 #OGRE_Paging
 set(OGRE_Paging_FOUND 1)
 set(OGRE_Paging_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Paging/include")
-set(OGRE_Paging_LIBRARIES OgrePaging)
+set(OGRE_Paging_LIBRARIES "OgrePaging")
 
 #OGRE_Terrain
 set(OGRE_Terrain_FOUND 1)
 set(OGRE_Terrain_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Terrain/include")
-set(OGRE_Terrain_LIBRARIES OgreTerrain)
+set(OGRE_Terrain_LIBRARIES "OgreTerrain")
 
 #OGRE_Overlay
 set(OGRE_Overlay_FOUND 1)
 set(OGRE_Overlay_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Overlay/include")
-set(OGRE_Overlay_LIBRARIES OgreOverlay)
+set(OGRE_Overlay_LIBRARIES "OgreOverlay")
 
 #OGRE_Volume
 set(OGRE_Volume_FOUND 1)
 set(OGRE_Volume_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Volume/include")
-set(OGRE_Volume_LIBRARIES OgreVolume)
+set(OGRE_Volume_LIBRARIES "OgreVolume")
 
 #OGRE_Property
 set(OGRE_Property_FOUND 1)
 set(OGRE_Property_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/Property/include")
-set(OGRE_Property_LIBRARIES OgreProperty)
+set(OGRE_Property_LIBRARIES "OgreProperty")
 
 #OGRE_RTShaderSystem
 set(OGRE_RTShaderSystem_FOUND 1)
 set(OGRE_RTShaderSystem_INCLUDE_DIR "${OGRE_SOURCE_DIR}/Components/RTShaderSystem/include")
-set(OGRE_RTShaderSystem_LIBRARIES OgreRTShaderSystem)
+set(OGRE_RTShaderSystem_LIBRARIES "OgreRTShaderSystem")
+
+#OGRE_RenderSystems
+set(OGRE_RenderSystems_FOUND 1)
+set(OGRE_RenderSystems_INCLUDE_DIR "${OGRE_SOURCE_DIR}/RenderSystems/GL/include")
+set(OGRE_RenderSystems_LIBRARIES "RenderSystem_GL")
 
 
 #######################################################################
@@ -304,6 +314,13 @@ set(OGRE_RTShaderSystem_LIBRARIES OgreRTShaderSystem)
 # Find OIS
 set(OIS_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ois/includes")
 set(OIS_LIBRARIES "OIS")
+
+# Find CEGUI
+set(CEGUI_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include" "${CMAKE_BINARY_DIR}/Library/Cegui/cegui/include" ) 
+
+#find Xsilium
+set(XSILIUM_INCLUDE "${CMAKE_SOURCE_DIR}/Engine")
+set(XSILIUM_LIBRARY "XsiliumEngine")
 
 
 # Display results, terminate if anything required is missing

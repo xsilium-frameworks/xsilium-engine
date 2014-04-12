@@ -56,13 +56,9 @@ macro (configure_xsilium ROOT OGREPATH)
 
 	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
 	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
-
-	include(OgreConfigTargets)
-	include(DependenciesXsilium)
 	
 	
-	set(OGRE_BINARY_DIR ${CMAKE_BINARY_DIR})
-
+	set(OGRE_BINARY_DIR "${CMAKE_BINARY_DIR}/Library/Ogre")
 	SET(OGRE_SOURCE_DIR ${OGREPATH})
 	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
 	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)
@@ -71,6 +67,9 @@ macro (configure_xsilium ROOT OGREPATH)
 	
 	set(XSILIUM_SOURCE_DIR ${ROOT})	
 	set(XSILIUM_ANDROID_DEP_DIR ${ROOT}/Dependencies/Android)
+
+	include(OgreConfigTargets)
+	include(DependenciesXsilium)
 
  
 	# Customise what to build
@@ -318,10 +317,13 @@ if (APPLE)
 	set(XCODE_ATTRIBUTE_SDKROOT macosx10.4)
 	
 	if (NOT CMAKE_OSX_ARCHITECTURES)
-		set(CMAKE_OSX_ARCHITECTURES "i386")
+		set(CMAKE_OSX_ARCHITECTURES "i386 x86_64")
 	endif()
 	  
 endif ()
+
+
+
 
 
 endmacro(configure_xsilium)
