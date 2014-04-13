@@ -18,6 +18,7 @@ NetworkManager::NetworkManager() {
 }
 
 NetworkManager::~NetworkManager() {
+    disconnexion();
 	enet_deinitialize();
 }
 
