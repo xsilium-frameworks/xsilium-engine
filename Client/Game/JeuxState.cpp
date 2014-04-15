@@ -99,7 +99,7 @@ void JeuxState::createScene()
 
 
 	m_pCamera->setNearClipDistance(0.1);
-	m_pCamera->setFarClipDistance(100);
+	m_pCamera->setFarClipDistance(500);
 
 	gestionnaireEntite = new GestionnaireEntite();
 

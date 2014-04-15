@@ -103,13 +103,13 @@ void GestionnaireMeteo::create()
 	mLight0->setCastShadows(false);
     
     // Shadow caster
-    //Ogre::Light *mLight1 = m_pSceneMgr->createLight("Light#1");
-    //mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
+    Ogre::Light *mLight1 = m_pSceneMgr->createLight("Light#1");
+    mLight1->setType(Ogre::Light::LT_DIRECTIONAL);
 
 	mBasicController = (SkyX::BasicController *) mSkyX->getController();
 	mBasicController->setTime(Ogre::Vector3(18.75f, 7.5f, 20.5f));
     
-    mSkyX->setTimeMultiplier(0.01f);
+    mSkyX->setTimeMultiplier(0.1f);
 
 	mSkyX->create();
 
@@ -119,7 +119,7 @@ void GestionnaireMeteo::create()
     // Shadows
     m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(new Ogre::FocusedShadowCameraSetup()));
    // m_pSceneMgr->setShadowTextureCasterMaterial("ShadowCaster");
-    //m_pSceneMgr->getLight("Light#1")->setShadowFarDistance(1750);
+    m_pSceneMgr->getLight("Light#1")->setShadowFarDistance(1750);
     
     setShadowMode(m_pSceneMgr, static_cast<ShadowMode>(mShadowMode));
 
@@ -165,12 +165,11 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 {
 	float point;
 
-	//Ogre::Vector3 time = mBasicController->getTime();
+	Ogre::Vector3 time = mBasicController->getTime();
 
-	//bool day = time.x > time.y && time.x < time.z ;
-	//Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
+	bool day = time.x > time.y && time.x < time.z ;
+	Ogre::Vector3 lightDir = (day) ? mBasicController->getSunDirection() : mBasicController->getMoonDirection() ;
     
-    Ogre::Vector3 lightDir = mBasicController->getSunDirection() ;
     
     bool preForceDisableShadows = mForceDisableShadows;
     mForceDisableShadows = (lightDir.y > 0.15f) ? true : false;
@@ -188,11 +187,11 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.1;
 	mHydrax->setSunPosition(sunPos);
 
-	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0");
-    //            *Light1 = m_pSceneMgr->getLight("Light#1");
+	Ogre::Light *Light0 = m_pSceneMgr->getLight("Light#0"),
+                *Light1 = m_pSceneMgr->getLight("Light#1");
 
 	Light0->setPosition(m_pCamera->getDerivedPosition() - lightDir * mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera) * 0.02);
-    //Light1->setDirection(lightDir);
+    Light1->setDirection(-lightDir);
 
 	Ogre::Vector3 sunCol = mSunGradient.getColor(point);
 	Light0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
@@ -208,7 +207,7 @@ void GestionnaireMeteo::updateEnvironmentLighting()
  */
 void GestionnaireMeteo::updateShadowFarDistance()
 {
-   // Ogre::Light * Light1 = m_pSceneMgr->getLight("Light#1");
+    Ogre::Light * Light1 = m_pSceneMgr->getLight("Light#1");
 	float currentLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length();
 
 	if (currentLength < 1000)
@@ -220,11 +219,11 @@ void GestionnaireMeteo::updateShadowFarDistance()
 	if (currentLength - mLastPositionLength > 100)
 	{
 		mLastPositionLength += 100;
-        //Light1->setShadowFarDistance(Light1->getShadowFarDistance() + 100);
+        Light1->setShadowFarDistance(Light1->getShadowFarDistance() + 100);
 	}
 	else if (currentLength - mLastPositionLength < -100)
 	{
 		mLastPositionLength -= 100;
-      //  Light1->setShadowFarDistance(Light1->getShadowFarDistance() - 100);
+        Light1->setShadowFarDistance(Light1->getShadowFarDistance() - 100);
 	}
 }
