@@ -1,7 +1,7 @@
 #------------OLD---------------------------------------------
 cmake_minimum_required(VERSION 2.6.2)
 
-project(OGRE)
+project(OGRELite)
 include(PrecompiledHeader)
 include(PreprocessorUtils)
 

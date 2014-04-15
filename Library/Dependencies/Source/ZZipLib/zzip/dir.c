@@ -186,31 +186,47 @@ zzip_seekdir(ZZIP_DIR * dir, zzip_off_t offset)
     }
 }
 
+#ifndef EOVERFLOW
+#define EOVERFLOW EFBIG
+#endif
+
+/** => zzip_rewinddir
+ * This function is provided for users who can not use any largefile-mode.
+ */
+long
+zzip_telldir32(ZZIP_DIR * dir)
+{
+    if (sizeof(zzip_off_t) == sizeof(long))
+    {
+        return zzip_telldir(dir);
+    } else
+    {
+        off_t off = zzip_telldir(dir);
+        if (off >= 0) {
+            register long off32 = off;
+            if (off32 == off) return off32;
+            errno = EOVERFLOW;
+        }
+        return -1;
+    }
+}
+
+/** => zzip_rewinddir
+ * This function is provided for users who can not use any largefile-mode.
+ */
+void
+zzip_seekdir32(ZZIP_DIR * dir, long offset)
+{
+    zzip_seekdir(dir, offset);
+}
+
 #if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW && defined PIC
 #undef zzip_seekdir             /* zzip_seekdir64 */
 #undef zzip_telldir             /* zzip_telldir64 */
 
-long zzip_telldir(ZZIP_DIR * dir);
-void zzip_seekdir(ZZIP_DIR * dir, long offset);
-
-/* DLL compatibility layer - so that 32bit code can link with this lib too */
-
-long
-zzip_telldir(ZZIP_DIR * dir)
-{
-    off_t off = zzip_telldir64(dir);
-    long offs = off;
-
-    if (offs != off)
-        { errno = EOVERFLOW; return -1; }
-    return offs;
-}
-
-void
-zzip_seekdir(ZZIP_DIR * dir, long offset)
-{
-    zzip_seekdir64(dir, offset);
-}
+/* DLL compatibility layer - so that 32bit code can link with a 64on32 too */
+long zzip_telldir(ZZIP_DIR * dir) { return zzip_telldir32(dir); }
+void zzip_seekdir(ZZIP_DIR * dir, long offset) { zzip_seekdir32(dir, offset); }
 #endif
 
 /**

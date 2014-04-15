@@ -107,7 +107,7 @@ zzip_disk_mmap(int fd)
     ___ ZZIP_DISK *disk = zzip_disk_new();
     if (! disk)
         return 0;
-    disk->buffer = _zzip_mmap(&disk->mapped, fd, 0, st.st_size);
+    disk->buffer = _zzip_mmap(disk->mapped, fd, 0, st.st_size);
     if (disk->buffer == MAP_FAILED)
         { free (disk); return 0; }
     disk->endbuf = disk->buffer + st.st_size;
@@ -181,12 +181,12 @@ zzip_disk_open(char *filename)
  * own the buffer, it will neither be written nor free()d.
  */
 zzip__new__ ZZIP_DISK *
-zzip_disk_buffer(char *buffer, size_t buflen) {
+zzip_disk_buffer(void *buffer, size_t buflen) {
     ZZIP_DISK *disk = zzip_disk_new();
     if (disk)
     {
-        disk->buffer = buffer;
-        disk->endbuf = buffer + buflen;
+        disk->buffer = (zzip_byte_t *) buffer;
+        disk->endbuf = (zzip_byte_t *) buffer + buflen;
         disk->mapped = -1;
     }
     return disk;

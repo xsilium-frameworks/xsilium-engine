@@ -31,8 +31,10 @@
 
 #define __sizeof(X) ((zzip_ssize_t)(sizeof(X)))
 
+#ifndef ZZIP_EASY
 /* per default, we use a little hack to correct bad z_rootseek parts */
 #define ZZIP_CORRECT_ROOTSEEK 1
+#endif
 
 #if (__GNUC__ == 3 && __GNUC_MINOR__ >= 3) || (__GNUC__ >= 4)
 # ifdef DEBUG
@@ -88,7 +90,7 @@ int __zzip_parse_root_directory(int fd,
                                 struct zzip_dir_hdr **hdr_return,
                                 zzip_plugin_io_t io);
 
-_zzip_inline char *__zzip_aligned4(char *p);
+_zzip_inline static char *__zzip_aligned4(char *p);
 
 /* ------------------------  harden routines ------------------------------ */
 
@@ -375,7 +377,7 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize,
  * to pointer types but we do need only the lower bits in this implementation,
  * so we can just cast the value to a long value.
  */
-_zzip_inline char *
+_zzip_inline static char *
 __zzip_aligned4(char *p)
 {
 #define aligned4   __zzip_aligned4
@@ -462,6 +464,14 @@ __zzip_parse_root_directory(int fd,
             d = &dirent;
         }
 
+        if ((zzip_off64_t) (zz_offset + sizeof(*d)) > zz_rootsize ||
+            (zzip_off64_t) (zz_offset + sizeof(*d)) < 0)
+        {
+            FAIL4("%li's entry stretches beyond root directory (O:%li R:%li)",
+                  (long) entries, (long) (zz_offset), (long) zz_rootsize);
+            break;
+        }
+
         if (! zzip_disk_entry_check_magic(d)) {
 #        ifndef ZZIP_ALLOW_MODULO_ENTRIES
             FAIL4("%li's entry has no disk_entry magic indicator (O:%li R:%li)",
@@ -470,13 +480,6 @@ __zzip_parse_root_directory(int fd,
             break;
         }
 
-        if ((zzip_off64_t) (zz_offset + sizeof(*d)) > zz_rootsize ||
-            (zzip_off64_t) (zz_offset + sizeof(*d)) < 0)
-        {
-            FAIL4("%li's entry stretches beyond root directory (O:%li R:%li)",
-                  (long) entries, (long) (zz_offset), (long) zz_rootsize);
-            break;
-        }
 #       if 0 && defined DEBUG
         zzip_debug_xbuf((unsigned char *) d, sizeof(*d) + 8);
 #       endif
@@ -561,7 +564,7 @@ __zzip_parse_root_directory(int fd,
 #  ifndef ZZIP_ALLOW_MODULO_ENTRIES
     return (entries != zz_entries ? ZZIP_CORRUPTED : 0);
 #  else
-    return (entries & (unsigned)0xFFFF) != zz_entries ? ZZIP_CORRUPTED : 0);
+    return ((entries & (unsigned)0xFFFF) != zz_entries ? ZZIP_CORRUPTED : 0);
 #  endif
 }
 
@@ -773,7 +776,7 @@ __zzip_try_open(zzip_char_t * filename, int filemode,
     for (; *ext; ++ext)
     {
         strcpy(file + len, *ext);
-        fd = io->fd.open(file, filemode);
+        fd = (io->fd.open)(file, filemode);
         if (fd != -1)
             return fd;
     }
@@ -794,6 +797,8 @@ zzip_dir_open(zzip_char_t * filename, zzip_error_t * e)
 /** => zzip_dir_open
  * this function uses explicit ext and io instead of the internal
  * defaults. Setting these to zero is equivalent to => zzip_dir_open
+ * Note that the referenced ext_io plugin handlers structure must be 
+ * static as it is not copied to the returned ZZIP_DIR structure.
  */
 ZZIP_DIR *
 zzip_dir_open_ext_io(zzip_char_t * filename, zzip_error_t * e,
@@ -806,7 +811,7 @@ zzip_dir_open_ext_io(zzip_char_t * filename, zzip_error_t * e,
     if (! ext)
         ext = zzip_get_default_ext();
 
-    fd = io->fd.open(filename, O_RDONLY | O_BINARY);
+    fd = (io->fd.open)(filename, O_RDONLY | O_BINARY);
     if (fd != -1)
     {
         return zzip_dir_fdopen_ext_io(fd, e, ext, io);

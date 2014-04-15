@@ -38,13 +38,8 @@
     typedef unsigned long uint32_t;     typedef signed long int32_t;
 # endif
 
-#if defined __ANDROID__ || size_t == 32
-   typedef unsigned _zzip___int64 uint64_t; typedef _zzip___int64 int64_t;
-# else
-   typedef unsigned _zzip___int64 uint64_t;
- #endif
+typedef unsigned _zzip___int64 uint64_t; typedef _zzip___int64 int64_t;
 #endif
 
 #endif /*_ZZIP_STDINT_H*/
-
 

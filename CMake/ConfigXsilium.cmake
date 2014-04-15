@@ -58,7 +58,7 @@ macro (configure_xsilium ROOT OGREPATH)
 	set(XSILIUM_DEP_WIN_DIR ${ROOT}/Dependencies/Win32)
 	
 	
-	set(OGRE_BINARY_DIR "${CMAKE_BINARY_DIR}/Library/Ogre")
+	set(OGRE_BINARY_DIR "${CMAKE_BINARY_DIR}")
 	SET(OGRE_SOURCE_DIR ${OGREPATH})
 	SET(OGRE_WORK_DIR ${OGRE_BINARY_DIR})
 	set(OGRE_TEMPLATES_DIR ${ROOT}/CMake/Templates)

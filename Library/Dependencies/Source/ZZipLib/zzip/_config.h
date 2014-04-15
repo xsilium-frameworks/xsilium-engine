@@ -1,9 +1,3 @@
-// experimental fix for clang-compiler and its inline issue
-// see: http://code.google.com/p/gamekit/issues/detail?id=222
-#ifdef __clang__
-#define ZZIP_inline
-#endif
-
 #ifndef _ZZIP__CONFIG_H
 #define _ZZIP__CONFIG_H 1
  
@@ -19,7 +13,9 @@
 
 /* Define to 1 if you have the <byteswap.h> header file. */
 #ifndef ZZIP_HAVE_BYTESWAP_H 
+#ifndef __APPLE__
 #define ZZIP_HAVE_BYTESWAP_H  1 
+#endif
 #endif
 
 /* Define to 1 if you have the <direct.h> header file. */
@@ -43,7 +39,7 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #ifndef ZZIP_HAVE_INTTYPES_H 
-/*#define ZZIP_HAVE_INTTYPES_H  1 */
+#define ZZIP_HAVE_INTTYPES_H  1 
 #endif
 
 /* Define to 1 if you have the <io.h> header file. */
@@ -58,12 +54,8 @@
 /* #undef HAVE_NDIR_H */
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#ifdef __ANDROID__
-//#define ZZIP_HAVE_STDINT_H  1
-#endif
-
 #ifndef ZZIP_HAVE_STDINT_H 
-/*#define ZZIP_HAVE_STDINT_H  1 */
+#define ZZIP_HAVE_STDINT_H  1 
 #endif
 
 /* Define to 1 if you have the <stdlib.h> header file. */
@@ -176,6 +168,11 @@
 #define ZZIP_PACKAGE_TARNAME  "" 
 #endif
 
+/* Define to the home page for this package. */
+#ifndef ZZIP_PACKAGE_URL 
+#define ZZIP_PACKAGE_URL  "" 
+#endif
+
 /* Define to the version of this package. */
 #ifndef ZZIP_PACKAGE_VERSION 
 #define ZZIP_PACKAGE_VERSION  "" 
@@ -203,7 +200,7 @@
 
 /* Version number of package */
 #ifndef ZZIP_VERSION 
-#define ZZIP_VERSION  "0.13.57" 
+#define ZZIP_VERSION  "0.13.62" 
 #endif
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most

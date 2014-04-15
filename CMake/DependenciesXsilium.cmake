@@ -93,7 +93,7 @@ if(NOT XSILIUM_USE_STATIC_FREEIMAGE)
 	macro_log_feature(FREEIMAGE_FOUND "FreeImage" "Support for the FreeImage library" "http://freeimage.sourceforge.net/" FALSE "" "")
 
 else()
-	set(FreeImage_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage")
+	set(FreeImage_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/Source")
 	set(FreeImage_LIBRARIES "FreeImage")
 	set(FreeImage_FOUND 1)
 endif()

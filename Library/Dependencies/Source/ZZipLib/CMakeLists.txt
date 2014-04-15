@@ -1,19 +1,57 @@
-# ---------------------------------------------------------
-cmake_minimum_required(VERSION 2.6)
+project(zziplib)
 
+set(zziplib_SOURCES
+  zzip/autoconf.h
+  zzip/conf.h
+  zzip/_config.h
+  zzip/__debug.h
+  zzip/dir.c
+  zzip/__dirent.h
+  zzip/err.c
+  zzip/fetch.c
+  zzip/fetch.h
+  zzip/file.c
+  zzip/file.h
+  zzip/__fnmatch.h
+  zzip/format.h
+  zzip/fseeko.c
+  zzip/fseeko.h
+  zzip/__hints.h
+  zzip/info.c
+  zzip/info.h
+  zzip/lib.h
+  zzip/memdisk.c
+  zzip/memdisk.h
+  zzip/__mmap.h
+  zzip/mmapped.c
+  zzip/mmapped.h
+  zzip/_msvc.h
+  zzip/plugin.c
+  zzip/plugin.h
+  zzip/stat.c
+  zzip/stdint.h
+  zzip/types.h
+  zzip/write.c
+  zzip/write.h
+  zzip/zip.c
+  zzip/zzip32.h
+  zzip/zzip.h
+)
 
+# need zlib includes
+include_directories(${ZLIB_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(ZZIP_SRC zzip/dir.c zzip/fetch.c zzip/err.c zzip/file.c zzip/info.c zzip/plugin.c zzip/stat.c zzip/write.c zzip/zip.c)
-file(GLOB ZZIP_HDR "zzip/*.h")
+if (WIN32)
+  add_definitions(-D_MSC_VER)
+endif ()
 
-add_library(ZZipLib ${ZZIP_SRC} ${ZZIP_HDR})
+add_library(ZZipLib STATIC ${zziplib_SOURCES})
 
+if (APPLE)
+ set_target_properties(ZZipLib PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
 
-if (XSILIUM_CREATE_OGRE_DEPENDENCY_DIR)
-	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/zzip/ DESTINATION ${OGRE_PREBUILT_DEPENDENCY_INCLUDE_DIR}/zzip PATTERN "*.h")
-	GET_TARGET_PROPERTY(FILEPATH ${XSILIUM_ZZIP_TARGET} LOCATION)
-	ADD_CUSTOM_COMMAND(TARGET ${XSILIUM_ZZIP_TARGET} POST_BUILD
-		COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${FILEPATH} ${OGRE_PREBUILT_DEPENDENCY_LIB_DIR}
-		COMMAND mv ${OGRE_PREBUILT_DEPENDENCY_LIB_DIR}/libZZipLib.a ${OGRE_PREBUILT_DEPENDENCY_LIB_DIR}/libzzip.a
-	)
+ if(OGRE_BUILD_PLATFORM_APPLE_IOS)
+  set_target_properties(ZZipLib PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
+ endif()
 endif()
