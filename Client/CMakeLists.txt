@@ -2,19 +2,9 @@
 cmake_minimum_required(VERSION 2.6)
 
 set(CONTENT
-	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/datafiles
-	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
+	${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/SampleBrowser_OSX.icns
 )
 set(TargetName XsiliumClient)
-
-if (APPLE)
-	SET(EXETYPE MACOSX_BUNDLE)
-	SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib  PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
-	SET_SOURCE_FILES_PROPERTIES( ${CMAKE_CURRENT_BINARY_DIR}/dist/bin/Info.plist  PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
-	SET_SOURCE_FILES_PROPERTIES(${CONTENT} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
-	SET (NibFile ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib )
-	
-endif()
 
 set(CORE_SOURCE_FILES
     main.cpp
@@ -100,45 +90,101 @@ link_libraries(
 	"PagedGeometry"
 )
 
+xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
+
 if (APPLE)
 
-	xsilium_add_executable(
-		${TargetName} 
-		MACOSX_BUNDLE
-		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/MainMenu.nib
-		${SRC} 
-		${CONTENT}
-	)
-	SET(XSILIUM_APPS "${CMAKE_CURRENT_BINARY_DIR}/${TargetName}.app")
-	if(NOT CMAKE_GENERATOR STREQUAL Xcode)
-		add_custom_command(TARGET ${TargetName} POST_BUILD
-		COMMAND mkdir ARGS -p ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml ${XSILIUM_APPS}/Contents/Resources
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Ogre.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/OgreTerrain.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/OgrePaging.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/RenderSystem_GL.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_ParticleFX.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_BSPSceneManager.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_CgProgramManager.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_PCZSceneManager.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_OctreeZone.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/macosx/Plugin_OctreeSceneManager.framework ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIExpatParser.dylib ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIBase.dylib ${XSILIUM_APPS}/Contents/Frameworks
-		COMMAND cp ARGS -r ${XSILIUM_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib ${XSILIUM_APPS}/Contents/Frameworks
-		
+	# On OS X, create .app bundle
+	set_property(TARGET ${TargetName} PROPERTY MACOSX_BUNDLE TRUE)
+	set_property(TARGET ${TargetName} PROPERTY MACOSX_BUNDLE_ICON_FILE SampleBrowser_OSX.icns)
+	set_property(TARGET ${TargetName} PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Info.plist)
+	set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.ogre3d.\${PRODUCT_NAME:rfc1034identifier}")
+    	set_target_properties(${TargetName} PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
+
+
+	target_link_libraries(${TargetName} ${CoreVideo_LIBRARIES})
+
+   	set_target_properties(${TargetName} PROPERTIES
+        LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo -framework ApplicationServices")
+
+    # Add the path where the Ogre framework was found, if it has been found somewhere
+    if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "" AND OGRE_SDK_BUILD)
+      set_target_properties(SampleBrowser PROPERTIES
+        COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
+        LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
+      )
+    endif()
+	# also, symlink frameworks so .app is standalone
+	# NOTE: $(CONFIGURATION) is not resolvable at CMake run time, it's only 
+	# valid at build time (hence parenthesis rather than braces)
+	
+    set(OGRE_OSX_BUILD_CONFIGURATION "$(PLATFORM_NAME)/$(CONFIGURATION)")
+    set(OGRE_BUILT_FRAMEWORK "$(PLATFORM_NAME)/$(CONFIGURATION)")
+	set (OGRE_SAMPLE_CONTENTS_PATH 
+		${OGRE_BINARY_DIR}/bin/$(CONFIGURATION)/${TargetName}.app/Contents)
+	add_custom_command(TARGET ${TargetName} POST_BUILD
+		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/${OGRE_BUILT_FRAMEWORK}/Ogre.framework 
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${Cg_LIBRARY_REL}
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
 		)
-	endif()
+	# now cfg files
+	add_custom_command(TARGET ${TargetName} POST_BUILD
+		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/plugins.cfg 
+		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/resources.cfg 
+		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/samples.cfg 
+		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/quakemap.cfg 
+		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
+		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
+		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/datafiles
+		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
+        COMMAND ditto 
+		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/SampleBrowser_OSX.icns ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
+		)
 
-	if (NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-		set_target_properties(XsiliumClient PROPERTIES LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo ")
-	endif()
+	# now plugins
+	add_custom_command(TARGET ${TargetName} POST_BUILD
+		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks
+		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Plugins)
 
-else ()
+    set(FRAMEWORKS OgreOverlay
+        OgrePaging
+        OgreProperty
+        OgreRTShaderSystem
+        OgreTerrain
+        OgreVolume
+        Plugin_BSPSceneManager
+        Plugin_CgProgramManager
+        Plugin_OctreeSceneManager
+        Plugin_OctreeZone
+        Plugin_ParticleFX
+        Plugin_PCZSceneManager
+        RenderSystem_GL
+        RenderSystem_GL3Plus
+    )
 
-	xsilium_add_executable(${TargetName} ${SRC})
+    foreach(FWK ${FRAMEWORKS})
+	add_custom_command(TARGET ${TargetName} POST_BUILD
+        COMMAND ARGS if [ -d ${OGRE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ]\; then ln -s -f ${OGRE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/${FWK}.framework\; fi
+		)
+    endforeach(FWK)
+
+    add_custom_command(TARGET ${TargetName} POST_BUILD
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIExpatParser.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIBase.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		)
 
 endif()
 

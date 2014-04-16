@@ -12,7 +12,6 @@ GestionnaireInterface::GestionnaireInterface() {
 
 	interfacePrincipale = false;
 	generateID = 0;
-
 	initialisationInterface();
 
 
@@ -32,7 +31,9 @@ GestionnaireInterface::~GestionnaireInterface() {
 
 void GestionnaireInterface::initialisationInterface()
 {
-	CEGUI::OgreRenderer::bootstrapSystem();
+    XsiliumFramework::getInstance()->getLog()->logMessage("test...");
+    
+    CEGUI::OgreRenderer::bootstrapSystem();
 
 	// set the default resource groups to be used
 	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");

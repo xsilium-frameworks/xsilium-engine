@@ -26,12 +26,11 @@ void JeuxState::enter()
 	XsiliumFramework::getInstance()->getLog()->logMessage("Entering JeuxState...");
     
     GestionnaireInterface::getInstance()->interfacePrincipal();
-
-
+    
 	createScene();
 
 
-	buildGUI();
+	//buildGUI();
 }
 
 
