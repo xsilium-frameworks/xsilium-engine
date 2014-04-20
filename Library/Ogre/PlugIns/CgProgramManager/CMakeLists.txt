@@ -17,6 +17,7 @@ add_definitions(-D_USRDLL)
 
 ogre_add_library(Plugin_CgProgramManager ${OGRE_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(Plugin_CgProgramManager OgreMain ${Cg_LIBRARIES})
+
 if (NOT OGRE_STATIC)
   set_target_properties(Plugin_CgProgramManager PROPERTIES
     COMPILE_DEFINITIONS OGRE_CGPLUGIN_EXPORTS

@@ -30,7 +30,7 @@ void JeuxState::enter()
 	createScene();
 
 
-	//buildGUI();
+	buildGUI();
 }
 
 

@@ -126,6 +126,10 @@ elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
 
   # 10.7 is the minimum for libc++ support
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
+  
+  if(APPLE)
+	set (CMAKE_CXX_FLAGS "-std=c++0x -stdlib=libc++ ")
+endif()
 
   # Make sure that the OpenGL render system is selected for non-iOS Apple builds
   set(OGRE_BUILD_RENDERSYSTEM_GLES FALSE)

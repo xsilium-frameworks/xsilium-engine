@@ -314,10 +314,10 @@ endif ()
 if (APPLE)
 	
 	# Set 10.4 as the base SDK by default
-	set(XCODE_ATTRIBUTE_SDKROOT macosx10.4)
+	set(XCODE_ATTRIBUTE_SDKROOT macosx10.7)
 	
 	if (NOT CMAKE_OSX_ARCHITECTURES)
-		set(CMAKE_OSX_ARCHITECTURES "i386 x86_64")
+		set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_64_BIT})
 	endif()
 	  
 endif ()

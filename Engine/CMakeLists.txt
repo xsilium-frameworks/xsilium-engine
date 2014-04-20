@@ -169,6 +169,8 @@ ${OGRE_Overlay_LIBRARIES}
 ${ENET_LIBRARY}
 )
 
+#add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})
+
 add_library(XsiliumEngine ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})
 
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)

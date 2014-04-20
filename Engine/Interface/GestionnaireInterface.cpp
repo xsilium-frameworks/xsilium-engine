@@ -30,9 +30,7 @@ GestionnaireInterface::~GestionnaireInterface() {
 }
 
 void GestionnaireInterface::initialisationInterface()
-{
-    XsiliumFramework::getInstance()->getLog()->logMessage("test...");
-    
+{    
     CEGUI::OgreRenderer::bootstrapSystem();
 
 	// set the default resource groups to be used

@@ -81,8 +81,6 @@ public:
 
 	bool sendAuthentification();
 
-	void updateNetwork(int event ,ENetEvent * packet);
-
 	void cancelAuthentification();
 
 	void quitAuthentification();

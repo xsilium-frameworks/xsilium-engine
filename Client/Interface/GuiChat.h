@@ -18,15 +18,19 @@ public:
 
     void processMessage(Event * event);
 
-    void valideText();
+    void activeSaisi();
+
+    bool saisiActiver();
 
 
     bool handleSubmit(const CEGUI::EventArgs& args);
-    bool handleKeyDown(const CEGUI::EventArgs& args);
 
     void update();
 
     bool handleMouse(const CEGUI::EventArgs& args);
+
+    void historiqueHaut();
+    void historiqueBas();
 
 
 

@@ -6,7 +6,6 @@ if (POLICY CMP0017)
     cmake_policy(SET CMP0017 OLD)
 endif()
 
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(CEGUIMacros)
 include(CMakeDependentOption)
 
@@ -422,7 +421,6 @@ set( CEGUI_INCLUDE_INSTALL_DIR "include${CEGUI_VER_INSTALL_SUBDIR}" )
 configure_file( cegui/include/CEGUI/Version.h.in cegui/include/CEGUI/Version.h )
 configure_file( cegui/include/CEGUI/Config.h.in cegui/include/CEGUI/Config.h )
 configure_file( cegui/include/CEGUI/ModuleConfig.h.in cegui/include/CEGUI/ModuleConfig.h )
-configure_file( doc/doxygen/doxyfile.in doc/doxygen/doxyfile )
 
 if (UNIX AND NOT APPLE)
     configure_file( cegui/CEGUI.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc @ONLY )
@@ -466,15 +464,3 @@ add_subdirectory(cegui/src/ScriptModules)
 
 add_subdirectory(cegui/src/CommonDialogs)
 
-if (DOXYGEN_FOUND)
-    add_custom_target(html
-        "${DOXYGEN_EXECUTABLE}"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/doc/doxygen"
-        COMMENT "Generating documentation" VERBATIM)
-endif()
-
-if (CEGUI_BUILD_TESTS)
-    enable_testing()
-
-    add_subdirectory(tests)
-endif()

@@ -506,6 +506,7 @@ include_directories(Source/OpenEXR/Imath)
 include_directories(${ZLIB_INCLUDE_DIRS})	
 link_libraries(${ZLIB_LIBRARIES})
 
+
 add_definitions(-DOPJ_STATIC -DLIBRAW_NODLL -DLIBRAW_LIBRARY_BUILD -DFREEIMAGE_LIB -DNO_LCMS)
 
 add_library(FreeImage STATIC ${FreeImage_SOURCES})

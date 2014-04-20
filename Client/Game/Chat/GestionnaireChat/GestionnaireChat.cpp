@@ -41,35 +41,6 @@ void GestionnaireChat::run()
 	ModuleActif::run();
 }
 
-
-/*void GestionnaireChat::updateNetwork(int event ,ENetEvent * packet)
-{
-	switch(event)
-		{
-		case ENET_EVENT_TYPE_RECEIVE:
-		{
-			CHATPACKET_C * typePacket = (CHATPACKET_C *) packet->packet->data ;
-			if (typePacket->charTypePacket.structure_opcode.cmd == XSILIUM_KINGDOM)
-			{
-				printf("message recu %s \n",typePacket->message);
-
-
-				char messageConsole[576];
-				std::strcpy(messageConsole,(const char *)typePacket->perso); // copy string one into the result.
-				std::strcat(messageConsole," > ");
-				std::strcat(messageConsole,(const char *)typePacket->message);
-
-
-				//guichat->setMessage(messageConsole);
-
-			}
-		}
-			break;
-		default:
-			break;
-		}
-}*/
-
 void GestionnaireChat::retourInterface(int IDInterface,int retour)
 {
 }
@@ -109,3 +80,29 @@ void GestionnaireChat::sendMessageToChat(const char * message, int to)
 
 }
 
+
+bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
+{
+	switch (keyEventRef.key)
+	{
+
+	case OIS::KC_RETURN:
+		//if(guiLogin->isActive())
+		//	setAuthentification();
+		//else if(guiErreur->isActive())
+		//	cancelAuthentification();
+		break;
+	case OIS::KC_TAB:
+		//guiLogin->switchEditBox();
+		break;
+	default:
+		break;
+	}
+	return true;
+
+
+}
+bool GestionnaireChat::keyReleased(const OIS::KeyEvent &keyEventRef)
+{
+	return true;
+}

@@ -30,7 +30,7 @@ class JeuxState;
 /*
  *
  */
-class GestionnaireChat : public ModuleActif , public ControleInterface {
+class GestionnaireChat : public ModuleActif , public ControleInterface , public OIS::KeyListener {
 public:
 	GestionnaireChat(JeuxState * jeuxState);
 	virtual ~GestionnaireChat();
@@ -42,6 +42,9 @@ public:
 	void retourInterface(int IDInterface,int retour);
 
 	void sendMessageToChat(const char * message, int to);
+
+	bool keyPressed(const OIS::KeyEvent &keyEventRef);
+	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
 
 private:

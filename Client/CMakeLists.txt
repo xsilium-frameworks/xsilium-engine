@@ -48,10 +48,8 @@ if(WIN32)
 endif()
 
 if (APPLE)
-	
-	set(CMAKE_CXX_FLAGS "-x objective-c++")
 	list(APPEND CORE_SOURCE_FILES "SDK/OSX/XsiliumApp.mm")
-
+	set_source_files_properties("SDK/OSX/XsiliumApp.mm" "main.cpp" "XsiliumApp.cpp" PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
  set(SRC  
