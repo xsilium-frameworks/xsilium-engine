@@ -12,8 +12,12 @@ GestionnaireChat::GestionnaireChat(JeuxState * jeuxState) {
 	this->jeuxState = jeuxState ;
 
 	networkManager = NetworkManager::getInstance();
+    NetworkManager::getInstance()->createConnexion();
 	gestionnaireInterface = GestionnaireInterface::getInstance();
 	compte = Compte::getInstance();
+
+	keyboardMap = KeyboardMap::getInstance();
+	inputManager = InputManager::getSingletonPtr();
 
 
 	guichat = new Chat(this);
@@ -25,18 +29,26 @@ GestionnaireChat::GestionnaireChat(JeuxState * jeuxState) {
 	{
 		printf("erreur de connection: %d \n",messageErreur);
 	}
+	else
+	{
+		run();
+	}
+
+	inputManager->addKeyListener(this,"GestionnaireChatKey");
 
 }
 
 GestionnaireChat::~GestionnaireChat() {
 	networkManager->removelistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT);
+    networkManager->disconnexion();
+	inputManager->removeKeyListener(this);
 	gestionnaireInterface->removeInterface(guichat);
 	delete guichat;
 }
 
 void GestionnaireChat::run()
 {
-	networkManager->addlistenneur((XSILIUM_AUTH * 1000) + ID_CHAT,boost::bind(&GestionnaireChat::setPacket, this));
+	networkManager->addlistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT,boost::bind(&GestionnaireChat::setPacket, this));
 
 	ModuleActif::run();
 }
@@ -57,9 +69,8 @@ void GestionnaireChat::processPacket(ENetEvent * packet)
 		std::strcpy(messageConsole,(const char *)typePacket->perso); // copy string one into the result.
 		std::strcat(messageConsole," > ");
 		std::strcat(messageConsole,(const char *)typePacket->message);
-
-
-		//guichat->setMessage(messageConsole);
+        
+		guichat->setEvent(ToString(ALL).c_str(),messageConsole);
 
 	}
 }
@@ -75,7 +86,7 @@ void GestionnaireChat::sendMessageToChat(const char * message, int to)
 	std::strcpy(messagePacket.perso,compte->getLogin());
 	std::strcpy(messagePacket.message,message);
 
-	ENetPacket * packetAEnvoyer = enet_packet_create ((const void *)&message,sizeof(message) + 1,ENET_PACKET_FLAG_RELIABLE);
+	ENetPacket * packetAEnvoyer = enet_packet_create ((const void *)&messagePacket,sizeof(messagePacket) + 1,ENET_PACKET_FLAG_RELIABLE);
 	networkManager->sendPacket(packetAEnvoyer,0);
 
 }
@@ -87,13 +98,18 @@ bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
 	{
 
 	case OIS::KC_RETURN:
-		//if(guiLogin->isActive())
-		//	setAuthentification();
-		//else if(guiErreur->isActive())
-		//	cancelAuthentification();
-		break;
-	case OIS::KC_TAB:
-		//guiLogin->switchEditBox();
+		if(guichat->saisiActiver())
+		{
+			if(std::strcmp(guichat->getSaisi(),""))
+			{
+				sendMessageToChat(guichat->getSaisi(),0);
+				guichat->effaceSaisi();
+			}
+		}
+		else
+		{
+			guichat->activeSaisi();
+		}
 		break;
 	default:
 		break;

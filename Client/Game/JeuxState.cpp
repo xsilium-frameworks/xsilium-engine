@@ -58,7 +58,7 @@ void JeuxState::exit()
 
 	delete gestionnaireEntite;
 
-//	delete chat;
+	delete gestionnaireChat;
 	delete gestionnaireMeteo;
 
 	m_pSceneMgr->destroyCamera(m_pCamera);

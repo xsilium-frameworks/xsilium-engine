@@ -54,6 +54,9 @@ private:
 	JeuxState * jeuxState;
 	GestionnaireInterface * gestionnaireInterface;
 
+	KeyboardMap * keyboardMap ;
+	InputManager * inputManager;
+
 };
 
 #endif /* GESTIONNAIRECHAT_H_ */

@@ -48,7 +48,7 @@ void Chat::processMessage(Event * event)
 {
 	using namespace CEGUI;
 
-	const char * message = event->getProperty("message").c_str() ;
+	const char * message = event->getProperty("eventData").c_str() ;
 
 	String messageChat(message);
 
@@ -67,25 +67,19 @@ void Chat::processMessage(Event * event)
 
 }
 
-bool Chat::handleSubmit(const CEGUI::EventArgs&)
+void Chat::effaceSaisi()
 {
-
 	// get the text entry editbox
 	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(d_root->getChild("Editbox"));
-	// get text out of the editbox
-	CEGUI::String edit_text(editbox->getText());
-
-	// if the string is not empty
-	if (!edit_text.empty())
-	{
-		//gestionnaireChat->sendMessageToChat(edit_text.c_str(),0);
-		// erase text in text entry box.
 		editbox->setText("");
-	}
 	isActived = false;
 	editbox->deactivate();
 
-	return true;
+}
+
+const char * Chat::getSaisi()
+{
+	return d_root->getChild("Editbox")->getText().c_str();
 }
 
 void Chat::historiqueHaut()

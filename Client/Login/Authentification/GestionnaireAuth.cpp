@@ -34,7 +34,6 @@ GestionnaireAuth::GestionnaireAuth(LoginState * loginState) {
 }
 
 GestionnaireAuth::~GestionnaireAuth() {
-
 	networkManager->removelistenneur((XSILIUM_AUTH * 1000) + ID_AUTH);
 	inputManager->removeKeyListener(this);
 	gestionnaireInterface->removeInterface(guiLogin);

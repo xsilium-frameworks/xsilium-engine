@@ -14,7 +14,7 @@ ModuleActif::ModuleActif() {
 }
 
 ModuleActif::~ModuleActif() {
-
+	stopThread();
 	while(!ListOfPacket.empty())
 		ListOfPacket.pop();
 }

@@ -22,8 +22,9 @@ public:
 
     bool saisiActiver();
 
+    void effaceSaisi();
 
-    bool handleSubmit(const CEGUI::EventArgs& args);
+    const char * getSaisi();
 
     void update();
 
