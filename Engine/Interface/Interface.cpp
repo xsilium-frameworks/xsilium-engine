@@ -4,7 +4,7 @@
 
 GuiInterface::GuiInterface()
 {
-	isActived = true;
+	isActived = false;
 	parent = NULL;
 	eventManager = new EventManager();
 	d_root = NULL;

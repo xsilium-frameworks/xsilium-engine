@@ -11,9 +11,6 @@
 #include "BatchPage.h"
 #include "ImpostorPage.h"
 #include "TreeLoader3D.h"
-#include "SkyX.h"
-#include "Hydrax.h"
-
 
 #pragma warning(disable:4390)
 #pragma warning(disable:4305)
@@ -31,6 +28,7 @@ Ogre::Real OgitorTerrainGroupHeightFunction(Ogre::Real x, Ogre::Real z, void *us
 DotSceneLoader::DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0)
 {
 	mTerrainGlobalOptions = OGRE_NEW Ogre::TerrainGlobalOptions();
+
 }
 
 
@@ -52,6 +50,7 @@ DotSceneLoader::~DotSceneLoader()
 		OGRE_DELETE mTerrainGroup;
 	}
 
+	delete gestionnaireMeteo;
 	OGRE_DELETE mTerrainGlobalOptions;
 }
 
@@ -82,6 +81,8 @@ void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::St
 	m_sPrependNode = sPrependNode;
 	staticObjects.clear();
 	dynamicObjects.clear();
+	gestionnaireMeteo = new GestionnaireMeteo(mSceneMgr);
+
 
 	rapidxml::xml_document<> XMLDoc;    // character type defaults to char
 
@@ -170,6 +171,13 @@ void DotSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
 	if(pElement)
 	{
 		processSkyx(pElement);
+	}
+
+	// Process Hydrax (?)
+	pElement = XMLRoot->first_node("hydrax");
+	if(pElement)
+	{
+		processHydrax(pElement);
 	}
 	// Process terrain (?)
 	pElement = XMLRoot->first_node("terrain");
@@ -296,7 +304,7 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 			pPageElement = pPageElement->next_sibling("terrainPage");
 		}
 	}
-	mTerrainGroup->loadAllTerrains(true);
+	mTerrainGroup->loadAllTerrains(false);
 
 	mTerrainGroup->freeTemporaryResources();
 }
@@ -598,14 +606,6 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
 		processEntity(pElement, pNode);
 		pElement = pElement->next_sibling("entity");
 	}
-
-	// Process light (*)
-	//pElement = XMLNode->first_node("light");
-	//while(pElement)
-	//{
-	//    processLight(pElement, pNode);
-	//    pElement = pElement->next_sibling("light");
-	//}
 
 	// Process particleSystem (*)
 	pElement = XMLNode->first_node("particleSystem");
@@ -1150,9 +1150,12 @@ void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 
 	pElement = XMLNode->first_node("time");
 	if(pElement)
-		mSkyX->setTimeMultiplier(getAttribReal(XMLNode, "multiplier"));
+	{
+		mSkyX->setTimeMultiplier(getAttribReal(pElement, "multiplier"));
+		mBasicController->setTime(Ogre::Vector3(getAttribReal(pElement, "current"), getAttribReal(pElement, "sunRise"), getAttribReal(pElement, "sunSet")));
+	}
 	else
-		mSkyX->setTimeMultiplier(1.0f / 3600 );
+		mSkyX->setTimeMultiplier(1.0f);
 
 
 
@@ -1177,7 +1180,13 @@ void DotSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 		Ogre::Real 	HeightVolume = getAttribReal(XMLNode, "");
 		Ogre::Real 	VolumetricDisplacement = getAttribReal(XMLNode, "");
 	}
+    
+    gestionnaireMeteo->createCiel(mSkyX);
 	//options supp.
+}
+void DotSceneLoader::processHydrax(rapidxml::xml_node<>* XMLNode)
+{
+	gestionnaireMeteo->createEau(getAttrib(XMLNode, "configFile"));
 }
 
 Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::String &prop)

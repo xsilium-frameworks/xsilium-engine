@@ -24,9 +24,9 @@ void JeuxState::enter()
 
 
 	XsiliumFramework::getInstance()->getLog()->logMessage("Entering JeuxState...");
-    
-    GestionnaireInterface::getInstance()->interfacePrincipal();
-    
+
+	GestionnaireInterface::getInstance()->interfacePrincipal();
+
 	createScene();
 
 
@@ -59,7 +59,6 @@ void JeuxState::exit()
 	delete gestionnaireEntite;
 
 	delete gestionnaireChat;
-	delete gestionnaireMeteo;
 
 	m_pSceneMgr->destroyCamera(m_pCamera);
 	if(m_pSceneMgr)
@@ -77,21 +76,6 @@ void JeuxState::createScene()
 {
 	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
-
-	m_Loader = new DotSceneLoader();
-	m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
-
-
-	// Light
-	//Ogre::Light *mLight0 = m_pSceneMgr->createLight("Light#0");
-	//mLight0->setDiffuseColour(1, 1, 1);
-	//mLight0->setCastShadows(false);
-
-	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
-
-
-	// Loop through all cameras and grab their name and set their debug representation
-
 	m_pCamera = m_pSceneMgr->createCamera("PlayerCam");
 
 	XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
@@ -100,6 +84,14 @@ void JeuxState::createScene()
 	m_pCamera->setNearClipDistance(0.1);
 	m_pCamera->setFarClipDistance(500);
 
+
+	m_Loader = new DotSceneLoader();
+	m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
+
+	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+
+    m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+    
 	gestionnaireEntite = new GestionnaireEntite();
 
 	perso = new Personnage(m_pSceneMgr,"perso1");
@@ -111,9 +103,6 @@ void JeuxState::createScene()
 
 	gestionnaireMouvement = new GestionnaireMouvement(m_pCamera);
 	gestionnaireMouvement->setEntities(perso);
-
-	gestionnaireMeteo = new GestionnaireMeteo(m_pSceneMgr,m_pCamera,m_Loader->getSkyX());
-	gestionnaireMeteo->create();
 
 }
 

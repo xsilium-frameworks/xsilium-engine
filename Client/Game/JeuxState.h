@@ -5,14 +5,12 @@
 
 #include"Chat/GestionnaireChat/GestionnaireChat.h"
 
-
-#include "GestionnaireMeteo/GestionnaireMeteo.h"
-
 #include "Entite/Perso/Personnage.h"
 #include "Entite/GestionnaireEntite.h"
 #include "GestionnaireMouvement/GestionnaireMouvement.h"
 
 #include "Interface/GestionnaireInterface.h"
+#include "DotSceneLoader/DotSceneLoader.h"
 
 class GestionnaireChat;
 
@@ -40,10 +38,9 @@ private:
 
 	bool						m_bQuit;
 
-	InputManager * inputManager;
-    	DotSceneLoader* 			m_Loader;
+	InputManager * 				inputManager;
+    DotSceneLoader* 			m_Loader;
 
-    GestionnaireMeteo* gestionnaireMeteo;
     GestionnaireChat * gestionnaireChat;
 	KeyboardMap * keyboardMap ;
 

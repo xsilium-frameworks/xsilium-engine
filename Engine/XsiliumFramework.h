@@ -21,7 +21,6 @@
 #include <OgreConfigFile.h>
 #include <OgreOverlaySystem.h>
 
-#include "DotSceneLoader/DotSceneLoader.h"
 
 
 class XsiliumFramework : public xsilium::Singleton<XsiliumFramework> , public Ogre::FrameListener {

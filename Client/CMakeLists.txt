@@ -17,8 +17,6 @@ set(CORE_SOURCE_FILES
     Interface/GuiProgression.cpp
     Interface/GuiLogin.cpp
     Login/Authentification/GestionnaireAuth.cpp
-    Game/GestionnaireMeteo/GestionnaireMeteo.cpp
-    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
     Game/JeuxState.cpp
 )
 
@@ -34,8 +32,6 @@ set(CORE_HEADER_FILES
     Interface/GuiProgression.h
     Interface/GuiLogin.h
     Login/ListOfMessage/ListOfMessage.h
-    Game/GestionnaireMeteo/GestionnaireMeteo.h
-    Game/GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h
     Game/JeuxState.h
 )
 

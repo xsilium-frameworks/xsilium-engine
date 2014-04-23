@@ -16,43 +16,23 @@
 
 #include "HydraxRttListener/HydraxRttListener.h"
 
-
-// Shadow config struct
-struct ShadowConfig
-{
-	bool Enable;
-	int  Size;
-    
-	ShadowConfig(const bool& Enable_, const int& Size_)
-    : Enable(Enable_)
-    , Size(Size_)
-	{
-	}
-};
-
-// Shadow mode
-enum ShadowMode
-{
-	SM_NONE = 0,
-	SM_HIGH = 1
-};
-
 /*
  *
  */
 class GestionnaireMeteo :  public Ogre::FrameListener {
 public:
-	GestionnaireMeteo(Ogre::SceneManager *sm, Ogre::Camera *c,SkyX::SkyX* mSkyX);
+	GestionnaireMeteo(Ogre::SceneManager *sm);
 	virtual ~GestionnaireMeteo();
 
-	void create();
+	void createCiel(SkyX::SkyX* mSkyX);
+	void createEau(const Ogre::String File);
 
     bool frameStarted(const Ogre::FrameEvent& evt);
 
     void updateEnvironmentLighting();
-    void updateShadowFarDistance();
-    
-    void setShadowMode(Ogre::SceneManager *sm, const ShadowMode& smode);
+
+
+    void updateCouleur();
 
 private:
 	Ogre::SceneManager*			m_pSceneMgr;
@@ -63,19 +43,13 @@ private:
     SkyX::BasicController * mBasicController;
     Hydrax::Hydrax* mHydrax;
 
-
 	// Color gradients
 	SkyX::ColorGradient mWaterGradient,
 		                mSunGradient,
-						mAmbientGradient;
+						mAmbientGradient,
+						mDiffuseGradient;
 
-	Ogre::Real mLastPositionLength;
-    
-    // Current shadow mode
-    int mShadowMode ;
-    // To disable shadows in night
-    bool mForceDisableShadows ;
-
+	unsigned int mBeafourt;
 };
 
 #endif /* GESTIONNAIREMETEO_H_ */

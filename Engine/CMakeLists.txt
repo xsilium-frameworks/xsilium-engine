@@ -71,11 +71,6 @@ set( Keyboard_S
 ./KeyboardMap/KeyboardMap.cpp
 )
 
-#set( Rapidxml_H
-#./rapidxml/rapidxml.h
-#./rapidxml/rapidxml_print.h
-#)
-
 set( EventManager_H
 ./EventManager/EventManager.h
 ./EventManager/Event/Event.h
@@ -111,6 +106,17 @@ set( ModuleActif_S
 ./ModuleActif/ModuleActif.cpp
 )
 
+set( GestionnaireMeteo_H
+./GestionnaireMeteo/GestionnaireMeteo.h
+./GestionnaireMeteo/HydraxRttListener/HydraxRttListener.h
+)
+
+set( GestionnaireMeteo_S
+./GestionnaireMeteo/GestionnaireMeteo.cpp
+./GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
+)
+
+
 
 set (CORE_SOURCE_FILES 
 ${InputManager_S}
@@ -124,6 +130,7 @@ ${EventManager_S}
 ${Entite_S}
 ${CallBack_S}
 ${ModuleActif_S}
+${GestionnaireMeteo_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -140,6 +147,7 @@ ${EventManager_H}
 ${Entite_H}
 ${CallBack_H}
 ${ModuleActif_H}
+${GestionnaireMeteo_H}
 )
 
 include_directories(

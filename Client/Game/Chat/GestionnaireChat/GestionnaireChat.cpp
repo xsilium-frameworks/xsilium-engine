@@ -103,11 +103,12 @@ bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
 			if(std::strcmp(guichat->getSaisi(),""))
 			{
 				sendMessageToChat(guichat->getSaisi(),0);
-				guichat->effaceSaisi();
 			}
+			guichat->effaceSaisi();
 		}
 		else
 		{
+
 			guichat->activeSaisi();
 		}
 		break;
