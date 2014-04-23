@@ -34,6 +34,8 @@ public:
 
     void updateCouleur();
 
+    void addDepthTechnique(Ogre::MaterialPtr mat);
+
 private:
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::Camera*				m_pCamera;

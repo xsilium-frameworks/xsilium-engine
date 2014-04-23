@@ -85,15 +85,12 @@ void JeuxState::createScene()
 
 
 	m_pCamera->setNearClipDistance(0.1);
-	m_pCamera->setFarClipDistance(500);
 
 
 	m_Loader = new DotSceneLoader();
 	m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
-
-    m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     
 	gestionnaireEntite = new GestionnaireEntite();
 

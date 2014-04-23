@@ -117,15 +117,21 @@ void GestionnaireMeteo::createEau(const Ogre::String File)
 	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, m_pCamera->getViewport());
 
 	Hydrax::Module::ProjectedGrid *mModule
-	= new Hydrax::Module::ProjectedGrid(mHydrax,new Hydrax::Noise::Perlin(/*Generic one*/),
-			Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
-			// Normal mode
-			Hydrax::MaterialManager::NM_VERTEX,
-			// Projected grid options
-			Hydrax::Module::ProjectedGrid::Options());
+	      = new Hydrax::Module::ProjectedGrid(// Hydrax parent pointer
+	      mHydrax,
+	      // Noise module
+	      new Hydrax::Noise::Perlin(/*Generic one*/),
+	      // Base plane
+	      Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+	      // Normal mode
+	      Hydrax::MaterialManager::NM_VERTEX,
+	      // Projected grid options
+	      Hydrax::Module::ProjectedGrid::Options(/*264 /*Generic one*/));
 
 	// Set our module
 	mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
+    mHydrax->getRttManager()->setReflectionDisplacementError(1.8);
+    mHydrax->setUnderwaterCameraSwitchDelta(-.2);
 
 	mHydrax->loadCfg("Hydrax.hdx");
 
@@ -164,4 +170,9 @@ void GestionnaireMeteo::updateEnvironmentLighting()
 	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(ambientCol.x, ambientCol.y, ambientCol.z, 1.f));
 	mHydrax->setSunColor(sunCol);
 
+}
+
+void GestionnaireMeteo::addDepthTechnique(Ogre::MaterialPtr mat)
+{
+		mHydrax->getMaterialManager()->addDepthTechnique(mat->createTechnique());
 }

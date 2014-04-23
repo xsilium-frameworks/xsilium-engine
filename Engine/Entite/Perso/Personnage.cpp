@@ -13,15 +13,16 @@ Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom) {
 	this->sceneMgr = sceneMgr;
 	charHeight = 5;
 	turnSpeed = 500.0f;
-	runSpeed = 17 ;
+	runSpeed = 3 ;
 	setNom(nom);
 	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(nom,Ogre::Vector3::UNIT_Y * charHeight);
-    mBodyNode->setPosition(Ogre::Vector3(-117.245,200,-159.918));
+	mBodyNode->setPosition(Ogre::Vector3(-117.245,189,-159.918));
 	mBodyEnt = sceneMgr->createEntity("Sinbad.mesh");
 
 	mBodyEnt->setCastShadows(true);
 
 	mBodyNode->attachObject(mBodyEnt);
+	mBodyNode->setScale(0.15,0.15,0.15);
 
 
 	animation = new Animation(mBodyEnt);
