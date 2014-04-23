@@ -61,6 +61,9 @@ void JeuxState::exit()
 	delete gestionnaireChat;
 
 	m_pSceneMgr->destroyCamera(m_pCamera);
+    
+    delete m_Loader;
+    
 	if(m_pSceneMgr)
 		XsiliumFramework::getInstance()->getRoot()->destroySceneManager(m_pSceneMgr);
 

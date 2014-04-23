@@ -32,7 +32,7 @@ GestionnaireMeteo::~GestionnaireMeteo() {
 		delete mSkyX;
 	}
 	if(mHydrax)
-		delete mSkyX;
+		delete mHydrax;
 }
 
 void GestionnaireMeteo::updateCouleur()
