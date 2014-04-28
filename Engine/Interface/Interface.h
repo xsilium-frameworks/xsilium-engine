@@ -17,8 +17,6 @@ enum eventType
 	LASTIDEVENTTYPE
 };
 
-class ControleInterface;
-
 class GuiInterface
 {
 
@@ -29,8 +27,10 @@ public:
 	void setVisibility(bool visibility);
 	bool isVisible() const;
 
-	void activeInterface();
-	void desactiveInterface();
+	bool activeInterface(const CEGUI::EventArgs &ea);
+	bool desactiveInterface(const CEGUI::EventArgs &ea);
+
+	void initEventInterface();
 
 	bool isActive();
 

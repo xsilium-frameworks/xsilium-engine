@@ -121,7 +121,7 @@ bool XsiliumFramework::frameStarted (const Ogre::FrameEvent &evt)
 
 bool XsiliumFramework::frameRenderingQueued (const Ogre::FrameEvent &evt)
 {
-	inputManager->capture();
+	inputManager->capture(evt.timeSinceLastFrame);
 	return true;
 }
 

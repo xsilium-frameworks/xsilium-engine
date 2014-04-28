@@ -14,8 +14,6 @@
 #include "Interface/GestionnaireInterface.h"
 #include "Interface/GuiChat.h"
 
-#include "Game/JeuxState.h"
-
 #include "Network/Opcode/Opcode.h"
 
 #include "Game/Chat/StructurePacket/PacketChat.h"
@@ -24,15 +22,14 @@
 
 #include "ModuleActif/ModuleActif.h"
 
-class Chat;
-class JeuxState;
+#include "GestionnaireMouvement/GestionnaireMouvement.h"
 
 /*
  *
  */
 class GestionnaireChat : public ModuleActif , public ControleInterface , public OIS::KeyListener {
 public:
-	GestionnaireChat(JeuxState * jeuxState);
+	GestionnaireChat();
 	virtual ~GestionnaireChat();
 
 	void run();
@@ -51,7 +48,6 @@ private:
 	NetworkManager * networkManager;
 	Chat * guichat;
 	Compte * compte;
-	JeuxState * jeuxState;
 	GestionnaireInterface * gestionnaireInterface;
 
 	KeyboardMap * keyboardMap ;

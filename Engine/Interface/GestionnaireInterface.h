@@ -36,8 +36,6 @@ public:
 	void removeInterface(GuiInterface * interface);
 	void removeAllInterface();
 	bool findInterface(GuiInterface * interface);
-	bool findWindow(CEGUI::Window* window);
-	GuiInterface * getByName(std::string nameInterface);
 
     void initialisationInterface();
 	void interfacePrincipal();
@@ -59,6 +57,8 @@ private:
 
 	std::vector<GuiInterface*> listOfInterface;
 	std::vector<GuiInterface*>::iterator interfaceIterator;
+
+	std::list<CEGUI::Window *> pWinHistory;
 
 
 	bool interfacePrincipale;

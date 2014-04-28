@@ -15,7 +15,7 @@
 #include "StructurePacket/PacketAuth.h"
 #include "InputManager/InputManager.h"
 
-#include "Login/LoginState.h"
+#include "GameState/GameState.h"
 
 #include "Interface/GestionnaireInterface.h"
 #include "Interface/GuiLogin.h"
@@ -30,12 +30,6 @@
 #define AUTH_HOST "85.25.143.49"
 //#define AUTH_HOST "127.0.0.1"
 #define AUTH_PORT 60000
-
-
-class LoginState;
-class GuiLogin;
-class GuiErreur;
-class GuiProgression;
 
 enum typeForAuth
 {
@@ -63,7 +57,7 @@ enum erreurOfAuth
 class GestionnaireAuth : public OIS::KeyListener , public ModuleActif , public ControleInterface {
 
 public:
-	GestionnaireAuth(LoginState * loginState);
+	GestionnaireAuth(GameState * loginState);
 	virtual ~GestionnaireAuth();
 
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
@@ -97,7 +91,7 @@ protected:
 
 	Compte * compte;
 
-	LoginState * loginState;
+	GameState * loginState;
 
 
 private:

@@ -8,30 +8,20 @@
 
 #include "GestionnaireMouvement.h"
 
-GestionnaireMouvement::GestionnaireMouvement(Ogre::Camera* cam) {
+GestionnaireMouvement::GestionnaireMouvement() {
 
 	keyboardMap = KeyboardMap::getInstance();
 	inputManager = InputManager::getSingletonPtr();
 	mKeyDirection = 0;
 	mGoalDirection = 0;
-	sceneMgr = cam->getSceneManager() ;
-	// create a pivot at roughly the character's shoulder
-	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraPivot");
-	// this is where the camera should be soon, and it spins around the pivot
-	mCameraGoal = mCameraPivot->createChildSceneNode("mCameraGoal",Ogre::Vector3(0, 0, 15));
-	// this is where the camera actually is
-	mCameraNode = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraNode");
-	mCameraNode->setPosition(mCameraPivot->getPosition() + mCameraGoal->getPosition());
-
-	mCameraPivot->setFixedYawAxis(true);
-	mCameraGoal->setFixedYawAxis(true);
-	mCameraNode->setFixedYawAxis(true);
-
-	mCameraNode->attachObject(cam);
 	mPivotPitch = 0;
 	entite = 0;
-
+	mCameraGoal = 0;
+	mCameraPivot = 0;
+	mCameraNode = 0;
+	sceneMgr = 0;
 	clickgauche = false;
+	deplacement = false;
 
 
 	inputManager->addKeyListener(this,"GestionMouvementKey");
@@ -50,38 +40,70 @@ GestionnaireMouvement::~GestionnaireMouvement() {
 	sceneMgr->getRootSceneNode()->removeAndDestroyChild("mCameraNode");
 }
 
+void GestionnaireMouvement::setCamera(Ogre::Camera* cam)
+{
+	sceneMgr = cam->getSceneManager() ;
+	// create a pivot at roughly the character's shoulder
+	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraPivot");
+	// this is where the camera should be soon, and it spins around the pivot
+	mCameraGoal = mCameraPivot->createChildSceneNode("mCameraGoal",Ogre::Vector3(0, 0, 8));
+	// this is where the camera actually is
+	mCameraNode = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraNode");
+	mCameraNode->setPosition(mCameraPivot->getPosition() + mCameraGoal->getPosition());
+
+	mCameraPivot->setFixedYawAxis(true);
+	mCameraGoal->setFixedYawAxis(true);
+	mCameraNode->setFixedYawAxis(true);
+
+	mCameraNode->attachObject(cam);
+}
+
 bool GestionnaireMouvement::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-	if( keyEventRef.key == keyboardMap->checkKey("GAUCHE"))
-		mKeyDirection.x = -1;
+	if(deplacement)
+	{
+		if( keyEventRef.key == keyboardMap->checkKey("GAUCHE"))
+			mKeyDirection.x = -1;
 
-	if( keyEventRef.key == keyboardMap->checkKey("DROITE"))
-		mKeyDirection.x = 1;
+		if( keyEventRef.key == keyboardMap->checkKey("DROITE"))
+			mKeyDirection.x = 1;
 
-	if( keyEventRef.key == keyboardMap->checkKey("AVANCER"))
-		mKeyDirection.z = -1;
+		if( keyEventRef.key == keyboardMap->checkKey("AVANCER"))
+			mKeyDirection.z = -1;
 
-	if( keyEventRef.key == keyboardMap->checkKey("RECULER"))
-		mKeyDirection.z = 1;
-
+		if( keyEventRef.key == keyboardMap->checkKey("RECULER"))
+			mKeyDirection.z = 1;
+	}
 	return true;
 
 
 }
+
+void GestionnaireMouvement::activeDeplacement()
+{
+	deplacement = true;
+}
+void GestionnaireMouvement::desactiveDeplacement()
+{
+	deplacement = false;
+}
+
 bool GestionnaireMouvement::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
-	if( keyEventRef.key == keyboardMap->checkKey("GAUCHE") && mKeyDirection.x == -1 )
-		mKeyDirection.x = 0;
+	if(deplacement)
+	{
+		if( keyEventRef.key == keyboardMap->checkKey("GAUCHE") && mKeyDirection.x == -1 )
+			mKeyDirection.x = 0;
 
-	if( keyEventRef.key == keyboardMap->checkKey("DROITE") && mKeyDirection.x == 1)
-		mKeyDirection.x = 0;
+		if( keyEventRef.key == keyboardMap->checkKey("DROITE") && mKeyDirection.x == 1)
+			mKeyDirection.x = 0;
 
-	if( keyEventRef.key == keyboardMap->checkKey("AVANCER") && mKeyDirection.z == -1)
-		mKeyDirection.z = 0;
+		if( keyEventRef.key == keyboardMap->checkKey("AVANCER") && mKeyDirection.z == -1)
+			mKeyDirection.z = 0;
 
-	if( keyEventRef.key == keyboardMap->checkKey("RECULER")  && mKeyDirection.z == 1 )
-		mKeyDirection.z = 0;
-
+		if( keyEventRef.key == keyboardMap->checkKey("RECULER")  && mKeyDirection.z == 1 )
+			mKeyDirection.z = 0;
+	}
 	return true;
 
 }
@@ -207,7 +229,7 @@ void GestionnaireMouvement::updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real del
 	Ogre::Real distChange = deltaZoom * dist;
 
 	// bound the zoom
-	if (!(dist + distChange < 8 && distChange < 0) && !(dist + distChange > 25 && distChange > 0))
+	if (!(dist + distChange < 4 && distChange < 0) && !(dist + distChange > 15 && distChange > 0))
 	{
 		mCameraGoal->translate(0, 0, distChange, Ogre::Node::TS_LOCAL);
 	}

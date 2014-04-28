@@ -18,15 +18,23 @@
 
 #include "XsiliumFramework.h"
 
+#include "Singleton/Singleton.h"
+
 #define CAM_HEIGHT 2
 
 /*
  *
  */
-class GestionnaireMouvement : public OIS::KeyListener,public OIS::MouseListener, public Ogre::FrameListener {
+class GestionnaireMouvement : public OIS::KeyListener,public OIS::MouseListener, public Ogre::FrameListener, public xsilium::Singleton<GestionnaireMouvement> {
+
+	friend class xsilium::Singleton<GestionnaireMouvement>;
+
+
 public:
-	GestionnaireMouvement(Ogre::Camera* cam);
+	GestionnaireMouvement();
 	virtual ~GestionnaireMouvement();
+
+	void setCamera(Ogre::Camera* cam);
 
 	bool keyPressed(const OIS::KeyEvent &keyEventRef);
 	bool keyReleased(const OIS::KeyEvent &keyEventRef);
@@ -40,6 +48,9 @@ public:
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
 	void setEntities(Entite * entite);
+
+	void activeDeplacement();
+	void desactiveDeplacement();
 
 
 private:
@@ -62,6 +73,7 @@ private:
     Entite * entite;
     Ogre::SceneManager* sceneMgr;
     bool clickgauche;
+    bool deplacement;
 };
 
 #endif /* GESTIONNAIREMOUVEMENT_H_ */

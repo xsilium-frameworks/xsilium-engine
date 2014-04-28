@@ -12,15 +12,14 @@ Chat::Chat(ControleInterface * controleInterface)
 	d_root->setDestroyedByParent(false);
 
 
-	//parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
+	parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&Chat::handleMouse, this));
 
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	parent->activate();
-
 	this->controleInterface = controleInterface ;
 
+	initEventInterface();
 }
 
 Chat::~Chat()
@@ -34,14 +33,16 @@ Chat::~Chat()
 
 bool Chat::saisiActiver()
 {
-	return isActived ;
+	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(d_root->getChild("Editbox"));
+	return editbox->isActive() ;
 }
 
 void Chat::activeSaisi()
 {
+	d_root->activate();
 	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(d_root->getChild("Editbox"));
 	editbox->activate();
-	isActived = true;
+
 }
 
 void Chat::processMessage(Event * event)
@@ -71,8 +72,7 @@ void Chat::effaceSaisi()
 {
 	// get the text entry editbox
 	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(d_root->getChild("Editbox"));
-		editbox->setText("");
-	isActived = false;
+	editbox->setText("");
 	editbox->deactivate();
 
 }
@@ -118,9 +118,8 @@ void Chat::historiqueBas()
 bool Chat::handleMouse(const CEGUI::EventArgs& args)
 {
 	CEGUI::Editbox* editbox = static_cast<CEGUI::Editbox*>(d_root->getChild("Editbox"));
-
-	isActived = false;
 	editbox->deactivate();
+	d_root->deactivate();
 
 	return true;
 }

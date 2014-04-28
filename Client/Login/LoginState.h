@@ -1,11 +1,8 @@
 #ifndef LOGIN_STATE_H
 #define LOGIN_STATE_H
 
-#include "GameState/GameState.h"
 #include "Authentification/GestionnaireAuth.h"
 #include "string.h"
-
-class GestionnaireAuth;
 
 class LoginState : public GameState
 {
@@ -24,14 +21,7 @@ public:
 
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 
-	void setExit();
-	void setChangeState();
-
-
-
 private:
-	bool changeState;
-	bool m_bQuit;
 	GestionnaireAuth * gestionnaireAuth;
 
 };

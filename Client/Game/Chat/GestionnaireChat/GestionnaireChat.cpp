@@ -8,8 +8,7 @@
 
 #include "Chat/GestionnaireChat/GestionnaireChat.h"
 
-GestionnaireChat::GestionnaireChat(JeuxState * jeuxState) {
-	this->jeuxState = jeuxState ;
+GestionnaireChat::GestionnaireChat() {
 
 	networkManager = NetworkManager::getInstance();
     NetworkManager::getInstance()->createConnexion();
@@ -105,11 +104,13 @@ bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
 				sendMessageToChat(guichat->getSaisi(),0);
 			}
 			guichat->effaceSaisi();
+			GestionnaireMouvement::getInstance()->activeDeplacement();
 		}
 		else
 		{
-
+			GestionnaireMouvement::getInstance()->desactiveDeplacement();
 			guichat->activeSaisi();
+
 		}
 		break;
 	default:

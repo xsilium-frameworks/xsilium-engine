@@ -21,6 +21,8 @@ GuiErreur::GuiErreur(ControleInterface * controleInterface) {
 
 	this->controleInterface = controleInterface ;
 
+	initEventInterface();
+
 }
 
 GuiErreur::~GuiErreur() {

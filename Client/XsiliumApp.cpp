@@ -31,6 +31,6 @@ void XsiliumApp::startXsilium()
 
 	JeuxState::create<JeuxState>(m_pGameStateManager, "JeuxState");
 
-	m_pGameStateManager->start(m_pGameStateManager->findByName("JeuxState"));
+	m_pGameStateManager->start(m_pGameStateManager->findByName("LoginState"));
 }
 

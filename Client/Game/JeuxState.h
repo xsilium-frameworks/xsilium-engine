@@ -7,12 +7,9 @@
 
 #include "Entite/Perso/Personnage.h"
 #include "Entite/GestionnaireEntite.h"
-#include "GestionnaireMouvement/GestionnaireMouvement.h"
 
 #include "Interface/GestionnaireInterface.h"
 #include "DotSceneLoader/DotSceneLoader.h"
-
-class GestionnaireChat;
 
 class JeuxState :public OIS::KeyListener, public GameState
 {
@@ -35,8 +32,6 @@ public:
 
 
 private:
-
-	bool						m_bQuit;
 
 	InputManager * 				inputManager;
     DotSceneLoader* 			m_Loader;

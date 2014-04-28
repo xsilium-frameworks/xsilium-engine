@@ -19,6 +19,7 @@ GuiProgression::GuiProgression(ControleInterface * controleInterface) {
 
 	this->controleInterface = controleInterface ;
 
+	initEventInterface();
 }
 
 GuiProgression::~GuiProgression() {

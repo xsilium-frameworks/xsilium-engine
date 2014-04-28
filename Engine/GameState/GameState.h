@@ -42,11 +42,28 @@ public:
 
 	virtual void enter() = 0;
 	virtual void exit() = 0;
-	virtual bool pause(){return true;}
+	virtual bool pause()
+	{
+		return true;
+	}
 	virtual void resume(){};
-	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent){return true;}
-	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent){return true;}
-	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent){return true;}
+	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent){
+		return true;
+	}
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent){
+		return true;
+	}
+	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent){
+		return true;
+	}
+	void setExit()
+	{
+		m_bQuit = true;
+	}
+	void setChangeState()
+	{
+		changeState = true;
+	}
 
 protected:
 	GameState(){};
@@ -64,6 +81,9 @@ protected:
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::RenderWindow* 		m_Window;
 	EventManager * eventManager ;
+
+	bool changeState;
+	bool m_bQuit;
 };
 
 

@@ -62,15 +62,6 @@ void LoginState::exit()
 	delete gestionnaireAuth;
 }
 
-void LoginState::setExit()
-{
-	m_bQuit = true;
-}
-void LoginState::setChangeState()
-{
-	changeState = true;
-}
-
 bool LoginState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
 	CEGUI::System::getSingleton().injectTimePulse(m_FrameEvent.timeSinceLastFrame);

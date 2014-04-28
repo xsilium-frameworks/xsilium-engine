@@ -31,7 +31,7 @@ GestionnaireInterface::~GestionnaireInterface() {
 
 void GestionnaireInterface::initialisationInterface()
 {    
-    CEGUI::OgreRenderer::bootstrapSystem();
+	CEGUI::OgreRenderer::bootstrapSystem();
 
 	// set the default resource groups to be used
 	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
@@ -62,6 +62,8 @@ void GestionnaireInterface::interfacePrincipal()
 		parent->activate();
 
 		CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(parent);
+
+		pWinHistory.push_back(parent);
 
 		interfacePrincipale = true;
 	}
@@ -118,30 +120,73 @@ bool GestionnaireInterface::findInterface(GuiInterface * interface)
 	return false;
 }
 
-bool GestionnaireInterface::findWindow(CEGUI::Window* window)
-{
-	for (interfaceIterator = listOfInterface.begin() ; interfaceIterator != listOfInterface.end(); ++interfaceIterator)
-	{
-		if(window == (*interfaceIterator)->getWindow() )
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-GuiInterface * GestionnaireInterface::getByName(std::string nameInterface)
-{
-	return NULL ;
-}
-
 
 bool GestionnaireInterface::onWindowActivated(const CEGUI::EventArgs &ea)
 {
+	try {
+		const CEGUI::WindowEventArgs& we = static_cast<const CEGUI::WindowEventArgs&>(ea);
+		CEGUI::Window *pLastWin = pWinHistory.back( );
+
+        // We only work with FrameWindows.
+		printf("test %s\n",we.window->getType().c_str());
+        
+        if(we.window->getType().compare("DragContainer"))
+			return true;
+        
+		// If it is the same window as before, ignore it.
+		if( pLastWin == we.window )
+			return true;
+
+		if( pLastWin != CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow() ) {
+			// If every time a window gets activated we make the last active window become
+			// transparent, this will result in all inactive windows being transparent.
+			pLastWin->deactivate();
+
+			// But we never make the root window transparent, as this would make all tooltips
+			// become transparent, and we don't want this !
+		}
+
+		// We need the active window to not inherit the transparence of its parents.
+		we.window->setProperty( "InheritsAlpha", "false" );
+
+		// Finally, we add the new window to the stack.
+
+		// One could also check if it's already present in the stack and if yes, just put it on the top.
+		// You would have to do this if you want to set the transparency depending on the window's position
+		// in the stack (see "Extending the effect").
+		pWinHistory.push_back( we.window );
+	} catch( CEGUI::Exception& e ) {
+		fprintf( stderr, "CEGUI error: %s\n", e.getMessage( ).c_str( ) );
+		return true;
+	}
+
 	return true;
 }
 bool GestionnaireInterface::onWindowDeactivated(const CEGUI::EventArgs &ea)
 {
+	try {
+		const CEGUI::WindowEventArgs& we = static_cast<const CEGUI::WindowEventArgs&>(ea);
+		CEGUI::Window *pLastWin = NULL;
+
+        if(we.window->getType().compare("DragContainer"))
+			return true;
+
+		// Delete the current window from the stack.
+		// CARE: std::list::remove removes ALL occurences of we.window from the stack !
+		// This is VERY important to know, as if you activate window A, then window B and then A again,
+		// the stack will contain A twice: {A,B,A}.
+		pWinHistory.remove( we.window );
+
+		// Now we get the window that was active before the current one:
+		pLastWin = pWinHistory.back( );
+		// re-activate it (like windos, linux, .. all do).
+		pLastWin->activate();
+
+	} catch( CEGUI::Exception& e ) {
+		fprintf( stderr, "CEGUI error: %s\n", e.getMessage( ).c_str( ) );
+		return true;
+	}
+
 	return true;
 }
 

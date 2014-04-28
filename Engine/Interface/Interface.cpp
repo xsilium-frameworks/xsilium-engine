@@ -10,6 +10,7 @@ GuiInterface::GuiInterface()
 	d_root = NULL;
 	controleInterface = NULL;
 	IDInterface = 0;
+
 }
 
 GuiInterface::~GuiInterface()
@@ -33,22 +34,25 @@ bool GuiInterface::isVisible() const
 
 bool GuiInterface::isActive()
 {
-	return isActived;
+	return d_root->isActive();
 }
 
-void GuiInterface::activeInterface()
+bool GuiInterface::activeInterface(const CEGUI::EventArgs &ea)
 {
 	d_root->setAlpha(1);
 	isActived = true;
 	d_root->setAlwaysOnTop(true);
+	return true;
 }
 
-void GuiInterface::desactiveInterface()
+bool GuiInterface::desactiveInterface(const CEGUI::EventArgs &ea)
 {
 
 	d_root->setAlpha(0.3);
 	d_root->setAlwaysOnTop(false);
 	isActived = false;
+
+	return true;
 }
 
 void GuiInterface::setEvent(const char * typeEvent,const char * message)
@@ -90,10 +94,10 @@ void GuiInterface::EventGlobal()
 	switch(atoi(eventManager->getEvent()->getProperty("eventType").c_str()))
 	{
 	case ACTIVE:
-		activeInterface();
+		d_root->activate();
 		break;
 	case DESACTIVE:
-		desactiveInterface();
+		d_root->deactivate();
 		break;
 	case VISIBLE:
 		setVisibility(true);
@@ -104,6 +108,12 @@ void GuiInterface::EventGlobal()
 	default:
 		break;
 	}
+}
+
+void GuiInterface::initEventInterface()
+{
+	d_root->subscribeEvent(CEGUI::Window::EventActivated,CEGUI::Event::Subscriber(&GuiInterface::activeInterface, this));
+	d_root->subscribeEvent(CEGUI::Window::EventDeactivated,CEGUI::Event::Subscriber(&GuiInterface::desactiveInterface, this));
 }
 
 #endif /* INTERFACE_CPP_ */

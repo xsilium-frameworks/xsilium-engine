@@ -21,6 +21,8 @@ GuiLogin::GuiLogin(ControleInterface * controleInterface) {
 	parent->addChild(d_root);
 
 	this->controleInterface = controleInterface ;
+
+	initEventInterface();
 }
 
 GuiLogin::~GuiLogin() {

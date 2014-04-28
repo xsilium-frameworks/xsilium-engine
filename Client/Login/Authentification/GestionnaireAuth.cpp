@@ -8,7 +8,7 @@
 
 #include "GestionnaireAuth.h"
 
-GestionnaireAuth::GestionnaireAuth(LoginState * loginState) {
+GestionnaireAuth::GestionnaireAuth(GameState * loginState) {
 
 	keyboardMap = KeyboardMap::getInstance();
 	inputManager = InputManager::getSingletonPtr();
@@ -29,6 +29,8 @@ GestionnaireAuth::GestionnaireAuth(LoginState * loginState) {
 	gestionnaireInterface->addInterface(guiProgression);
 
 	inputManager->addKeyListener(this,"GestionnaireAuthKey");
+
+	guiLogin->setEvent(ToString(ACTIVE).c_str());
 
 
 }

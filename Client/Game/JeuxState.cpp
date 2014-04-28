@@ -7,9 +7,14 @@ JeuxState::JeuxState()
 :    m_Loader(0)
 {
 	m_bQuit             = false;
+	changeState = false;
+
 	inputManager = InputManager::getSingletonPtr();
 	keyboardMap = KeyboardMap::getInstance();
-	gestionnaireChat = NULL;
+	gestionnaireChat = 0;
+	gestionnaireEntite = 0;
+	gestionnaireMouvement = 0;
+
 
 }
 
@@ -55,15 +60,15 @@ void JeuxState::exit()
 	XsiliumFramework::getInstance()->getLog()->logMessage("Leaving JeuxState...");
 
 
-
+	GestionnaireMouvement::DestroyInstance();
 	delete gestionnaireEntite;
 
 	delete gestionnaireChat;
 
 	m_pSceneMgr->destroyCamera(m_pCamera);
-    
-    delete m_Loader;
-    
+
+	delete m_Loader;
+
 	if(m_pSceneMgr)
 		XsiliumFramework::getInstance()->getRoot()->destroySceneManager(m_pSceneMgr);
 
@@ -72,7 +77,7 @@ void JeuxState::exit()
 
 void JeuxState::buildGUI()
 {
-	gestionnaireChat = new GestionnaireChat(this);
+	gestionnaireChat = new GestionnaireChat();
 }
 
 void JeuxState::createScene()
@@ -91,7 +96,7 @@ void JeuxState::createScene()
 	m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
-    
+
 	gestionnaireEntite = new GestionnaireEntite();
 
 	perso = new Personnage(m_pSceneMgr,"perso1");
@@ -101,8 +106,10 @@ void JeuxState::createScene()
 	gestionnaireEntite->ajouterEntite(perso);
 	gestionnaireEntite->ajouterEntite(perso2);
 
-	gestionnaireMouvement = new GestionnaireMouvement(m_pCamera);
+	gestionnaireMouvement = GestionnaireMouvement::getInstance();
+	gestionnaireMouvement->setCamera(m_pCamera);
 	gestionnaireMouvement->setEntities(perso);
+	gestionnaireMouvement->activeDeplacement();
 
 }
 
@@ -127,7 +134,7 @@ bool JeuxState::keyPressed(const OIS::KeyEvent &keyEventRef)
 	switch(keyEventRef.key)
 	{
 	case OIS::KC_ESCAPE:
-		m_bQuit = true;
+		setExit();
 		break;
 	case OIS::KC_LSHIFT:
 		break;
