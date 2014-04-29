@@ -271,5 +271,15 @@ macro (configure_xsilium ROOT OGREPATH)
 		endif ()
 	endif ()
 
+	if (XSILIUM_COMPILE_OGRE_COMPONENTS)
+		option(OGRE_BUILD_COMPONENT_PAGING "Build Ogre Paging Compoment" ON)
+		option(OGRE_BUILD_COMPONENT_TERRAIN "Build Ogre Terrain Compoment" ON)
+		option(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM "Build Ogre RTShaderSystem Compoment" ON)
+		option(OGRE_BUILD_COMPONENT_PROPERTY "Build Ogre Property Compoment(Required boost)" ON)
+		option(OGRE_BUILD_COMPONENT_VOLUME "Build Volume component" ON)
+		
+	endif()
+
+
 endmacro(configure_xsilium)
 
