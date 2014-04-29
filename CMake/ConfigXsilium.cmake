@@ -52,6 +52,148 @@ macro (configure_xsilium ROOT OGREPATH)
 	option(XSILIUM_CREATE_OGRE_DEPENDENCY_DIR	"Prepare Dependencies directory for Ogre prior to Ogre configuration and build" OFF)
 
 
+	#Configuration Ogre
+	# determine if we are compiling for a 32bit or 64bit system
+	include(CheckTypeSize)
+	CHECK_TYPE_SIZE("void*" OGRE_PTR_SIZE BUILTIN_TYPES_ONLY)
+	if (OGRE_PTR_SIZE EQUAL 8)
+  		set(OGRE_PLATFORM_X64 TRUE)
+	else ()
+  		set(OGRE_PLATFORM_X64 FALSE)
+	endif ()
+
+	if (NOT APPLE)
+  	# Create debug libraries with _d postfix
+  		set(CMAKE_DEBUG_POSTFIX "_d")
+	endif ()
+
+	# Set compiler specific build flags
+	if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
+  		check_cxx_compiler_flag(-msse OGRE_GCC_HAS_SSE)
+  		if (OGRE_GCC_HAS_SSE)
+    			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse")
+  		endif ()
+  		# This is a set of sensible warnings that provide meaningful output
+  		set(OGRE_WARNING_FLAGS "-Wall -Winit-self -Wno-overloaded-virtual -Wcast-qual -Wwrite-strings -Wextra -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long")
+  		if (NOT APPLE)
+      			set(OGRE_WARNING_FLAGS "${OGRE_WARNING_FLAGS} -Wno-unused-but-set-parameter")
+  		endif ()
+  		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OGRE_WARNING_FLAGS}")
+	endif ()
+	
+	if (MSVC)
+  		if (CMAKE_BUILD_TOOL STREQUAL "nmake")
+    			# set variable to state that we are using nmake makefiles
+			set(NMAKE TRUE)
+  		endif ()
+  		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:fast")
+  		# Enable intrinsics on MSVC in debug mode
+  		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Oi")
+  		if (CMAKE_CL_64)
+    			# Visual Studio bails out on debug builds in 64bit mode unless
+			# this flag is set...
+			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /bigobj")
+			set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /bigobj")
+  		endif ()
+  		if (OGRE_UNITY_BUILD)
+    			# object files can get large with Unity builds
+    			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+  		endif ()
+  		if (MSVC_VERSION GREATER 1500 OR MSVC_VERSION EQUAL 1500)
+    			option(OGRE_BUILD_MSVC_MP "Enable build with multiple processes in Visual Studio" TRUE)
+  		else()
+    			set(OGRE_BUILD_MSVC_MP FALSE CACHE BOOL "Compiler option /MP requires at least Visual Studio 2008 (VS9) or newer" FORCE)
+  		endif()
+  		if(OGRE_BUILD_MSVC_MP)
+    			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+  		endif ()
+  		if(MSVC_VERSION GREATER 1400 OR MSVC_VERSION EQUAL 1400)
+    			option(OGRE_BUILD_MSVC_ZM "Add /Zm256 compiler option to Visual Studio to fix PCH errors" TRUE)
+  		else()
+    			set(OGRE_BUILD_MSVC_ZM FALSE CACHE BOOL "Compiler option /Zm256 requires at least Visual Studio 2005 (VS8) or newer" FORCE)
+  		endif()
+  		if(OGRE_BUILD_MSVC_ZM)
+    			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm256")
+  		endif ()
+	endif ()
+	if (MINGW)
+  		add_definitions(-D_WIN32_WINNT=0x0500)
+  		# set architecture to i686, since otherwise some versions of MinGW can't link
+  		# the atomic primitives
+  		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i686")
+  		# Fpermissive required to let some "non-standard" casting operations in the plugins pass
+  		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+  		# disable this optimisation because it breaks release builds (reason unknown)
+  		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-tree-slp-vectorize")
+	endif ()
+
+	if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
+  		# Test for GCC visibility
+  		include(CheckCXXCompilerFlag)
+  		check_cxx_compiler_flag(-fvisibility=hidden OGRE_GCC_VISIBILITY)
+  		if (OGRE_GCC_VISIBILITY)
+    			# determine gcc version
+    			execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE OGRE_GCC_VERSION)
+    			message(STATUS "Detected g++ ${OGRE_GCC_VERSION}")
+    			message(STATUS "Enabling GCC visibility flags")
+    			set(OGRE_GCC_VISIBILITY_FLAGS "-DOGRE_GCC_VISIBILITY -fvisibility=hidden")
+    			set(XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN "YES")
+
+    			# check if we can safely add -fvisibility-inlines-hidden
+    			string(TOLOWER "${CMAKE_BUILD_TYPE}" OGRE_BUILD_TYPE)
+    			if (OGRE_BUILD_TYPE STREQUAL "debug" AND OGRE_GCC_VERSION VERSION_LESS "4.2")
+      				message(STATUS "Skipping -fvisibility-inlines-hidden due to possible bug in g++ < 4.2")
+    			else ()
+      				if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
+        				message(STATUS "Skipping -fvisibility-inlines-hidden due to linker issues")
+        				set(XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN[arch=x86_64] "YES")
+      				else()
+        				set(OGRE_GCC_VISIBILITY_FLAGS "${OGRE_GCC_VISIBILITY_FLAGS} -fvisibility-inlines-hidden")
+        				set(XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN "YES")
+      				endif()
+    			endif ()
+  		endif (OGRE_GCC_VISIBILITY)
+
+  		# Fix x64 issues on Linux
+  		if(OGRE_PLATFORM_X64 AND NOT APPLE)
+    			add_definitions(-fPIC)
+  		endif()
+	endif ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
+
+	# determine system endianess
+	if (MSVC)
+  		# This doesn't work on VS 2010
+  		# MSVC only builds for intel anyway
+  		set(OGRE_TEST_BIG_ENDIAN FALSE)
+	else()
+  		include(TestBigEndian)
+  		test_big_endian(OGRE_TEST_BIG_ENDIAN)
+	endif()
+
+	if (OGRE_BUILD_PLATFORM_WINRT)
+		# WinRT can only use the standard allocator
+		set(OGRE_CONFIG_ALLOCATOR 1 CACHE STRING "Forcing Standard Allocator for WinRT" FORCE)
+	else ()
+		set(OGRE_CONFIG_ALLOCATOR 4 CACHE STRING
+		"Specify the memory allocator to use. Possible values:
+  		1 - Standard allocator
+  		2 - nedmalloc
+  		3 - User-provided allocator
+  		4 - nedmalloc with pooling"
+		)
+	endif ()
+
+
+	if (APPLE)
+	
+		# Set 10.4 as the base SDK by default
+		set(XCODE_ATTRIBUTE_SDKROOT macosx10.7)
+	
+		if (NOT CMAKE_OSX_ARCHITECTURES)
+			set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_64_BIT})
+		endif()
+	  
+	endif ()
 
 
 	set(XSILIUM_DEP_DIR ${ROOT}/Library/Dependencies/Source)
@@ -128,203 +270,6 @@ macro (configure_xsilium ROOT OGREPATH)
 			install(FILES ${OGRE_BINARY_DIR}/OGRE.props DESTINATION "${CMAKE_INSTALL_PREFIX}")
 		endif ()
 	endif ()
-
-
-
-
-	
-	if (APPLE)
-		option(XSILIUM_BUILD_IPHONE	"Build GameKit on iOS SDK"	OFF)
-		option(XSILIUM_BUILD_IPHONE_UNIV "Support arm6 architecture for old devcie" OFF)
-	endif()
-
-	option(XSILIUM_BUILD_ANDROID	"Build GameKit on Android SDK" OFF)
-	option(XSILIUM_BUILD_NACL		"Build GameKit on NACL" OFF)
-
-	
-	if (XSILIUM_BUILD_ANDROID OR XSILIUM_BUILD_IPHONE OR XSILIUM_BUILD_NACL)
-		set(XSILIUM_BUILD_MOBILE 1) #Force use GLES2, not GL.
-	endif()
-    
-    	if (XSILIUM_BUILD_GLES2RS)
-        	set(XSILIUM_USE_RTSHADER_SYSTEM TRUE CACHE BOOL "Forcing RTShaderSystem" FORCE)
-    	endif()
-	
-	if (XSILIUM_USE_RTSHADER_SYSTEM OR XSILIUM_USE_COMPOSITOR)
-		set(XSILIUM_DISABLE_ZIP CACHE BOOL "Forcing ZZLib" FORCE)
-	endif()
-	
-	if (XSILIUM_USE_RTSHADER_SYSTEM)
-		set(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM TRUE)
-		set(RTSHADER_SYSTEM_BUILD_CORE_SHADERS 1)
-		set(RTSHADER_SYSTEM_BUILD_EXT_SHADERS 1)				
-		
-		if (XSILIUM_BUILD_MOBILE)
-			message(STATUS "mobile rtshader")
-			set(OGRE_BUILD_RENDERSYSTEM_GLES CACHE BOOL "Forcing OpenGLES" FORCE)
-			set(OGRE_BUILD_RENDERSYSTEM_GLES2 TRUE CACHE BOOL "Forcing OpenGLES2" FORCE)
-
-			set(XSILIUM_BUILD_GLESRS  CACHE BOOL "Forcing remove GLES"   FORCE)
-			set(XSILIUM_BUILD_GLES2RS TRUE CACHE BOOL "Forcing OpenGLES2" FORCE)
-        	endif()
-	endif()	
-	
-	
-	if (XSILIUM_COMPILE_OGRE_COMPONENTS)
-		option(OGRE_BUILD_COMPONENT_PAGING "Build Ogre Paging Compoment" ON)
-		option(OGRE_BUILD_COMPONENT_TERRAIN "Build Ogre Terrain Compoment" ON)
-		option(OGRE_BUILD_COMPONENT_RTSHADERSYSTEM "Build Ogre RTShaderSystem Compoment" ON)
-		option(OGRE_BUILD_COMPONENT_PROPERTY "Build Ogre Property Compoment(Required boost)" ON)
-		option(OGRE_BUILD_COMPONENT_VOLUME "Build Volume component" ON)
-		
-	endif()
-
-	#Configuration Ogre
-	# determine if we are compiling for a 32bit or 64bit system
-	include(CheckTypeSize)
-	CHECK_TYPE_SIZE("void*" OGRE_PTR_SIZE BUILTIN_TYPES_ONLY)
-	if (OGRE_PTR_SIZE EQUAL 8)
-  		set(OGRE_PLATFORM_X64 TRUE)
-	else ()
-  		set(OGRE_PLATFORM_X64 FALSE)
-	endif ()
-
-	if (NOT APPLE)
-  	# Create debug libraries with _d postfix
-  		set(CMAKE_DEBUG_POSTFIX "_d")
-	endif ()
-
-# Set compiler specific build flags
-if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
-  check_cxx_compiler_flag(-msse OGRE_GCC_HAS_SSE)
-  if (OGRE_GCC_HAS_SSE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse")
-  endif ()
-  # This is a set of sensible warnings that provide meaningful output
-  set(OGRE_WARNING_FLAGS "-Wall -Winit-self -Wno-overloaded-virtual -Wcast-qual -Wwrite-strings -Wextra -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long")
-  if (NOT APPLE)
-      set(OGRE_WARNING_FLAGS "${OGRE_WARNING_FLAGS} -Wno-unused-but-set-parameter")
-  endif ()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OGRE_WARNING_FLAGS}")
-endif ()
-if (MSVC)
-  if (CMAKE_BUILD_TOOL STREQUAL "nmake")
-    # set variable to state that we are using nmake makefiles
-	set(NMAKE TRUE)
-  endif ()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:fast")
-  # Enable intrinsics on MSVC in debug mode
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Oi")
-  if (CMAKE_CL_64)
-    # Visual Studio bails out on debug builds in 64bit mode unless
-	# this flag is set...
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /bigobj")
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /bigobj")
-  endif ()
-  if (OGRE_UNITY_BUILD)
-    # object files can get large with Unity builds
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
-  endif ()
-  if (MSVC_VERSION GREATER 1500 OR MSVC_VERSION EQUAL 1500)
-    option(OGRE_BUILD_MSVC_MP "Enable build with multiple processes in Visual Studio" TRUE)
-  else()
-    set(OGRE_BUILD_MSVC_MP FALSE CACHE BOOL "Compiler option /MP requires at least Visual Studio 2008 (VS9) or newer" FORCE)
-  endif()
-  if(OGRE_BUILD_MSVC_MP)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-  endif ()
-  if(MSVC_VERSION GREATER 1400 OR MSVC_VERSION EQUAL 1400)
-    option(OGRE_BUILD_MSVC_ZM "Add /Zm256 compiler option to Visual Studio to fix PCH errors" TRUE)
-  else()
-    set(OGRE_BUILD_MSVC_ZM FALSE CACHE BOOL "Compiler option /Zm256 requires at least Visual Studio 2005 (VS8) or newer" FORCE)
-  endif()
-  if(OGRE_BUILD_MSVC_ZM)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm256")
-  endif ()
-endif ()
-if (MINGW)
-  add_definitions(-D_WIN32_WINNT=0x0500)
-  # set architecture to i686, since otherwise some versions of MinGW can't link
-  # the atomic primitives
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i686")
-  # Fpermissive required to let some "non-standard" casting operations in the plugins pass
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
-  # disable this optimisation because it breaks release builds (reason unknown)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-tree-slp-vectorize")
-endif ()
-
-if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
-  # Test for GCC visibility
-  include(CheckCXXCompilerFlag)
-  check_cxx_compiler_flag(-fvisibility=hidden OGRE_GCC_VISIBILITY)
-  if (OGRE_GCC_VISIBILITY)
-    # determine gcc version
-    execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion
-      OUTPUT_VARIABLE OGRE_GCC_VERSION)
-    message(STATUS "Detected g++ ${OGRE_GCC_VERSION}")
-    message(STATUS "Enabling GCC visibility flags")
-    set(OGRE_GCC_VISIBILITY_FLAGS "-DOGRE_GCC_VISIBILITY -fvisibility=hidden")
-    set(XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN "YES")
-
-    # check if we can safely add -fvisibility-inlines-hidden
-    string(TOLOWER "${CMAKE_BUILD_TYPE}" OGRE_BUILD_TYPE)
-    if (OGRE_BUILD_TYPE STREQUAL "debug" AND OGRE_GCC_VERSION VERSION_LESS "4.2")
-      message(STATUS "Skipping -fvisibility-inlines-hidden due to possible bug in g++ < 4.2")
-    else ()
-      if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-        message(STATUS "Skipping -fvisibility-inlines-hidden due to linker issues")
-        set(XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN[arch=x86_64] "YES")
-      else()
-        set(OGRE_GCC_VISIBILITY_FLAGS "${OGRE_GCC_VISIBILITY_FLAGS} -fvisibility-inlines-hidden")
-        set(XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN "YES")
-      endif()
-    endif ()
-  endif (OGRE_GCC_VISIBILITY)
-
-  # Fix x64 issues on Linux
-  if(OGRE_PLATFORM_X64 AND NOT APPLE)
-    add_definitions(-fPIC)
-  endif()
-endif ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
-
-# determine system endianess
-if (MSVC)
-  # This doesn't work on VS 2010
-  # MSVC only builds for intel anyway
-  set(OGRE_TEST_BIG_ENDIAN FALSE)
-else()
-  include(TestBigEndian)
-  test_big_endian(OGRE_TEST_BIG_ENDIAN)
-endif()
-
-if (OGRE_BUILD_PLATFORM_WINRT)
-# WinRT can only use the standard allocator
-set(OGRE_CONFIG_ALLOCATOR 1 CACHE STRING "Forcing Standard Allocator for WinRT" FORCE)
-else ()
-set(OGRE_CONFIG_ALLOCATOR 4 CACHE STRING
-"Specify the memory allocator to use. Possible values:
-  1 - Standard allocator
-  2 - nedmalloc
-  3 - User-provided allocator
-  4 - nedmalloc with pooling"
-)
-endif ()
-
-
-if (APPLE)
-	
-	# Set 10.4 as the base SDK by default
-	set(XCODE_ATTRIBUTE_SDKROOT macosx10.7)
-	
-	if (NOT CMAKE_OSX_ARCHITECTURES)
-		set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_64_BIT})
-	endif()
-	  
-endif ()
-
-
-
-
 
 endmacro(configure_xsilium)
 

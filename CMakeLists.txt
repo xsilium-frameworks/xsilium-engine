@@ -29,6 +29,7 @@ include(ConfigXsilium)
 include(ConfigTargets)
 include(OgreAddTargets)
 include(MacroLogFeature)
+include(PreprocessorUtils)
 
 configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
 

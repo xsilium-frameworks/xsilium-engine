@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 2.6.2)
 
 project(OGRELite)
 include(PrecompiledHeader)
-include(PreprocessorUtils)
 
 # determine Ogre version numbers
 include(OgreGetVersion)
