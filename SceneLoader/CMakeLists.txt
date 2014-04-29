@@ -151,21 +151,21 @@ if(WIN32)
    )
 endif(WIN32)
 
-if(UNIX AND NOT APPLE)
- 
-	install(TARGETS OgreApp
-		RUNTIME DESTINATION bin
-		CONFIGURATIONS All)
- 
-	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/media
-		DESTINATION ./
-		CONFIGURATIONS Release RelWithDebInfo Debug
-	)
- 
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
-		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
-		DESTINATION bin
-		CONFIGURATIONS Release RelWithDebInfo Debug
-	)
- 
-endif(UNIX AND NOT APPLE)
+#if(UNIX AND NOT APPLE)
+# 
+#	install(TARGETS OgreApp
+#		RUNTIME DESTINATION bin
+#		CONFIGURATIONS All)
+#
+#	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/media
+#		DESTINATION ./
+#		CONFIGURATIONS Release RelWithDebInfo Debug
+#	)
+#
+#	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
+#		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
+#		DESTINATION bin
+#		CONFIGURATIONS Release RelWithDebInfo Debug
+#	)
+#
+#endif(UNIX AND NOT APPLE)

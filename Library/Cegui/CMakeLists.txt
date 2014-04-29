@@ -424,7 +424,7 @@ configure_file( cegui/include/CEGUI/ModuleConfig.h.in cegui/include/CEGUI/Module
 
 if (UNIX AND NOT APPLE)
     configure_file( cegui/CEGUI.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc @ONLY )
-    install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
 
     if (CEGUI_BUILD_RENDERER_NULL)
         configure_file( cegui/CEGUI-NULL.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-NULL.pc @ONLY )
