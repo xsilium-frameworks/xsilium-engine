@@ -293,8 +293,17 @@ set(FreeImage_SOURCES
 	Source/LibRawLite/internal/dcraw_common.cpp
 	Source/LibRawLite/internal/dcraw_fileio.cpp
 	Source/LibRawLite/internal/demosaic_packs.cpp
+	Source/LibRawLite/libraw/libraw.h
+	Source/LibRawLite/libraw/libraw_alloc.h
+	Source/LibRawLite/libraw/libraw_const.h
+	Source/LibRawLite/libraw/libraw_datastream.h
+	Source/LibRawLite/libraw/libraw_internal.h
+	Source/LibRawLite/libraw/libraw_types.h
+	Source/LibRawLite/libraw/libraw_version.h
 	Source/LibRawLite/src/libraw_c_api.cpp
 	Source/LibRawLite/src/libraw_cxx.cpp
+	
+	
 )
 
 
