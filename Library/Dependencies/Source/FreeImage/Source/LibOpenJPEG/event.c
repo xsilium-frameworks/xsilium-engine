@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, Herve Drolon, FreeImage Team
+ * Copyright (c) 2005, Hervé Drolon, FreeImage Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,7 @@
      Utility functions
    ==========================================================*/
 
-#ifdef OPJ_CODE_NOT_USED
-#ifndef _WIN32
+#if !defined(_MSC_VER) && !defined(__MINGW32__)
 static char*
 i2a(unsigned i, char *a, unsigned r) {
 	if (i/r > 0) a = i2a(i/r,a,r);
@@ -58,8 +57,8 @@ _itoa(int i, char *a, int r) {
 	return a;
 }
 
-#endif /* !_WIN32 */
-#endif
+#endif /* !WIN32 */
+
 /* ----------------------------------------------------------------------- */
 
 opj_event_mgr_t* OPJ_CALLCONV opj_set_event_mgr(opj_common_ptr cinfo, opj_event_mgr_t *event_mgr, void *context) {
@@ -73,7 +72,7 @@ opj_event_mgr_t* OPJ_CALLCONV opj_set_event_mgr(opj_common_ptr cinfo, opj_event_
 	return NULL;
 }
 
-opj_bool opj_event_msg(opj_common_ptr cinfo, int event_type, const char *fmt, ...) {
+bool opj_event_msg(opj_common_ptr cinfo, int event_type, const char *fmt, ...) {
 #define MSG_SIZE 512 /* 512 bytes should be more than enough for a short message */
 	opj_msg_callback msg_handler = NULL;
 
@@ -93,10 +92,10 @@ opj_bool opj_event_msg(opj_common_ptr cinfo, int event_type, const char *fmt, ..
 				break;
 		}
 		if(msg_handler == NULL) {
-			return OPJ_FALSE;
+			return false;
 		}
 	} else {
-		return OPJ_FALSE;
+		return false;
 	}
 
 	if ((fmt != NULL) && (event_mgr != NULL)) {
@@ -117,6 +116,6 @@ opj_bool opj_event_msg(opj_common_ptr cinfo, int event_type, const char *fmt, ..
 		msg_handler(message, cinfo->client_data);
 	}
 
-	return OPJ_TRUE;
+	return true;
 }
 

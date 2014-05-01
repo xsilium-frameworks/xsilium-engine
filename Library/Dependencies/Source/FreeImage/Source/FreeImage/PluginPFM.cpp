@@ -147,7 +147,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/x-portable-floatmap";
+	return "image/freeimage-pfm";
 }
 
 static BOOL DLL_CALLCONV

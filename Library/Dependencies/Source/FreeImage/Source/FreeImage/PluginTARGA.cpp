@@ -352,7 +352,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/x-tga";
+	return "image/freeimage-tga";
 }
 
 static BOOL 

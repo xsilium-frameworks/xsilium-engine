@@ -109,7 +109,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/x-koala";
+	return "image/freeimage-koala";
 }
 
 static BOOL DLL_CALLCONV

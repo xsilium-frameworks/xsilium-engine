@@ -1034,10 +1034,9 @@ FIBITMAP* psdParser::Load(FreeImageIO *io, fi_handle handle, int s_format_id, in
 		}
 
 		// set ICC profile
-		FreeImage_CreateICCProfile(Bitmap, _iccProfile._ProfileData, _iccProfile._ProfileSize);
-		if ((flags & PSD_CMYK) == PSD_CMYK) {
-			short mode = _headerInfo._ColourMode;
-			if((mode == PSDP_CMYK) || (mode == PSDP_MULTICHANNEL)) {
+		if(NULL != _iccProfile._ProfileData) {
+			FreeImage_CreateICCProfile(Bitmap, _iccProfile._ProfileData, _iccProfile._ProfileSize);
+			if ((flags & PSD_CMYK) == PSD_CMYK) {
 				FreeImage_GetICCProfile(Bitmap)->flags |= FIICC_COLOR_IS_CMYK;
 			}
 		}

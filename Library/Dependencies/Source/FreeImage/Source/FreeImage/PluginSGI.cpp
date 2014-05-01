@@ -188,7 +188,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-  return "image/x-sgi";
+  return "image/sgi";
 }
 
 static BOOL DLL_CALLCONV
