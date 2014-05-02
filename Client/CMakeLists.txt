@@ -45,7 +45,7 @@ endif()
 
 if (APPLE)
 	list(APPEND CORE_SOURCE_FILES "SDK/OSX/XsiliumApp.mm")
-	set_source_files_properties("SDK/OSX/XsiliumApp.mm" "main.cpp" "XsiliumApp.cpp" PROPERTIES COMPILE_FLAGS "-x objective-c++")
+	set_source_files_properties( ${CORE_SOURCE_FILES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
  set(SRC  
@@ -99,7 +99,7 @@ if (APPLE)
 	target_link_libraries(${TargetName} ${CoreVideo_LIBRARIES})
 
    	set_target_properties(${TargetName} PROPERTIES
-        LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo -framework ApplicationServices")
+        LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo -framework ApplicationServices ")
 
     # Add the path where the Ogre framework was found, if it has been found somewhere
     if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "" AND OGRE_SDK_BUILD)

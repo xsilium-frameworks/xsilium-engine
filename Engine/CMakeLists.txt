@@ -116,6 +116,14 @@ set( GestionnaireMeteo_S
 ./GestionnaireMeteo/HydraxRttListener/HydraxRttListener.cpp
 )
 
+set( Objet_H
+./Objet/Objet.h
+)
+
+set( Objet_S
+./Objet/Objet.cpp
+)
+
 
 
 set (CORE_SOURCE_FILES 
@@ -131,6 +139,7 @@ ${Entite_S}
 ${CallBack_S}
 ${ModuleActif_S}
 ${GestionnaireMeteo_S}
+${Objet_S}
 )
 
 set (CORE_HEADER_FILES 
@@ -148,6 +157,7 @@ ${Entite_H}
 ${CallBack_H}
 ${ModuleActif_H}
 ${GestionnaireMeteo_H}
+${Objet_H}
 )
 
 include_directories(

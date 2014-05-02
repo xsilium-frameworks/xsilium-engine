@@ -46,7 +46,7 @@ void GestionnaireMouvement::setCamera(Ogre::Camera* cam)
 	// create a pivot at roughly the character's shoulder
 	mCameraPivot = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraPivot");
 	// this is where the camera should be soon, and it spins around the pivot
-	mCameraGoal = mCameraPivot->createChildSceneNode("mCameraGoal",Ogre::Vector3(0, 0, 8));
+	mCameraGoal = mCameraPivot->createChildSceneNode("mCameraGoal",Ogre::Vector3(0, 0, 3));
 	// this is where the camera actually is
 	mCameraNode = cam->getSceneManager()->getRootSceneNode()->createChildSceneNode("mCameraNode");
 	mCameraNode->setPosition(mCameraPivot->getPosition() + mCameraGoal->getPosition());
@@ -74,6 +74,19 @@ bool GestionnaireMouvement::keyPressed(const OIS::KeyEvent &keyEventRef)
 		if( keyEventRef.key == keyboardMap->checkKey("RECULER"))
 			mKeyDirection.z = 1;
 	}
+
+	if (!mKeyDirection.isZeroLength())
+	{
+		// start running if not already moving and the player wants to move
+		entite->runAnimation();
+	}
+
+	if( keyEventRef.key == keyboardMap->checkKey("DEGAINER"))
+	{
+		entite->degainerArme();
+	}
+
+
 	return true;
 
 
@@ -104,6 +117,12 @@ bool GestionnaireMouvement::keyReleased(const OIS::KeyEvent &keyEventRef)
 		if( keyEventRef.key == keyboardMap->checkKey("RECULER")  && mKeyDirection.z == 1 )
 			mKeyDirection.z = 0;
 	}
+
+	if (mKeyDirection.isZeroLength() && keyEventRef.key != keyboardMap->checkKey("DEGAINER") )
+	{
+		entite->idleAnimation();
+	}
+
 	return true;
 
 }
@@ -183,22 +202,6 @@ void GestionnaireMouvement::updateBody(double timeSinceLastFrame)
 
 		// move in current body direction (not the goal direction)
 		entite->getBody()->translate(0, 0, timeSinceLastFrame * entite->getRunSpeed(),Ogre::Node::TS_LOCAL);
-
-		Event event;
-		event.setProperty("Evenement",std::string("Animation"));
-		event.setProperty("AnimationBas",std::string("RunBase"));
-		event.setProperty("AnimationHaut",std::string("RunTop"));
-		entite->setEvent(event);
-
-	}
-	else
-	{
-		Event event;
-		event.setProperty("Evenement",std::string("Animation"));
-		event.setProperty("AnimationBas",std::string("IdleBase"));
-		event.setProperty("AnimationHaut",std::string("IdleTop"));
-		entite->setEvent(event);
-
 	}
 }
 
@@ -229,7 +232,7 @@ void GestionnaireMouvement::updateCameraGoal(Ogre::Real deltaYaw, Ogre::Real del
 	Ogre::Real distChange = deltaZoom * dist;
 
 	// bound the zoom
-	if (!(dist + distChange < 4 && distChange < 0) && !(dist + distChange > 15 && distChange > 0))
+	if (!(dist + distChange < 1 && distChange < 0) && !(dist + distChange > 8 && distChange > 0))
 	{
 		mCameraGoal->translate(0, 0, distChange, Ogre::Node::TS_LOCAL);
 	}

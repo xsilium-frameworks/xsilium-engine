@@ -11,7 +11,7 @@
 Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom) {
 
 	this->sceneMgr = sceneMgr;
-	charHeight = 5;
+	charHeight = 1;
 	turnSpeed = 500.0f;
 	runSpeed = 3 ;
 	setNom(nom);
@@ -44,6 +44,26 @@ void Personnage::update(double timeSinceLastFrame)
 
 void Personnage::processAnimation(Event * event)
 {
-	animation->setAnimationBas(event->getProperty("AnimationBas").c_str());
-	animation->setAnimationHaut(event->getProperty("AnimationHaut").c_str());
+    if(event->hasProperty("AnimationBas"))
+    {
+    	if(event->hasProperty("AnimationBasReset"))
+    	{
+    		animation->setAnimationBas(event->getProperty("AnimationBas").c_str(),atoi(event->getProperty("AnimationBasReset").c_str()));
+    	}
+    	else
+    	{
+    		animation->setAnimationBas(event->getProperty("AnimationBas").c_str());
+    	}
+    }
+    if(event->hasProperty("AnimationHaut"))
+    {
+    	if(event->hasProperty("AnimationHautReset"))
+    	{
+    		animation->setAnimationHaut(event->getProperty("AnimationHaut").c_str(),atoi(event->getProperty("AnimationHautReset").c_str()));
+    	}
+    	else
+    	{
+    		animation->setAnimationHaut(event->getProperty("AnimationHaut").c_str());
+    	}
+    }
 }

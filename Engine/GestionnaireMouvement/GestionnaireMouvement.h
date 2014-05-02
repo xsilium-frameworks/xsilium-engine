@@ -20,7 +20,7 @@
 
 #include "Singleton/Singleton.h"
 
-#define CAM_HEIGHT 2
+#define CAM_HEIGHT 0.5
 
 /*
  *

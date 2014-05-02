@@ -55,6 +55,7 @@ void Animation::loadAnimation()
 
 void Animation::updateAnimation(double timeSinceLastFrame)
 {
+	mTimer += timeSinceLastFrame;
 	mBodyEnt->getAnimationState(nomAnimationBasActuel)->addTime(timeSinceLastFrame);
 	mBodyEnt->getAnimationState(nomAnimationHautActuel)->addTime(timeSinceLastFrame);
 
@@ -81,9 +82,6 @@ void Animation::updateAnimation(double timeSinceLastFrame)
 			}
 		}
 	}
-
-
-
 }
 
 void Animation::setAnimationBas(Ogre::String nomAnimation,bool reset)
@@ -99,6 +97,11 @@ void Animation::setAnimationBas(Ogre::String nomAnimation,bool reset)
 		animation->second.FadingIn = true;
 		animation->second.FadingOut = false;
 		nomAnimationBasActuel = nomAnimation;
+		mTimer = 0;
+	}
+	if(reset)
+	{
+		mBodyEnt->getAnimationState(nomAnimationBasActuel)->setTimePosition(0);
 	}
 }
 
@@ -116,7 +119,24 @@ void Animation::setAnimationHaut(Ogre::String nomAnimation,bool reset)
 		animation->second.FadingIn = true;
 		animation->second.FadingOut = false;
 		nomAnimationHautActuel = nomAnimation;
+		mTimer = 0;
 	}
+	if(reset)
+	{
+		mBodyEnt->getAnimationState(nomAnimationHautActuel)->setTimePosition(0);
+	}
+}
+
+void Animation::setAnimationSeul(Ogre::String nomAnimation)
+{
+	animation = listOfAnimation.find(nomAnimation);
+	animation->second.mAnims->setEnabled(true);
+}
+
+void Animation::unsetAnimationSeul(Ogre::String nomAnimation)
+{
+	animation = listOfAnimation.find(nomAnimation);
+	animation->second.mAnims->setEnabled(false);
 }
 
 Ogre::String Animation::getNomAnimationBasActuel()
@@ -126,4 +146,9 @@ Ogre::String Animation::getNomAnimationBasActuel()
 Ogre::String Animation::getNomAnimationHautActuel()
 {
 	return this->nomAnimationHautActuel;
+}
+
+double Animation::getTime()
+{
+	return mTimer;
 }

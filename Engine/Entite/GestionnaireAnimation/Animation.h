@@ -37,8 +37,13 @@ public:
 	void setAnimationBas(Ogre::String nomAnimation,bool reset = false);
 	void setAnimationHaut(Ogre::String nomAnimation,bool reset = false);
 
+	void setAnimationSeul(Ogre::String nomAnimation);
+	void unsetAnimationSeul(Ogre::String nomAnimation);
+
 	Ogre::String getNomAnimationBasActuel();
 	Ogre::String getNomAnimationHautActuel();
+
+	double getTime();
 
 
 private:
@@ -51,6 +56,8 @@ private:
 
 	Ogre::String nomAnimationBasActuel;
 	Ogre::String nomAnimationHautActuel;
+
+	double mTimer;
 
 };
 

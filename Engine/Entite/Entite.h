@@ -9,13 +9,10 @@
 #ifndef ENTITE_H_
 #define ENTITE_H_
 
-#include <string>
-#include <stdint.h>
-#include <OgreEntity.h>
-#include <OgreSceneManager.h>
+#include <map>
 
+#include "Objet/Objet.h"
 #include "Entite/GestionnaireAnimation/Animation.h"
-
 #include "EventManager/EventManager.h"
 
 /*
@@ -32,6 +29,11 @@ public:
 	std::string * getNom();
 	double getTurnSpeed();
 	int getRunSpeed();
+	void degainerArme();
+	bool isDegainerArme();
+
+	void runAnimation();
+	void idleAnimation();
 
 	void update(double timeSinceLastFrame);
 
@@ -41,6 +43,8 @@ public:
 
 
 	Ogre::SceneNode* getBody();
+
+	void addObjet(const char * nomObjet,const char * fileMesh,const char * emplacement);
 
 
 
@@ -61,6 +65,11 @@ protected:
     EventManager * eventManager ;
 
 	Animation * animation ;
+
+	std::map<int,Objet*> listOfObject;
+	int countObjet;
+
+	bool degainer;
 
 
 };

@@ -219,6 +219,7 @@ set(FreeImage_SOURCES
 	Source/FreeImage/PluginXPM.cpp
 	Source/FreeImage/PSDParser.cpp
 	Source/FreeImage/TIFFLogLuv.cpp
+	Source/FreeImage.h
 	Source/DeprecationManager/Deprecated.cpp
 	Source/DeprecationManager/DeprecationMgr.cpp
 	Source/FreeImage/CacheFile.cpp

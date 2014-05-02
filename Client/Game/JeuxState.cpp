@@ -100,6 +100,8 @@ void JeuxState::createScene()
 	gestionnaireEntite = new GestionnaireEntite();
 
 	perso = new Personnage(m_pSceneMgr,"perso1");
+	perso->addObjet("SinbadSword1", "Sword.mesh","Sheath.L");
+	perso->addObjet("SinbadSword2", "Sword.mesh","Sheath.R");
 
 	perso2 = new Personnage(m_pSceneMgr,"perso2");
 
