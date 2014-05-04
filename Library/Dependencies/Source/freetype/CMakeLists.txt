@@ -1,7 +1,3 @@
-# ---------------------------------------------------------
-cmake_minimum_required(VERSION 2.6)
-
-
 set(FREETYPE_SRC 
 	src/autofit/autofit.c
 	src/bdf/bdf.c
@@ -56,4 +52,4 @@ endif()
 
 include_directories(include)
 add_definitions(-DFT2_BUILD_LIBRARY)
-add_library(freetype ${FREETYPE_SRC} ${FREETYPE_PLATFORM})
+add_library(freetype STATIC ${FREETYPE_SRC} ${FREETYPE_PLATFORM})

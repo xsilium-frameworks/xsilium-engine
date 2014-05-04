@@ -85,18 +85,13 @@ void JeuxState::createScene()
 	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "GameSceneMgr");
 
 	m_pCamera = m_pSceneMgr->createCamera("PlayerCam");
+	m_pCamera->setNearClipDistance(0.1);
 
 	XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
 
 
-	m_pCamera->setNearClipDistance(0.1);
-
-
 	m_Loader = new DotSceneLoader();
 	m_Loader->parseDotScene("Xsilium1.scene", "General", m_pSceneMgr);
-
-	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
-
 	gestionnaireEntite = new GestionnaireEntite();
 
 	perso = new Personnage(m_pSceneMgr,"perso1","Sinbad.mesh");

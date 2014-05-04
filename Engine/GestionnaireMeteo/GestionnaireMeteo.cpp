@@ -11,7 +11,7 @@
 GestionnaireMeteo::GestionnaireMeteo(Ogre::SceneManager *sm) {
 
 	m_pSceneMgr = sm;
-	m_pCamera = XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->getCamera();
+	m_pCamera = m_pSceneMgr->getCamera("PlayerCam");
 	mSkyX = 0;
 	mBasicController = 0;
 	mHydrax = 0;
@@ -130,10 +130,8 @@ void GestionnaireMeteo::createEau(const Ogre::String File)
 
 	// Set our module
 	mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
-	mHydrax->getRttManager()->setReflectionDisplacementError(1.8);
-	mHydrax->setUnderwaterCameraSwitchDelta(-.2);
 
-	mHydrax->loadCfg("Hydrax.hdx");
+	mHydrax->loadCfg(File);
 
 	// Create water
 	mHydrax->create();
