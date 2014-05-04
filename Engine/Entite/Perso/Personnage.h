@@ -17,7 +17,7 @@
  */
 class Personnage : public Entite {
 public:
-	Personnage(Ogre::SceneManager* sceneMgr,const char * nom);
+	Personnage(Ogre::SceneManager* sceneMgr,const char * nom,const char * fileMesh);
 	virtual ~Personnage();
 
 	void update(double timeSinceLastFrame);

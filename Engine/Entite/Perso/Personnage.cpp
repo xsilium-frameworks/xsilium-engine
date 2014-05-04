@@ -8,7 +8,7 @@
 
 #include "Personnage.h"
 
-Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom) {
+Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom,const char * fileMesh) {
 
 	this->sceneMgr = sceneMgr;
 	charHeight = 1;
@@ -17,7 +17,7 @@ Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom) {
 	setNom(nom);
 	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(nom,Ogre::Vector3::UNIT_Y * charHeight);
 	mBodyNode->setPosition(Ogre::Vector3(-117.245,189,-159.918));
-	mBodyEnt = sceneMgr->createEntity("Sinbad.mesh");
+	mBodyEnt = sceneMgr->createEntity(fileMesh);
 
 	mBodyEnt->setCastShadows(true);
 

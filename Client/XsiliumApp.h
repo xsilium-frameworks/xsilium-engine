@@ -37,6 +37,7 @@ private:
     NSWindow *window;
 	Ogre::SceneNode *objectNode;
 	OgreView *ogreView;
+    XsiliumApp *xsilium;
 }
 
 @property (assign) IBOutlet NSWindow *window;

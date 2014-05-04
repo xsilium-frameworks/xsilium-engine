@@ -304,14 +304,14 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 			pPageElement = pPageElement->next_sibling("terrainPage");
 		}
 	}
-	mTerrainGroup->loadAllTerrains(false);
+	mTerrainGroup->loadAllTerrains(true);
 	Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
 	while(ti.hasMoreElements())
 	{
 		Ogre::Terrain* terrain = ti.getNext()->instance;
 
 		// re-use old material if exists
-		Ogre::MaterialPtr mat = terrain->_getMaterial();
+		Ogre::MaterialPtr mat = terrain->getMaterial();
 
 		if (mat.isNull())
 		{

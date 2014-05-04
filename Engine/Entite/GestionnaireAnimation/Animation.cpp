@@ -24,20 +24,20 @@ Animation::~Animation() {
 
 void Animation::loadAnimation()
 {
-	Ogre::String animNames[] =
-	{"IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords",
-			"SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"};
+	//{"IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords",
+	//		"SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"};
 
 	// populate our animation list
-	for (int i = 0; i < 13; i++)
-	{
+	Ogre::AnimationStateIterator iter = mBodyEnt->getAllAnimationStates()->getAnimationStateIterator();
+	while (iter.hasMoreElements()) {
 		AnimationStructure animationTemp;
-		animationTemp.mAnims = mBodyEnt->getAnimationState(animNames[i]);
+		animationTemp.mAnims = iter.peekNextValue();
 		animationTemp.mAnims->setLoop(true);
 		animationTemp.mAnims->setEnabled(false);
 		animationTemp.FadingIn = false;
 		animationTemp.FadingOut = false;
-		listOfAnimation[animNames[i]] = animationTemp ;
+		listOfAnimation[iter.peekNextKey()] = animationTemp ;
+		iter.moveNext();
 	}
 
 	animation = listOfAnimation.find("IdleBase");
@@ -93,11 +93,14 @@ void Animation::setAnimationBas(Ogre::String nomAnimation,bool reset)
 		animation->second.FadingOut = true;
 
 		animation = listOfAnimation.find(nomAnimation);
-		animation->second.mAnims->setEnabled(true);
-		animation->second.FadingIn = true;
-		animation->second.FadingOut = false;
-		nomAnimationBasActuel = nomAnimation;
-		mTimer = 0;
+		if(listOfAnimation.end() != animation)
+		{
+			animation->second.mAnims->setEnabled(true);
+			animation->second.FadingIn = true;
+			animation->second.FadingOut = false;
+			nomAnimationBasActuel = nomAnimation;
+			mTimer = 0;
+		}
 	}
 	if(reset)
 	{
@@ -113,13 +116,15 @@ void Animation::setAnimationHaut(Ogre::String nomAnimation,bool reset)
 		animation->second.FadingIn = false;
 		animation->second.FadingOut = true;
 
-
 		animation = listOfAnimation.find(nomAnimation);
-		animation->second.mAnims->setEnabled(true);
-		animation->second.FadingIn = true;
-		animation->second.FadingOut = false;
-		nomAnimationHautActuel = nomAnimation;
-		mTimer = 0;
+		if(listOfAnimation.end() != animation)
+		{
+			animation->second.mAnims->setEnabled(true);
+			animation->second.FadingIn = true;
+			animation->second.FadingOut = false;
+			nomAnimationHautActuel = nomAnimation;
+			mTimer = 0;
+		}
 	}
 	if(reset)
 	{
