@@ -130,8 +130,8 @@ void GestionnaireMeteo::createEau(const Ogre::String File)
 
 	// Set our module
 	mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
-	//mHydrax->getRttManager()->setReflectionDisplacementError(1.8);
-	//mHydrax->setUnderwaterCameraSwitchDelta(-.2);
+	mHydrax->getRttManager()->setReflectionDisplacementError(1.8);
+	mHydrax->setUnderwaterCameraSwitchDelta(-.2);
 
 	mHydrax->loadCfg("Hydrax.hdx");
 
@@ -185,6 +185,6 @@ void GestionnaireMeteo::addDepthTechnique(Ogre::MaterialPtr mat)
 	{
 		if(mat->getTechnique(i)->getSchemeName() == "HydraxDepth") return;
 	}
-
-	mHydrax->getMaterialManager()->addDepthTechnique(mat->createTechnique());
+    if(mHydrax)
+        mHydrax->getMaterialManager()->addDepthTechnique(mat->createTechnique());
 }

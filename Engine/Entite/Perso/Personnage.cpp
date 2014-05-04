@@ -16,7 +16,7 @@ Personnage::Personnage(Ogre::SceneManager* sceneMgr,const char * nom,const char 
 	runSpeed = 3 ;
 	setNom(nom);
 	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(nom,Ogre::Vector3::UNIT_Y * charHeight);
-	mBodyNode->setPosition(Ogre::Vector3(-117.245,189,-159.918));
+	mBodyNode->setPosition(Ogre::Vector3(0,0.7,0));
 	mBodyEnt = sceneMgr->createEntity(fileMesh);
 
 	mBodyEnt->setCastShadows(true);

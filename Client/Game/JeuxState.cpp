@@ -93,7 +93,7 @@ void JeuxState::createScene()
 
 
 	m_Loader = new DotSceneLoader();
-	m_Loader->parseDotScene("basique_terrain1.scene", "General", m_pSceneMgr);
+	m_Loader->parseDotScene("Xsilium1.scene", "General", m_pSceneMgr);
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 
