@@ -112,11 +112,6 @@ void JeuxState::createScene()
 
 bool JeuxState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
-	CEGUI::System& gui_system(CEGUI::System::getSingleton());
-
-	gui_system.injectTimePulse(m_FrameEvent.timeSinceLastFrame);
-	gui_system.getDefaultGUIContext().injectTimePulse(m_FrameEvent.timeSinceLastFrame);
-
 	if(m_bQuit == true)
 	{
 		popGameState();

@@ -3,9 +3,9 @@
 InputManager *InputManager::mInputManager;
 
 InputManager::InputManager( void ) :
-    				mInputSystem( 0 ),
-    				mMouse( 0 ),
-    				mKeyboard( 0 ){
+    								mInputSystem( 0 ),
+    								mMouse( 0 ),
+    								mKeyboard( 0 ){
 	m_fRepeatDelay = 0.035f;
 	m_fInitialDelay = 0.300f;
 	m_nKey = OIS::KC_UNASSIGNED ;
@@ -128,6 +128,7 @@ void InputManager::capture( float timeSinceLastFrame ) {
 		}
 	}
 	update(timeSinceLastFrame);
+	CEGUI::System::getSingleton().injectTimePulse(timeSinceLastFrame);
 }
 
 void InputManager::addKeyListener( OIS::KeyListener *keyListener, const std::string& instanceName ) {
@@ -321,7 +322,6 @@ bool InputManager::mouseMoved( const OIS::MouseEvent &e ) {
 	CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
 
 	ctx.injectMouseMove(e.state.X.rel, e.state.Y.rel);
-	ctx.injectMouseWheelChange(e.state.Z.rel / 120.0f);
 
 	for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
 		itMouseListener->second->mouseMoved( e );

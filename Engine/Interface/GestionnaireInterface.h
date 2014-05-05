@@ -17,6 +17,7 @@
 #include "Interface/Interface.h"
 
 #include "XsiliumFramework.h"
+#include "InputManager/InputManager.h"
 
 
 
@@ -51,6 +52,7 @@ public:
 
 
 private:
+	InputManager * inputManager;
 	int generateID;
 
 	static void  threadAuthentification(void * arguments);

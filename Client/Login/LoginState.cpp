@@ -64,8 +64,6 @@ void LoginState::exit()
 
 bool LoginState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
-	CEGUI::System::getSingleton().injectTimePulse(m_FrameEvent.timeSinceLastFrame);
-
 	if(m_bQuit)
 	{
 		popGameState();

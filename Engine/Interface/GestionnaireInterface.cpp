@@ -10,6 +10,7 @@
 
 GestionnaireInterface::GestionnaireInterface() {
 
+	inputManager = InputManager::getSingletonPtr();
 	interfacePrincipale = false;
 	generateID = 0;
 	initialisationInterface();
@@ -31,7 +32,11 @@ GestionnaireInterface::~GestionnaireInterface() {
 
 void GestionnaireInterface::initialisationInterface()
 {    
-	CEGUI::OgreRenderer::bootstrapSystem();
+	CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
+
+	const OIS::MouseState state = inputManager->getMouse()->getMouseState();
+    CEGUI::Vector2f mousePos = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getPosition();
+	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseMove(state.X.abs-mousePos.d_x,state.Y.abs-mousePos.d_y);
 
 	// set the default resource groups to be used
 	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
