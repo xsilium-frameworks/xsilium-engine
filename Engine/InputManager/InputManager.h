@@ -55,7 +55,7 @@ protected:
 
 private:
 	InputManager( void );
-	InputManager( const InputManager& ) { }
+	InputManager( const InputManager& ) { };
 	InputManager & operator = ( const InputManager& );
 
 	bool keyPressed( const OIS::KeyEvent &e );
