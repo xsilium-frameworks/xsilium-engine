@@ -18,7 +18,8 @@ class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickL
 	friend class xsilium::Singleton<InputManager>;
 
 public:
-	virtual ~InputManager( void );
+	InputManager();
+	virtual ~InputManager();
 
 	void initialise( Ogre::RenderWindow *renderWindow );
 	void capture( float timeSinceLastFrame );
@@ -53,10 +54,6 @@ protected:
 	CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
 
 private:
-	InputManager( void );
-	InputManager( const InputManager& ) { };
-	InputManager & operator = ( const InputManager& );
-
 	bool keyPressed( const OIS::KeyEvent &e );
 	bool keyReleased( const OIS::KeyEvent &e );
 
@@ -95,8 +92,6 @@ private:
 	std::map<std::string, OIS::KeyListener*>::iterator itKeyListenerEnd;
 	std::map<std::string, OIS::MouseListener*>::iterator itMouseListenerEnd;
 	std::map<std::string, OIS::JoyStickListener*>::iterator itJoystickListenerEnd;
-
-	static InputManager *mInputManager;
 
 	OIS::KeyCode m_nKey;
 	unsigned int m_nChar;
