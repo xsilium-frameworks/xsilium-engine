@@ -34,6 +34,8 @@ DotSceneLoader::~DotSceneLoader()
 {
     if(mGrassLoaderHandle)
         delete mGrassLoaderHandle;
+    if(gestionnaireMeteo)
+        delete gestionnaireMeteo;
     
     std::vector<Forests::PagedGeometry *>::iterator it = mPGHandles.begin();
     while(it != mPGHandles.end())

@@ -13,8 +13,9 @@
 #include <OgrePrerequisites.h>
 
 
-class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener
+class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener, public xsilium::Singleton<InputManager>
 {
+	friend class xsilium::Singleton<InputManager>;
 
 public:
 	virtual ~InputManager( void );
@@ -46,8 +47,6 @@ public:
 	OIS::JoyStick* getJoystick( unsigned int index );
 
 	int getNumOfJoysticks( void );
-
-	static InputManager* getSingletonPtr( void );
 
 protected:
 	// convert an OIS mouse button into a CEGUI mouse button

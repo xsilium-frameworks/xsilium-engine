@@ -10,7 +10,7 @@
 
 GestionnaireInterface::GestionnaireInterface() {
 
-	inputManager = InputManager::getSingletonPtr();
+	inputManager = InputManager::getInstance();
 	interfacePrincipale = false;
 	generateID = 0;
 	initialisationInterface();

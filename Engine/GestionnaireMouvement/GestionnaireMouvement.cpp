@@ -11,7 +11,7 @@
 GestionnaireMouvement::GestionnaireMouvement() {
 
 	keyboardMap = KeyboardMap::getInstance();
-	inputManager = InputManager::getSingletonPtr();
+	inputManager = InputManager::getInstance();
 	mKeyDirection = 0;
 	mGoalDirection = 0;
 	mPivotPitch = 0;

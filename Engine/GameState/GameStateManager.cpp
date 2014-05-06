@@ -2,7 +2,7 @@
 
 GameStateManager::GameStateManager()
 {
-	inputManager = InputManager::getSingletonPtr();
+	inputManager = InputManager::getInstance();
 }
 
 GameStateManager::~GameStateManager()

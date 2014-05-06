@@ -11,7 +11,7 @@
 GestionnaireAuth::GestionnaireAuth(GameState * loginState) {
 
 	keyboardMap = KeyboardMap::getInstance();
-	inputManager = InputManager::getSingletonPtr();
+	inputManager = InputManager::getInstance();
 
 	compte = Compte::getInstance();
     

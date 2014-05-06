@@ -9,7 +9,7 @@ JeuxState::JeuxState()
 	m_bQuit             = false;
 	changeState = false;
 
-	inputManager = InputManager::getSingletonPtr();
+	inputManager = InputManager::getInstance();
 	keyboardMap = KeyboardMap::getInstance();
 	gestionnaireChat = 0;
 	gestionnaireEntite = 0;

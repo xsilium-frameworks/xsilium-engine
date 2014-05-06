@@ -18,17 +18,17 @@ XsiliumFramework::~XsiliumFramework()
 	if(m_pRoot)
 		delete m_pRoot;
 	if(inputManager)
-		delete inputManager;
+		InputManager::DestroyInstance();
 	if(keyboardMap)
-		delete keyboardMap;
+		KeyboardMap::DestroyInstance();
 	if(m_pLog)
 		delete m_pLog;
 }
 
 bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 {
-
-	inputManager = InputManager::getSingletonPtr();
+	// Initialisation des inputs
+	inputManager = InputManager::getInstance();
 	keyboardMap = KeyboardMap::getInstance();
 
 
@@ -37,11 +37,11 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 #else
 	mResourcePath = "";
 #endif
-
+	// Chargement des transposition clavier / action
 	keyboardMap->load(mResourcePath + "configKey.xml");
-	keyboardMap->saveKeyboardMap();
 
 
+	// Creation du systeme de log
 	Ogre::LogManager* logMgr = new Ogre::LogManager();
 
 	m_pLog = logMgr->createLog(mResourcePath + "OgreLogfile.log", true, true, false);
@@ -49,7 +49,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 
 	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg",mResourcePath + logName + ".log");
 
-
+	//recuperation des configurtion de la fenetre Ogre
 	if (!m_pRoot->restoreConfig())
 	{
 		if(!m_pRoot->showConfigDialog())
@@ -57,6 +57,7 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 	}
 	m_pRenderWnd = m_pRoot->initialise(true,wndTitle);
 
+	// initialisation des inputs
 	inputManager->initialise(m_pRenderWnd);
 	m_pRenderWnd->addViewport(0);
 

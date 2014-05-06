@@ -22,7 +22,9 @@ void KeyboardMap::load(const std::string& file)
 	std::ifstream fichierConfKey(file.c_str());
 	if (fichierConfKey.fail())
 	{
-		printf("erreur \n");
+		printf("Fichier %s non trouve chargement de la configuration par defaut  \n",fileName.c_str());
+		loadDefault();
+		saveKeyboardMap();
 		return;
 	}
 
@@ -112,4 +114,13 @@ void KeyboardMap::saveKeyboardMap()
 	myfile.close();
 
 
+}
+
+void KeyboardMap::loadDefault()
+{
+	KeyboardBinding["AVANCER"] = static_cast<int>(0x11);
+	KeyboardBinding["DROITE"] = static_cast<int>(0x20);
+	KeyboardBinding["GAUCHE"] = static_cast<int>(0x1e);
+	KeyboardBinding["RECULER"] = static_cast<int>(0x1f);
+	KeyboardBinding["DEGAINER"] = static_cast<int>(0x2c);
 }

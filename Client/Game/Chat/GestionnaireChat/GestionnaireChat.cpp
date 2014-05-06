@@ -16,7 +16,7 @@ GestionnaireChat::GestionnaireChat() {
 	compte = Compte::getInstance();
 
 	keyboardMap = KeyboardMap::getInstance();
-	inputManager = InputManager::getSingletonPtr();
+	inputManager = InputManager::getInstance();
 
 
 	guichat = new Chat(this);

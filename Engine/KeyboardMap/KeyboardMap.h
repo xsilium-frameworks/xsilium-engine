@@ -34,6 +34,8 @@ public:
 	virtual ~KeyboardMap();
 	void load(const std::string& file);
 
+	void loadDefault();
+
 	const char * checkKey(OIS::KeyCode key);
 	const OIS::KeyCode checkKey(const char * touche);
 

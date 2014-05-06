@@ -1,7 +1,5 @@
 #include "InputManager.h"
 
-InputManager *InputManager::mInputManager;
-
 InputManager::InputManager( void ) :mInputSystem( 0 ),mMouse( 0 ),mKeyboard( 0 ){
 	m_fRepeatDelay = 0.035f;
 	m_fInitialDelay = 0.300f;
@@ -52,11 +50,7 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
 		std::ostringstream windowHndStr;
 
 		// Get window handle
-#if defined OIS_WIN32_PLATFORM
 		renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
-#else
-		renderWindow->getCustomAttribute( "WINDOW", &windowHnd );
-#endif
 
 		// Fill parameter list
 		windowHndStr << windowHnd;
@@ -92,8 +86,7 @@ void InputManager::initialise( Ogre::RenderWindow *renderWindow ) {
 			mMouse->setEventCallback( this );
 
 			// Get window size
-			mMouse->getMouseState().height = renderWindow->getHeight();
-			mMouse->getMouseState().width   = renderWindow->getWidth();
+			setWindowExtents(renderWindow->getWidth(),renderWindow->getHeight());
 		}
 
 		// If possible create all joysticks in buffered mode
@@ -404,14 +397,6 @@ bool InputManager::buttonReleased( const OIS::JoyStickEvent &e, int button ) {
 	}
 
 	return true;
-}
-
-InputManager* InputManager::getSingletonPtr( void ) {
-	if( !mInputManager ) {
-		mInputManager = new InputManager();
-	}
-
-	return mInputManager;
 }
 
 CEGUI::MouseButton InputManager::convertOISButtonToCegui(int buttonID)
