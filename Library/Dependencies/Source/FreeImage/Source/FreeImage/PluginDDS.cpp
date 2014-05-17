@@ -547,7 +547,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/x-dds";
+	return "image/freeimage-dds";
 }
 
 static BOOL DLL_CALLCONV

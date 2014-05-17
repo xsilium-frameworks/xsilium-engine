@@ -26,7 +26,7 @@
 // RGB color names  ---------------------------------------------------------
 
 typedef struct tagNamedColor {
-        const char *name;     // color name
+        char *name;     // color name
         BYTE  r;        // red value
         BYTE  g;        // green value
         BYTE  b;        // blue value

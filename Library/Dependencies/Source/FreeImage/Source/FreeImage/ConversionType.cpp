@@ -342,8 +342,7 @@ FreeImage_ConvertToType(FIBITMAP *src, FREE_IMAGE_TYPE dst_type, BOOL scale_line
 				case FIT_COMPLEX:
 					dst = (src_bpp == 8) ? convertByteToComplex.convert(src) : NULL;
 					break;
-				case FIT_RGB16:
-					dst = FreeImage_ConvertToRGB16(src);
+				case FIT_RGB16:					
 					break;
 				case FIT_RGBA16:
 					break;
@@ -375,7 +374,6 @@ FreeImage_ConvertToType(FIBITMAP *src, FREE_IMAGE_TYPE dst_type, BOOL scale_line
 					dst = convertUShortToComplex.convert(src);
 					break;
 				case FIT_RGB16:
-					dst = FreeImage_ConvertToRGB16(src);
 					break;
 				case FIT_RGBA16:
 					break;
@@ -612,7 +610,6 @@ FreeImage_ConvertToType(FIBITMAP *src, FREE_IMAGE_TYPE dst_type, BOOL scale_line
 				case FIT_COMPLEX:
 					break;
 				case FIT_RGB16:
-					dst = FreeImage_ConvertToRGB16(src);
 					break;
 				case FIT_RGBF:
 					dst = FreeImage_ConvertToRGBF(src);

@@ -617,78 +617,89 @@ FreeImage_GetPageCount(FIMULTIBITMAP *bitmap) {
 	return 0;
 }
 
-static BlockReference* 
-FreeImage_SavePageToBlock(MULTIBITMAPHEADER *header, FIBITMAP *data) {
-	if (header->read_only || !header->locked_pages.empty())
-		return NULL;
-
-	DWORD compressed_size = 0;
-	BYTE *compressed_data = NULL;
-
-	// compress the bitmap data
-
-	// open a memory handle
-	FIMEMORY *hmem = FreeImage_OpenMemory();
-	if(hmem==NULL) return NULL;
-	// save the file to memory
-	if(!FreeImage_SaveToMemory(header->cache_fif, data, hmem, 0)) {
-		FreeImage_CloseMemory(hmem);
-		return NULL;
-	}
-	// get the buffer from the memory stream
-	if(!FreeImage_AcquireMemory(hmem, &compressed_data, &compressed_size)) {
-		FreeImage_CloseMemory(hmem);
-		return NULL;
-	}
-
-	// write the compressed data to the cache
-	int ref = header->m_cachefile->writeFile(compressed_data, compressed_size);
-	// get rid of the compressed data
-	FreeImage_CloseMemory(hmem);
-
-	return new(std::nothrow) BlockReference(ref, compressed_size);
-}
-
 void DLL_CALLCONV
 FreeImage_AppendPage(FIMULTIBITMAP *bitmap, FIBITMAP *data) {
-	if (!bitmap || !data) 
-		return;
+	if ((bitmap) && (data)) {
+		MULTIBITMAPHEADER *header = FreeImage_GetMultiBitmapHeader(bitmap);
 
-	MULTIBITMAPHEADER *header = FreeImage_GetMultiBitmapHeader(bitmap);
+		if ((!header->read_only) && (header->locked_pages.empty())) {
+			DWORD compressed_size = 0;
+			BYTE *compressed_data = NULL;
 
-	BlockReference *block = FreeImage_SavePageToBlock(header, data);
-	if(block==NULL) return;
+			// compress the bitmap data
 
-	// add the block
-	header->m_blocks.push_back((BlockTypeS *)block);
-	header->changed = TRUE;
-	header->page_count = -1;
+			// open a memory handle
+			FIMEMORY *hmem = FreeImage_OpenMemory();
+			// save the file to memory
+			FreeImage_SaveToMemory(header->cache_fif, data, hmem, 0);
+			// get the buffer from the memory stream
+			FreeImage_AcquireMemory(hmem, &compressed_data, &compressed_size);
+
+			// write the compressed data to the cache
+
+			int ref = header->m_cachefile->writeFile(compressed_data, compressed_size);
+
+			BlockReference *block = new BlockReference(ref, compressed_size);
+
+			// get rid of the compressed data
+
+			FreeImage_CloseMemory(hmem);
+
+			// add the block
+
+			header->m_blocks.push_back((BlockTypeS *)block);
+			header->changed = TRUE;
+			header->page_count = -1;
+		}
+	}
 }
 
 void DLL_CALLCONV
 FreeImage_InsertPage(FIMULTIBITMAP *bitmap, int page, FIBITMAP *data) {
-	if (!bitmap || !data) 
-		return;
+	if ((bitmap) && (data)) {
+		if (page < FreeImage_GetPageCount(bitmap)) {
+			MULTIBITMAPHEADER *header = FreeImage_GetMultiBitmapHeader(bitmap);
 
-	if (page >= FreeImage_GetPageCount(bitmap)) 
-		return;
-			
-	MULTIBITMAPHEADER *header = FreeImage_GetMultiBitmapHeader(bitmap);
+			if ((!header->read_only) && (header->locked_pages.empty())) {
+				DWORD compressed_size = 0;
+				BYTE *compressed_data = NULL;
 
-	BlockReference *block = FreeImage_SavePageToBlock(header, data);
-	if(block==NULL) return;
+				// compress the bitmap data
 
-	// add a block
-	if (page > 0) {
-		BlockListIterator block_source = FreeImage_FindBlock(bitmap, page);		
+				// open a memory handle
+				FIMEMORY *hmem = FreeImage_OpenMemory();
+				// save the file to memory
+				FreeImage_SaveToMemory(header->cache_fif, data, hmem, 0);
+				// get the buffer from the memory stream
+				FreeImage_AcquireMemory(hmem, &compressed_data, &compressed_size);
 
-		header->m_blocks.insert(block_source, (BlockTypeS *)block);
-	} else {
-		header->m_blocks.push_front((BlockTypeS *)block);
+				// write the compressed data to the cache
+
+				int ref = header->m_cachefile->writeFile(compressed_data, compressed_size);
+
+				// add a block
+
+				if (page > 0) {
+					BlockListIterator block_source = FreeImage_FindBlock(bitmap, page);
+
+					BlockReference *block = new BlockReference(ref, compressed_size);
+
+					header->m_blocks.insert(block_source, (BlockTypeS *)block);
+				} else {
+					BlockReference *block = new BlockReference(ref, compressed_size);
+
+					header->m_blocks.push_front((BlockTypeS *)block);
+				}
+
+				// get rid of the compressed buffer
+
+				FreeImage_CloseMemory(hmem);
+
+				header->changed = TRUE;
+				header->page_count = -1;
+			}
+		}
 	}
-
-	header->changed = TRUE;
-	header->page_count = -1;
 }
 
 void DLL_CALLCONV

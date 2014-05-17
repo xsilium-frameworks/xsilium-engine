@@ -266,7 +266,7 @@ static BOOL
 rgbe_WriteHeader(FreeImageIO *io, fi_handle handle, unsigned width, unsigned height, rgbeHeaderInfo *info) {
 	char buffer[HDR_MAXLINE];
 
-	const char *programtype = "RADIANCE";
+	char *programtype = "RADIANCE";
 
 	if(info && (info->valid & RGBE_VALID_PROGRAMTYPE)) {
 		programtype = info->programtype;
@@ -572,7 +572,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/vnd.radiance";
+	return "image/freeimage-hdr";
 }
 
 static BOOL DLL_CALLCONV

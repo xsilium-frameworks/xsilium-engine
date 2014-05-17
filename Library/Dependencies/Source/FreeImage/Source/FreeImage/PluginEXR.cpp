@@ -140,7 +140,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/x-exr";
+	return "image/exr";
 }
 
 static BOOL DLL_CALLCONV
@@ -186,7 +186,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 		BOOL header_only = (flags & FIF_LOAD_NOPIXELS) == FIF_LOAD_NOPIXELS;
 
 		// save the stream starting point
-		const long stream_start = io->tell_proc(handle);
+		long stream_start = io->tell_proc(handle);
 
 		// wrap the FreeImage IO stream
 		C_IStream istream(io, handle);
@@ -351,14 +351,14 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 		// load pixels
 		// --------------------------------------------------------------
 
-		const BYTE *bits = FreeImage_GetBits(dib);			// pointer to our pixel buffer
-		const size_t bytespp = sizeof(float) * components;	// size of our pixel in bytes
-		const unsigned pitch = FreeImage_GetPitch(dib);		// size of our yStride in bytes
+		BYTE *bits = FreeImage_GetBits(dib);			// pointer to our pixel buffer
+		size_t bytespp = sizeof(float) * components;	// size of our pixel in bytes
+		unsigned pitch = FreeImage_GetPitch(dib);		// size of our yStride in bytes
 
 		Imf::PixelType pixelType = Imf::FLOAT;	// load as float data type;
 		
 		if(bUseRgbaInterface) {
-			// use the RGBA interface (used when loading RY BY Y images )
+			// use the RGBA interface
 
 			const int chunk_size = 16;
 

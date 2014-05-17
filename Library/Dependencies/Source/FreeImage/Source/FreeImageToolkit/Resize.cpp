@@ -26,14 +26,14 @@
   Filter weights table.
   This class stores contribution information for an entire line (row or column).
 */
-CWeightsTable::CWeightsTable(CGenericFilter *pFilter, unsigned uDstSize, unsigned uSrcSize) {
-	unsigned u;
+CWeightsTable::CWeightsTable(CGenericFilter *pFilter, DWORD uDstSize, DWORD uSrcSize) {
+	DWORD u;
 	double dWidth;
 	double dFScale = 1.0;
-	const double dFilterWidth = pFilter->GetWidth();
+	double dFilterWidth = pFilter->GetWidth();
 
 	// scale factor
-	const double dScale = double(uDstSize) / double(uSrcSize);
+	double dScale = double(uDstSize) / double(uSrcSize);
 
 	if(dScale < 1.0) {
 		// minification
@@ -57,12 +57,12 @@ CWeightsTable::CWeightsTable(CGenericFilter *pFilter, unsigned uDstSize, unsigne
 	}
 
 	// offset for discrete to continuous coordinate conversion
-	const double dOffset = (0.5 / dScale) - 0.5;
+	double dOffset = (0.5 / dScale) - 0.5;
 
 
 	for(u = 0; u < m_LineLength; u++) {
 		// scan through line of contributions
-		const double dCenter = (double)u / dScale + dOffset;   // reverse mapping
+		double dCenter = (double)u / dScale + dOffset;   // reverse mapping
 		// find the significant edge points that affect the pixel
 		int iLeft = MAX (0, (int)floor (dCenter - dWidth)); 
 		int iRight = MIN ((int)ceil (dCenter + dWidth), int(uSrcSize) - 1); 
@@ -83,7 +83,7 @@ CWeightsTable::CWeightsTable(CGenericFilter *pFilter, unsigned uDstSize, unsigne
 		double dTotalWeight = 0;  // zero sum of weights
 		for(iSrc = iLeft; iSrc <= iRight; iSrc++) {
 			// calculate weights
-			const double weight = dFScale * pFilter->Filter(dFScale * (dCenter - (double)iSrc));
+			double weight = dFScale * pFilter->Filter(dFScale * (dCenter - (double)iSrc));
 			m_WeightTable[u].Weights[iSrc-iLeft] = weight;
 			dTotalWeight += weight;
 		}
@@ -107,7 +107,7 @@ CWeightsTable::CWeightsTable(CGenericFilter *pFilter, unsigned uDstSize, unsigne
 }
 
 CWeightsTable::~CWeightsTable() {
-	for(unsigned u = 0; u < m_LineLength; u++) {
+	for(DWORD u = 0; u < m_LineLength; u++) {
 		// free contributions for every pixel
 		free(m_WeightTable[u].Weights);
 	}
@@ -132,8 +132,8 @@ CWeightsTable::~CWeightsTable() {
 */
 
 FIBITMAP* CResizeEngine::scale(FIBITMAP *src, unsigned dst_width, unsigned dst_height) { 
-	unsigned src_width  = FreeImage_GetWidth(src); 
-	unsigned src_height = FreeImage_GetHeight(src);
+	DWORD src_width  = FreeImage_GetWidth(src); 
+	DWORD src_height = FreeImage_GetHeight(src);
 
 	unsigned redMask	= FreeImage_GetRedMask(src);
 	unsigned greenMask	= FreeImage_GetGreenMask(src);
@@ -155,37 +155,24 @@ FIBITMAP* CResizeEngine::scale(FIBITMAP *src, unsigned dst_width, unsigned dst_h
 		if(FreeImage_GetColorType(src) == FIC_MINISWHITE) {
 			// build an inverted greyscale palette
 			RGBQUAD *dst_pal = FreeImage_GetPalette(dst);
-			for(unsigned i = 0; i < 256; i++) {
-				dst_pal[i].rgbRed = dst_pal[i].rgbGreen = dst_pal[i].rgbBlue = (BYTE)(255 - i);
+			for(int i = 0; i < 256; i++) {
+				dst_pal[i].rgbRed = dst_pal[i].rgbGreen =
+					dst_pal[i].rgbBlue = (BYTE)(255 - i);
 			}
 		} else {
 			// build a greyscale palette
 			RGBQUAD *dst_pal = FreeImage_GetPalette(dst);
-			for(unsigned i = 0; i < 256; i++) {
-				dst_pal[i].rgbRed = dst_pal[i].rgbGreen = dst_pal[i].rgbBlue = (BYTE)i;
+			for(int i = 0; i < 256; i++) {
+				dst_pal[i].rgbRed = dst_pal[i].rgbGreen =
+					dst_pal[i].rgbBlue = (BYTE)i;
 			}
 		}
 	}
 
-	/**
-	Decide which filtering order (xy or yx) is faster for this mapping. 
-	--- The theory ---
-	Try to minimize calculations by counting the number of convolution multiplies
-	if(dst_width*src_height <= src_width*dst_height) {
-		// xy filtering
-	} else {
-		// yx filtering
-	}
-	--- The practice ---
-	Try to minimize calculations by counting the number of vertical convolutions (the most time consuming task)
-	if(dst_width*dst_height <= src_width*dst_height) {
-		// xy filtering
-	} else {
-		// yx filtering
-	}
-	*/
+	// decide which filtering order (xy or yx) is faster for this mapping by
+	// counting convolution multiplies
 
-	if(dst_width <= src_width) {
+	if(dst_width*src_height <= dst_height*src_width) {
 		// xy filtering
 		// -------------
 
@@ -249,7 +236,7 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 
 			default:
 			{
-				const BYTE *src_bits = FreeImage_GetBits(src);
+				BYTE *src_bits = FreeImage_GetBits(src);
 				BYTE *dst_bits = FreeImage_GetBits(dst);
 				memcpy(dst_bits, src_bits, dst_height * FreeImage_GetPitch(dst));
 			}
@@ -257,6 +244,7 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 		}
 	}
 	else {
+		unsigned index;	// pixel index
 
 		// allocate and calculate the contributions
 		CWeightsTable weightsTable(m_pFilter, dst_width, src_width); 
@@ -273,27 +261,27 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 
 						for(unsigned y = 0; y < dst_height; y++) {
 							// scale each row 
-							const BYTE *src_bits = FreeImage_GetScanLine(src, y);
+							BYTE *src_bits = FreeImage_GetScanLine(src, y);
 							BYTE *dst_bits = FreeImage_GetScanLine(dst, y);
 
 							for(unsigned x = 0; x < dst_width; x++) {
 								// loop through row
 								double value = 0;
-								const unsigned iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
-								const unsigned iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
+								int iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
+								int iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
 
-								for(unsigned i = iLeft; i <= iRight; i++) {
+								for(int i = iLeft; i <= iRight; i++) {
 									// scan between boundaries
 									// accumulate weighted effect of each neighboring pixel
-									const double weight = weightsTable.getWeight(x, i-iLeft);
+									double weight = weightsTable.getWeight(x, i-iLeft);
 									
-									const BYTE pixel = (src_bits[i >> 3] & (0x80 >> (i & 0x07))) != 0;
+									BYTE pixel = (src_bits[i >> 3] & (0x80 >> (i & 0x07))) != 0;
 									value += (weight * (double)pixel);
 								} 
 								value *= 255;
 
 								// clamp and place result in destination pixel
-								dst_bits[x] = (BYTE)CLAMP<int>((int)(value + 0.5), 0, 255);
+								dst_bits[x] = (BYTE)MIN(MAX((int)0, (int)(value + 0.5)), (int)255);
 							} 
 						}
 					}
@@ -304,25 +292,25 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 					case 32:
 					{
 						// Calculate the number of bytes per pixel (1 for 8-bit, 3 for 24-bit or 4 for 32-bit)
-						const unsigned bytespp = FreeImage_GetLine(src) / FreeImage_GetWidth(src);
+						unsigned bytespp = FreeImage_GetLine(src) / FreeImage_GetWidth(src);
 
 						for(unsigned y = 0; y < dst_height; y++) {
 							// scale each row 
-							const BYTE *src_bits = FreeImage_GetScanLine(src, y);
+							BYTE *src_bits = FreeImage_GetScanLine(src, y);
 							BYTE *dst_bits = FreeImage_GetScanLine(dst, y);
 
 							for(unsigned x = 0; x < dst_width; x++) {
 								// loop through row
-								double value[4] = {0, 0, 0, 0};					// 4 = 32 bpp max
-								const unsigned iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
-								const unsigned iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
+								double value[4] = {0, 0, 0, 0};					// 4 = 32bpp max
+								int iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
+								int iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
 
-								for(unsigned i = iLeft; i <= iRight; i++) {
+								for(int i = iLeft; i <= iRight; i++) {
 									// scan between boundaries
 									// accumulate weighted effect of each neighboring pixel
-									const double weight = weightsTable.getWeight(x, i-iLeft);
+									double weight = weightsTable.getWeight(x, i-iLeft);
 									
-									unsigned index = i * bytespp;	// pixel index
+									index = i * bytespp;
 									for (unsigned j = 0; j < bytespp; j++) {
 										value[j] += (weight * (double)src_bits[index++]); 
 									}
@@ -330,7 +318,7 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 
 								// clamp and place result in destination pixel
 								for (unsigned j = 0; j < bytespp; j++) {
-									dst_bits[j] = (BYTE)CLAMP<int>((int)(value[j] + 0.5), 0, 0xFF);
+									dst_bits[j] = (BYTE)MIN(MAX((int)0, (int)(value[j] + 0.5)), (int)255);
 								}
 
 								dst_bits += bytespp;
@@ -347,25 +335,25 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 			case FIT_RGBA16:
 			{
 				// Calculate the number of words per pixel (1 for 16-bit, 3 for 48-bit or 4 for 64-bit)
-				const unsigned wordspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(WORD);
+				unsigned wordspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(WORD);
 
 				for(unsigned y = 0; y < dst_height; y++) {
 					// scale each row 
-					const WORD *src_bits = (WORD*)FreeImage_GetScanLine(src, y);
+					WORD *src_bits = (WORD*)FreeImage_GetScanLine(src, y);
 					WORD *dst_bits = (WORD*)FreeImage_GetScanLine(dst, y);
 
 					for(unsigned x = 0; x < dst_width; x++) {
 						// loop through row
-						double value[4] = {0, 0, 0, 0};					// 4 = 64 bpp max
-						const unsigned iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
-						const unsigned iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
+						double value[4] = {0, 0, 0, 0};					// 4 = 64bpp max
+						int iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
+						int iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
 
-						for(unsigned i = iLeft; i <= iRight; i++) {
+						for(int i = iLeft; i <= iRight; i++) {
 							// scan between boundaries
 							// accumulate weighted effect of each neighboring pixel
-							const double weight = weightsTable.getWeight(x, i-iLeft);
+							double weight = weightsTable.getWeight(x, i-iLeft);
 							
-							unsigned index = i * wordspp;	// pixel index
+							index = i * wordspp;
 							for (unsigned j = 0; j < wordspp; j++) {
 								value[j] += (weight * (double)src_bits[index++]); 
 							}
@@ -373,7 +361,7 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 
 						// clamp and place result in destination pixel
 						for (unsigned j = 0; j < wordspp; j++) {
-							dst_bits[j] = (WORD)CLAMP<int>((int)(value[j] + 0.5), 0, 0xFFFF);
+							dst_bits[j] = (WORD)MIN(MAX((int)0, (int)(value[j] + 0.5)), (int)0xFFFF);
 						}
 
 						dst_bits += wordspp;
@@ -387,25 +375,25 @@ void CResizeEngine::horizontalFilter(FIBITMAP *src, unsigned src_width, unsigned
 			case FIT_RGBAF:
 			{
 				// Calculate the number of floats per pixel (1 for 32-bit, 3 for 96-bit or 4 for 128-bit)
-				const unsigned floatspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(float);
+				unsigned floatspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(float);
 
 				for(unsigned y = 0; y < dst_height; y++) {
 					// scale each row 
-					const float *src_bits = (float*)FreeImage_GetScanLine(src, y);
+					float *src_bits = (float*)FreeImage_GetScanLine(src, y);
 					float *dst_bits = (float*)FreeImage_GetScanLine(dst, y);
 
 					for(unsigned x = 0; x < dst_width; x++) {
 						// loop through row
-						double value[4] = {0, 0, 0, 0};					// 4 = 128 bpp max
-						const unsigned iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
-						const unsigned iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
+						double value[4] = {0, 0, 0, 0};					// 4 = 64bpp max
+						int iLeft = weightsTable.getLeftBoundary(x);    // retrieve left boundary
+						int iRight = weightsTable.getRightBoundary(x);  // retrieve right boundary
 
-						for(unsigned i = iLeft; i <= iRight; i++) {
+						for(int i = iLeft; i <= iRight; i++) {
 							// scan between boundaries
 							// accumulate weighted effect of each neighboring pixel
-							const double weight = weightsTable.getWeight(x, i-iLeft);
+							double weight = weightsTable.getWeight(x, i-iLeft);
 							
-							unsigned index = i * floatspp;	// pixel index
+							index = i * floatspp;
 							for (unsigned j = 0; j < floatspp; j++) {
 								value[j] += (weight * (double)src_bits[index++]); 
 							}
@@ -445,7 +433,7 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 
 			default:
 			{
-				const BYTE *src_bits = FreeImage_GetBits(src);
+				BYTE *src_bits = FreeImage_GetBits(src);
 				BYTE *dst_bits = FreeImage_GetBits(dst);
 				memcpy(dst_bits, src_bits, dst_height * FreeImage_GetPitch(dst));
 			}
@@ -454,9 +442,11 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 
 	}
 	else {
+		unsigned index;	// pixel index
 
 		// allocate and calculate the contributions
 		CWeightsTable weightsTable(m_pFilter, dst_height, src_height); 
+
 
 		// step through columns
 		switch(FreeImage_GetImageType(src)) {
@@ -468,8 +458,8 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 						// scale and convert to 8-bit
 						if(FreeImage_GetBPP(dst) != 8) break;
 
-						const unsigned src_pitch = FreeImage_GetPitch(src);
-						const unsigned dst_pitch = FreeImage_GetPitch(dst);
+						unsigned src_pitch = FreeImage_GetPitch(src);
+						unsigned dst_pitch = FreeImage_GetPitch(dst);
 
 						for(unsigned x = 0; x < dst_width; x++) {
 
@@ -480,17 +470,17 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 							for(unsigned y = 0; y < dst_height; y++) {
 								// loop through column
 								double value = 0;
-								const unsigned iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
-								const unsigned iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
+								int iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
+								int iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
 
 								BYTE *src_bits = FreeImage_GetScanLine(src, iLeft);
 
-								for(unsigned i = iLeft; i <= iRight; i++) {
+								for(int i = iLeft; i <= iRight; i++) {
 									// scan between boundaries
 									// accumulate weighted effect of each neighboring pixel
-									const double weight = weightsTable.getWeight(y, i-iLeft);
+									double weight = weightsTable.getWeight(y, i-iLeft);	
 									
-									const BYTE pixel = (src_bits[x >> 3] & (0x80 >> (x & 0x07))) != 0;
+									BYTE pixel = (src_bits[x >> 3] & (0x80 >> (x & 0x07))) != 0;
 									value += (weight * (double)pixel);
 
 									src_bits += src_pitch;
@@ -498,7 +488,7 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 								value *= 255;
 
 								// clamp and place result in destination pixel
-								*dst_bits = (BYTE)CLAMP<int>((int)(value + 0.5), 0, 0xFF);
+								*dst_bits = (BYTE)MIN(MAX((int)0, (int)(value + 0.5)), (int)255);
 
 								dst_bits += dst_pitch;
 							}
@@ -511,13 +501,13 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 					case 32:
 					{
 						// Calculate the number of bytes per pixel (1 for 8-bit, 3 for 24-bit or 4 for 32-bit)
-						const unsigned bytespp = FreeImage_GetLine(src) / FreeImage_GetWidth(src);
+						unsigned bytespp = FreeImage_GetLine(src) / FreeImage_GetWidth(src);
 
-						const unsigned src_pitch = FreeImage_GetPitch(src);
-						const unsigned dst_pitch = FreeImage_GetPitch(dst);
+						unsigned src_pitch = FreeImage_GetPitch(src);
+						unsigned dst_pitch = FreeImage_GetPitch(dst);
 
 						for(unsigned x = 0; x < dst_width; x++) {
-							const unsigned index = x * bytespp;	// pixel index
+							index = x * bytespp;
 
 							// work on column x in dst
 							BYTE *dst_bits = FreeImage_GetBits(dst) + index;
@@ -525,16 +515,16 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 							// scale each column
 							for(unsigned y = 0; y < dst_height; y++) {
 								// loop through column
-								double value[4] = {0, 0, 0, 0};					// 4 = 32 bpp max
-								const unsigned iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
-								const unsigned iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
+								double value[4] = {0, 0, 0, 0};					// 4 = 32bpp max
+								int iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
+								int iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
 
-								const BYTE *src_bits = FreeImage_GetScanLine(src, iLeft) + index;
+								BYTE *src_bits = FreeImage_GetScanLine(src, iLeft) + index;
 
-								for(unsigned i = iLeft; i <= iRight; i++) {
+								for(int i = iLeft; i <= iRight; i++) {
 									// scan between boundaries
 									// accumulate weighted effect of each neighboring pixel
-									const double weight = weightsTable.getWeight(y, i-iLeft);
+									double weight = weightsTable.getWeight(y, i-iLeft);							
 									for (unsigned j = 0; j < bytespp; j++) {
 										value[j] += (weight * (double)src_bits[j]);
 									}
@@ -544,7 +534,7 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 
 								// clamp and place result in destination pixel
 								for (unsigned j = 0; j < bytespp; j++) {
-									dst_bits[j] = (BYTE)CLAMP<int>((int)(value[j] + 0.5), 0, 0xFF);
+									dst_bits[j] = (BYTE)MIN(MAX((int)0, (int)(value[j] + 0.5)), (int)255);
 								}
 
 								dst_bits += dst_pitch;
@@ -561,13 +551,13 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 			case FIT_RGBA16:
 			{
 				// Calculate the number of words per pixel (1 for 16-bit, 3 for 48-bit or 4 for 64-bit)
-				const unsigned wordspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(WORD);
+				unsigned wordspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(WORD);
 
-				const unsigned src_pitch = FreeImage_GetPitch(src) / sizeof(WORD);
-				const unsigned dst_pitch = FreeImage_GetPitch(dst) / sizeof(WORD);
+				unsigned src_pitch = FreeImage_GetPitch(src) / sizeof(WORD);
+				unsigned dst_pitch = FreeImage_GetPitch(dst) / sizeof(WORD);
 
 				for(unsigned x = 0; x < dst_width; x++) {
-					const unsigned index = x * wordspp;	// pixel index
+					index = x * wordspp;
 
 					// work on column x in dst
 					WORD *dst_bits = (WORD*)FreeImage_GetBits(dst) + index;
@@ -575,16 +565,16 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 					// scale each column
 					for(unsigned y = 0; y < dst_height; y++) {
 						// loop through column
-						double value[4] = {0, 0, 0, 0};					// 4 = 64 bpp max
-						const unsigned iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
-						const unsigned iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
+						double value[4] = {0, 0, 0, 0};					// 4 = 64bpp max
+						int iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
+						int iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
 
-						const WORD *src_bits = (WORD*)FreeImage_GetScanLine(src, iLeft) + index;
+						WORD *src_bits = (WORD*)FreeImage_GetScanLine(src, iLeft) + index;
 
-						for(unsigned i = iLeft; i <= iRight; i++) {
+						for(int i = iLeft; i <= iRight; i++) {
 							// scan between boundaries
 							// accumulate weighted effect of each neighboring pixel
-							const double weight = weightsTable.getWeight(y, i-iLeft);
+							double weight = weightsTable.getWeight(y, i-iLeft);							
 							for (unsigned j = 0; j < wordspp; j++) {
 								value[j] += (weight * (double)src_bits[j]);
 							}
@@ -594,7 +584,7 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 
 						// clamp and place result in destination pixel
 						for (unsigned j = 0; j < wordspp; j++) {
-							dst_bits[j] = (WORD)CLAMP<int>((int)(value[j] + 0.5), 0, 0xFFFF);
+							dst_bits[j] = (WORD)MIN(MAX((int)0, (int)(value[j] + 0.5)), (int)0xFFFF);
 						}
 
 						dst_bits += dst_pitch;
@@ -608,13 +598,13 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 			case FIT_RGBAF:
 			{
 				// Calculate the number of floats per pixel (1 for 32-bit, 3 for 96-bit or 4 for 128-bit)
-				const unsigned floatspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(float);
+				unsigned floatspp = (FreeImage_GetLine(src) / FreeImage_GetWidth(src)) / sizeof(float);
 
-				const unsigned src_pitch = FreeImage_GetPitch(src) / sizeof(float);
-				const unsigned dst_pitch = FreeImage_GetPitch(dst) / sizeof(float);
+				unsigned src_pitch = FreeImage_GetPitch(src) / sizeof(float);
+				unsigned dst_pitch = FreeImage_GetPitch(dst) / sizeof(float);
 
 				for(unsigned x = 0; x < dst_width; x++) {
-					const unsigned index = x * floatspp;	// pixel index
+					index = x * floatspp;
 
 					// work on column x in dst
 					float *dst_bits = (float*)FreeImage_GetBits(dst) + index;
@@ -622,16 +612,16 @@ void CResizeEngine::verticalFilter(FIBITMAP *src, unsigned src_width, unsigned s
 					// scale each column
 					for(unsigned y = 0; y < dst_height; y++) {
 						// loop through column
-						double value[4] = {0, 0, 0, 0};					// 4 = 128 bpp max
-						const unsigned iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
-						const unsigned iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
+						double value[4] = {0, 0, 0, 0};					// 4 = 64bpp max
+						int iLeft = weightsTable.getLeftBoundary(y);    // retrieve left boundary
+						int iRight = weightsTable.getRightBoundary(y);  // retrieve right boundary
 
-						const float *src_bits = (float*)FreeImage_GetScanLine(src, iLeft) + index;
+						float *src_bits = (float*)FreeImage_GetScanLine(src, iLeft) + index;
 
-						for(unsigned i = iLeft; i <= iRight; i++) {
+						for(int i = iLeft; i <= iRight; i++) {
 							// scan between boundaries
 							// accumulate weighted effect of each neighboring pixel
-							const double weight = weightsTable.getWeight(y, i-iLeft);
+							double weight = weightsTable.getWeight(y, i-iLeft);							
 							for (unsigned j = 0; j < floatspp; j++) {
 								value[j] += (weight * (double)src_bits[j]);
 							}
