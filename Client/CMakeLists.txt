@@ -81,6 +81,7 @@ link_libraries(
 	${OGRE_Terrain_LIBRARIES}
 	${OGRE_RenderSystems_LIBRARIES}
 	${OIS_LIBRARIES}
+	${DirectX11_D3D11_LIBRARIES}
 	"PagedGeometry"
 )
 
