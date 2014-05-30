@@ -108,8 +108,9 @@ void GestionnaireInterface::removeAllInterface()
 {
 	for (interfaceIterator = listOfInterface.begin() ; interfaceIterator != listOfInterface.end(); ++interfaceIterator)
 	{
-		listOfInterface.erase(interfaceIterator);
+		delete interfaceIterator->second;
 	}
+	listOfInterface.clear();
 	generateID = 0;
 }
 
