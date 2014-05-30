@@ -59,10 +59,6 @@ set( SceneLoader_H
 ./DotSceneLoader/DotSceneLoader.h
 )
 
-set( Camera_H
-./Camera/SdkCameraMan.h
-)
-
 set( Keyboard_H
 ./KeyboardMap/KeyboardMap.h
 )

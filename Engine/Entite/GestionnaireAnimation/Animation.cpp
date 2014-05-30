@@ -88,16 +88,17 @@ void Animation::setAnimationBas(Ogre::String nomAnimation,bool reset)
 {
 	if(!Ogre::StringUtil::match(nomAnimation,nomAnimationBasActuel,true))
 	{
-		animation = listOfAnimation.find(nomAnimationBasActuel);
-		animation->second.FadingIn = false;
-		animation->second.FadingOut = true;
-
 		animation = listOfAnimation.find(nomAnimation);
+
 		if(listOfAnimation.end() != animation)
 		{
 			animation->second.mAnims->setEnabled(true);
 			animation->second.FadingIn = true;
 			animation->second.FadingOut = false;
+
+			animation = listOfAnimation.find(nomAnimationBasActuel);
+			animation->second.FadingIn = false;
+			animation->second.FadingOut = true;
 			nomAnimationBasActuel = nomAnimation;
 			mTimer = 0;
 		}
@@ -112,16 +113,17 @@ void Animation::setAnimationHaut(Ogre::String nomAnimation,bool reset)
 {
 	if(!Ogre::StringUtil::match(nomAnimation,nomAnimationHautActuel,true))
 	{
-		animation = listOfAnimation.find(nomAnimationHautActuel);
-		animation->second.FadingIn = false;
-		animation->second.FadingOut = true;
-
 		animation = listOfAnimation.find(nomAnimation);
 		if(listOfAnimation.end() != animation)
 		{
 			animation->second.mAnims->setEnabled(true);
 			animation->second.FadingIn = true;
 			animation->second.FadingOut = false;
+
+			animation = listOfAnimation.find(nomAnimationHautActuel);
+			animation->second.FadingIn = false;
+			animation->second.FadingOut = true;
+
 			nomAnimationHautActuel = nomAnimation;
 			mTimer = 0;
 		}

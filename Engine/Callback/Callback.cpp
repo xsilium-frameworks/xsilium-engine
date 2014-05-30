@@ -18,8 +18,8 @@ Callback::~Callback()
 	for (listenner=listOfListenner.begin(); listenner !=listOfListenner.end(); ++listenner)
 	{
 		delete listenner->second;
-		listOfListenner.erase(listenner);
 	}
+	listOfListenner.clear();
 }
 
 bool Callback::addlistenneur(int identifiant,Function function)

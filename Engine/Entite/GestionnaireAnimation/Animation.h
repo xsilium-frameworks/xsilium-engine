@@ -16,14 +16,25 @@
  *
  */
 
+/*! \struct AnimationStructure
+ * \brief Structure contenant toutes les information de l'animation
+ *
+ *  La classe gere la lecture d'une liste de morceaux
+ */
+
+
 struct AnimationStructure
 {
-	Ogre::AnimationState * mAnims ;
-	bool FadingIn;
-	bool FadingOut;
+	Ogre::AnimationState * mAnims ; /** Objet de l'animation */
+	bool FadingIn; /** flag debut d'activation */
+	bool FadingOut; /** flag fin d'activation */
 };
 
-
+/*! \class Animation
+ * \brief class qui gere les animations
+ *
+ *  La classe gere les animations des differentes entités
+ */
 
 class Animation {
 public:
