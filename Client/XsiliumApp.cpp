@@ -20,11 +20,11 @@ XsiliumApp::~XsiliumApp()
 
 void XsiliumApp::startXsilium()
 {
+
 	if(!XsiliumFramework::getInstance()->initOgre("Xsilium Client"))
 		return;
 
 	XsiliumFramework::getInstance()->createWindow();
-
 
 	XsiliumFramework::getInstance()->initInput();
 

@@ -68,6 +68,7 @@ private:
 	Ogre::String fenetreName;
 	bool sauvegardeParam;
 
+
 };
 
 #endif

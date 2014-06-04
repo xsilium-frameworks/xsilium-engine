@@ -62,7 +62,6 @@ bool XsiliumFramework::initOgre(Ogre::String programme,bool sauvegardeParam)
 	if(!m_pRoot->restoreConfig())
 	{
         // Set defaults per RenderSystem
-
 		m_pRenderSystem->setConfigOption("Video Mode", "1024 x 768");
 		m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
@@ -105,7 +104,6 @@ bool XsiliumFramework::initInput()
 
 	return true;
 }
-
 
 void XsiliumFramework::loadRessource()
 {
