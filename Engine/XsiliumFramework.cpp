@@ -9,6 +9,20 @@ XsiliumFramework::XsiliumFramework()
 	m_pLog				= 0;
 	inputManager 		= 0;
 	keyboardMap 		= 0;
+	m_pRenderTarget		= 0;
+	width 				= 0;
+	height 				= 0;
+
+	sauvegardeParam = false;
+
+
+#ifdef __APPLE__
+	mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
+#else
+	mResourcePath = "";
+#endif
+
+
 }
 
 XsiliumFramework::~XsiliumFramework()
@@ -25,40 +39,51 @@ XsiliumFramework::~XsiliumFramework()
 		delete m_pLog;
 }
 
-bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
+void XsiliumFramework::setParamettreOgre(std::string key, std::string valeur)
 {
-	// Initialisation des inputs
-	inputManager = InputManager::getInstance();
-	keyboardMap = KeyboardMap::getInstance();
+	misc[key.c_str()] = valeur.c_str();
+}
 
+void XsiliumFramework::setSauvegardeParam(bool sauvegardeParam)
+{
+	this->sauvegardeParam = sauvegardeParam;
+}
 
-#ifdef __APPLE__
-	mResourcePath = Ogre::macBundlePath() + "/Contents/Resources/";
-#else
-	mResourcePath = "";
-#endif
-	// Chargement des transposition clavier / action
-	keyboardMap->load(mResourcePath + "configKey.xml");
-
-
-	// Creation du systeme de log
-	Ogre::LogManager* logMgr = new Ogre::LogManager();
-
-	m_pLog = logMgr->createLog(mResourcePath + "OgreLogfile.log", true, true, false);
-	m_pLog->setDebugOutputEnabled(true);
-
-	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + "ogre.cfg",mResourcePath + logName + ".log");
-
+void XsiliumFramework::loadParametre()
+{
 	//recuperation des configurtion de la fenetre Ogre
 	if (!m_pRoot->restoreConfig())
 	{
-		if(!m_pRoot->showConfigDialog())
-			return false;
+		misc["colourDepth"] = "32";
+		misc["Full Screen"] = "No";
+		misc["macAPI"] = "cocoa";
+		misc["resolution"] = "1024 x 768";
+		width = 1024;
+		height = 768;
 	}
-	m_pRenderWnd = m_pRoot->initialise(true,wndTitle);
 
-	// initialisation des inputs
-	inputManager->initialise(m_pRenderWnd);
+}
+
+bool XsiliumFramework::initOgre(Ogre::String programme)
+{
+	// Creation du systeme de log
+	Ogre::LogManager* logMgr = new Ogre::LogManager();
+
+	m_pLog = logMgr->createLog(mResourcePath + "Log" + programme + ".log", true, true, false);
+	m_pLog->setDebugOutputEnabled(true);
+
+	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + programme + ".cfg","");
+	m_pRoot->setRenderSystem(m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem"));
+	m_pRoot->initialise(false);
+
+	loadParametre();
+
+	m_pRenderWnd = m_pRoot->createRenderWindow(programme, width,  height, false, &misc);
+	m_pRenderTarget = m_pRoot->getRenderTarget(programme);
+
+	if(sauvegardeParam)
+		m_pRoot->saveConfig();
+
 	m_pRenderWnd->addViewport(0);
 
 	m_pRenderWnd->setActive(true);
@@ -67,6 +92,22 @@ bool XsiliumFramework::initOgre(Ogre::String wndTitle,Ogre::String logName)
 
 	return true;
 }
+
+bool XsiliumFramework::initInput()
+{
+	// Initialisation des inputs
+	inputManager = InputManager::getInstance();
+	keyboardMap = KeyboardMap::getInstance();
+
+	// Chargement des transposition clavier / action
+	keyboardMap->load(mResourcePath + "configKey.xml");
+
+	// initialisation des inputs
+	inputManager->initialise(m_pRenderWnd);
+
+	return true;
+}
+
 
 void XsiliumFramework::loadRessource()
 {
@@ -115,6 +156,11 @@ Ogre::Log* XsiliumFramework::getLog()
 	return this->m_pLog;
 }
 
+Ogre::RenderTarget* XsiliumFramework::getRenderTarget()
+{
+	return this->m_pRenderTarget;
+}
+
 bool XsiliumFramework::frameStarted (const Ogre::FrameEvent &evt)
 {
 	return true;
@@ -142,13 +188,13 @@ void XsiliumFramework::shutdown()
 
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
-	// Set the shutting down flag and sleep a bit so the displaylink thread can shut itself down
-	// Note: It is essential that you yield to the CVDisplayLink thread. Otherwise it will
-	// continue to run which will result in either a crash or kernel panic.
-	struct timespec ts;
-	ts.tv_sec = 0;
-	ts.tv_nsec = 1000;
-	nanosleep(&ts, NULL);
+
+#if USE_DISPLAYLINK
+	CVDisplayLinkStop(mDisplayLink);
+	CVDisplayLinkRelease(mDisplayLink);
+	mDisplayLink = nil;
+
+#endif
 
 	[NSApp terminate:nil];
 

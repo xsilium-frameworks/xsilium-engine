@@ -31,7 +31,13 @@ public:
 	XsiliumFramework();
 	~XsiliumFramework();
 
-	bool initOgre(Ogre::String wndTitle,Ogre::String logName);
+	bool initOgre(Ogre::String programme);
+	bool initInput();
+
+	void setParamettreOgre(std::string key, std::string valeur);
+	void loadParametre();
+	void setSauvegardeParam(bool sauvegardeParam);
+
 
 	void loadRessource();
 
@@ -44,6 +50,7 @@ public:
 	Ogre::Root* getRoot();
 	Ogre::RenderWindow* getRenderWindow();
 	Ogre::Log* getLog();
+	Ogre::RenderTarget* getRenderTarget();
 
 private:
 	XsiliumFramework(const XsiliumFramework&);
@@ -54,9 +61,15 @@ private:
 
 	Ogre::Root*					m_pRoot;
 	Ogre::RenderWindow*			m_pRenderWnd;
+	Ogre::RenderTarget* 		m_pRenderTarget;
 	Ogre::Log*					m_pLog;
 	InputManager*				inputManager;
 	KeyboardMap * keyboardMap;
+
+	Ogre::NameValuePairList misc;
+	bool sauvegardeParam;
+	int width;
+	int height;
 
 };
 

@@ -32,7 +32,7 @@ GestionnaireInterface::~GestionnaireInterface() {
 
 void GestionnaireInterface::initialisationInterface()
 {    
-	CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
+	CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem(*XsiliumFramework::getInstance()->getRenderTarget());
 
 	const OIS::MouseState state = inputManager->getMouse()->getMouseState();
     CEGUI::Vector2f mousePos = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getPosition();

@@ -41,9 +41,6 @@ GestionnaireAuth::~GestionnaireAuth() {
 	gestionnaireInterface->removeInterface(guiLogin);
 	gestionnaireInterface->removeInterface(guiErreur);
 	gestionnaireInterface->removeInterface(guiProgression);
-	delete guiLogin;
-	delete guiErreur;
-	delete guiProgression;
 }
 
 

@@ -9,7 +9,6 @@
 #include "Compte/Compte.h"
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE)
-#import <Cocoa/Cocoa.h>
 #import <OSX/OgreOSXCocoaView.h>
 #endif
 
@@ -32,19 +31,26 @@ private:
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE)
 
-
-@interface XsiliumDelegate : NSObject <NSApplicationDelegate> {
-    NSWindow *window;
-	Ogre::SceneNode *objectNode;
-	OgreView *ogreView;
+#if defined(MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+@interface XsiliumDelegate : NSObject <NSApplicationDelegate>
+#else
+@interface XsiliumDelegate : NSObject
+#endif
+{
+    NSTimer *mTimer;
+    NSTimeInterval mLastFrameTime;
     XsiliumApp *xsilium;
 }
 
-@property (assign) IBOutlet NSWindow *window;
-@property (assign) IBOutlet OgreView *ogreView;
+- (void)renderOneFrame:(id)sender;
+
+@property (retain) NSTimer *mTimer;
+@property (nonatomic) NSTimeInterval mLastFrameTime;
 
 @end
 
+#if __LP64__
 static id mAppDelegate;
+#endif
 
 #endif
