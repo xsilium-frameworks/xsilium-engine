@@ -31,7 +31,7 @@ public:
 	XsiliumFramework();
 	~XsiliumFramework();
 
-	bool initOgre(Ogre::String fenetreName,bool sauvegardeParam = true);
+	bool initOgre(Ogre::String fenetreName,Ogre::String fileName,bool sauvegardeParam = true );
 	bool initInput();
 
 	void setParamettreOgre(std::string key, std::string valeur);
@@ -67,6 +67,7 @@ private:
 
 	Ogre::String fenetreName;
 	bool sauvegardeParam;
+
 
 };
 

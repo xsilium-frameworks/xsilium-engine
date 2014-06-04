@@ -45,24 +45,23 @@ void XsiliumFramework::setParamettreOgre(std::string key, std::string valeur)
 	}
 }
 
-bool XsiliumFramework::initOgre(Ogre::String programme,bool sauvegardeParam)
+bool XsiliumFramework::initOgre(Ogre::String fenetreName,Ogre::String fileName,bool sauvegardeParam)
 {
-	fenetreName = programme;
+	this->fenetreName = fenetreName;
 	this->sauvegardeParam = sauvegardeParam;
 
 	// Creation du systeme de log
 	Ogre::LogManager* logMgr = new Ogre::LogManager();
 
-	m_pLog = logMgr->createLog(mResourcePath + "Log" + programme + ".log", true, true, false);
+	m_pLog = logMgr->createLog(mResourcePath + "Log" + fileName + ".log", true, true, false);
 	m_pLog->setDebugOutputEnabled(true);
 
-	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + programme + ".cfg","");
+	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + fileName + ".cfg","");
 	m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
 	m_pRoot->setRenderSystem(m_pRenderSystem);
 	if(!m_pRoot->restoreConfig())
 	{
         // Set defaults per RenderSystem
-
 		m_pRenderSystem->setConfigOption("Video Mode", "1024 x 768");
 		m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
@@ -105,7 +104,6 @@ bool XsiliumFramework::initInput()
 
 	return true;
 }
-
 
 void XsiliumFramework::loadRessource()
 {
