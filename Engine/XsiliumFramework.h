@@ -31,7 +31,13 @@ public:
 	XsiliumFramework();
 	~XsiliumFramework();
 
-	bool initOgre(Ogre::String wndTitle,Ogre::String logName);
+	bool initOgre(Ogre::String fenetreName,bool sauvegardeParam = true);
+	bool initInput();
+
+	void setParamettreOgre(std::string key, std::string valeur);
+
+	void createWindow();
+
 
 	void loadRessource();
 
@@ -53,10 +59,14 @@ private:
 	std::string mResourcePath ;
 
 	Ogre::Root*					m_pRoot;
+	Ogre::RenderSystem	*		m_pRenderSystem;
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Log*					m_pLog;
 	InputManager*				inputManager;
 	KeyboardMap * keyboardMap;
+
+	Ogre::String fenetreName;
+	bool sauvegardeParam;
 
 };
 

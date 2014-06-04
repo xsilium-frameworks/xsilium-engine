@@ -42,7 +42,6 @@ GestionnaireChat::~GestionnaireChat() {
     networkManager->disconnexion();
 	inputManager->removeKeyListener(this);
 	gestionnaireInterface->removeInterface(guichat);
-	delete guichat;
 }
 
 void GestionnaireChat::run()

@@ -167,6 +167,7 @@ ${OGRE_Paging_INCLUDE_DIR}
 ${CEGUI_INCLUDE_DIR}
 ${OGRE_Overlay_INCLUDE_DIR}
 ${ENET_INCLUDE_DIR}
+${OGRE_RenderSystems_INCLUDE_DIR}
 .
 )
 
@@ -181,6 +182,7 @@ CEGUIBase
 CEGUIOgreRenderer
 ${OGRE_Overlay_LIBRARIES}
 ${ENET_LIBRARY}
+${OGRE_RenderSystems_LIBRARIES}
 )
 
 #add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})
