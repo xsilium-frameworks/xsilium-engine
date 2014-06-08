@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 	XsiliumApp xsilium;
 	try
 	{
-		xsilium.startXsilium();
+		xsilium.start();
 	}
 	catch(std::exception& e)
 	{

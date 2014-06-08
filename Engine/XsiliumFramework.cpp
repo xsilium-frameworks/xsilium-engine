@@ -57,11 +57,12 @@ bool XsiliumFramework::initOgre(Ogre::String fenetreName,Ogre::String fileName,b
 	m_pLog->setDebugOutputEnabled(true);
 
 	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + fileName + ".cfg","");
-	m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+	//m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+	m_pRenderSystem = m_pRoot->getAvailableRenderers().front();
 	m_pRoot->setRenderSystem(m_pRenderSystem);
 	if(!m_pRoot->restoreConfig())
 	{
-        // Set defaults per RenderSystem
+		// Set defaults per RenderSystem
 		m_pRenderSystem->setConfigOption("Video Mode", "1024 x 768");
 		m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
@@ -159,7 +160,8 @@ bool XsiliumFramework::frameStarted (const Ogre::FrameEvent &evt)
 
 bool XsiliumFramework::frameRenderingQueued (const Ogre::FrameEvent &evt)
 {
-	inputManager->capture(evt.timeSinceLastFrame);
+	if(inputManager)
+		inputManager->capture(evt.timeSinceLastFrame);
 	return true;
 }
 

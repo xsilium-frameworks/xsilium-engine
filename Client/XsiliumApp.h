@@ -8,18 +8,13 @@
 #include "Game/JeuxState.h"
 #include "Compte/Compte.h"
 
-#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE)
-#import <OSX/OgreOSXCocoaView.h>
-#endif
-
-
 class XsiliumApp
 {
 public:
 	XsiliumApp();
 	~XsiliumApp();
 
-	void startXsilium();
+	void start();
 
 private:
 	GameStateManager*	m_pGameStateManager;

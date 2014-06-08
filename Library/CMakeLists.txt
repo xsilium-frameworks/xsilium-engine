@@ -10,8 +10,5 @@ subdirs(OgrePaged)
 subdirs(Cegui)
 subdirs(Hydrax)
 subdirs(SkyX)
-#subdirs(bzip2)
-#subdirs(libtar)
-#subdirs(curl)
 
 

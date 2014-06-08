@@ -18,7 +18,7 @@ XsiliumApp::~XsiliumApp()
     XsiliumFramework::DestroyInstance();
 }
 
-void XsiliumApp::startXsilium()
+void XsiliumApp::start()
 {
 
 	if(!XsiliumFramework::getInstance()->initOgre("Xsilium Client","client"))

@@ -1,4 +1,4 @@
-#import "XsiliumApp.h"
+#import "Launcher.h"
 
 // All this does is suppress some messages in the run log.  NSApplication does not
 // implement buttonPressed and apps without a NIB have no target for the action.
@@ -10,7 +10,7 @@
 @end
 
 
-@implementation XsiliumDelegate
+@implementation LauncherDelegate
 
 @synthesize mTimer;
 @dynamic mLastFrameTime;
@@ -40,20 +40,21 @@
     mLastFrameTime = 1;
     mTimer = nil;
     
-    xsilium = new XsiliumApp();
+    launcher = new Launcher::Launcher();
     
     mTimer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(1.0f / 60.0f) * mLastFrameTime
                                               target:self
                                             selector:@selector(renderOneFrame:)
                                             userInfo:nil
                                              repeats:YES];
-    xsilium->start();
+    
+    launcher->start();
     
     [pool release];
 }
 
 - (void) dealloc {
-    if(xsilium != NULL) delete xsilium;
+    if(launcher != NULL) delete launcher;
     [super dealloc];
 }
 

@@ -50,6 +50,7 @@ public:
 	Ogre::Root* getRoot();
 	Ogre::RenderWindow* getRenderWindow();
 	Ogre::Log* getLog();
+	Ogre::RenderTarget* getRenderTarget();
 
 private:
 	XsiliumFramework(const XsiliumFramework&);
@@ -67,7 +68,6 @@ private:
 
 	Ogre::String fenetreName;
 	bool sauvegardeParam;
-
 
 };
 
