@@ -182,13 +182,6 @@ void XsiliumFramework::shutdown()
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
 
-#if USE_DISPLAYLINK
-	CVDisplayLinkStop(mDisplayLink);
-	CVDisplayLinkRelease(mDisplayLink);
-	mDisplayLink = nil;
-
-#endif
-
 	[NSApp terminate:nil];
 
 #endif
