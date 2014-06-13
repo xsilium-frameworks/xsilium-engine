@@ -33,6 +33,7 @@ endif()
 
 link_libraries(	${XSILIUM_LIBRARY}
 				${OGRE_LIBRARIES} 
+				${OIS_LIBRARIES}
 			  )
 			  
 xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
