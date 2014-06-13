@@ -11,4 +11,7 @@ subdirs(Cegui)
 subdirs(Hydrax)
 subdirs(SkyX)
 
-
+#Update
+subdirs(Librsync)
+subdirs(MD5)
+subdirs(Binreloc)

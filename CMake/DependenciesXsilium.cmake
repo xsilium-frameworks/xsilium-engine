@@ -322,6 +322,21 @@ set(CEGUI_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include" "${CMAKE
 set(XSILIUM_INCLUDE "${CMAKE_SOURCE_DIR}/Engine")
 set(XSILIUM_LIBRARY "XsiliumEngine")
 
+#Find Curl
+FIND_PACKAGE(CURL REQUIRED)
+
+#Find Librsync
+set(RSYNC_INCLUDE "${CMAKE_SOURCE_DIR}/Library/Librsync")
+set(RSYNC_LIBRARY "rsync-static")
+
+#Find MD5
+set(MD5_INCLUDE "${CMAKE_SOURCE_DIR}/Library/MD5")
+set(MD5_LIBRARY "md5")
+
+#Find Binreloc
+set(BINRELOC_INCLUDE "${CMAKE_SOURCE_DIR}/Library/Binreloc")
+set(BINRELOC_LIBRARY "binreloc")
+
 
 # Display results, terminate if anything required is missing
 MACRO_DISPLAY_FEATURE_LOG()
