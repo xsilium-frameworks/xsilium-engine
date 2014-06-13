@@ -183,6 +183,8 @@ CEGUIOgreRenderer
 ${OGRE_Overlay_LIBRARIES}
 ${ENET_LIBRARY}
 ${OGRE_RenderSystems_LIBRARIES}
+${OIS_LIBRARIES}
+"PagedGeometry"
 )
 
 #add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})

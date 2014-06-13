@@ -36,7 +36,6 @@ configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
 subdirs(Library)
 subdirs(Engine)
 
-subdirs(Launcher)
 subdirs(Client)
 subdirs(SceneLoader)
 

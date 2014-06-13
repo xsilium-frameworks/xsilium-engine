@@ -72,16 +72,6 @@ Shared
 
 link_libraries(
 	${XSILIUM_LIBRARY}
-	${ENET_LIBRARY}
-	${OGRE_LIBRARIES}
-	${OGRE_Overlay_LIBRARIES}
-	${SKYX_LIBRARY}
-	${HYDRAX_LIBRARY}
-	${OGRE_Terrain_LIBRARIES}
-	${OGRE_RenderSystems_LIBRARIES}
-	${OIS_LIBRARIES}
-	${DirectX11_D3D11_LIBRARIES}
-	"PagedGeometry"
 )
 
 xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
