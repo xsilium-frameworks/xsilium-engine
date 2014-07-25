@@ -2,7 +2,7 @@
 //Chat class
 
 
-Chat::Chat(ControleInterface * controleInterface)
+Chat::Chat()
 {
 
 	d_historyPos = 0;
@@ -17,7 +17,7 @@ Chat::Chat(ControleInterface * controleInterface)
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->controleInterface = controleInterface ;
+	EventEnregistre.push_back(MESSAGE);
 
 	initEventInterface();
 }
@@ -131,15 +131,15 @@ void Chat::update()
 
 	if(event != NULL)
 	{
-		GuiInterface::EventGlobal();
 		switch(atoi(event->getProperty("eventType").c_str()))
 		{
 		case ALL:
 			processMessage(event);
+			deleteEvent = true;
 			break;
 		default:
 			break;
 		}
-		eventManager->removeEvent();
+		GuiInterface::EventGlobal();
 	}
 }

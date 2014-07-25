@@ -8,7 +8,7 @@
 
 #include "GuiLogin.h"
 
-GuiLogin::GuiLogin(ControleInterface * controleInterface) {
+GuiLogin::GuiLogin() {
 
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
@@ -20,7 +20,7 @@ GuiLogin::GuiLogin(ControleInterface * controleInterface) {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->controleInterface = controleInterface ;
+	EventEnregistre.push_back(LOGIN);
 
 	initEventInterface();
 }
@@ -47,13 +47,13 @@ void GuiLogin::update()
 
 	if(event != NULL)
 	{
-		GuiInterface::EventGlobal();
+
 		switch(atoi(event->getProperty("eventType").c_str()))
 		{
 		default:
 			break;
 		}
-		eventManager->removeEvent();
+		GuiInterface::EventGlobal();
 	}
 }
 
@@ -69,12 +69,12 @@ const char * GuiLogin::getPassword()
 
 bool GuiLogin::quitterButton(const CEGUI::EventArgs &e)
 {
-	controleInterface->retourInterface(IDInterface,QUITBOUTON);
+	controleInterface->retourInterface(LOGIN,CANCELBOUTON);
 	return true;
 }
 
 bool GuiLogin::connexionButton(const CEGUI::EventArgs &e)
 {
-	controleInterface->retourInterface(IDInterface,CONNEXIONBOUTON);
+	controleInterface->retourInterface(LOGIN,OKBOUTON);
 	return true;
 }

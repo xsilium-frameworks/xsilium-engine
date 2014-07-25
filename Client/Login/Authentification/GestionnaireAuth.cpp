@@ -19,18 +19,21 @@ GestionnaireAuth::GestionnaireAuth(GameState * loginState) {
 
 	this->loginState = loginState;
 
-	guiLogin = new GuiLogin(this);
-	gestionnaireInterface->addInterface(guiLogin);
+	gestionnaireInterface->addInterface(new GuiLogin());
 
-	guiErreur = new GuiErreur(this);
-	gestionnaireInterface->addInterface(guiErreur);
+	gestionnaireInterface->addInterface(new GuiErreur());
 
-	guiProgression = new GuiProgression(this);
-	gestionnaireInterface->addInterface(guiProgression);
+	gestionnaireInterface->addInterface(new GuiProgression());
 
 	inputManager->addKeyListener(this,"GestionnaireAuthKey");
 
-	guiLogin->setEvent(ToString(ACTIVE).c_str());
+	gestionnaireInterface->addControleur(this);
+
+	EventEnregistre.push_back(LOGIN);
+
+	//gestionnaireInterface->sendEvenement(LOGIN,activeInterface());
+
+	//activeGUILogin = false;
 
 
 }
@@ -38,29 +41,30 @@ GestionnaireAuth::GestionnaireAuth(GameState * loginState) {
 GestionnaireAuth::~GestionnaireAuth() {
 	networkManager->removelistenneur((XSILIUM_AUTH * 1000) + ID_AUTH);
 	inputManager->removeKeyListener(this);
-	gestionnaireInterface->removeInterface(guiLogin);
-	gestionnaireInterface->removeInterface(guiErreur);
-	gestionnaireInterface->removeInterface(guiProgression);
 }
 
 
 bool GestionnaireAuth::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
+
 	switch (keyEventRef.key)
 	{
 
 	case OIS::KC_RETURN:
-		if(guiLogin->isActive())
+	/*	if(activeGUILogin)
 			setAuthentification();
 		else if(guiErreur->isActive())
 			cancelAuthentification();
+     */
+     
 		break;
 	case OIS::KC_TAB:
-		guiLogin->switchEditBox();
+		//guiLogin->switchEditBox();
 		break;
 	default:
 		break;
 	}
+    
 	return true;
 
 
@@ -84,15 +88,15 @@ bool GestionnaireAuth::initNetwork()
 	if( messageErreur == 1)
 	{
 		XsiliumFramework::getInstance()->getLog()->logMessage("erreur de connexion : Le serveur est plein desoler ");
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le serveur est plein desoler");
+	/*todo	guiErreur->setEvent(ToString(ACTIVE).c_str());
+		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le serveur est plein desoler"); */
 		return false;
 	}
 	if( messageErreur == 2)
 	{
 		XsiliumFramework::getInstance()->getLog()->logMessage("erreur de connexion : Impossible de se connecter au serveur");
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Impossible de se connecter au serveur");
+	/*todo	guiErreur->setEvent(ToString(ACTIVE).c_str());
+		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Impossible de se connecter au serveur");*/
 		return false;
 	}
 	return true;
@@ -105,11 +109,11 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 	{
 	case ID_CHALLENGE :
 		compte->setEtapeDeLogin(2);
-		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"3");
+//todo		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"3");
 		handleEtapeDeux(packet);
 		break;
 	case ID_REPONSE :
-		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"4");
+//todo		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"4");
 		loginState->setChangeState();
 		break;
 	case ID_SEND_CANCEL:
@@ -160,10 +164,12 @@ bool GestionnaireAuth::sendAuthentification()
 
 void GestionnaireAuth::cancelAuthentification()
 {
+    /* todo
 	guiProgression->setEvent(ToString(INVISIBLE).c_str());
 	guiProgression->setEvent(ToString(DESACTIVE).c_str());
 	guiErreur->setEvent(ToString(DESACTIVE).c_str());
 	guiLogin->setEvent(ToString(ACTIVE).c_str());
+     */
 }
 
 void GestionnaireAuth::quitAuthentification()
@@ -180,11 +186,14 @@ void GestionnaireAuth::setAuthentification()
 			return;
 		run();
 	}
+    /* todo
 	guiLogin->setEvent(ToString(DESACTIVE).c_str());
 	guiProgression->setEvent(ToString(ACTIVE).c_str());
 	guiProgression->setEvent(ToString(VISIBLE).c_str());
 	guiProgression->setEvent(ToString(PROGRESSION).c_str(),"1");
 
+     
+     
 	if (std::strcmp(guiLogin->getLogin(),compte->getLogin()) == 0)
 	{
 		compte->setEtapeDeLogin(1);
@@ -192,20 +201,21 @@ void GestionnaireAuth::setAuthentification()
 
 	compte->setLogin(guiLogin->getLogin());
 	compte->setPassWord(guiLogin->getPassword());
-
+*/
 	sendAuthentification();
 }
 
-void GestionnaireAuth::retourInterface(int IDInterface,int retour)
+void GestionnaireAuth::retourInterface(EventInterface eventInterface,int retour)
 {
-	if(IDInterface == guiLogin->getIDInterface())
+    
+	if(eventInterface == LOGIN)
 	{
 		switch(retour)
 		{
-		case QUITBOUTON :
+		case CANCELBOUTON :
 			quitAuthentification();
 			break;
-		case CONNEXIONBOUTON:
+		case OKBOUTON:
 			setAuthentification();
 			break;
 		default:
@@ -213,7 +223,7 @@ void GestionnaireAuth::retourInterface(int IDInterface,int retour)
 		}
 	}
 
-	if(IDInterface == guiErreur->getIDInterface())
+	if(eventInterface == NOTIFICATION)
 	{
 		switch(retour)
 		{
@@ -225,7 +235,7 @@ void GestionnaireAuth::retourInterface(int IDInterface,int retour)
 		}
 	}
 
-	if(IDInterface == guiProgression->getIDInterface())
+	if(eventInterface == CHARGEMENT)
 	{
 		switch(retour)
 		{
@@ -237,10 +247,11 @@ void GestionnaireAuth::retourInterface(int IDInterface,int retour)
 			break;
 		}
 	}
+     
 }
 
 void GestionnaireAuth::gestionnaireErreur(AUTHPACKET_ERROR * packetErreur)
-{
+{ /* todo
 	switch(packetErreur->errorID)
 	{
 	case ID_ERROR_PACKET_SIZE :
@@ -281,7 +292,7 @@ void GestionnaireAuth::gestionnaireErreur(AUTHPACKET_ERROR * packetErreur)
 		break;
 	default:
 		break;
-	}
+	} */
 
 }
 

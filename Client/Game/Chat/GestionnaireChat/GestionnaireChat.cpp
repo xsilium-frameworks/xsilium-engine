@@ -19,8 +19,8 @@ GestionnaireChat::GestionnaireChat() {
 	inputManager = InputManager::getInstance();
 
 
-	guichat = new Chat(this);
-	gestionnaireInterface->addInterface(guichat);
+
+	gestionnaireInterface->addInterface(new Chat());
 
 	int messageErreur = networkManager->connexionToHost("85.25.143.49",60001);
 
@@ -41,7 +41,6 @@ GestionnaireChat::~GestionnaireChat() {
 	networkManager->removelistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT);
     networkManager->disconnexion();
 	inputManager->removeKeyListener(this);
-	gestionnaireInterface->removeInterface(guichat);
 }
 
 void GestionnaireChat::run()
@@ -51,7 +50,7 @@ void GestionnaireChat::run()
 	ModuleActif::run();
 }
 
-void GestionnaireChat::retourInterface(int IDInterface,int retour)
+void GestionnaireChat::retourInterface(EventInterface eventInterface,int retour)
 {
 }
 
@@ -68,7 +67,7 @@ void GestionnaireChat::processPacket(ENetEvent * packet)
 		std::strcat(messageConsole," > ");
 		std::strcat(messageConsole,(const char *)typePacket->message);
         
-		guichat->setEvent(ToString(ALL).c_str(),messageConsole);
+		//guichat->setEvent(ToString(ALL).c_str(),messageConsole);
 
 	}
 }
@@ -96,7 +95,7 @@ bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
 	{
 
 	case OIS::KC_RETURN:
-		if(guichat->saisiActiver())
+/*		if(guichat->saisiActiver())
 		{
 			if(std::strcmp(guichat->getSaisi(),""))
 			{
@@ -110,7 +109,7 @@ bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
 			GestionnaireMouvement::getInstance()->desactiveDeplacement();
 			guichat->activeSaisi();
 
-		}
+		} */
 		break;
 	default:
 		break;

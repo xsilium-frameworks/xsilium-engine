@@ -8,7 +8,7 @@
 
 #include "GuiProgression.h"
 
-GuiProgression::GuiProgression(ControleInterface * controleInterface) {
+GuiProgression::GuiProgression() {
 
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
@@ -17,7 +17,7 @@ GuiProgression::GuiProgression(ControleInterface * controleInterface) {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->controleInterface = controleInterface ;
+	EventEnregistre.push_back(CHARGEMENT);
 
 	initEventInterface();
 }
@@ -32,7 +32,7 @@ GuiProgression::~GuiProgression() {
 
 bool GuiProgression::connexionAnnuler(const CEGUI::EventArgs &e)
 {
-	controleInterface->retourInterface(IDInterface,CANCELBOUTON);
+	controleInterface->retourInterface(CHARGEMENT,CANCELBOUTON);
 	return true;
 }
 
@@ -49,15 +49,16 @@ void GuiProgression::update()
 
 	if(event != NULL)
 	{
-		GuiInterface::EventGlobal();
+
 		switch(atoi(event->getProperty("eventType").c_str()))
 		{
-		case PROGRESSION:
+		case CHARGEMENT:
 			processProgression(event);
+			deleteEvent = true;
 			break;
 		default:
 			break;
 		}
-		eventManager->removeEvent();
+		GuiInterface::EventGlobal();
 	}
 }

@@ -8,7 +8,7 @@
 
 #include "GuiErreur.h"
 
-GuiErreur::GuiErreur(ControleInterface * controleInterface) {
+GuiErreur::GuiErreur() {
 
 	messageFlag = false;
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
@@ -19,7 +19,7 @@ GuiErreur::GuiErreur(ControleInterface * controleInterface) {
 	// attach this window if parent is valid
 	parent->addChild(d_root);
 
-	this->controleInterface = controleInterface ;
+	EventEnregistre.push_back(NOTIFICATION);
 
 	initEventInterface();
 
@@ -37,7 +37,7 @@ bool GuiErreur::okButton(const CEGUI::EventArgs &e)
 {
 	messageFlag = false;
 	d_root->setVisible(false);
-	controleInterface->retourInterface(IDInterface,OKBOUTON);
+	controleInterface->retourInterface(NOTIFICATION,OKBOUTON);
 	return true;
 }
 
@@ -58,16 +58,15 @@ void GuiErreur::update()
 
 	if(event != NULL)
 	{
-
-		GuiInterface::EventGlobal();
 		switch(atoi(event->getProperty("eventType").c_str()))
 		{
 		case MESSAGE:
 			processMessage(event);
+			deleteEvent = true;
 			break;
 		default:
 			break;
 		}
-		eventManager->removeEvent();
+		GuiInterface::EventGlobal();
 	}
 }

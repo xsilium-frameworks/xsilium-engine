@@ -6,7 +6,6 @@
 #include <OISJoyStick.h>
 #include <OISInputManager.h>
 
-#include "CEGUI/CEGUI.h"
 #include "Singleton/Singleton.h"
 
 #include <OgreRenderWindow.h>
@@ -49,10 +48,6 @@ public:
 
 	int getNumOfJoysticks( void );
 
-protected:
-	// convert an OIS mouse button into a CEGUI mouse button
-	CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
-
 private:
 	bool keyPressed( const OIS::KeyEvent &e );
 	bool keyReleased( const OIS::KeyEvent &e );
@@ -66,12 +61,6 @@ private:
 	bool sliderMoved( const OIS::JoyStickEvent &e, int sliderID );
 	bool buttonPressed( const OIS::JoyStickEvent &e, int button );
 	bool buttonReleased( const OIS::JoyStickEvent &e, int button );
-
-	void begin(const OIS::KeyEvent &evt);
-
-	void end(const OIS::KeyEvent &evt);
-
-	void update(float a_fElapsed); // Elapsed time in seconds
 
 	OIS::InputManager *mInputSystem;
 	OIS::Mouse        *mMouse;
@@ -92,14 +81,5 @@ private:
 	std::map<std::string, OIS::KeyListener*>::iterator itKeyListenerEnd;
 	std::map<std::string, OIS::MouseListener*>::iterator itMouseListenerEnd;
 	std::map<std::string, OIS::JoyStickListener*>::iterator itJoystickListenerEnd;
-
-	OIS::KeyCode m_nKey;
-	unsigned int m_nChar;
-
-	float m_fElapsed;
-	float m_fDelay;
-
-	float m_fRepeatDelay;
-	float m_fInitialDelay;
 };
 #endif

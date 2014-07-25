@@ -18,8 +18,6 @@ void LoginState::enter()
 {
 	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
 
-    GestionnaireInterface::getInstance()->interfacePrincipal();
-
 
     gestionnaireAuth = new GestionnaireAuth(this);
 

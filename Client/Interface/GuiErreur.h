@@ -13,23 +13,13 @@
 
 #include "GameState/GameStateManager.h"
 
-enum eventTypeErreur
-{
-	MESSAGE = LASTIDEVENTTYPE
-};
-
-enum eventerreur
-{
-	OKBOUTON = 1
-};
-
 /*
  *
  */
 class GuiErreur : public GuiInterface
 {
 public:
-	GuiErreur(ControleInterface * controleInterface);
+	GuiErreur();
 	virtual ~GuiErreur();
 
 	bool okButton(const CEGUI::EventArgs &e);

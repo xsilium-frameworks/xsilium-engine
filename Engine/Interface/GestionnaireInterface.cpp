@@ -10,9 +10,10 @@
 
 GestionnaireInterface::GestionnaireInterface() {
 
-	inputManager = InputManager::getInstance();
 	interfacePrincipale = false;
-	generateID = 0;
+
+	inputInterface = new InputInterface();
+
 	initialisationInterface();
 
 
@@ -26,17 +27,16 @@ GestionnaireInterface::GestionnaireInterface() {
 }
 
 GestionnaireInterface::~GestionnaireInterface() {
+
+	delete inputInterface;
+
 	XsiliumFramework::getInstance()->getRoot()->removeFrameListener(this);
 	removeAllInterface();
 }
 
 void GestionnaireInterface::initialisationInterface()
 {    
-	CEGUI::OgreRenderer* renderer = &CEGUI::OgreRenderer::bootstrapSystem();
-
-	const OIS::MouseState state = inputManager->getMouse()->getMouseState();
-    CEGUI::Vector2f mousePos = CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().getPosition();
-	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseMove(state.X.abs-mousePos.d_x,state.Y.abs-mousePos.d_y);
+	CEGUI::OgreRenderer::bootstrapSystem();
 
 	// set the default resource groups to be used
 	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
@@ -53,6 +53,10 @@ void GestionnaireInterface::initialisationInterface()
 
 	CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
+
+	inputInterface->initialisationMouse();
+
+	interfacePrincipal();
 }
 
 
@@ -89,10 +93,10 @@ void GestionnaireInterface::deleteInterfacePrincipal()
 
 void GestionnaireInterface::addInterface(GuiInterface * interface)
 {
+	interfacePrincipal();
 	if(!findInterface(interface))
 	{
-		generateID += 1;
-		interface->setIDInterface(generateID);
+		interface->setControleur(this);
 		listOfInterface.push_back(interface);
 	}
 
@@ -112,7 +116,7 @@ void GestionnaireInterface::removeAllInterface()
 		delete *interfaceIterator;
 	}
 	listOfInterface.clear();
-	generateID = 0;
+	deleteInterfacePrincipal();
 }
 
 bool GestionnaireInterface::findInterface(GuiInterface * interface)
@@ -127,19 +131,83 @@ bool GestionnaireInterface::findInterface(GuiInterface * interface)
 	return false;
 }
 
+void GestionnaireInterface::addControleur(ControleInterface * controleInterface)
+{
+	if(!findControleur(controleInterface))
+	{
+		listOfControleur.push_back(controleInterface);
+	}
+
+}
+
+void GestionnaireInterface::removeControleur(ControleInterface * controleInterface)
+{
+	if(findControleur(controleInterface))
+	{
+		listOfControleur.erase(controleurIterator);
+	}
+}
+
+bool GestionnaireInterface::findControleur(ControleInterface * controleInterface)
+{
+	for (controleurIterator = listOfControleur.begin() ; controleurIterator != listOfControleur.end(); ++controleurIterator)
+	{
+		if(controleInterface == (*controleurIterator) )
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void GestionnaireInterface::sendEvenement(EventInterface * eventInterface,Event * event)
+{
+	for (interfaceIterator = listOfInterface.begin() ; interfaceIterator != listOfInterface.end(); ++interfaceIterator)
+		{
+			if((*interfaceIterator)->checkRegistreEvent(eventInterface))
+			{
+				(*interfaceIterator)->setEvent(event);
+			}
+		}
+}
+
+
+void GestionnaireInterface::retourInterface(EventInterface eventInterface,int retour,ControleInterface * controleInterface)
+{
+    if(controleInterface == NULL)
+    {
+	for (controleurIterator = listOfControleur.begin() ; controleurIterator != listOfControleur.end(); ++controleurIterator)
+		{
+
+			if((*controleurIterator)->checkRegistreEvent(&eventInterface) )
+			{
+				(*controleurIterator)->retourInterface(eventInterface,retour);
+			}
+		}
+    }
+    else
+    {
+        if(findControleur(controleInterface))
+           {
+               (*controleurIterator)->retourInterface(eventInterface,retour);
+           }
+    }
+
+}
+
 
 bool GestionnaireInterface::onWindowActivated(const CEGUI::EventArgs &ea)
 {
-	try {
+	/*try {
 		const CEGUI::WindowEventArgs& we = static_cast<const CEGUI::WindowEventArgs&>(ea);
 		CEGUI::Window *pLastWin = pWinHistory.back( );
 
-        // We only work with FrameWindows.
+		// We only work with FrameWindows.
 		printf("test %s\n",we.window->getType().c_str());
-        
-        if(we.window->getType().compare("DragContainer"))
+
+		if(we.window->getType().compare("DragContainer"))
 			return true;
-        
+
 		// If it is the same window as before, ignore it.
 		if( pLastWin == we.window )
 			return true;
@@ -165,17 +233,17 @@ bool GestionnaireInterface::onWindowActivated(const CEGUI::EventArgs &ea)
 	} catch( CEGUI::Exception& e ) {
 		fprintf( stderr, "CEGUI error: %s\n", e.getMessage( ).c_str( ) );
 		return true;
-	}
+	}*/
 
 	return true;
 }
 bool GestionnaireInterface::onWindowDeactivated(const CEGUI::EventArgs &ea)
 {
-	try {
+	/*try {
 		const CEGUI::WindowEventArgs& we = static_cast<const CEGUI::WindowEventArgs&>(ea);
 		CEGUI::Window *pLastWin = NULL;
 
-        if(we.window->getType().compare("DragContainer"))
+		if(we.window->getType().compare("DragContainer"))
 			return true;
 
 		// Delete the current window from the stack.
@@ -192,10 +260,11 @@ bool GestionnaireInterface::onWindowDeactivated(const CEGUI::EventArgs &ea)
 	} catch( CEGUI::Exception& e ) {
 		fprintf( stderr, "CEGUI error: %s\n", e.getMessage( ).c_str( ) );
 		return true;
-	}
+	}*/
 
 	return true;
 }
+
 
 bool GestionnaireInterface::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 {
@@ -203,6 +272,8 @@ bool GestionnaireInterface::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 }
 bool GestionnaireInterface::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
+	inputInterface->update(m_FrameEvent.timeSinceLastFrame);
+
 	for (interfaceIterator=listOfInterface.begin() ; interfaceIterator!=listOfInterface.end() ; ++interfaceIterator)
 	{
 		(*interfaceIterator)->update();

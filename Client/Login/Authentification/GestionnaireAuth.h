@@ -67,7 +67,7 @@ public:
 
 	void processPacket(ENetEvent * packet);
 
-	void retourInterface(int IDInterface,int retour);
+	void retourInterface(EventInterface eventInterface,int retour);
 
 	bool initNetwork();
 
@@ -85,10 +85,6 @@ public:
 
 
 protected:
-	GuiLogin * guiLogin;
-	GuiErreur * guiErreur;
-	GuiProgression * guiProgression;
-
 	Compte * compte;
 
 	GameState * loginState;

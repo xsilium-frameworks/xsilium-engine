@@ -9,11 +9,13 @@ set( InputManager_S
 set( Interface_H
 ./Interface/Interface.h
 ./Interface/GestionnaireInterface.h
+./Interface/InputInterface.h
 )
 
 set( Interface_S
 ./Interface/Interface.cpp
 ./Interface/GestionnaireInterface.cpp
+./Interface/InputInterface.cpp
 )
 
 set( CallBack_H

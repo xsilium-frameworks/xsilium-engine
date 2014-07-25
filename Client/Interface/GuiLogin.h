@@ -13,19 +13,13 @@
 
 #include "GameState/GameStateManager.h"
 
-enum eventlogin
-{
-	CONNEXIONBOUTON = 1,
-	QUITBOUTON
-};
-
 /*
  *
  */
 class GuiLogin : public GuiInterface
 {
 public:
-	GuiLogin(ControleInterface * controleInterface);
+	GuiLogin();
 	virtual ~GuiLogin();
 
     bool connexionButton(const CEGUI::EventArgs &e);
@@ -39,9 +33,6 @@ public:
 
 
     void update();
-
-private:
-    ControleInterface * controleInterface ;
 
 };
 

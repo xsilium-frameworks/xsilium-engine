@@ -14,23 +14,13 @@
 
 #include "GameState/GameStateManager.h"
 
-enum eventTypeProgression
-{
-	PROGRESSION = LASTIDEVENTTYPE
-};
-
-enum eventprogression
-{
-	CANCELBOUTON = 1
-};
-
 /*
  *
  */
 class GuiProgression : public GuiInterface
 {
 public:
-	GuiProgression(ControleInterface * controleInterface);
+	GuiProgression();
 	virtual ~GuiProgression();
 
     bool connexionAnnuler(const CEGUI::EventArgs &e);
@@ -38,9 +28,6 @@ public:
     void processProgression(Event * event);
 
 	void update();
-
-private:
-	ControleInterface * controleInterface ;
 
 };
 

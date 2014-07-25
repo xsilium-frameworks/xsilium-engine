@@ -12,6 +12,7 @@
 #include "Network/NetworkManager.h"
 
 #include "Interface/GestionnaireInterface.h"
+
 #include "Interface/GuiChat.h"
 
 #include "Network/Opcode/Opcode.h"
@@ -36,7 +37,7 @@ public:
 
 	void processPacket(ENetEvent * packet);
 
-	void retourInterface(int IDInterface,int retour);
+	void retourInterface(EventInterface eventInterface,int retour);
 
 	void sendMessageToChat(const char * message, int to);
 
@@ -46,7 +47,6 @@ public:
 
 private:
 	NetworkManager * networkManager;
-	Chat * guichat;
 	Compte * compte;
 	GestionnaireInterface * gestionnaireInterface;
 

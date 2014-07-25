@@ -14,18 +14,16 @@
 #endif
 
 #include "Singleton/Singleton.h"
+
 #include "Interface/Interface.h"
-
+#include "Interface/InputInterface.h"
+#include "Interface/ControleInterface.h"
 #include "XsiliumFramework.h"
-#include "InputManager/InputManager.h"
-
-
-
 
 /*
  *
  */
-class GestionnaireInterface : public xsilium::Singleton<GestionnaireInterface> , public Ogre::FrameListener {
+class GestionnaireInterface : public xsilium::Singleton<GestionnaireInterface> , public Ogre::FrameListener , public ControleInterface {
 
 	friend class xsilium::Singleton<GestionnaireInterface>;
 
@@ -38,6 +36,10 @@ public:
 	void removeAllInterface();
 	bool findInterface(GuiInterface * interface);
 
+	void addControleur(ControleInterface * controleInterface);
+	void removeControleur(ControleInterface * controleInterface);
+	bool findControleur(ControleInterface * controleInterface);
+
     void initialisationInterface();
 	void interfacePrincipal();
 	void deleteInterfacePrincipal();
@@ -49,21 +51,32 @@ public:
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
+	void retourInterface(EventInterface eventInterface,int retour,ControleInterface * controleInterface);
+	void retourInterface(EventInterface eventInterface,int retour)
+	{
+		retourInterface(eventInterface,retour,NULL);
+	};
 
+
+	void sendEvenement(EventInterface * eventInterface,Event * event);
 
 private:
-	InputManager * inputManager;
-	int generateID;
-
-	static void  threadAuthentification(void * arguments);
 
 	std::vector<GuiInterface*> listOfInterface;
 	std::vector<GuiInterface*>::iterator interfaceIterator;
 
+	std::vector<ControleInterface *> listOfControleur;
+	std::vector<ControleInterface *>::iterator controleurIterator;
+
+
 	std::list<CEGUI::Window *> pWinHistory;
 
-
+	InputInterface * inputInterface;
 	bool interfacePrincipale;
+
+
+
+
 };
 
 #endif /* GESTIONNAIREINTERFACE_H_ */

@@ -1,13 +1,6 @@
 #include "InputManager.h"
 
 InputManager::InputManager( void ) :mInputSystem( 0 ),mMouse( 0 ),mKeyboard( 0 ){
-	m_fRepeatDelay = 0.035f;
-	m_fInitialDelay = 0.300f;
-	m_nKey = OIS::KC_UNASSIGNED ;
-	m_nChar = 0;
-
-	m_fElapsed = 0;
-	m_fDelay = 0;
 }
 
 InputManager::~InputManager( void ) {
@@ -121,8 +114,6 @@ void InputManager::capture( float timeSinceLastFrame ) {
 			(*itJoystick)->capture();
 		}
 	}
-	update(timeSinceLastFrame);
-	CEGUI::System::getSingleton().injectTimePulse(timeSinceLastFrame);
 }
 
 void InputManager::addKeyListener( OIS::KeyListener *keyListener, const std::string& instanceName ) {
@@ -282,10 +273,6 @@ bool InputManager::keyPressed( const OIS::KeyEvent &e ) {
 	itKeyListener    = mKeyListeners.begin();
 	itKeyListenerEnd = mKeyListeners.end();
 
-	CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(e.key));
-	CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(e.text);
-	begin(e);
-
 	for(; itKeyListener != itKeyListenerEnd; ++itKeyListener ) {
 		itKeyListener->second->keyPressed( e );
 	}
@@ -296,9 +283,6 @@ bool InputManager::keyPressed( const OIS::KeyEvent &e ) {
 bool InputManager::keyReleased( const OIS::KeyEvent &e ) {
 	itKeyListener    = mKeyListeners.begin();
 	itKeyListenerEnd = mKeyListeners.end();
-
-	CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyUp(static_cast<CEGUI::Key::Scan>(e.key));
-	end(e);
 
 	for(; itKeyListener != itKeyListenerEnd; ++itKeyListener ) {
 		itKeyListener->second->keyReleased( e );
@@ -313,10 +297,6 @@ bool InputManager::mouseMoved( const OIS::MouseEvent &e ) {
 	itMouseListener    = mMouseListeners.begin();
 	itMouseListenerEnd = mMouseListeners.end();
 
-	CEGUI::GUIContext& ctx = CEGUI::System::getSingleton().getDefaultGUIContext();
-
-	ctx.injectMouseMove(e.state.X.rel, e.state.Y.rel);
-
 	for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
 		itMouseListener->second->mouseMoved( e );
 	}
@@ -328,8 +308,6 @@ bool InputManager::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id
 	itMouseListener    = mMouseListeners.begin();
 	itMouseListenerEnd = mMouseListeners.end();
 
-	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(convertOISButtonToCegui(id));
-
 	for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
 		itMouseListener->second->mousePressed( e, id );
 	}
@@ -340,8 +318,6 @@ bool InputManager::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id
 bool InputManager::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id ) {
 	itMouseListener    = mMouseListeners.begin();
 	itMouseListenerEnd = mMouseListeners.end();
-
-	CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonUp(convertOISButtonToCegui(id));
 
 	for(; itMouseListener != itMouseListenerEnd; ++itMouseListener ) {
 		itMouseListener->second->mouseReleased( e, id );
@@ -398,70 +374,4 @@ bool InputManager::buttonReleased( const OIS::JoyStickEvent &e, int button ) {
 	}
 
 	return true;
-}
-
-CEGUI::MouseButton InputManager::convertOISButtonToCegui(int buttonID)
-{
-	using namespace OIS;
-
-	switch (buttonID)
-	{
-	case OIS::MB_Left:
-		return CEGUI::LeftButton;
-	case OIS::MB_Right:
-		return CEGUI::RightButton;
-	case OIS::MB_Middle:
-		return CEGUI::MiddleButton;
-	case OIS::MB_Button3:
-		return CEGUI::X1Button;
-		break;
-	case OIS::MB_Button4:
-		return CEGUI::X2Button ;
-		break;
-	case OIS::MB_Button5:
-		return CEGUI::NoButton;
-		break;
-	case OIS::MB_Button6:
-		return CEGUI::NoButton;
-		break;
-	case OIS::MB_Button7:
-		return CEGUI::NoButton;
-		break;
-	default:
-		return CEGUI::NoButton;
-		break;
-	}
-}
-
-void InputManager::begin(const OIS::KeyEvent &evt) {
-	m_nKey = evt.key;
-	m_nChar = evt.text;
-
-	m_fElapsed = 0;
-	m_fDelay = m_fInitialDelay;
-}
-
-void InputManager::end(const OIS::KeyEvent &evt) {
-	if (m_nKey != evt.key) return;
-
-	m_nKey = OIS::KC_UNASSIGNED;
-}
-
-void InputManager::update(float a_fElapsed) {
-	if (m_nKey == OIS::KC_UNASSIGNED) return;
-
-	m_fElapsed += a_fElapsed;
-	if (m_fElapsed < m_fDelay) return;
-
-	m_fElapsed -= m_fDelay;
-	m_fDelay = m_fRepeatDelay;
-
-	do {
-		CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyUp(static_cast<CEGUI::Key::Scan>(m_nKey));   // Key UP
-		CEGUI::System::getSingleton().getDefaultGUIContext().injectKeyDown(static_cast<CEGUI::Key::Scan>(m_nKey)); // Key Down
-		CEGUI::System::getSingleton().getDefaultGUIContext().injectChar(m_nChar);       // What that key means
-		m_fElapsed -= m_fRepeatDelay;
-	} while (m_fElapsed >= m_fRepeatDelay);
-
-	m_fElapsed = 0;
 }

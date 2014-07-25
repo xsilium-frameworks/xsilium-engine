@@ -9,7 +9,7 @@ GuiInterface::GuiInterface()
 	eventManager = new EventManager();
 	d_root = NULL;
 	controleInterface = NULL;
-	IDInterface = 0;
+	deleteEvent = false;
 
 }
 
@@ -55,14 +55,9 @@ bool GuiInterface::desactiveInterface(const CEGUI::EventArgs &ea)
 	return true;
 }
 
-void GuiInterface::setEvent(const char * typeEvent,const char * message)
+void GuiInterface::setEvent(Event * event)
 {
-	Event event;
-	std::string typeEvent_str(typeEvent);
-	std::string message_str(message);
-	event.setProperty("eventType",typeEvent_str);
-	event.setProperty("eventData",message_str);
-	eventManager->addEvent(event);
+	eventManager->addEvent(*event);
 }
 
 CEGUI::Window* GuiInterface::getWindow()
@@ -75,18 +70,22 @@ void GuiInterface::setControleur(ControleInterface * controleInterface)
 {
 	this->controleInterface = controleInterface;
 }
-ControleInterface * GuiInterface::getControleur()
+
+bool GuiInterface::checkRegistreEvent(EventInterface * eventInterface)
 {
-	return this->controleInterface;
+	for (std::vector<EventInterface>::iterator it =EventEnregistre.begin() ; it!=EventEnregistre.end() ; ++it)
+	{
+		if (*it == *eventInterface)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
-void GuiInterface::setIDInterface(int IDInterface)
+const std::string GuiInterface::getInterfaceName()
 {
-	this->IDInterface = IDInterface ;
-}
-const int GuiInterface::getIDInterface()
-{
-	return this->IDInterface;
+	return this->name;
 }
 
 void GuiInterface::EventGlobal()
@@ -95,18 +94,27 @@ void GuiInterface::EventGlobal()
 	{
 	case ACTIVE:
 		d_root->activate();
+		deleteEvent = true;
 		break;
 	case DESACTIVE:
 		d_root->deactivate();
+		deleteEvent = true;
 		break;
 	case VISIBLE:
 		setVisibility(true);
+		deleteEvent = true;
 		break;
 	case INVISIBLE:
 		setVisibility(false);
+		deleteEvent = true;
 		break;
 	default:
 		break;
+	}
+	if(deleteEvent)
+	{
+		deleteEvent = false;
+		eventManager->removeEvent();
 	}
 }
 

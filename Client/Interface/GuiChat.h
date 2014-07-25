@@ -3,17 +3,16 @@
 
 #include "Interface/Interface.h"
 
-
-enum messageType
+enum typeMessage
 {
-	ALL = LASTIDEVENTTYPE,
+	ALL = 0
 };
 
 
 class Chat : public GuiInterface
 {
 public:
-    Chat(ControleInterface * controleInterface);
+    Chat();
     ~Chat();
 
     void processMessage(Event * event);
@@ -38,7 +37,6 @@ public:
 private:
     int d_historyPos;
     std::vector<CEGUI::String> d_history;
-    ControleInterface * controleInterface ;
 
 
 };
