@@ -12,6 +12,7 @@ subdirs(Hydrax)
 subdirs(SkyX)
 
 #Update
+subdirs(Curl)
 subdirs(Librsync)
 subdirs(MD5)
 subdirs(Binreloc)

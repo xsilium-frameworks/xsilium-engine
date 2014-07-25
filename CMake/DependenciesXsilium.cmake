@@ -325,6 +325,9 @@ set(XSILIUM_LIBRARY "XsiliumEngine")
 #Find Curl
 FIND_PACKAGE(CURL REQUIRED)
 
+#Find Curl
+set(CURL_INCLUDE "${CMAKE_SOURCE_DIR}/Library/Curl/include)
+
 #Find Librsync
 set(RSYNC_INCLUDE "${CMAKE_SOURCE_DIR}/Library/Librsync")
 set(RSYNC_LIBRARY "rsync-static")
