@@ -57,10 +57,10 @@ private:
 	XsiliumFramework& operator= (const XsiliumFramework&);
 	Ogre::String m_SceneFile;
 
-	std::string mResourcePath ;
+	Ogre::String mResourcePath ;
 
 	Ogre::Root*					m_pRoot;
-	Ogre::RenderSystem	*		m_pRenderSystem;
+	Ogre::RenderSystem*		m_pRenderSystem;
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Log*					m_pLog;
 	InputManager*				inputManager;

@@ -13,6 +13,9 @@ subdirs(SkyX)
 
 #Update
 subdirs(Curl)
-subdirs(Librsync)
-subdirs(MD5)
+
+#subdirs(Librsync)
+
+# Incompatible win32 (strings.h -> Unix system)
+#subdirs(MD5)
 subdirs(Binreloc)

@@ -57,20 +57,32 @@ bool XsiliumFramework::initOgre(Ogre::String fenetreName,Ogre::String fileName,b
 	m_pLog->setDebugOutputEnabled(true);
 
 	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + fileName + ".cfg","");
-	//m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
-	m_pRenderSystem = m_pRoot->getAvailableRenderers().front();
-	m_pRoot->setRenderSystem(m_pRenderSystem);
+	
+	// Défini le mode par default OpenGL Rendering
+	m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
+	
+	//m_pRenderSystem = m_pRoot->getAvailableRenderers().front();
+	
+	
 	if(!m_pRoot->restoreConfig())
 	{
+		
+		if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE )
+		{
+			m_pRenderSystem->setConfigOption("RTT Preferred Mode", "FBO");
+			m_pRenderSystem->setConfigOption("Content Scaling Factor", "1.0");
+			m_pRenderSystem->setConfigOption("macAPI", "cocoa");
+		}
+
 		// Set defaults per RenderSystem
-		m_pRenderSystem->setConfigOption("Video Mode", "1024 x 768");
+		m_pRenderSystem->setConfigOption("Full Screen", "No");
+	    m_pRenderSystem->setConfigOption("VSync", "No");
+		m_pRenderSystem->setConfigOption("Video Mode", "800 x 600");
 		m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
-		m_pRenderSystem->setConfigOption("Full Screen", "No");
-		m_pRenderSystem->setConfigOption("RTT Preferred Mode", "FBO");
 		m_pRenderSystem->setConfigOption("sRGB Gamma Conversion", "No");
-		m_pRenderSystem->setConfigOption("Content Scaling Factor", "1.0");
-		m_pRenderSystem->setConfigOption("macAPI", "cocoa");
+
+		m_pRoot->setRenderSystem(m_pRenderSystem);
 	}
 
 	return true;
