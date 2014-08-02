@@ -4,11 +4,12 @@
 #include "GameState.h"
 #include "Singleton/Singleton.h"
 
+namespace Engine {
 
 
-class GameStateManager : public GameStateListener , public xsilium::Singleton<GameStateManager> {
+class GameStateManager : public GameStateListener , public engine::Singleton<GameStateManager> {
 
-	friend class xsilium::Singleton<GameStateManager>;
+	friend class engine::Singleton<GameStateManager>;
 
 public:
 	typedef struct
@@ -41,5 +42,7 @@ protected:
 
 
 };
+
+}
 
 #endif

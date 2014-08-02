@@ -12,9 +12,9 @@
 #include <OgrePrerequisites.h>
 
 
-class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener, public xsilium::Singleton<InputManager>
+class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener, public engine::Singleton<InputManager>
 {
-	friend class xsilium::Singleton<InputManager>;
+	friend class engine::Singleton<InputManager>;
 
 public:
 	InputManager();

@@ -1,10 +1,9 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
 
-#include "XsiliumFramework.h"
+#include "Engine/Engine.h"
 #include "InputManager/InputManager.h"
-#include "DotSceneLoader/DotSceneLoader.h"
-#include "EventManager/EventManager.h"
+#include "Event/EventManager.h"
 
 class GameState;
 
@@ -80,7 +79,7 @@ protected:
 	Ogre::Camera*				m_pCamera;
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::RenderWindow* 		m_Window;
-	EventManager * eventManager ;
+	Engine::EventManager * eventManager ;
 
 	bool changeState;
 	bool m_bQuit;

@@ -1,5 +1,7 @@
 #include "GameStateManager.h"
 
+namespace Engine {
+
 GameStateManager::GameStateManager()
 {
 	inputManager = InputManager::getInstance();
@@ -58,9 +60,9 @@ void GameStateManager::start(GameState* state  )
 	changeGameState(state);
 #if  (!__LP64__ || OGRE_PLATFORM != OGRE_PLATFORM_APPLE)
 
-	if (XsiliumFramework::getInstance()->getRoot()->getRenderSystem() != NULL)
+	if (Engine::getInstance()->getRoot()->getRenderSystem() != NULL)
 	{
-		XsiliumFramework::getInstance()->getRoot()->startRendering();    // start the render loop
+		Engine::getInstance()->getRoot()->startRendering();    // start the render loop
 	}
 
 #endif
@@ -72,7 +74,7 @@ void GameStateManager::changeGameState(GameState* state)
 
 	if(!m_ActiveStateStack.empty())
 	{
-		XsiliumFramework::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
+		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
@@ -80,14 +82,14 @@ void GameStateManager::changeGameState(GameState* state)
 	m_ActiveStateStack.push_back(state);
 	init(state);
 	m_ActiveStateStack.back()->enter();
-	XsiliumFramework::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
+	Engine::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
 }
 
 bool GameStateManager::pushGameState(GameState* state)
 {
 	if(!m_ActiveStateStack.empty())
 	{
-		XsiliumFramework::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
+		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		if(!m_ActiveStateStack.back()->pause())
 			return false;
 	}
@@ -95,7 +97,7 @@ bool GameStateManager::pushGameState(GameState* state)
 	m_ActiveStateStack.push_back(state);
 	init(state);
 	m_ActiveStateStack.back()->enter();
-	XsiliumFramework::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
+	Engine::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
 
 	return true;
 }
@@ -106,7 +108,7 @@ void GameStateManager::popGameState()
 
 	if(!m_ActiveStateStack.empty())
 	{
-		XsiliumFramework::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
+		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
@@ -115,7 +117,7 @@ void GameStateManager::popGameState()
 	{
 		init(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->resume();
-		XsiliumFramework::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
+		Engine::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
 	}
 	else
 		shutdown();
@@ -125,7 +127,7 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 {
 	while(!m_ActiveStateStack.empty())
 	{
-		XsiliumFramework::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
+		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
@@ -136,11 +138,13 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 
 void GameStateManager::shutdown()
 {
-	XsiliumFramework::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
-	XsiliumFramework::getInstance()->shutdown();
+	//Engine::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
+	Engine::getInstance()->shutdown();
 }
 
 void GameStateManager::init(GameState* state)
 {
-	XsiliumFramework::getInstance()->getRenderWindow()->resetStatistics();
+	//Engine::getInstance()->getRenderWindow()->resetStatistics();
+}
+
 }

@@ -12,9 +12,10 @@
 #include <deque>
 #include <boost/thread/thread.hpp>
 
-#include "Event/Event.h"
+#include "Event.h"
 
 
+namespace Engine {
 
 /*
  *
@@ -37,5 +38,7 @@ private:
 
 
 };
+
+} /* namespace Engine */
 
 #endif /* EVENTMANAGER_H_ */

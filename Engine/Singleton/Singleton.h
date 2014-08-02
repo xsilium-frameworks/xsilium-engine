@@ -1,17 +1,17 @@
 /*
  * \file Singleton.h
  *
- *  Created on: \date 9 aožt 2012
+ *  Created on: \date 2 aožt 2014
  *      Author: \author joda
  *  \brief :
  */
-
 #ifndef SINGLETON_H_
 #define SINGLETON_H_
 
+
 #include "stdlib.h"
 
-namespace xsilium
+namespace engine
 {
 template <typename Tsingleton>
 class Singleton
@@ -45,7 +45,9 @@ private:
 };
 }
 template <typename Tsingleton>
-Tsingleton *xsilium::Singleton<Tsingleton>::_singleton = NULL;
+Tsingleton *engine::Singleton<Tsingleton>::_singleton = NULL;
+
+
 
 
 #endif /* SINGLETON_H_ */

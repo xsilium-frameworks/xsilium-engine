@@ -8,6 +8,8 @@
 
 #include "EventManager.h"
 
+namespace Engine {
+
 EventManager::EventManager() {
 	// TODO Auto-generated constructor stub
 
@@ -47,3 +49,5 @@ Event * EventManager::getEvent()
 		return NULL;
 	}
 }
+
+} /* namespace Engine */
