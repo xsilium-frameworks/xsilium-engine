@@ -19,14 +19,21 @@ GraphicsManager::GraphicsManager() {
 
 	Engine::getInstance()->addListenner(this);
 
+	Engine::getInstance()->getRoot()->addFrameListener(this);
+
+	graphicsEntiteManager = new GraphicsEntiteManager();
+
 }
 
 GraphicsManager::~GraphicsManager() {
 
+	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	delete graphicsEntiteManager;
+
 }
 
 
-void GraphicsManager::setParamettreOgre(std::string key, std::string valeur)
+void GraphicsManager::setParamettreOgre(Ogre::String key, Ogre::String valeur)
 {
 	if(m_pRenderSystem)
 	{
@@ -34,7 +41,7 @@ void GraphicsManager::setParamettreOgre(std::string key, std::string valeur)
 	}
 }
 
-bool GraphicsManager::initOgre()
+void GraphicsManager::initOgre()
 {
 	// DŽfini le mode par default OpenGL Rendering
 	m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
@@ -59,8 +66,6 @@ bool GraphicsManager::initOgre()
 
 		m_pRoot->setRenderSystem(m_pRenderSystem);
 	}
-
-	return true;
 }
 
 void GraphicsManager::createWindow()
@@ -80,7 +85,7 @@ void GraphicsManager::loadRessource()
 {
 	Ogre::String secName, typeName, archName;
 	Ogre::ConfigFile cf;
-	cf.load( Engine::getInstance()->getResourcePath() + "resources.cfg");
+	cf.load( *(Engine::getInstance()->getResourcePath()) + "resources.cfg");
 
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 	while (seci.hasMoreElements())
@@ -118,6 +123,22 @@ void GraphicsManager::processEvent(Event * event)
 {
 
 }
+
+bool GraphicsManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
+{
+	return true;
+}
+bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
+{
+	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
+
+	return true;
+}
+bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
+{
+	return true;
+}
+
 
 
 } /* namespace Engine */

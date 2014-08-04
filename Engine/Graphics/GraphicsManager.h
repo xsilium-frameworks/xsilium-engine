@@ -9,18 +9,21 @@
 #define GRAPHICSMANAGER_H_
 
 #include "Engine/Engine.h"
+#include "Graphics/GraphicsEntiteManager.h"
 
 namespace Engine {
 
 /*
  *
  */
-class GraphicsManager : public EngineListenner {
+class GraphicsManager : public EngineListenner , public Ogre::FrameListener {
 public:
 	GraphicsManager();
 	virtual ~GraphicsManager();
 
-	void setParamettreOgre(std::string key, std::string valeur);
+	void initOgre();
+
+	void setParamettreOgre(Ogre::String key, Ogre::String valeur);
 
 	void createWindow();
 
@@ -30,6 +33,10 @@ public:
 	Ogre::RenderWindow* getRenderWindow();
 
 	void processEvent(Event * event);
+
+	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
+	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
 private:
 	Ogre::String m_SceneFile;
@@ -42,6 +49,8 @@ private:
 
 	Ogre::String fenetreName;
 	bool sauvegardeParam;
+
+	GraphicsEntiteManager * graphicsEntiteManager;
 
 };
 
