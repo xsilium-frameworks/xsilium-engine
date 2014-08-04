@@ -42,6 +42,11 @@ Ogre::Root* Engine::getRoot()
 	return this->m_pRoot;
 }
 
+Ogre::String * Engine::getResourcePath()
+{
+	return &this->mResourcePath;
+}
+
 void Engine::addListenner(EngineListenner * engineListenner)
 {
 	listOfEngineListenner.push_back(engineListenner);

@@ -2,7 +2,7 @@
 #define GAME_STATE_H
 
 #include "Engine/Engine.h"
-#include "InputManager/InputManager.h"
+#include "Input/InputManager.h"
 #include "Event/EventManager.h"
 
 class GameState;
@@ -76,9 +76,6 @@ protected:
 
 	GameStateListener*			m_pParent;
 
-	Ogre::Camera*				m_pCamera;
-	Ogre::SceneManager*			m_pSceneMgr;
-	Ogre::RenderWindow* 		m_Window;
 	Engine::EventManager * eventManager ;
 
 	bool changeState;

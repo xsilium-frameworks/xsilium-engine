@@ -56,6 +56,7 @@ public:
 	void shutdown();
 
 	Ogre::Root* getRoot();
+	Ogre::String * getResourcePath();
 
 private:
 	Ogre::String mResourcePath ;

@@ -7,6 +7,7 @@ set( CORE_HEADER_FILES
 	 ./GameState/GameState.h
 	 ./GameState/GameStateListener.h
 	 ./GameState/GameStateManager.h
+	 ./Graphics/GraphicsManager.h
 	 ./Input/InputManager.h	
 	 ./Input/KeyboardMap.h
 	 ./Network/Opcode/Opcode.h
@@ -25,6 +26,7 @@ set (CORE_SOURCE_FILES
 	 ./Event/EventManager.cpp
 	 ./Event/Event.cpp
 	 ./GameState/GameStateManager.cpp
+	 ./Graphics/GraphicsManager.h
 	 ./Input/InputManager.cpp
 	 ./Input/KeyboardMap.cpp
 	 ./Network/NetworkListener.cpp
