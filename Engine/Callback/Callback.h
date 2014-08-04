@@ -15,6 +15,7 @@
 #include <boost/bind.hpp>
 #include <map>
 
+namespace Engine {
 
 /*
  *
@@ -90,5 +91,7 @@ private:
 
 
 };
+
+}
 
 #endif /* CALLBACK_H_ */

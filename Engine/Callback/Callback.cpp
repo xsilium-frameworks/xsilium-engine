@@ -8,6 +8,8 @@
 
 #include "Callback.h"
 
+namespace Engine {
+
 Callback::Callback()
 {
 
@@ -61,4 +63,6 @@ bool Callback::removelistenneur(int identifiant)
 		return true ;
 	}
 	return false ;
+}
+
 }

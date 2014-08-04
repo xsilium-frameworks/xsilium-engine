@@ -5,6 +5,7 @@ namespace Engine {
 GameStateManager::GameStateManager()
 {
 	inputManager = InputManager::getInstance();
+	Engine::getInstance()->addListenner(this);
 }
 
 GameStateManager::~GameStateManager()
@@ -104,8 +105,6 @@ bool GameStateManager::pushGameState(GameState* state)
 
 void GameStateManager::popGameState()
 {
-
-
 	if(!m_ActiveStateStack.empty())
 	{
 		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
@@ -133,6 +132,11 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 	}
 
 	pushGameState(state);
+}
+
+void GameStateManager::processEvent(Event * event)
+{
+	//m_ActiveStateStack.back()
 }
 
 

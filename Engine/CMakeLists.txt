@@ -7,7 +7,12 @@ set( CORE_HEADER_FILES
 	 ./GameState/GameState.h
 	 ./GameState/GameStateListener.h
 	 ./GameState/GameStateManager.h
-	 ./InputManager/InputManager.h	
+	 ./Input/InputManager.h	
+	 ./Input/KeyboardMap.h
+	 ./Network/Opcode/Opcode.h
+	 ./Network/StructurePacket/StructureGeneral.h
+	 ./Network/NetworkListener.h
+	 ./Network/NetworkManager.h
 	 ./Singleton/Singleton.h
 )	 
 
@@ -20,7 +25,10 @@ set (CORE_SOURCE_FILES
 	 ./Event/EventManager.cpp
 	 ./Event/Event.cpp
 	 ./GameState/GameStateManager.cpp
-	 ./InputManager/InputManager.cpp
+	 ./Input/InputManager.cpp
+	 ./Input/KeyboardMap.cpp
+	 ./Network/NetworkListener.cpp
+	 ./Network/NetworkManager.cpp
 )
 
 include_directories(

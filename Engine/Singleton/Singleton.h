@@ -11,7 +11,7 @@
 
 #include "stdlib.h"
 
-namespace engine
+namespace Engine
 {
 template <typename Tsingleton>
 class Singleton
@@ -45,7 +45,7 @@ private:
 };
 }
 template <typename Tsingleton>
-Tsingleton *engine::Singleton<Tsingleton>::_singleton = NULL;
+Tsingleton *Engine::Singleton<Tsingleton>::_singleton = NULL;
 
 
 

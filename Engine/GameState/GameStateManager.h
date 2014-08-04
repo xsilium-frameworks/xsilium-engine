@@ -3,13 +3,14 @@
 
 #include "GameState.h"
 #include "Singleton/Singleton.h"
+#include "Engine/EngineListenner.h"
 
 namespace Engine {
 
 
-class GameStateManager : public GameStateListener , public engine::Singleton<GameStateManager> {
+class GameStateManager : public GameStateListener , public Singleton<GameStateManager> , public EngineListenner {
 
-	friend class engine::Singleton<GameStateManager>;
+	friend class Singleton<GameStateManager>;
 
 public:
 	typedef struct
@@ -31,6 +32,8 @@ public:
 	void popGameState();
 	void shutdown();
     void popAllAndPushGameState(GameState* state);
+
+    void processEvent(Event * event);
 
 
 protected:

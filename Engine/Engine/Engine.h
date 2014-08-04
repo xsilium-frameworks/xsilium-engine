@@ -35,9 +35,9 @@ namespace Engine {
 /*
  *
  */
-class Engine : public engine::Singleton<Engine> , public Ogre::FrameListener , public EventManager
+class Engine : public Singleton<Engine> , public Ogre::FrameListener , public EventManager
 {
-	friend class engine::Singleton<Engine>;
+	friend class Singleton<Engine>;
 
 public:
 	Engine();

@@ -11,10 +11,12 @@
 #include <OgreRenderWindow.h>
 #include <OgrePrerequisites.h>
 
+namespace Engine {
 
-class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener, public engine::Singleton<InputManager>
+
+class InputManager : public OIS::KeyListener, OIS::MouseListener, OIS::JoyStickListener, public Singleton<InputManager>
 {
-	friend class engine::Singleton<InputManager>;
+	friend class Singleton<InputManager>;
 
 public:
 	InputManager();
@@ -82,4 +84,6 @@ private:
 	std::map<std::string, OIS::MouseListener*>::iterator itMouseListenerEnd;
 	std::map<std::string, OIS::JoyStickListener*>::iterator itJoystickListenerEnd;
 };
+
+}
 #endif

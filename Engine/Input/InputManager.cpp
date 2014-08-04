@@ -1,5 +1,7 @@
 #include "InputManager.h"
 
+namespace Engine {
+
 InputManager::InputManager( void ) :mInputSystem( 0 ),mMouse( 0 ),mKeyboard( 0 ){
 }
 
@@ -374,4 +376,6 @@ bool InputManager::buttonReleased( const OIS::JoyStickEvent &e, int button ) {
 	}
 
 	return true;
+}
+
 }
