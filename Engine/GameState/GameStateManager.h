@@ -2,15 +2,12 @@
 #define GAME_STATE_MANAGER_H
 
 #include "GameState.h"
-#include "Singleton/Singleton.h"
 #include "Engine/EngineListenner.h"
 
 namespace Engine {
 
 
-class GameStateManager : public GameStateListener , public Singleton<GameStateManager> , public EngineListenner {
-
-	friend class Singleton<GameStateManager>;
+class GameStateManager : public GameStateListener , public EngineListenner {
 
 public:
 	typedef struct

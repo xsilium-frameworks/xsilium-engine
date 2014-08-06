@@ -10,6 +10,8 @@
 
 #include <Ogre.h>
 #include "GraphicsAnimation.h"
+#include "GraphicsObjet.h"
+#include "Event/Event.h"
 
 namespace Engine {
 
@@ -21,17 +23,22 @@ public:
 	GraphicsEntite();
 	virtual ~GraphicsEntite();
 
-	void setNom(Ogre::String nom);
+	void initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Ogre::String fileMesh);
+
 	void setCharHeight(int charHeight);
 	void setRunSpeed(int runSpeed);
 	void setTurnSpeed(double turnSpeed);
 
 	void degainerArme();
-	bool isDegainerArme();
 
 	void update(double timeSinceLastFrame);
 
-	void addEquipement(const char * nomObjet,const char * fileMesh,const char * emplacement);
+	void processEngine(Event * event);
+
+	void addEquipement(Ogre::String nomObjet,Ogre::String fileMesh,Ogre::String emplacement);
+
+	void runAnimation();
+	void idleAnimation();
 
 private:
 	Ogre::String  nom;
@@ -40,14 +47,16 @@ private:
 	int  runSpeed ;
 	double  turnSpeed ;
 
-
+	Ogre::SceneManager* msceneMgr;
 	Ogre::SceneNode* mBodyNode;
 	Ogre::Entity* mBodyEnt;
 
 	GraphicsAnimation * graphicsAnimation ;
 
-	//std::map<int,Objet*> listOfObject;
+	std::map<int,GraphicsObjet*> listOfObject;
 	int countObjet;
+
+	bool degainer;
 
 
 };

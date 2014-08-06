@@ -24,7 +24,7 @@ void Engine::initOgre(Ogre::String configFile)
 }
 
 
-void Engine::initEngine(Ogre::String configFile)
+void Engine::initEngine(Ogre::String configFile, int nbThread)
 {
 
 #ifdef __APPLE__
@@ -34,6 +34,8 @@ void Engine::initEngine(Ogre::String configFile)
 #endif
 
 	initOgre(configFile);
+
+	run(4);
 
 }
 
@@ -52,39 +54,26 @@ void Engine::addListenner(EngineListenner * engineListenner)
 	listOfEngineListenner.push_back(engineListenner);
 }
 
-bool Engine::frameStarted (const Ogre::FrameEvent &evt)
-{
-	return true;
-}
-
-bool Engine::frameRenderingQueued (const Ogre::FrameEvent &evt)
+void Engine::processEvent(Event * event)
 {
 	std::vector<EngineListenner*>::iterator it;
-
-	Event * event = getEvent();
-
 	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
 	{
 		(*it)->processEvent(event);
 	}
-	removeEvent();
-
-	return true;
-}
-
-bool Engine::frameEnded (const Ogre::FrameEvent &evt)
-{
-	return true;
 }
 
 void Engine::shutdown()
 {
 	m_pRoot->queueEndRendering(true);
 
-#ifdef USE_RTSHADER_SYSTEM
-	// Finalize the RT Shader System.
-	finalizeRTShaderSystem();
-#endif // USE_RTSHADER_SYSTEM
+	stopThread();
+
+	std::vector<EngineListenner*>::iterator it;
+	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
+	{
+		(*it)->shutdown();
+	}
 
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__

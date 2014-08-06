@@ -10,6 +10,7 @@
 
 #include "Engine/Engine.h"
 #include "Graphics/GraphicsEntiteManager.h"
+#include "Graphics/GraphicsSceneLoader.h"
 
 namespace Engine {
 
@@ -27,12 +28,15 @@ public:
 
 	void createWindow();
 
-
 	void loadRessource();
+
+	void loadScene(Event * event);
 
 	Ogre::RenderWindow* getRenderWindow();
 
 	void processEvent(Event * event);
+
+	void shutdown();
 
 	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
@@ -46,11 +50,13 @@ private:
 	Ogre::RenderSystem*			m_pRenderSystem;
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Root*					m_pRoot;
+	Ogre::SceneManager*			m_pSceneMgr;
 
 	Ogre::String fenetreName;
 	bool sauvegardeParam;
 
 	GraphicsEntiteManager * graphicsEntiteManager;
+	GraphicsSceneLoader * graphicsSceneLoader;
 
 };
 

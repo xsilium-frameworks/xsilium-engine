@@ -12,6 +12,7 @@ namespace Engine {
 GraphicsManager::GraphicsManager() {
 	m_pRenderWnd		= 0;
 	m_pRenderSystem		= 0;
+    m_pSceneMgr         = 0;
 	sauvegardeParam = false;
 
 
@@ -22,6 +23,7 @@ GraphicsManager::GraphicsManager() {
 	Engine::getInstance()->getRoot()->addFrameListener(this);
 
 	graphicsEntiteManager = new GraphicsEntiteManager();
+	graphicsSceneLoader = new GraphicsSceneLoader();
 
 }
 
@@ -29,6 +31,7 @@ GraphicsManager::~GraphicsManager() {
 
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
 	delete graphicsEntiteManager;
+	delete graphicsSceneLoader;
 
 }
 
@@ -113,6 +116,15 @@ void GraphicsManager::loadRessource()
 
 }
 
+void GraphicsManager::loadScene(Event * event)
+{
+	if(m_pSceneMgr == 0)
+	{
+		m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
+	}
+	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
+}
+
 
 Ogre::RenderWindow* GraphicsManager::getRenderWindow()
 {
@@ -121,6 +133,14 @@ Ogre::RenderWindow* GraphicsManager::getRenderWindow()
 
 void GraphicsManager::processEvent(Event * event)
 {
+	if(event->hasProperty("Entite"))
+	{
+		graphicsEntiteManager->processEvent(event);
+	}
+	if(event->hasProperty("LoadScene"))
+	{
+		loadScene(event);
+	}
 
 }
 
@@ -137,6 +157,14 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 {
 	return true;
+}
+
+void GraphicsManager::shutdown()
+{
+#ifdef USE_RTSHADER_SYSTEM
+	// Finalize the RT Shader System.
+	finalizeRTShaderSystem();
+#endif // USE_RTSHADER_SYSTEM
 }
 
 

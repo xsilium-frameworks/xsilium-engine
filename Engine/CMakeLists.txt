@@ -11,6 +11,8 @@ set( CORE_HEADER_FILES
 	 ./Graphics/GraphicsEntiteManager.h
 	 ./Graphics/GraphicsEntite.h
 	 ./Graphics/GraphicsManager.h
+	 ./Graphics/GraphicsObjet.h
+	 ./Graphics/GraphicsSceneLoader.h
 	 ./Input/InputManager.h	
 	 ./Input/KeyboardMap.h
 	 ./Network/Opcode/Opcode.h
@@ -33,6 +35,8 @@ set (CORE_SOURCE_FILES
 	 ./Graphics/GraphicsEntite.cpp
 	 ./Graphics/GraphicsEntiteManager.cpp
 	 ./Graphics/GraphicsManager.cpp
+	 ./Graphics/GraphicsObjet.cpp
+ 	 ./Graphics/GraphicsSceneLoader.cpp
 	 ./Input/InputManager.cpp
 	 ./Input/KeyboardMap.cpp
 	 ./Network/NetworkListener.cpp
@@ -51,6 +55,7 @@ ${CEGUI_INCLUDE_DIR}
 ${OGRE_Overlay_INCLUDE_DIR}
 ${ENET_INCLUDE_DIR}
 ${OGRE_RenderSystems_INCLUDE_DIR}
+${OGREPAGED_INCLUDE_DIRS}
 .
 )
 
@@ -67,7 +72,7 @@ ${OGRE_Overlay_LIBRARIES}
 ${ENET_LIBRARY}
 ${OGRE_RenderSystems_LIBRARIES}
 ${OIS_LIBRARIES}
-"PagedGeometry"
+${OGREPAGED_LIBRARIES}
 )
 
 #add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})

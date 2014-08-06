@@ -20,9 +20,10 @@ namespace Engine {
 
 class EngineListenner {
 public:
-	EngineListenner();
-	virtual ~EngineListenner();
+	EngineListenner() {};
+	virtual ~EngineListenner() {};
 	virtual void processEvent(Event * event) = 0;
+	virtual void shutdown() = 0;
 
 };
 

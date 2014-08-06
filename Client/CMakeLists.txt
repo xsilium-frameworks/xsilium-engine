@@ -9,30 +9,10 @@ set(TargetName XsiliumClient)
 set(CORE_SOURCE_FILES
     main.cpp
     XsiliumApp.cpp
-    Shared/Compte/Compte.cpp
-    Login/LoginState.cpp 
-    Interface/GuiChat.cpp
-    Game/Chat/GestionnaireChat/GestionnaireChat.cpp
-    Interface/GuiErreur.cpp
-    Interface/GuiProgression.cpp
-    Interface/GuiLogin.cpp
-    Login/Authentification/GestionnaireAuth.cpp
-    Game/JeuxState.cpp
 )
 
 set(CORE_HEADER_FILES
     XsiliumApp.h 
-    Login/LoginState.h
-    Shared/Compte/Compte.h
-    Interface/GuiChat.h
-    Game/Chat/StructurePacket/PacketChat.h
-    Game/Chat/GestionnaireChat/GestionnaireChat.h
-    Login/Authentification/GestionnaireAuth.h
-    Interface/GuiErreur.h
-    Interface/GuiProgression.h
-    Interface/GuiLogin.h
-    Login/ListOfMessage/ListOfMessage.h
-    Game/JeuxState.h
 )
 
 if(WIN32)
@@ -64,6 +44,7 @@ ${SKYX_H_PATH}
 ${HYDRAX_H_PATH}
 ${OGRE_Terrain_INCLUDE_DIR}
 ${OGRE_RenderSystems_INCLUDE_DIR}
+${OGREPAGED_INCLUDE_DIRS}
 Login
 Game
 Shared

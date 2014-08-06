@@ -35,7 +35,7 @@ namespace Engine {
 /*
  *
  */
-class Engine : public Singleton<Engine> , public Ogre::FrameListener , public EventManager
+class Engine : public Singleton<Engine> , public EventManager
 {
 	friend class Singleton<Engine>;
 
@@ -43,13 +43,9 @@ public:
 	Engine();
 	virtual ~Engine();
 
-	void initEngine(Ogre::String configFile);
+	void initEngine(Ogre::String configFile, int nbThread);
 
 	void initOgre(Ogre::String configFile);
-
-	bool frameStarted(const Ogre::FrameEvent& evt);
-	bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-	bool frameEnded(const Ogre::FrameEvent& evt);
 
 	void addListenner(EngineListenner* engineListenner);
 
@@ -58,7 +54,10 @@ public:
 	Ogre::Root* getRoot();
 	Ogre::String * getResourcePath();
 
+	void processEvent(Event * event);
+
 private:
+
 	Ogre::String mResourcePath ;
 	Ogre::Root*	m_pRoot;
 

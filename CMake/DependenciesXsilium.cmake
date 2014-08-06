@@ -318,6 +318,10 @@ set(OIS_LIBRARIES "OIS")
 # Find CEGUI
 set(CEGUI_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include" "${CMAKE_BINARY_DIR}/Library/Cegui/cegui/include" ) 
 
+# Find OgrePaged
+set(OGREPAGED_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/Library/OgrePaged/include")
+set(OGREPAGED_LIBRARIES "PagedGeometry")
+
 #find Xsilium
 set(XSILIUM_INCLUDE "${CMAKE_SOURCE_DIR}/Engine")
 set(XSILIUM_LIBRARY "XsiliumEngine")

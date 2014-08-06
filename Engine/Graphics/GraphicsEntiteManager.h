@@ -25,15 +25,18 @@ public:
 	void createEntite(Event * event);
 	//Entite * trouverEntite(std::string nom);
 
+	void setSceneManager(Ogre::SceneManager* msceneMgr);
 
 	void update(float time);
 
-
+	void processEvent(Event * event);
 
 
 private:
 	std::vector<GraphicsEntite *> listOfEntite ;
 	std::vector<GraphicsEntite *>::iterator entite ;
+
+	Ogre::SceneManager* msceneMgr;
 };
 
 } /* namespace Engine */

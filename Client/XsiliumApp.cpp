@@ -2,41 +2,34 @@
 
 XsiliumApp::XsiliumApp()
 {
-	m_pGameStateManager = GameStateManager::getInstance();
-
-	compte = Compte::getInstance();
-
-	NetworkManager::getInstance();
-
+	graphicsManager = 0;
+	gameStateManager = 0;
 }
 
 XsiliumApp::~XsiliumApp()
 {
-	GameStateManager::DestroyInstance();
-	Compte::DestroyInstance();
-	NetworkManager::DestroyInstance();
-    XsiliumFramework::DestroyInstance();
+	delete gameStateManager;
+	delete graphicsManager;
+	Engine::Engine::DestroyInstance();
 }
 
 void XsiliumApp::start()
 {
+	Engine::Engine::getInstance()->initEngine("Xsilium",4);
+	graphicsManager = new Engine::GraphicsManager();
+	graphicsManager->initOgre();
+	graphicsManager->createWindow();
+	graphicsManager->loadRessource();
 
-	if(!XsiliumFramework::getInstance()->initOgre("Xsilium Client","client"))
-		return;
-
-	XsiliumFramework::getInstance()->createWindow();
-
-	XsiliumFramework::getInstance()->initInput();
-
-	XsiliumFramework::getInstance()->loadRessource();
-
-	XsiliumFramework::getInstance()->getLog()->logMessage("Xsilium initiliasee!");
-
-	LoginState::create<LoginState>(m_pGameStateManager,"LoginState");
+	gameStateManager = new Engine::GameStateManager();
 
 
-	JeuxState::create<JeuxState>(m_pGameStateManager, "JeuxState");
+	Event event ;
+	event.setProperty("LoadScene","1");
+	event.setProperty("NameScene","Xsilium1.scene");
+	event.setProperty("NameGroup","General");
 
-	m_pGameStateManager->start(m_pGameStateManager->findByName("LoginState"));
+	Engine::Engine::getInstance()->addEvent(event);
+
 }
 

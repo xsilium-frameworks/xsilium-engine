@@ -1,12 +1,9 @@
 #ifndef OGRE_XSILIUM_H
 #define OGRE_XSILIUM_H
 
-#include "XsiliumFramework.h"
+#include "Engine/Engine.h"
+#include "Graphics/GraphicsManager.h"
 #include "GameState/GameStateManager.h"
-
-#include "Login/LoginState.h"
-#include "Game/JeuxState.h"
-#include "Compte/Compte.h"
 
 class XsiliumApp
 {
@@ -17,8 +14,9 @@ public:
 	void start();
 
 private:
-	GameStateManager*	m_pGameStateManager;
-	Compte * compte;
+	Engine::GraphicsManager * graphicsManager;
+	Engine::GameStateManager * gameStateManager;
+
 };
 
 

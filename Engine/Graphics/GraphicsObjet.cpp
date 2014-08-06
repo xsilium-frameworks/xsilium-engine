@@ -10,12 +10,28 @@
 namespace Engine {
 
 GraphicsObjet::GraphicsObjet() {
-	// TODO Auto-generated constructor stub
+	objetEnt = 0;
 
 }
 
 GraphicsObjet::~GraphicsObjet() {
 	// TODO Auto-generated destructor stub
+}
+
+void GraphicsObjet::initObjet(Ogre::SceneManager* sceneMgr,Ogre::String nom,Ogre::String fileMesh)
+{
+	this->nom = nom;
+	objetEnt = sceneMgr->createEntity(nom, fileMesh);
+}
+
+Ogre::Entity* GraphicsObjet::getObjet()
+{
+	return this->objetEnt;
+}
+
+void GraphicsObjet::update(double timeSinceLastFrame)
+{
+
 }
 
 } /* namespace Engine */

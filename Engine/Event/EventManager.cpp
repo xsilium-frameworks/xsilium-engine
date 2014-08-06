@@ -11,42 +11,70 @@
 namespace Engine {
 
 EventManager::EventManager() {
-	// TODO Auto-generated constructor stub
+	endThread = false;
 
 }
 
 EventManager::~EventManager() {
 	while(!listOfEvent.empty() )
-		listOfEvent.pop_front();
+		listOfEvent.pop();
+}
+
+void EventManager::run(int nbThread)
+{
+	for(int i = 0;i< nbThread;i++)
+	{
+		groupThread.add_thread(new boost::thread(&EventManager::threadProcess, (void *) this) );
+	}
+}
+
+void EventManager::stopThread()
+{
+	endThread = true;
+	condition_Queue.notify_all();
+	groupThread.join_all();
 }
 
 void EventManager::addEvent(Event event)
 {
 	boost::unique_lock<boost::mutex> lock(mutexList);
-
-	listOfEvent.push_back(event);
-
+	listOfEvent.push(event);
+	lock.unlock();
+	condition_Queue.notify_one();
 }
 
-void EventManager::removeEvent()
+Event  EventManager::getEvent()
 {
 	boost::unique_lock<boost::mutex> lock(mutexList);
-	listOfEvent.pop_front();
+	Event event = listOfEvent.front();
+	listOfEvent.pop();
+	return event;
+
 }
 
-Event * EventManager::getEvent()
+bool EventManager::isEmpty()
 {
-	boost::unique_lock<boost::mutex> lock(mutexList, boost::defer_lock);
-	if(lock.try_lock())
+	boost::unique_lock<boost::mutex> lock(mutexList);
+	if(listOfEvent.empty())
 	{
-		if(!listOfEvent.empty())
-			return &(listOfEvent.front());
-		else
-			return NULL;
+		condition_Queue.wait(lock);
+		return true;
 	}
 	else
+		return false;
+}
+
+void EventManager::threadProcess(void * arguments)
+{
+	EventManager * eventManager = (EventManager *) arguments ;
+
+	while(!eventManager->endThread)
 	{
-		return NULL;
+		if(!eventManager->isEmpty())
+		{
+			Event event = eventManager->getEvent();
+			eventManager->processEvent(&event);
+		}
 	}
 }
 
