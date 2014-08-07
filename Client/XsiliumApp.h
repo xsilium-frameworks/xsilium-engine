@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Graphics/GraphicsManager.h"
 #include "GameState/GameStateManager.h"
+#include "Login/LoginState.h"
 
 class XsiliumApp
 {

@@ -7,8 +7,8 @@ LoginState::LoginState()
 {
 	m_bQuit         = false;
 	changeState 	= false;
-	NetworkManager::getInstance()->createConnexion();
-    gestionnaireAuth = NULL;
+//	NetworkManager::getInstance()->createConnexion();
+//    gestionnaireAuth = NULL;
 }
 
 LoginState::~LoginState()
@@ -16,48 +16,26 @@ LoginState::~LoginState()
 }
 void LoginState::enter()
 {
-	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
+//	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
 
 
-    gestionnaireAuth = new GestionnaireAuth(this);
-
-	m_pSceneMgr = XsiliumFramework::getInstance()->getRoot()->createSceneManager(ST_GENERIC, "LoginSceneMgr");
-	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7f, 0.7f, 0.7f));
-
-	m_pCamera = m_pSceneMgr->createCamera("MenuCam");
-	m_pCamera->setPosition(Vector3(0, 50, 100));
-	m_pCamera->lookAt(Vector3(0, 0, 0));
-	m_pCamera->setNearClipDistance(1);
-
-	m_pCamera->setAspectRatio(Real(XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->getActualWidth()) /
-			Real(XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->getActualHeight()));
-
-	XsiliumFramework::getInstance()->getRenderWindow()->getViewport(0)->setCamera(m_pCamera);
-
+//    gestionnaireAuth = new GestionnaireAuth(this);
 	createScene();
 
 }
 
 void LoginState::createScene()
 {
-	ParticleSystem* ps;
-	ps = m_pSceneMgr->createParticleSystem("Nimbus", "Xsilium/GreenyNimbus");
-	m_pSceneMgr->getRootSceneNode()->attachObject(ps);
+	Event event ;
+	event.setProperty("LoadScene","1");
+	event.setProperty("NameScene","Xsilium1.scene");
+	event.setProperty("NameGroup","General");
+
+	Engine::Engine::getInstance()->addEvent(event);
 }
 
 void LoginState::exit()
 {
-	XsiliumFramework::getInstance()->getLog()->logMessage("Leaving LoginState...");
-
-	m_pSceneMgr->destroyCamera(m_pCamera);
-
-	if(m_pSceneMgr)
-		XsiliumFramework::getInstance()->getRoot()->destroySceneManager(m_pSceneMgr);
-	XsiliumFramework::getInstance()->getLog()->logMessage("destruction scene...");
-
-	NetworkManager::getInstance()->disconnexion();
-
-	delete gestionnaireAuth;
 }
 
 bool LoginState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)

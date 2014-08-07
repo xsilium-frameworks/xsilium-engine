@@ -23,13 +23,9 @@ void XsiliumApp::start()
 
 	gameStateManager = new Engine::GameStateManager();
 
-
-	Event event ;
-	event.setProperty("LoadScene","1");
-	event.setProperty("NameScene","Xsilium1.scene");
-	event.setProperty("NameGroup","General");
-
-	Engine::Engine::getInstance()->addEvent(event);
+    LoginState::create<LoginState>(gameStateManager, "LoginState");
+    
+	gameStateManager->start(gameStateManager->findByName("LoginState"));
 
 }
 

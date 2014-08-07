@@ -73,7 +73,7 @@ void GraphicsManager::initOgre()
 
 void GraphicsManager::createWindow()
 {
-	m_pRenderWnd = m_pRoot->initialise(true,fenetreName);
+	m_pRenderWnd = m_pRoot->initialise(true,"Xsilium");
 
 	if(sauvegardeParam)
 		m_pRoot->saveConfig();
@@ -121,8 +121,21 @@ void GraphicsManager::loadScene(Event * event)
 	if(m_pSceneMgr == 0)
 	{
 		m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
+        Ogre::Camera*	m_pCamera = m_pSceneMgr->createCamera("MenuCam");
+        m_pCamera->setPosition(Ogre::Vector3(0, 50, 100));
+        m_pCamera->lookAt(Ogre::Vector3(0, 0, 0));
+        m_pCamera->setNearClipDistance(1);
+        
+        m_pCamera->setAspectRatio(Ogre::Real(m_pRenderWnd->getViewport(0)->getActualWidth()) /
+                                  Ogre::Real(m_pRenderWnd->getViewport(0)->getActualHeight()));
+        m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	}
-	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
+    
+    Ogre::ParticleSystem* ps;
+	ps = m_pSceneMgr->createParticleSystem("Nimbus", "Xsilium/GreenyNimbus");
+	m_pSceneMgr->getRootSceneNode()->attachObject(ps);
+    
+	//graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
 }
 
 

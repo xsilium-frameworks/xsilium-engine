@@ -9,10 +9,12 @@ set(TargetName XsiliumClient)
 set(CORE_SOURCE_FILES
     main.cpp
     XsiliumApp.cpp
+    Login/LoginState.cpp 
 )
 
 set(CORE_HEADER_FILES
     XsiliumApp.h 
+    Login/LoginState.h 
 )
 
 if(WIN32)
