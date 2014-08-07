@@ -29,6 +29,10 @@ public:
 	void setRunSpeed(int runSpeed);
 	void setTurnSpeed(double turnSpeed);
 
+	Ogre::SceneNode *getSightNode ();
+	Ogre::SceneNode *getCameraNode ();
+	Ogre::Vector3 getWorldPosition ();
+
 	void degainerArme();
 
 	void update(double timeSinceLastFrame);
@@ -48,7 +52,9 @@ private:
 	double  turnSpeed ;
 
 	Ogre::SceneManager* msceneMgr;
-	Ogre::SceneNode* mBodyNode;
+	Ogre::SceneNode *mMainNode; // Main character node
+	Ogre::SceneNode *mSightNode; // "Sight" node - The character is supposed to be looking here
+	Ogre::SceneNode *mCameraNode; // Node for the chase camera
 	Ogre::Entity* mBodyEnt;
 
 	GraphicsAnimation * graphicsAnimation ;

@@ -15,7 +15,9 @@ GraphicsEntite::GraphicsEntite() {
 	turnSpeed = 0;
 	countObjet = 0;
 	msceneMgr = 0;
-	mBodyNode = 0;
+	mMainNode = 0;
+    mSightNode = 0;
+    mCameraNode = 0;
 	mBodyEnt = 0;
 	graphicsAnimation = 0;
 
@@ -32,15 +34,16 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 	this->msceneMgr = sceneMgr;
 	this->nom = nom;
 
-	mBodyNode = sceneMgr->getRootSceneNode()->createChildSceneNode(nom,Ogre::Vector3::UNIT_Y * charHeight);
+	mMainNode = msceneMgr->getRootSceneNode ()->createChildSceneNode (nom);
+	mSightNode = mMainNode->createChildSceneNode (nom + "_sight", Ogre::Vector3 (0, 0, 100));
+	mCameraNode = mMainNode->createChildSceneNode (nom + "_camera", Ogre::Vector3 (0, 50, -100));
 
-	mBodyNode->setPosition(Ogre::Vector3(0,0.7,0));
 	mBodyEnt = sceneMgr->createEntity(fileMesh);
 
 	mBodyEnt->setCastShadows(true);
 
-	mBodyNode->attachObject(mBodyEnt);
-	mBodyNode->setScale(0.15,0.15,0.15);
+	mMainNode->attachObject(mBodyEnt);
+	mMainNode->setScale(0.15,0.15,0.15);
 
 
 	graphicsAnimation = new GraphicsAnimation(mBodyEnt);
@@ -58,6 +61,16 @@ void GraphicsEntite::setRunSpeed(int runSpeed)
 void GraphicsEntite::setTurnSpeed(double turnSpeed)
 {
 	this->turnSpeed = turnSpeed;
+}
+
+Ogre::SceneNode * GraphicsEntite::getSightNode () {
+	return mSightNode;
+}
+Ogre::SceneNode * GraphicsEntite::getCameraNode () {
+	return mCameraNode;
+}
+Ogre::Vector3 GraphicsEntite::getWorldPosition () {
+	return mMainNode->_getDerivedPosition ();
 }
 
 void GraphicsEntite::degainerArme()
