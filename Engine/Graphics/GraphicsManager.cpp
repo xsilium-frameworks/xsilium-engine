@@ -134,6 +134,12 @@ void GraphicsManager::loadScene(Event * event)
     
     
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
+
+	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
+        {
+            graphicsSceneLoader->mPGHandles[ij]->setCamera(m_pCamera);
+        }
+        
 }
 
 
@@ -169,6 +175,11 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		processEvent(event);
         deleteEvent();
 	}
+
+	    for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
+    {
+        graphicsSceneLoader->mPGHandles[ij]->update();
+    }
 
 	return true;
 }
