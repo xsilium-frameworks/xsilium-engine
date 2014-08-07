@@ -8,7 +8,7 @@
 #ifndef ENGINELISTENNER_H_
 #define ENGINELISTENNER_H_
 
-#include "Event/Event.h"
+#include "Event/EventManager.h"
 
 namespace Engine {
 
@@ -18,7 +18,7 @@ namespace Engine {
  *
  */
 
-class EngineListenner {
+class EngineListenner : public EventManager {
 public:
 	EngineListenner() {};
 	virtual ~EngineListenner() {};

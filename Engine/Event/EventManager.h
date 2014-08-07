@@ -11,7 +11,6 @@
 
 #include <queue>
 #include <boost/thread/thread.hpp>
-
 #include "Event.h"
 
 
@@ -27,26 +26,18 @@ public:
 	virtual ~EventManager();
 
 	void addEvent(Event event);
-	Event getEvent();
+	Event * getEvent();
+
+	void deleteEvent();
 
 	bool isEmpty();
 
-	void run(int nbThread);
-	void stopThread();
-
 	virtual void processEvent(Event * event) = 0;
-
-protected:
-	static void threadProcess(void * arguments);
 
 
 private:
 	std::queue<Event> listOfEvent;
-	boost::condition_variable condition_Queue;
-	boost::thread_group groupThread;
 	boost::mutex mutexList;
-
-	bool endThread;
 
 
 };

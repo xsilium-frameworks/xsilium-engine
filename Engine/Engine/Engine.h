@@ -15,7 +15,7 @@
 
 
 #include "Singleton/Singleton.h"
-#include "Event/EventManager.h"
+#include "Event/Event.h"
 #include "EngineListenner.h"
 #include <vector>
 
@@ -35,7 +35,7 @@ namespace Engine {
 /*
  *
  */
-class Engine : public Singleton<Engine> , public EventManager
+class Engine : public Singleton<Engine>
 {
 	friend class Singleton<Engine>;
 
@@ -54,7 +54,11 @@ public:
 	Ogre::Root* getRoot();
 	Ogre::String * getResourcePath();
 
-	void processEvent(Event * event);
+	void addEvent(Event event);
+
+	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
+	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
 private:
 

@@ -122,6 +122,17 @@ void GraphicsManager::loadScene(Event * event)
 	{
 		m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	}
+    
+    Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("MenuCam");
+	m_pCamera->setPosition(Ogre::Vector3(0, 0, 0));
+	m_pCamera->setNearClipDistance(0.1);
+    
+	m_pCamera->setAspectRatio(Ogre::Real(m_pRenderWnd->getViewport(0)->getActualWidth()) /
+                              Ogre::Real(m_pRenderWnd->getViewport(0)->getActualHeight()));
+    
+	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
+    
+    
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
 }
 
@@ -151,6 +162,13 @@ bool GraphicsManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
+    
+    if(!isEmpty())
+	{
+		Event * event = getEvent();
+		processEvent(event);
+        deleteEvent();
+	}
 
 	return true;
 }

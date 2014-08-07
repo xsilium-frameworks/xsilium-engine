@@ -35,7 +35,7 @@ void Engine::initEngine(Ogre::String configFile, int nbThread)
 
 	initOgre(configFile);
 
-	run(4);
+	//run(4);
 
 }
 
@@ -54,12 +54,12 @@ void Engine::addListenner(EngineListenner * engineListenner)
 	listOfEngineListenner.push_back(engineListenner);
 }
 
-void Engine::processEvent(Event * event)
+void Engine::addEvent(Event event)
 {
 	std::vector<EngineListenner*>::iterator it;
 	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
 	{
-		(*it)->processEvent(event);
+		(*it)->addEvent(event);
 	}
 }
 
@@ -67,7 +67,7 @@ void Engine::shutdown()
 {
 	m_pRoot->queueEndRendering(true);
 
-	stopThread();
+	//stopThread();
 
 	std::vector<EngineListenner*>::iterator it;
 	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
