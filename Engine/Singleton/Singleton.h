@@ -43,11 +43,11 @@ private:
 
 
 };
-}
+
 template <typename Tsingleton>
-Tsingleton *Engine::Singleton<Tsingleton>::_singleton = NULL;
+Tsingleton *Singleton<Tsingleton>::_singleton = NULL;
 
-
+}
 
 
 #endif /* SINGLETON_H_ */
