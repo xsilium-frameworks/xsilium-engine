@@ -8,7 +8,7 @@ set( CORE_HEADER_FILES
 	 ./GameState/GameStateListener.h
 	 ./GameState/GameStateManager.h
 	 ./Graphics/GraphicsAnimation.h
-	 ./Graphics/GraphicsCamera
+	 ./Graphics/GraphicsCamera.h
 	 ./Graphics/GraphicsEntiteManager.h
 	 ./Graphics/GraphicsEntite.h
 	 ./Graphics/GraphicsManager.h
