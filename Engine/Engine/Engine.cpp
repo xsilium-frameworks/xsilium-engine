@@ -35,8 +35,6 @@ void Engine::initEngine(Ogre::String configFile, int nbThread)
 
 	initOgre(configFile);
 
-	//run(4);
-
 }
 
 Ogre::Root* Engine::getRoot()
@@ -66,8 +64,6 @@ void Engine::addEvent(Event event)
 void Engine::shutdown()
 {
 	m_pRoot->queueEndRendering(true);
-
-	//stopThread();
 
 	std::vector<EngineListenner*>::iterator it;
 	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
