@@ -25,8 +25,7 @@
 #endif
 
 /*! \namespace Engine
- *
- * Espace de nommage regroupant les dfférentes classes du moteur
+ *	\brief Espace de nommage regroupant les dfférentes classes du moteur
  *
  */
 namespace Engine {
