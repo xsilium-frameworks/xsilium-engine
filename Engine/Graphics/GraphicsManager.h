@@ -11,13 +11,15 @@
 #include "Engine/Engine.h"
 #include "Graphics/GraphicsEntiteManager.h"
 #include "Graphics/GraphicsSceneLoader.h"
+#include "Graphics/GraphicsCamera.h";
+#include "Input/InputManager.h"
 
 namespace Engine {
 
 /*
  *
  */
-class GraphicsManager : public EngineListenner , public Ogre::FrameListener {
+class GraphicsManager : public EngineListenner , public Ogre::FrameListener , public OIS::KeyListener, public OIS::MouseListener {
 public:
 	GraphicsManager();
 	virtual ~GraphicsManager();
@@ -42,6 +44,13 @@ public:
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
+	bool keyPressed( const OIS::KeyEvent &e );
+	bool keyReleased( const OIS::KeyEvent &e );
+
+	bool mouseMoved( const OIS::MouseEvent &e );
+	bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+	bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+
 private:
 	Ogre::String m_SceneFile;
 
@@ -57,6 +66,8 @@ private:
 
 	GraphicsEntiteManager * graphicsEntiteManager;
 	GraphicsSceneLoader * graphicsSceneLoader;
+	InputManager * inputManager;
+	GraphicsCamera * graphicsCamera;
 
 };
 

@@ -27,6 +27,7 @@ namespace Engine {
  * Classe permettant de gèrer les évennements
  *
  */
+
 class EventManager {
 public:
 	/*!
@@ -54,9 +55,11 @@ public:
 
 	virtual void processEvent(Event * event) = 0;
 
+
 private:
 	std::queue<Event> listOfEvent;
 	boost::mutex mutexList;
+
 
 };
 

@@ -12,7 +12,9 @@ namespace Engine {
 GraphicsManager::GraphicsManager() {
 	m_pRenderWnd		= 0;
 	m_pRenderSystem		= 0;
-    m_pSceneMgr         = 0;
+	m_pSceneMgr         = 0;
+	graphicsCamera = new GraphicsCamera();
+	inputManager = InputManager::getInstance();
 	sauvegardeParam = false;
 
 
@@ -25,6 +27,7 @@ GraphicsManager::GraphicsManager() {
 	graphicsEntiteManager = new GraphicsEntiteManager();
 	graphicsSceneLoader = new GraphicsSceneLoader();
 
+
 }
 
 GraphicsManager::~GraphicsManager() {
@@ -32,6 +35,7 @@ GraphicsManager::~GraphicsManager() {
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
 	delete graphicsEntiteManager;
 	delete graphicsSceneLoader;
+	InputManager::DestroyInstance();
 
 }
 
@@ -58,12 +62,15 @@ void GraphicsManager::initOgre()
 			m_pRenderSystem->setConfigOption("Content Scaling Factor", "1.0");
 			m_pRenderSystem->setConfigOption("macAPI", "cocoa");
 		}
+		else if (OGRE_PLATFORM == OGRE_PALTFORM_APPLE || OGRE_PLATFORM == OGRE_PLATFORM_WIN32)
+		{
+			m_pRenderSystem->setConfigOption("Colour Depth", "32");
+		}
 
 		// Set defaults per RenderSystem
 		m_pRenderSystem->setConfigOption("Full Screen", "No");
 		m_pRenderSystem->setConfigOption("VSync", "No");
 		m_pRenderSystem->setConfigOption("Video Mode", "800 x 600");
-		m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
 		m_pRenderSystem->setConfigOption("sRGB Gamma Conversion", "No");
 
@@ -81,6 +88,11 @@ void GraphicsManager::createWindow()
 	m_pRenderWnd->addViewport(0);
 
 	m_pRenderWnd->setActive(true);
+
+	inputManager->initialise(m_pRenderWnd);
+    
+    inputManager->addKeyListener(this,"GraphicsKey");
+	inputManager->addMouseListener(this,"GraphicsMouse");
 
 }
 
@@ -122,18 +134,22 @@ void GraphicsManager::loadScene(Event * event)
 	{
 		m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	}
-    
-    Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("MenuCam");
-	m_pCamera->setPosition(Ogre::Vector3(0, 0, 0));
+
+	Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("MenuCam");
 	m_pCamera->setNearClipDistance(0.1);
-    
-	m_pCamera->setAspectRatio(Ogre::Real(m_pRenderWnd->getViewport(0)->getActualWidth()) /
-                              Ogre::Real(m_pRenderWnd->getViewport(0)->getActualHeight()));
-    
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
-    
-    
+	graphicsCamera->setCamera(m_pCamera);
+	graphicsCamera->setStyle(CS_FREELOOK);
+
+
+
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
+
+	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
+	{
+		graphicsSceneLoader->mPGHandles[ij]->setCamera(m_pCamera);
+	}
+
 }
 
 
@@ -170,10 +186,46 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
         deleteEvent();
 	}
 
+	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
+	{
+		graphicsSceneLoader->mPGHandles[ij]->update();
+	}
+
+	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
+	graphicsCamera->frameRenderingQueued(m_FrameEvent);
+	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
+
 	return true;
 }
 bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 {
+	return true;
+}
+
+bool GraphicsManager::keyPressed( const OIS::KeyEvent &e )
+{
+	graphicsCamera->injectKeyDown(e);
+	return true;
+}
+bool GraphicsManager::keyReleased( const OIS::KeyEvent &e )
+{
+	graphicsCamera->injectKeyUp(e);
+	return true;
+}
+
+bool GraphicsManager::mouseMoved( const OIS::MouseEvent &e )
+{
+	graphicsCamera->injectMouseMove(e);
+	return true;
+}
+bool GraphicsManager::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id )
+{
+	graphicsCamera->injectMouseDown(e,id);
+	return true;
+}
+bool GraphicsManager::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id )
+{
+	graphicsCamera->injectMouseUp(e,id);
 	return true;
 }
 
