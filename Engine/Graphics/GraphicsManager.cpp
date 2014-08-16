@@ -35,6 +35,7 @@ GraphicsManager::~GraphicsManager() {
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
 	delete graphicsEntiteManager;
 	delete graphicsSceneLoader;
+	delete graphicsCamera;
 	InputManager::DestroyInstance();
 
 }
