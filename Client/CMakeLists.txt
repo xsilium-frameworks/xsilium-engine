@@ -56,7 +56,6 @@ Shared
 link_libraries(
 	${XSILIUM_LIBRARY} ${DirectX_LIBRARY}
 )
-
 xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
 
 if (APPLE)

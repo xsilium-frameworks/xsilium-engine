@@ -63,12 +63,15 @@ void GraphicsManager::initOgre()
 			m_pRenderSystem->setConfigOption("Content Scaling Factor", "1.0");
 			m_pRenderSystem->setConfigOption("macAPI", "cocoa");
 		}
+		else if (OGRE_PLATFORM == OGRE_PALTFORM_APPLE || OGRE_PLATFORM == OGRE_PLATFORM_WIN32)
+		{
+			m_pRenderSystem->setConfigOption("Colour Depth", "32");
+		}
 
 		// Set defaults per RenderSystem
 		m_pRenderSystem->setConfigOption("Full Screen", "No");
 		m_pRenderSystem->setConfigOption("VSync", "No");
 		m_pRenderSystem->setConfigOption("Video Mode", "800 x 600");
-		m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
 		m_pRenderSystem->setConfigOption("sRGB Gamma Conversion", "No");
 
@@ -189,6 +192,14 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		graphicsSceneLoader->mPGHandles[ij]->update();
 	}
 
+<<<<<<< HEAD
+=======
+	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
+	{
+		graphicsSceneLoader->mPGHandles[ij]->update();
+	}
+
+>>>>>>> b95cfbbbb1d936aaccbb0c87704e0a94db8a9546
 	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
 	graphicsCamera->frameRenderingQueued(m_FrameEvent);
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);

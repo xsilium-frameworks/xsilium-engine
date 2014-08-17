@@ -3,11 +3,9 @@
  *
  *  Created on: \date 8 aoï¿½t 2012
  *      Author: \author joda
- *  \brief :
+ *  \brief : Fichier d'en-tÃªte de la classe Callback
  */
-/*! \class Callback
- * \brief
- */
+
 #ifndef CALLBACK_H_
 #define CALLBACK_H_
 
@@ -15,18 +13,18 @@
 #include <boost/bind.hpp>
 #include <map>
 
-namespace Engine {
-
-/*
- *
+/*!
+ * \namespace Engine
+ * \brief Espace de nommage regroupant les dffÃ©rentes classes du moteur
  */
+namespace Engine {
 
 typedef boost::function<void(void)> Function;
 
 /*! \class Callback
- * \brief class qui gere les callbacks
+ * \brief Classe qui gere les callbacks
  *
- *  La classe gere les callbacks entre class afin que l'on est pas de probleme entre threads
+ *  Classe qui gere les callbacks entre classes afin que l'on est pas de probleme entre threads
  */
 
 class Callback {
@@ -53,11 +51,11 @@ public:
 	 *  Methode qui permet d'ajouter une fonction a appeler pour un certain identifiant
 	 *
 	 *  \param[in] identifiant : Identifiant pour lequel la fonction va etre appeler
-	 *  \param[in] function : la fonction qui va etre appelŽe
-	 *  \return true si la fonction a ete ajoutŽe sinon false
+	 *  \param[in] function : la fonction qui va etre appelï¿½e
+	 *  \return true si la fonction a ete ajoutï¿½e sinon false
 	 */
 
-	bool addlistenneur(int identifiant,Function function);
+	bool addlistenneur(int identifiant, Function function);
 
 	/*!
 	 *  \brief Retrait de la fonctions affecter a un identifiant
@@ -82,13 +80,12 @@ public:
 
 protected:
 
-	typedef boost::signals2::signal<void (void)> ContactSignal;
+	typedef boost::signals2::signal<void(void)> ContactSignal;
 
 private:
 
-	std::map<int,ContactSignal*> listOfListenner ; /*!< liste des fonctions */
-	std::map<int,ContactSignal*>::iterator listenner ; /*!< fonction courante*/
-
+	std::map<int, ContactSignal*> listOfListenner; /*!< liste des fonctions */
+	std::map<int, ContactSignal*>::iterator listenner; /*!< fonction courante*/
 
 };
 
