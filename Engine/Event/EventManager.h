@@ -66,4 +66,3 @@ private:
 } /* namespace Engine */
 
 #endif /* EVENTMANAGER_H_ */
->>>>>>> b95cfbbbb1d936aaccbb0c87704e0a94db8a9546
