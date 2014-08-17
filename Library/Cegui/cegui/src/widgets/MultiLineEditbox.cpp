@@ -1,5 +1,4 @@
 /***********************************************************************
-	filename: 	CEGUIMultiLineEditbox.cpp
 	created:	30/6/2004
 	author:		Paul D Turner
 
@@ -1637,7 +1636,7 @@ void MultiLineEditbox::addMultiLineEditboxProperties(void)
     const String& propertyOrigin = WidgetTypeName;
     
     CEGUI_DEFINE_PROPERTY(MultiLineEditbox, bool,
-        "ReadOnly","Property to get/set the read-only setting for the Editbox.  Value is either \"True\" or \"False\".",
+        "ReadOnly","Property to get/set the read-only setting for the Editbox.  Value is either \"true\" or \"false\".",
         &MultiLineEditbox::setReadOnly, &MultiLineEditbox::isReadOnly, false
     );
     
@@ -1661,7 +1660,7 @@ void MultiLineEditbox::addMultiLineEditboxProperties(void)
     );
 
     CEGUI_DEFINE_PROPERTY(MultiLineEditbox, bool,
-        "WordWrap", "Property to get/set the word-wrap setting of the edit box.  Value is either \"True\" or \"False\".",
+        "WordWrap", "Property to get/set the word-wrap setting of the edit box.  Value is either \"true\" or \"false\".",
         &MultiLineEditbox::setWordWrapping, &MultiLineEditbox::isWordWrapped, true /* TODO: Inconsistency */
     );
 
@@ -1672,7 +1671,7 @@ void MultiLineEditbox::addMultiLineEditboxProperties(void)
 
     CEGUI_DEFINE_PROPERTY(MultiLineEditbox, bool,
         "ForceVertScrollbar", "Property to get/set the 'always show' setting for the vertical scroll bar of the list box."
-        "Value is either \"True\" or \"False\".",
+        "Value is either \"true\" or \"false\".",
         &MultiLineEditbox::setShowVertScrollbar, &MultiLineEditbox::isVertScrollbarAlwaysShown, false /* TODO: Inconsistency */
     );
 }

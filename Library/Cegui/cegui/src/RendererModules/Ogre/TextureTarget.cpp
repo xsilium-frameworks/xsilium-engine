@@ -1,5 +1,4 @@
 /***********************************************************************
-    filename:   CEGUIOgreTextureTarget.cpp
     created:    Tue Feb 17 2009
     author:     Paul D Turner
 *************************************************************************/
@@ -33,6 +32,7 @@
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreRenderTexture.h>
 #include <OgreRenderSystem.h>
+#include <OgreViewport.h>
 
 
 // Start of CEGUI namespace section

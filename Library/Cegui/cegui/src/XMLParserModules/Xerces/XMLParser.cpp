@@ -1,5 +1,4 @@
 /***********************************************************************
-    filename:   CEGUIXercesParser.cpp
     created:    Sat Mar 12 2005
     author:     Paul D Turner
 *************************************************************************/
@@ -43,7 +42,7 @@ namespace CEGUI
 {
     // Static data definition for default schema resource group name
     String XercesParser::d_defaultSchemaResourceGroup("");
-    // static data defiinition of the SchemaDefaultResourceGroup property.
+    // static data definition of the SchemaDefaultResourceGroup property.
     XercesParserProperties::SchemaDefaultResourceGroup
         XercesParser::s_schemaDefaultResourceGroupProperty;
 

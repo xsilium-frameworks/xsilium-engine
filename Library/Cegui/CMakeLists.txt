@@ -6,8 +6,22 @@ if (POLICY CMP0017)
     cmake_policy(SET CMP0017 OLD)
 endif()
 
+if (POLICY CMP0045)
+    cmake_policy(SET CMP0045 OLD)
+endif()
+
+set (CMAKE_MODULE_PATH "${XSILIUM_SOURCE_DIR}/Library/Cegui/cmake")
 include(CEGUIMacros)
 include(CMakeDependentOption)
+
+if (APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
+    set( CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "Build architectures for Mac OS X")
+endif()
+
+# default to Release build (it's what most people will use, except cegui devs)
+if (NOT CMAKE_BUILD_TYPE)
+    set( CMAKE_BUILD_TYPE Release CACHE STRING "Sets the configuration to build (Release, Debug, etc...)")
+endif()
 
 ################################################################################
 # Start of main Project definitions
@@ -19,7 +33,7 @@ project(cegui)
 ################################################################################
 set( CEGUI_VERSION_MAJOR 0)
 set( CEGUI_VERSION_MINOR 8)
-set( CEGUI_VERSION_PATCH 3)
+set( CEGUI_VERSION_PATCH 4)
 set( CEGUI_VERSION ${CEGUI_VERSION_MAJOR}.${CEGUI_VERSION_MINOR}.${CEGUI_VERSION_PATCH} )
 
 #
@@ -39,9 +53,9 @@ set( CEGUI_VERSION ${CEGUI_VERSION_MAJOR}.${CEGUI_VERSION_MINOR}.${CEGUI_VERSION
 #   - If the interface had binary compabilbe additions only (so no ABI breaking
 #     changes) increase AGE, else set AGE to 0.
 #
-set( CEGUI_ABI_CURRENT 4)
-set( CEGUI_ABI_REVISION 2)
-set( CEGUI_ABI_AGE 2)
+set( CEGUI_ABI_CURRENT 5)
+set( CEGUI_ABI_REVISION 0)
+set( CEGUI_ABI_AGE 3)
 MATH( EXPR CEGUI_SOVERSION ${CEGUI_ABI_CURRENT}-${CEGUI_ABI_AGE} )
 set( CEGUI_ABI_VERSION ${CEGUI_SOVERSION}.${CEGUI_ABI_AGE}.${CEGUI_ABI_REVISION} )
 
@@ -56,17 +70,49 @@ if ((WIN32 OR APPLE) AND NOT CMAKE_PREFIX_PATH)
     set (CMAKE_FIND_FRAMEWORK LAST)
 endif()
 
+# Look for packages
+find_package(PCRE)
+find_package(Freetype)
+find_package(Minizip)
+find_package(Fribidi)
+if (NOT WIN32)
+    find_package(Iconv REQUIRED)
+endif()
 
+find_package(OpenGL)
+find_package(GLEW)
+find_package(GLM)
+find_package(GLFW)
+find_package(DirectXSDK)
+find_package(D3DX11Effects)
+find_package(Irrlicht)
+find_package(Ogre)
+find_package(OIS)
+find_package(DirectFB)
+find_package(OpenGLES)
 
-file (STRINGS "${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h" _CEGUIOGREVERSIONDEFINES REGEX ".*#define OGRE_VERSION_.*[0-9]+")
+find_package(EXPAT)
+find_package(XercesC)
+find_package(LibXml2)
+find_package(TinyXML)
+find_package(RapidXML)
 
-    foreach (ver MAJOR MINOR PATCH)
-        set (CEGUI_FOUND_OGRE_VERSION_${ver} 0)
-        if ("${_CEGUIOGREVERSIONDEFINES}" MATCHES ".*#define OGRE_VERSION_${ver} ([0-9]+).*")
-            set (CEGUI_FOUND_OGRE_VERSION_${ver} "${CMAKE_MATCH_1}")
-        endif()
-    endforeach()
+find_package(DevIL)
+find_package(FreeImage)
+find_package(SILLY)
+find_package(Corona)
+find_package(PVRTools)
 
+find_package(Lua51)
+find_package(TOLUAPP)
+find_package(PythonInterp)
+find_package(PythonLibs)
+find_package(Boost 1.36.0 COMPONENTS python unit_test_framework system)
+
+find_package(Doxygen)
+find_package(GTK2 COMPONENTS gtk)
+# set for consistency with other deps
+set (GTK2_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
 
 
 ################################################################################
@@ -80,6 +126,11 @@ be mindful of which C/C++ runtime setting has been used to compile the various
 components - they must all match or you will get crashes, heap corruption and/or
 other issues." FALSE "WIN32 OR APPLE" FALSE)
 option( CEGUI_BUILD_STATIC_CONFIGURATION "Specifies whether the static configs will be built.  (NB: Shared configs are always built)" FALSE)
+option( CEGUI_BUILD_STATIC_FACTORY_MODULE "For static CEGUI builds, specifies whether to include the getWindoFactoryModule method.  When false, the developer must provide a custom implementation of the method" FALSE)
+# sanity check on static build option for factory method
+if (CEGUI_BUILD_STATIC_FACTORY_MODULE AND NOT CEGUI_BUILD_STATIC_CONFIGURATION)
+  message(SEND_ERROR "You may not enable CEGUI_BUILD_STATIC_FACTORY_MODULE without CEGUI_BUILD_STATIC_CONFIGURATION enabled.  CEGUI needs to be built statically if building the static factory method.")
+endif()
 option( CEGUI_CUSTOM_ALLOCATORS "If checked, CEGUI can use custom allocation. (for experienced developers only!)" FALSE )
 cmake_dependent_option( CEGUI_CUSTOM_ALLOCATORS_DEBUG "If checked, CEGUI allocations will pass debug info to allocators. (only used if CEGUI_CUSTOM_ALLOCATORS is checked)" FALSE "CEGUI_CUSTOM_ALLOCATORS" FALSE )
 set( CEGUI_CUSTOM_ALLOCATORS_INCLUDE "CEGUI/MemoryStdAllocator.h" CACHE STRING "Which include file contains memory allocators and allocation configuration. (only used if CEGUI_CUSTOM_ALLOCATORS is checked)
@@ -120,7 +171,7 @@ cegui_dependent_option( CEGUI_BUILD_RENDERER_OPENGL "Specifies whether to build 
 cegui_dependent_option( CEGUI_BUILD_RENDERER_OPENGL3 "Specifies whether to build the OpenGL 3+ (core profile) renderer module" "OPENGL_FOUND;GLM_FOUND;GLEW_FOUND")
 option( CEGUI_BUILD_RENDERER_OGRE "Specifies whether to build the Ogre renderer module" ${OGRE_FOUND} )
 option( CEGUI_BUILD_RENDERER_IRRLICHT "Specifies whether to build the Irrlicht renderer module" ${IRRLICHT_FOUND} )
-option( CEGUI_BUILD_RENDERER_DIRECTFB "Specifies whether to build the DirectFB renderer module" ${DIRECTFB_FOUND} )
+option( CEGUI_BUILD_RENDERER_DIRECTFB "Specifies whether to build the DirectFB renderer module (not supported!)" FALSE )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D9 "Specifies whether to build the Direct3D 9 renderer module" "DIRECTXSDK_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 9" )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D10 "Specifies whether to build the Direct3D 10 renderer module" "DIRECTXSDK_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 10" )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D11 "Specifies whether to build the Direct3D 11 renderer module" "DIRECTXSDK_FOUND;D3DX11EFFECTS_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 11" )
@@ -141,58 +192,6 @@ cegui_dependent_option( CEGUI_USE_MINIBIDI "Specifies whether bi-directional tex
 if (CEGUI_USE_MINIBIDI AND CEGUI_USE_FRIBIDI)
     message(SEND_ERROR "You may not enable both CEGUI_USE_FRIBIDI and CEGUI_USE_MINIBIDI. Please choose only one of these options.")
 endif()
-
-#cegui_dependent_option( CEGUI_SAMPLES_USE_OPENGL "Specifies whether the sample applications will use the OpenGL renderer" "CEGUI_BUILD_RENDERER_OPENGL;GLFW_FOUND" )
-#cegui_dependent_option( CEGUI_SAMPLES_USE_OPENGL3 "Specifies whether the sample applications will use the OpenGL 3 renderer" "CEGUI_BUILD_RENDERER_OPENGL3;GLFW_FOUND" )
-
-# This vile construct is needed because of things that changed in boost and the
-# total fail that is Ogre forcing its boost dependency onto its clients.
-#if (CEGUI_BUILD_RENDERER_OGRE AND OIS_FOUND)
-#    if (NOT Boost_VERSION LESS 105000 AND "${OGRE_THREAD_PROVIDER}" STREQUAL "1") #Check additionally if we use boost as thread provider at all
-#        if (Boost_SYSTEM_FOUND)
-#            set (CEGUI_OGRE_SAMPLES_EXTRALIBS ${Boost_SYSTEM_LIBRARY})
-#            set (CEGUI_OGRE_SAMPLES_AVAILABLE TRUE)
-#        else()
-#            set (CEGUI_OGRE_SAMPLES_EXTRALIBS)
-#            set (CEGUI_OGRE_SAMPLES_AVAILABLE FALSE)
-#            message(STATUS "Ogre will not be available in SampleFramework due to missing boost_system library")
-#        endif()
-#    else()
-#        set (CEGUI_OGRE_SAMPLES_EXTRALIBS)
-#        set (CEGUI_OGRE_SAMPLES_AVAILABLE TRUE)
-#    endif()
-#endif()
-
-#cegui_dependent_option( CEGUI_SAMPLES_USE_OGRE "Specifies whether the sample applications will use the Ogre renderer" "CEGUI_OGRE_SAMPLES_AVAILABLE" )
-
-#option( CEGUI_SAMPLES_USE_IRRLICHT "Specifies whether the sample applications will use the Irrlicht renderer" ${CEGUI_BUILD_RENDERER_IRRLICHT} )
-#option( CEGUI_SAMPLES_USE_DIRECTFB "Specifies whether the sample applications will use the DirectFB renderer" ${CEGUI_BUILD_RENDERER_DIRECTFB} )
-#option( CEGUI_SAMPLES_USE_DIRECT3D9 "Specifies whether the sample applications will use the Direct3D 9 renderer" ${CEGUI_BUILD_RENDERER_DIRECT3D9} )
-#option( CEGUI_SAMPLES_USE_DIRECT3D10 "Specifies whether the sample applications will use the Direct3D 10 renderer" ${CEGUI_BUILD_RENDERER_DIRECT3D10} )
-#option( CEGUI_SAMPLES_USE_DIRECT3D11 "Specifies whether the sample applications will use the Direct3D 11 renderer" ${CEGUI_BUILD_RENDERER_DIRECT3D11} )
-
-#if (CEGUI_SAMPLES_USE_OPENGL OR CEGUI_SAMPLES_USE_OGRE OR CEGUI_SAMPLES_USE_IRRLICHT OR CEGUI_SAMPLES_USE_DIRECT3D9 OR CEGUI_SAMPLES_USE_DIRECT3D10 OR CEGUI_SAMPLES_USE_DIRECT3D11 OR CEGUI_SAMPLES_USE_DIRECTFB)
-#    set (_CEGUI_SAMPLES_ENABLED_DEFAULT TRUE)
-#else()
-#    set (_CEGUI_SAMPLES_ENABLED_DEFAULT FALSE)
-#endif()
-#option( CEGUI_SAMPLES_ENABLED "Specifies whether to build the CEGUI sample applications" ${_CEGUI_SAMPLES_ENABLED_DEFAULT} )
-
-#if (UNIX AND NOT APPLE AND NOT WIN32)
-#    option( CEGUI_SAMPLES_USE_GTK2 "Specifies whether the sample applications will make use of the GTK2 UI for renderer selection." FALSE )
-#endif()
-
-# Sanity check for samples vs renderers options
-#if (CEGUI_SAMPLES_ENABLED)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_OPENGL CEGUI_SAMPLES_USE_OPENGL)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_OPENGL3 CEGUI_SAMPLES_USE_OPENGL3)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_OGRE CEGUI_SAMPLES_USE_OGRE)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_IRRLICHT CEGUI_SAMPLES_USE_IRRLICHT)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_DIRECTFB CEGUI_SAMPLES_USE_DIRECTFB)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_DIRECT3D9 CEGUI_SAMPLES_USE_DIRECT3D9)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_DIRECT3D10 CEGUI_SAMPLES_USE_DIRECT3D10)
-#    cegui_sample_renderer_sanity_test(CEGUI_BUILD_RENDERER_DIRECT3D11 CEGUI_SAMPLES_USE_DIRECT3D11)
-#endif()
 
 if (WIN32 OR APPLE)
     set (CEGUI_BUILD_SUFFIX "_d" CACHE STRING "String holding a suffix appended to the name of output binaries (under CMake build, only used for debug).")
@@ -223,43 +222,42 @@ option( CEGUI_INSTALL_WITH_RPATH "Specifies whether to install with RPATH set to
 # Define vars holding the names for all the libs we can build for CEGUI.
 ################################################################################
 # Core lib name
-set( CEGUI_BASE_LIBNAME CEGUIBase )
+cegui_set_library_name( CEGUI_BASE_LIBNAME CEGUIBase )
 
 # Renderer module names.
-set( CEGUI_OPENGL_RENDERER_LIBNAME CEGUIOpenGLRenderer )
-set( CEGUI_OPENGL3_RENDERER_LIBNAME CEGUIOpenGL3Renderer )
-set( CEGUI_OGRE_RENDERER_LIBNAME CEGUIOgreRenderer)
-set( CEGUI_IRRLICHT_RENDERER_LIBNAME CEGUIIrrlichtRenderer )
-set( CEGUI_DIRECT3D9_RENDERER_LIBNAME CEGUIDirect3D9Renderer )
-set( CEGUI_DIRECT3D10_RENDERER_LIBNAME CEGUIDirect3D10Renderer )
-set( CEGUI_DIRECT3D11_RENDERER_LIBNAME CEGUIDirect3D11Renderer )
-set( CEGUI_NULL_RENDERER_LIBNAME CEGUINullRenderer )
-set( CEGUI_OPENGLES_RENDERER_LIBNAME CEGUIOpenGLESRenderer )
-set( CEGUI_DIRECTFB_RENDERER_LIBNAME CEGUIDirectFBRenderer )
+cegui_set_library_name( CEGUI_OPENGL_RENDERER_LIBNAME CEGUIOpenGLRenderer )
+cegui_set_library_name( CEGUI_OPENGL3_RENDERER_LIBNAME CEGUIOpenGL3Renderer )
+cegui_set_library_name( CEGUI_OGRE_RENDERER_LIBNAME CEGUIOgreRenderer)
+cegui_set_library_name( CEGUI_IRRLICHT_RENDERER_LIBNAME CEGUIIrrlichtRenderer )
+cegui_set_library_name( CEGUI_DIRECT3D9_RENDERER_LIBNAME CEGUIDirect3D9Renderer )
+cegui_set_library_name( CEGUI_DIRECT3D10_RENDERER_LIBNAME CEGUIDirect3D10Renderer )
+cegui_set_library_name( CEGUI_DIRECT3D11_RENDERER_LIBNAME CEGUIDirect3D11Renderer )
+cegui_set_library_name( CEGUI_NULL_RENDERER_LIBNAME CEGUINullRenderer )
+cegui_set_library_name( CEGUI_OPENGLES_RENDERER_LIBNAME CEGUIOpenGLESRenderer )
+cegui_set_library_name( CEGUI_DIRECTFB_RENDERER_LIBNAME CEGUIDirectFBRenderer )
 
 # XML parser module names
-set( CEGUI_EXPAT_PARSER_LIBNAME CEGUIExpatParser )
-set( CEGUI_TINYXML_PARSER_LIBNAME CEGUITinyXMLParser )
-set( CEGUI_XERCES_PARSER_LIBNAME CEGUIXercesParser )
-set( CEGUI_RAPIDXML_PARSER_LIBNAME CEGUIRapidXMLParser )
-set( CEGUI_LIBXML2_PARSER_LIBNAME CEGUILibXMLParser )
+cegui_set_module_name( CEGUI_EXPAT_PARSER_LIBNAME CEGUIExpatParser )
+cegui_set_module_name( CEGUI_TINYXML_PARSER_LIBNAME CEGUITinyXMLParser )
+cegui_set_module_name( CEGUI_XERCES_PARSER_LIBNAME CEGUIXercesParser )
+cegui_set_module_name( CEGUI_RAPIDXML_PARSER_LIBNAME CEGUIRapidXMLParser )
+cegui_set_module_name( CEGUI_LIBXML2_PARSER_LIBNAME CEGUILibXMLParser )
 
 # ImageCodec module names
-set( CEGUI_SILLY_IMAGECODEC_LIBNAME CEGUISILLYImageCodec )
-set( CEGUI_DEVIL_IMAGECODEC_LIBNAME CEGUIDevILImageCodec )
-set( CEGUI_FREEIMAGE_IMAGECODEC_LIBNAME CEGUIFreeImageImageCodec )
-set( CEGUI_CORONA_IMAGECODEC_LIBNAME CEGUICoronaImageCodec )
-set( CEGUI_TGA_IMAGECODEC_LIBNAME CEGUITGAImageCodec )
-set( CEGUI_STB_IMAGECODEC_LIBNAME CEGUISTBImageCodec )
-set( CEGUI_PVR_IMAGECODEC_LIBNAME CEGUIPVRImageCodec )
+cegui_set_module_name( CEGUI_SILLY_IMAGECODEC_LIBNAME CEGUISILLYImageCodec )
+cegui_set_module_name( CEGUI_DEVIL_IMAGECODEC_LIBNAME CEGUIDevILImageCodec )
+cegui_set_module_name( CEGUI_FREEIMAGE_IMAGECODEC_LIBNAME CEGUIFreeImageImageCodec )
+cegui_set_module_name( CEGUI_CORONA_IMAGECODEC_LIBNAME CEGUICoronaImageCodec )
+cegui_set_module_name( CEGUI_TGA_IMAGECODEC_LIBNAME CEGUITGAImageCodec )
+cegui_set_module_name( CEGUI_STB_IMAGECODEC_LIBNAME CEGUISTBImageCodec )
+cegui_set_module_name( CEGUI_PVR_IMAGECODEC_LIBNAME CEGUIPVRImageCodec )
 
 # WindowRenderer set module names
-set( CEGUI_CORE_WR_LIBNAME CEGUICoreWindowRendererSet )
+cegui_set_module_name( CEGUI_CORE_WR_LIBNAME CEGUICoreWindowRendererSet )
 
 # Scripting module names and related items.
-set( CEGUI_TOLUAPP_LIBNAME CEGUItoluapp )
-set( CEGUI_TOLUAPP_GENERATOR_EXENAME toluappcegui )
-set( CEGUI_LUA_SCRIPTMODULE_LIBNAME CEGUILuaScriptModule )
+cegui_set_executable_name( CEGUI_TOLUAPP_GENERATOR_EXENAME toluappcegui )
+cegui_set_library_name( CEGUI_LUA_SCRIPTMODULE_LIBNAME CEGUILuaScriptModule )
 
 set( CEGUI_PYCEGUI_CORE_LIBNAME PyCEGUI )
 set( CEGUI_PYCEGUI_OPENGL_RENDERER_LIBNAME PyCEGUIOpenGLRenderer )
@@ -268,7 +266,7 @@ set( CEGUI_PYCEGUI_NULL_RENDERER_LIBNAME PyCEGUINullRenderer )
 
 
 # Additional lib names
-set( CEGUI_COMMON_DIALOGS_LIBNAME CEGUICommonDialogs )
+cegui_set_library_name( CEGUI_COMMON_DIALOGS_LIBNAME CEGUICommonDialogs )
 
 ################################################################################
 # Select one of the XML parser modules to be the default, warning if none are
