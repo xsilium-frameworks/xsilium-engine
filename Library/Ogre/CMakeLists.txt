@@ -168,9 +168,6 @@ endif()
 # Now setup targets
 ##################################################################
 
-# install resource files
-include(InstallResources)
-
 # Setup OgreMain project
 add_subdirectory(OgreMain)
 
