@@ -13,9 +13,7 @@ GuiManager::GuiManager() {
 
 	interfacePrincipale = false;
 
-//	initialisationInterface();
-	Event* event = getEvent();
-	processEvent(event);
+	//	initialisationInterface();
 
 	Engine::getInstance()->addListenner(this);
 	Engine::getInstance()->getRoot()->addFrameListener(this);
@@ -45,6 +43,12 @@ bool GuiManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 }
 bool GuiManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
+	if(!isEmpty())
+	{
+		Event* event = getEvent();
+		processEvent(event);
+		deleteEvent();
+	}
 	return true;
 }
 bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
