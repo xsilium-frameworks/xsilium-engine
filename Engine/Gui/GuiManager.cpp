@@ -9,16 +9,14 @@
 
 namespace Engine {
 
-GuiManager::GuiManager() {
+GuiManager::GuiManager(std::string mTheme) {
 
 	interfacePrincipale = false;
 
-	initialisationInterface();
+	initialisationInterface(mTheme);
 
 	Engine::getInstance()->addListenner(this);
 	Engine::getInstance()->getRoot()->addFrameListener(this);
-
-
 
 }
 
@@ -49,7 +47,7 @@ bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 	return true;
 }
 
-void GuiManager::initialisationInterface()
+void GuiManager::initialisationInterface(std::string mTheme)
 {
 	CEGUI::OgreRenderer::bootstrapSystem();
 
@@ -66,8 +64,8 @@ void GuiManager::initialisationInterface()
 	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
 		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
 
-	CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("AlfiskoSkin/MouseArrow");
+	CEGUI::SchemeManager::getSingleton().createFromFile(mTheme + "Skin.scheme");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(mTheme + "Skin/MouseArrow");
 
 	//inputInterface->initialisationMouse();
 

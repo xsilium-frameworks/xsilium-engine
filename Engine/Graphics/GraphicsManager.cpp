@@ -62,9 +62,6 @@ void GraphicsManager::initOgre()
 			m_pRenderSystem->setConfigOption("RTT Preferred Mode", "FBO");
 			m_pRenderSystem->setConfigOption("Content Scaling Factor", "1.0");
 			m_pRenderSystem->setConfigOption("macAPI", "cocoa");
-		}
-		else if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE || OGRE_PLATFORM == OGRE_PLATFORM_WIN32)
-		{
 			m_pRenderSystem->setConfigOption("Colour Depth", "32");
 		}
 

@@ -23,7 +23,7 @@ namespace Engine {
  */
 class GuiManager : public EngineListenner , public Ogre::FrameListener {
 public:
-	GuiManager();
+	GuiManager(std::string mTheme);
 	virtual ~GuiManager();
 
 	void processEvent(Event * event);
@@ -32,15 +32,13 @@ public:
 	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
-
-	void initialisationInterface();
+	
+    void initialisationInterface(std::string mTheme);
 	void interfacePrincipal();
 	void deleteInterfacePrincipal();
 
 private:
 	bool interfacePrincipale;
-
-
 };
 
 } /* namespace Engine */

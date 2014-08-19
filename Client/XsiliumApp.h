@@ -4,6 +4,7 @@
 #include "Engine/Engine.h"
 #include "Graphics/GraphicsManager.h"
 #include "GameState/GameStateManager.h"
+#include "Gui/GuiManager.h"
 #include "Login/LoginState.h"
 
 class XsiliumApp
@@ -15,8 +16,10 @@ public:
 	void start();
 
 private:
-	Engine::GraphicsManager * graphicsManager;
-	Engine::GameStateManager * gameStateManager;
+	Engine::GraphicsManager* graphicsManager;
+	Engine::GameStateManager* gameStateManager;
+	Engine::GuiManager* guiManager;
+	std::string m_pTheme;
 
 };
 
