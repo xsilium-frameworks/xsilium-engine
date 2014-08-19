@@ -126,7 +126,7 @@ void GraphicsManager::loadRessource()
 
 }
 
-void GraphicsManager::loadScene(Event * event)
+void GraphicsManager::loadScene(Event* event)
 {
 	if(m_pSceneMgr == 0)
 	{
@@ -179,7 +179,7 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 
 	if(!isEmpty())
 	{
-		Event * event = getEvent();
+		Event* event = getEvent();
 		processEvent(event);
 		deleteEvent();
 	}

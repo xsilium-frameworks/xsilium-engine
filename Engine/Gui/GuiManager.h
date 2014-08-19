@@ -23,17 +23,17 @@ namespace Engine {
  */
 class GuiManager : public EngineListenner , public Ogre::FrameListener {
 public:
-	GuiManager(std::string mTheme);
+	GuiManager();
 	virtual ~GuiManager();
 
-	void processEvent(Event * event);
+	void processEvent(Event* event);
 	void shutdown();
 
 	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 	
-    void initialisationInterface(std::string mTheme);
+    void initialisationInterface(Event* event);
 	void interfacePrincipal();
 	void deleteInterfacePrincipal();
 

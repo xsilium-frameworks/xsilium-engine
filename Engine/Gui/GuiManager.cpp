@@ -9,11 +9,13 @@
 
 namespace Engine {
 
-GuiManager::GuiManager(std::string mTheme) {
+GuiManager::GuiManager() {
 
 	interfacePrincipale = false;
 
-	initialisationInterface(mTheme);
+//	initialisationInterface();
+	Event* event = getEvent();
+	processEvent(event);
 
 	Engine::getInstance()->addListenner(this);
 	Engine::getInstance()->getRoot()->addFrameListener(this);
@@ -24,9 +26,12 @@ GuiManager::~GuiManager() {
 	// TODO Auto-generated destructor stub
 }
 
-void GuiManager::processEvent(Event * event)
+void GuiManager::processEvent(Event* event)
 {
-
+	if(event->hasProperty("GuiTheme"))
+	{
+		initialisationInterface(event);
+	}
 }
 
 void GuiManager::shutdown()
@@ -47,7 +52,7 @@ bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 	return true;
 }
 
-void GuiManager::initialisationInterface(std::string mTheme)
+void GuiManager::initialisationInterface(Event* event)
 {
 	CEGUI::OgreRenderer::bootstrapSystem();
 
@@ -64,8 +69,8 @@ void GuiManager::initialisationInterface(std::string mTheme)
 	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
 		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
 
-	CEGUI::SchemeManager::getSingleton().createFromFile(mTheme + "Skin.scheme");
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(mTheme + "Skin/MouseArrow");
+	CEGUI::SchemeManager::getSingleton().createFromFile(event->getProperty("GuiTheme") + "Skin.scheme");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(event->getProperty("GuiTheme") + "Skin/MouseArrow");
 
 	//inputInterface->initialisationMouse();
 

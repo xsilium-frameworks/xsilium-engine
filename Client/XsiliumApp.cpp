@@ -4,12 +4,10 @@ XsiliumApp::XsiliumApp()
 {
 	graphicsManager = 0;
 	gameStateManager = 0;
-	guiManager = NULL;
 }
 
 XsiliumApp::~XsiliumApp()
 {
-	delete guiManager;
 	delete gameStateManager;
 	delete graphicsManager;
 	Engine::Engine::DestroyInstance();
@@ -23,9 +21,9 @@ void XsiliumApp::start()
 	graphicsManager->createWindow();
 	graphicsManager->loadRessource();
 
-	guiManager = new Engine::GuiManager("Alfisko");
-
 	gameStateManager = new Engine::GameStateManager();
+
+	guiManager = new Engine::GuiManager();
 
     LoginState::create<LoginState>(gameStateManager, "LoginState");
     

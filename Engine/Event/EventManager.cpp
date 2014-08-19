@@ -25,7 +25,7 @@ void EventManager::addEvent(Event event)
 	listOfEvent.push(event);
 }
 
-Event * EventManager::getEvent()
+Event* EventManager::getEvent()
 {
 	boost::unique_lock<boost::mutex> lock(mutexList);
 	return &listOfEvent.front();

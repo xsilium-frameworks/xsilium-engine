@@ -32,11 +32,11 @@ public:
 
 	void loadRessource();
 
-	void loadScene(Event * event);
+	void loadScene(Event* event);
 
 	Ogre::RenderWindow* getRenderWindow();
 
-	void processEvent(Event * event);
+	void processEvent(Event* event);
 
 	void shutdown();
 

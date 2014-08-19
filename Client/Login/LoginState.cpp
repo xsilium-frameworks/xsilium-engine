@@ -30,6 +30,7 @@ void LoginState::createScene()
 	event.setProperty("LoadScene","1");
 	event.setProperty("NameScene","Xsilium1.scene");
 	event.setProperty("NameGroup","General");
+	event.setProperty("GuiTheme","Alfisko");
 
 	Engine::Engine::getInstance()->addEvent(event);
 }

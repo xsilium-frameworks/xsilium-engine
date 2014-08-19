@@ -19,7 +19,6 @@ private:
 	Engine::GraphicsManager* graphicsManager;
 	Engine::GameStateManager* gameStateManager;
 	Engine::GuiManager* guiManager;
-	std::string m_pTheme;
 
 };
 
