@@ -3,7 +3,7 @@
  *
  *  Created on: \date 10 mars 2013
  *      Author: \author joda
- *  \brief : Fichier d'en-tête de la classe de gestion d'évennements
+ *  \brief : Fichier d'en-tête de la classe de gestion d'évennements.
  */
 
 #ifndef EVENTMANAGER_H_
@@ -16,44 +16,68 @@
 
 /*!
  * \namespace Engine
- * \brief Espace de nommage regroupant les dfférentes classes du moteur
+ * \brief Espace de nommage regroupant les dfférentes classes du moteur.
  */
 namespace Engine {
 
 /*!
  * \class EventManager
- * \brief Classe gestionnaire d'évennements
+ * \brief Classe gestionnaire d'évennements.
  *
- * Classe permettant de gèrer les évennements
+ * Classe permettant de gèrer les évennements.
  *
  */
 
 class EventManager {
 public:
 	/*!
-	 *  \brief Constructeur
+	 *  \brief Constructeur.
 	 *
-	 *  Constructeur de la classe EventManager
+	 *  Constructeur de la classe EventManager.
 	 *
 	 */
 	EventManager();
 
 	/*!
-	 *  \brief Destructeur
+	 *  \brief Destructeur.
 	 *
-	 *  Destructeur de la classe EventManager
+	 *  Destructeur abstrait de la classe EventManager.
 	 *
 	 */
 	virtual ~EventManager();
 
+	/*!
+	*
+	* \brief Ajoute un évennement .
+	*
+	* \param event : Évennement.
+	*/
 	void addEvent(Event event);
-	Event * getEvent();
+	
+	/*!
+	*
+	* \brief Obtention des évennements.
+	*
+	* \return Liste des évennements.
+	*/
+	Event* getEvent();
 
+	/*!
+	*
+	* \brief Suppression du premier event.
+	*
+	*/
 	void deleteEvent();
 
+	/*!
+	*
+	* \brief Verification afin de déterminer si la liste est vide.
+	*
+	* \return true si la liste est vide.
+	*/
 	bool isEmpty();
 
-	virtual void processEvent(Event * event) = 0;
+	virtual void processEvent(Event* event) = 0;
 
 
 private:

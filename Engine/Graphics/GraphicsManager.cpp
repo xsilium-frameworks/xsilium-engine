@@ -156,7 +156,7 @@ Ogre::RenderWindow* GraphicsManager::getRenderWindow()
 	return this->m_pRenderWnd;
 }
 
-void GraphicsManager::processEvent(Event * event)
+void GraphicsManager::processEvent(Event* event)
 {
 	if(event->hasProperty("Entite"))
 	{
