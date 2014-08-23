@@ -13,8 +13,6 @@ GuiManager::GuiManager() {
 
 	interfacePrincipale = false;
 
-	//	initialisationInterface();
-
 	Engine::getInstance()->addListenner(this);
 	Engine::getInstance()->getRoot()->addFrameListener(this);
 
@@ -43,7 +41,7 @@ void GuiManager::processEvent(Event* event)
 {
 	if(event->hasProperty("GuiTheme"))
 	{
-		initialisationInterface(event);
+		setTheme(event);
 	}
 }
 
@@ -71,7 +69,7 @@ bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 	return true;
 }
 
-void GuiManager::initialisationInterface(Event* event)
+void GuiManager::setTheme(Event* event)
 {
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(event->getProperty("GuiTheme") + "Skin.scheme");

@@ -53,7 +53,7 @@ public:
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 	
-    void initialisationInterface(Event* event);
+    void setTheme(Event* event);
 	void interfacePrincipal();
 	void deleteInterfacePrincipal();
 
