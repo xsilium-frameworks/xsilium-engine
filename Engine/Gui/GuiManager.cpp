@@ -18,6 +18,21 @@ GuiManager::GuiManager() {
 	Engine::getInstance()->addListenner(this);
 	Engine::getInstance()->getRoot()->addFrameListener(this);
 
+	CEGUI::OgreRenderer::bootstrapSystem();
+
+	// set the default resource groups to be used
+	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
+	CEGUI::Font::setDefaultResourceGroup("Fonts");
+	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
+	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
+	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
+	CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
+	CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
+	// setup default group for validation schemas
+	CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
+	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
+		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
+
 }
 
 GuiManager::~GuiManager() {
@@ -58,27 +73,13 @@ bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 
 void GuiManager::initialisationInterface(Event* event)
 {
-	CEGUI::OgreRenderer::bootstrapSystem();
-
-	// set the default resource groups to be used
-	CEGUI::ImageManager::setImagesetDefaultResourceGroup("Imagesets");
-	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeels");
-	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-	CEGUI::ScriptModule::setDefaultResourceGroup("Lua_scripts");
-	CEGUI::AnimationManager::setDefaultResourceGroup("Animations");
-	// setup default group for validation schemas
-	CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
-	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
-		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(event->getProperty("GuiTheme") + "Skin.scheme");
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(event->getProperty("GuiTheme") + "Skin/MouseArrow");
 
 	//inputInterface->initialisationMouse();
 
-	interfacePrincipal();
+	//interfacePrincipal();
 }
 
 void GuiManager::interfacePrincipal()
