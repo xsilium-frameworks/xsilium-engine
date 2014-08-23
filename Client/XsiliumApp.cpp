@@ -8,6 +8,7 @@ XsiliumApp::XsiliumApp()
 
 XsiliumApp::~XsiliumApp()
 {
+	delete guiManager;
 	delete gameStateManager;
 	delete graphicsManager;
 	Engine::Engine::DestroyInstance();
