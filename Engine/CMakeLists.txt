@@ -17,6 +17,7 @@ set( CORE_HEADER_FILES
 	 ./Gui/GuiManager.h
 	 ./Input/InputManager.h	
 	 ./Input/KeyboardMap.h
+	 ./Input/InputGui.h
 	 ./Network/Opcode/Opcode.h
 	 ./Network/StructurePacket/StructureGeneral.h
 	 ./Network/NetworkListener.h
@@ -41,6 +42,7 @@ set (CORE_SOURCE_FILES
  	 ./Graphics/GraphicsSceneLoader.cpp
  	 ./Gui/GuiManager.cpp
 	 ./Input/InputManager.cpp
+	 ./Input/InputGui.cpp
 	 ./Input/KeyboardMap.cpp
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp

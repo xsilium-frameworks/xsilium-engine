@@ -77,7 +77,6 @@ namespace Engine {
 		*
 		* Méthode qui est chargé quand tous les évennements par frame à été appeller.
 		* 
-		*
 		* \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
 		*
 		* \return true si appellé

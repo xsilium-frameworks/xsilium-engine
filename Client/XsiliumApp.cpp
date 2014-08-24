@@ -26,8 +26,8 @@ void XsiliumApp::start()
 
 	guiManager = new Engine::GuiManager();
 
-    LoginState::create<LoginState>(gameStateManager, "LoginState");
-    
+	LoginState::create<LoginState>(gameStateManager, "LoginState");
+
 	gameStateManager->start(gameStateManager->findByName("LoginState"));
 
 }
