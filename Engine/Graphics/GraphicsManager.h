@@ -1,10 +1,10 @@
 /*
- * \file GraphicsManager.h
- *
- *  Created on: \date 4 aožt 2014
- *      Author: \author joda
- *  \brief :
- */
+* \file GraphicsManager.h
+*
+*  Created on: \date 4 aožt 2014
+*      Author: \author joda
+*  \brief :
+*/
 #ifndef GRAPHICSMANAGER_H_
 #define GRAPHICSMANAGER_H_
 
@@ -16,60 +16,60 @@
 
 namespace Engine {
 
-/*
- *
- */
-class GraphicsManager : public EngineListenner , public Ogre::FrameListener , public OIS::KeyListener, public OIS::MouseListener {
-public:
-	GraphicsManager();
-	virtual ~GraphicsManager();
+	/*
+	*
+	*/
+	class GraphicsManager : public EngineListenner , public Ogre::FrameListener , public OIS::KeyListener, public OIS::MouseListener {
+	public:
+		GraphicsManager();
+		virtual ~GraphicsManager();
 
-	void initOgre();
+		void initOgre();
 
-	void setParamettreOgre(Ogre::String key, Ogre::String valeur);
+		void setParamettreOgre(Ogre::String key, Ogre::String valeur);
 
-	void createWindow();
+		void createWindow();
 
-	void loadRessource();
+		void loadRessource();
 
-	void loadScene(Event* event);
+		void loadScene(Event* event);
 
-	Ogre::RenderWindow* getRenderWindow();
+		Ogre::RenderWindow* getRenderWindow();
 
-	void processEvent(Event* event);
+		void processEvent(Event* event);
 
-	void shutdown();
+		void shutdown();
 
-	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
-	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
-	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
+		bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
+		bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
+		bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
-	bool keyPressed( const OIS::KeyEvent &e );
-	bool keyReleased( const OIS::KeyEvent &e );
+		bool keyPressed( const OIS::KeyEvent &e );
+		bool keyReleased( const OIS::KeyEvent &e );
 
-	bool mouseMoved( const OIS::MouseEvent &e );
-	bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
-	bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+		bool mouseMoved( const OIS::MouseEvent &e );
+		bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+		bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
 
-private:
-	Ogre::String m_SceneFile;
+	private:
+		Ogre::String m_SceneFile;
 
-	Ogre::String mResourcePath ;
+		Ogre::String mResourcePath ;
 
-	Ogre::RenderSystem*			m_pRenderSystem;
-	Ogre::RenderWindow*			m_pRenderWnd;
-	Ogre::Root*					m_pRoot;
-	Ogre::SceneManager*			m_pSceneMgr;
+		Ogre::RenderSystem*			m_pRenderSystem;
+		Ogre::RenderWindow*			m_pRenderWnd;
+		Ogre::Root*					m_pRoot;
+		Ogre::SceneManager*			m_pSceneMgr;
 
-	Ogre::String fenetreName;
-	bool sauvegardeParam;
+		Ogre::String fenetreName;
+		bool sauvegardeParam;
 
-	GraphicsEntiteManager * graphicsEntiteManager;
-	GraphicsSceneLoader * graphicsSceneLoader;
-	InputManager * inputManager;
-	GraphicsCamera * graphicsCamera;
+		GraphicsEntiteManager * graphicsEntiteManager;
+		GraphicsSceneLoader * graphicsSceneLoader;
+		InputManager * inputManager;
+		GraphicsCamera * graphicsCamera;
 
-};
+	};
 
 } /* namespace Engine */
 
