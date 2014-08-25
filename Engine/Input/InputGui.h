@@ -42,6 +42,58 @@ namespace Engine {
 		*/
 		virtual ~InputGui();
 
+		/*!
+		*
+		* \brief Méthode appellé lorsque touche enfoncé.
+		*
+		* \return true
+		*
+		*/
+		bool keyPressed(const OIS::KeyEvent &keyEventRef);
+
+		/*!
+		*
+		* \brief Méthode appellé lorsque touche relâché.
+		*
+		* \return true
+		*
+		*/
+		bool keyReleased(const OIS::KeyEvent &keyEventRef);
+
+		/*!
+		*
+		* \brief Méthode appellé lorsque souris en déplacement.
+		*
+		* \return true
+		*
+		*/
+		bool mouseMoved( const OIS::MouseEvent &e );
+
+		/*!
+		*
+		* \brief Méthode appellé lorsque souris clic enfoncé.
+		*
+		* \return true
+		*
+		*/
+		bool mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+
+		/*!
+		*
+		* \brief Méthode appellé lorsque souris clic relâché.
+		*
+		* \return true
+		*
+		*/
+		bool mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id );
+
+		/*!
+		*
+		* \brief Méthode d'initialisation de la souris.
+		*
+		*/
+		void initialisationMouse();
+
 	};
 }
 #endif /* INPUTGUI_H_ */
