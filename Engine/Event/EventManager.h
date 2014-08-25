@@ -27,7 +27,6 @@ namespace Engine {
  * Classe permettant de gèrer les évennements.
  *
  */
-
 class EventManager {
 public:
 	/*!
