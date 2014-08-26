@@ -325,7 +325,7 @@ void GraphicsSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
             }
         }
         mTerrainGroup->loadAllTerrains(true);
-        Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
+  /*      Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
         while(ti.hasMoreElements())
         {
             Ogre::Terrain* terrain = ti.getNext()->instance;
@@ -348,7 +348,7 @@ void GraphicsSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
                 }
             }
          //   gestionnaireMeteo->addDepthTechnique(mat);
-        }
+        }*/
 
         mTerrainGroup->freeTemporaryResources();
         //mTerrain->setPosition(mTerrainPosition);

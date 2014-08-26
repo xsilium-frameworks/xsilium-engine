@@ -45,8 +45,8 @@ void GraphicsEntiteManager::createEntite(Event * event)
 	{
 		graphicsEntite->setTurnSpeed( atof(event->getProperty("TurnSpeed").c_str()) );
 	}
-    
-    graphicsEntite->initEntite(msceneMgr , event->getProperty("NomEntite"), event->getProperty("fileMesh") );
+
+	graphicsEntite->initEntite(msceneMgr , event->getProperty("NomEntite"), event->getProperty("fileMesh") );
 
 
 	listOfEntite.push_back(graphicsEntite);
@@ -54,15 +54,18 @@ void GraphicsEntiteManager::createEntite(Event * event)
 
 void GraphicsEntiteManager::processEvent(Event * event)
 {
-
+	if(event->hasProperty("CreateEntite"))
+	{
+		createEntite(event);
+	}
 }
 
 void GraphicsEntiteManager::update(float time)
 {
 	for (entite=listOfEntite.begin() ; entite!=listOfEntite.end() ; ++entite)
-		{
-					(*entite)->update(time);
-		}
+	{
+		(*entite)->update(time);
+	}
 }
 
 } /* namespace Engine */

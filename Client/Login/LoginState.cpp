@@ -30,9 +30,20 @@ void LoginState::createScene()
 	event.setProperty("LoadScene","1");
 	event.setProperty("NameScene","Xsilium1.scene");
 	event.setProperty("NameGroup","General");
-	event.setProperty("GuiTheme","Alfisko");
 
 	Engine::Engine::getInstance()->addEvent(event);
+
+	Event event2 ;
+	event2.setProperty("Entite","1");
+	event2.setProperty("CreateEntite","1");
+	event2.setProperty("CharHeight","1");
+	event2.setProperty("RunSpeed","3");
+	event2.setProperty("TurnSpeed","500.0");
+	event2.setProperty("NomEntite","Perso1");
+	event2.setProperty("fileMesh","Sinbad.mesh");
+
+
+	Engine::Engine::getInstance()->addEvent(event2);
 }
 
 void LoginState::exit()
