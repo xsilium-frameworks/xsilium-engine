@@ -13,6 +13,7 @@ GraphicsManager::GraphicsManager() {
 	m_pRenderWnd		= 0;
 	m_pRenderSystem		= 0;
 	m_pSceneMgr         = 0;
+	graphicsMeteoManager = 0;
 	graphicsCamera = new GraphicsCamera();
 	inputManager = InputManager::getInstance();
 	sauvegardeParam = false;
@@ -33,6 +34,7 @@ GraphicsManager::GraphicsManager() {
 GraphicsManager::~GraphicsManager() {
 
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	delete graphicsMeteoManager;
 	delete graphicsEntiteManager;
 	delete graphicsSceneLoader;
 	delete graphicsCamera;
@@ -88,9 +90,13 @@ void GraphicsManager::createWindow()
 	m_pRenderWnd->setActive(true);
 
 	inputManager->initialise(m_pRenderWnd);
-    
-    inputManager->addKeyListener(this,"GraphicsKey");
+
+	inputManager->addKeyListener(this,"GraphicsKey");
 	inputManager->addMouseListener(this,"GraphicsMouse");
+
+	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
+	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
+	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,m_pRoot,m_pRenderWnd);
 
 }
 
@@ -128,12 +134,8 @@ void GraphicsManager::loadRessource()
 
 void GraphicsManager::loadScene(Event* event)
 {
-	if(m_pSceneMgr == 0)
-	{
-		m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
-	}
 
-	Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("MenuCam");
+	Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("CamPricipal");
 	m_pCamera->setNearClipDistance(0.1);
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsCamera->setCamera(m_pCamera);
@@ -147,6 +149,9 @@ void GraphicsManager::loadScene(Event* event)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->setCamera(m_pCamera);
 	}
+
+	graphicsMeteoManager->createMeteo();
+    graphicsMeteoManager->beafourt(8);
 
 }
 
@@ -188,10 +193,12 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->update();
 	}
-    
+
 	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
 	graphicsCamera->frameRenderingQueued(m_FrameEvent);
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
+	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
+
 
 	return true;
 }
@@ -230,7 +237,7 @@ bool GraphicsManager::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonI
 void GraphicsManager::shutdown()
 {
 #ifdef USE_RTSHADER_SYSTEM
-// Finalize the RT Shader System.
+	// Finalize the RT Shader System.
 	finalizeRTShaderSystem();
 #endif // USE_RTSHADER_SYSTEM
 }
