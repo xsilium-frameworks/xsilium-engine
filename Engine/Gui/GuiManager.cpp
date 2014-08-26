@@ -11,6 +11,8 @@ namespace Engine {
 
 	GuiManager::GuiManager() {
 
+		inputGui = new InputGui();
+
 		interfacePrincipale = false;
 
 		Engine::getInstance()->addListenner(this);
@@ -71,13 +73,19 @@ namespace Engine {
 
 	void GuiManager::setTheme(Event* event)
 	{
+		theme = event->getProperty("GuiTeme");
 
-		CEGUI::SchemeManager::getSingleton().createFromFile(event->getProperty("GuiTheme") + "Skin.scheme");
-		CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(event->getProperty("GuiTheme") + "Skin/MouseArrow");
+		CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
+		CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
 
-		//inputInterface->initialisationMouse();
+		inputGui->initialisationMouse();
 
 		//interfacePrincipal();
+	}
+
+	std::string GuiManager::getTheme()
+	{
+		return theme;
 	}
 
 	void GuiManager::interfacePrincipal()

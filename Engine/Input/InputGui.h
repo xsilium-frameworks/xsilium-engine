@@ -53,6 +53,13 @@ namespace Engine {
 
 		/*!
 		*
+		* \brief Mise à jour en seconde
+		*
+		*/
+		void update(float a_fElapsed); 
+
+		/*!
+		*
 		* \brief Méthode appellé lorsque touche relâché.
 		*
 		* \return true
@@ -93,6 +100,23 @@ namespace Engine {
 		*
 		*/
 		void initialisationMouse();
+
+	private:
+		void begin(const OIS::KeyEvent &evt);
+		void end(const OIS::KeyEvent &evt);
+
+		// convert an OIS mouse button into a CEGUI mouse button
+		CEGUI::MouseButton convertOISButtonToCegui(int buttonID);
+
+
+		OIS::KeyCode m_nKey;
+		unsigned int m_nChar;
+
+		float m_fElapsed;
+		float m_fDelay;
+
+		float m_fRepeatDelay;
+		float m_fInitialDelay;
 
 	};
 }

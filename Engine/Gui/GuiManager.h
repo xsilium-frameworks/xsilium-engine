@@ -1,8 +1,8 @@
 /*
 * \file GuiManager.h
 *
-*  Created on: \date 7 aožt 2014
-*      Author: \author joda
+*  Created on: \date 26 août 2014
+*      Author: \author xelfe joda
 *  \brief : Fichier d'en-tête du gestionnaire d'interface GUI
 */
 #ifndef GUIMANAGER_H_
@@ -13,6 +13,7 @@
 #endif
 
 #include "Engine/Engine.h"
+#include "Input/InputGui.h"
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 
@@ -101,6 +102,14 @@ namespace Engine {
 		void setTheme(Event* event);
 
 		/*!
+		* \brief Methode accesseur au nom du theme
+		*
+		* \return string nom du theme.
+		*
+		*/
+		std::string getTheme();
+
+		/*!
 		* \brief Méthode de chargement de l'interface principale GUI
 		*
 		*/
@@ -113,6 +122,8 @@ namespace Engine {
 		void deleteInterfacePrincipal();
 
 	private:
+		std::string theme; /*!< Nom du theme configuré. */
+		InputGui* inputGui;
 		bool interfacePrincipale; /*!< Résultat désignant si interfacePrincpale() à été initialisé. */
 	};
 

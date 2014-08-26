@@ -1,9 +1,9 @@
 /*
 * \file GraphicsManager.h
 *
-*  Created on: \date 4 aožt 2014
-*      Author: \author joda
-*  \brief :
+*  Created on: \date 26 août 2014
+*      Author: \author xelfe joda
+*  \brief : Fichier d'en-tête de la classe GraphicsManager
 */
 #ifndef GRAPHICSMANAGER_H_
 #define GRAPHICSMANAGER_H_
@@ -64,10 +64,10 @@ namespace Engine {
 		Ogre::String fenetreName;
 		bool sauvegardeParam;
 
-		GraphicsEntiteManager * graphicsEntiteManager;
-		GraphicsSceneLoader * graphicsSceneLoader;
-		InputManager * inputManager;
-		GraphicsCamera * graphicsCamera;
+		GraphicsEntiteManager* graphicsEntiteManager;
+		GraphicsSceneLoader* graphicsSceneLoader;
+		InputManager* inputManager;
+		GraphicsCamera* graphicsCamera;
 
 	};
 
