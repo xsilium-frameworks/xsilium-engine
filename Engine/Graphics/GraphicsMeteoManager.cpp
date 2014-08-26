@@ -229,7 +229,7 @@ void GraphicsMeteoManager::computeWind()
     vclouds->setWindDirection(Ogre::Radian(180.f));
     // Wind speed
     float v = (mBeafourt+1.f)/13.f;
-    mSkyX->getVCloudsManager()->setWindSpeed(3600.f*v);
+    mSkyX->getVCloudsManager()->setWindSpeed(3600.f * v);
     mWind = v*Ogre::Vector3(25.f,0.f,0.f);
     //SSS_APP->particlesManager()->rain()->wind(mWind);
 }
@@ -377,8 +377,7 @@ void GraphicsMeteoManager::update(float dt)
     updateEnvironmentLighting();
     mHydrax->update(dt);
     // SkyX use hours
-    mSkyX->setTimeMultiplier(1 / 3600.f);
-    mSkyX->update(dt / 3600.f);
+    mSkyX->update(dt);
 }
 
 void GraphicsMeteoManager::initHydrax()
@@ -430,7 +429,6 @@ void GraphicsMeteoManager::initSkyX()
 	// -1 means that there's not falling limit.
 	mSkyX->getVCloudsManager()->getVClouds()->setDistanceFallingParams(Ogre::Vector2(2.f,-1.f));
 	// Register listeners
-	m_pRoot->addFrameListener(mSkyX);
 	m_pRenderWnd->addListener(mSkyX);
 	// Clouds generation
 	if (!mSkyX->getCloudsManager()->getCloudLayers().empty()) {
@@ -439,8 +437,12 @@ void GraphicsMeteoManager::initSkyX()
 	if (!mSkyX->getVCloudsManager()->isCreated()) {
 		mSkyX->getVCloudsManager()->create(mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera));
 	}
+
+    mSkyX->setTimeMultiplier(0.1);
 	// Register as lighting listener in order to play sounds
 	//mSkyX->getVCloudsManager()->getVClouds()->getLightningManager()->addListener(this);
+
+	mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(mSkyX,mHydrax));
 }
 
 unsigned int GraphicsMeteoManager::beafourt(unsigned int beaf)

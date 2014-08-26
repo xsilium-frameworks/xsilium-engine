@@ -8,20 +8,7 @@
 #ifndef GRAPHICSMETEOMANAGER_H_
 #define GRAPHICSMETEOMANAGER_H_
 
-// ----------------------------------------------------------------------------
-// SkyX plugin
-// ----------------------------------------------------------------------------
-#include "SkyX.h"
-
-// ----------------------------------------------------------------------------
-// Hydrax plugin.
-// ----------------------------------------------------------------------------
-#include <Hydrax.h>
-#include <Noise/FFT/FFT.h>
-#include <Noise/Perlin/Perlin.h>
-#include <Modules/ProjectedGrid/ProjectedGrid.h>
-#include <Modules/RadialGrid/RadialGrid.h>
-#include <Modules/SimpleGrid/SimpleGrid.h>
+#include "Graphics/GraphicsHydraxRttListener.h"
 
 namespace Engine {
 

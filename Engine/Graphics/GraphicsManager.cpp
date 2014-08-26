@@ -151,7 +151,8 @@ void GraphicsManager::loadScene(Event* event)
 	}
 
 	graphicsMeteoManager->createMeteo();
-    graphicsMeteoManager->beafourt(8);
+    graphicsMeteoManager->beafourt(1);
+    //graphicsMeteoManager->storm(true);
 
 }
 
