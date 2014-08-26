@@ -65,19 +65,11 @@ namespace Engine {
 		Ogre::String fenetreName;
 		bool sauvegardeParam;
 
-<<<<<<< HEAD
-		GraphicsEntiteManager* graphicsEntiteManager;
-		GraphicsSceneLoader* graphicsSceneLoader;
-		InputManager* inputManager;
-		GraphicsCamera* graphicsCamera;
-=======
 	GraphicsEntiteManager * graphicsEntiteManager;
 	GraphicsSceneLoader * graphicsSceneLoader;
 	InputManager * inputManager;
 	GraphicsCamera * graphicsCamera;
 	GraphicsMeteoManager * graphicsMeteoManager;
-
->>>>>>> 5500c4fcab083e65add9ce33a091f045361f4a1f
 
 	};
 
