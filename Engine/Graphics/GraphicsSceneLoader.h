@@ -84,7 +84,7 @@ namespace Engine {
 	 std::vector<Forests::TreeLoader3D *> mTreeHandles;
 	 Forests::GrassLoader* mGrassLoaderHandle;                /** Handle to Forests::GrassLoader object */
 
-	 virtual Ogre::StringVector   getMaterialNames() = 0;
+	 Ogre::StringVector   getMaterialNames();
 
  protected:
 	 void processScene(rapidxml::xml_node<>* XMLRoot);

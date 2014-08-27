@@ -34,10 +34,10 @@ public:
 
 	/** Set beafourt number.
 	 * @param beaf Beafourt number.
-	 * @return Beafourt number.
+	 * @return None.
 	 * @note Beafourt njumber will be clamped between 0-12.
 	 */
-	unsigned int beafourt(unsigned int beaf);
+	void beafourt(unsigned int beaf);
 	/** Get active beafourt number.
 	 * @return Beafourt number.
 	 */
@@ -82,6 +82,11 @@ Ogre::Vector3 wind(){return mWind;}
 	 * @param l Lightning that has been added
 	 */
 	//void lightningAdded(SkyX::VClouds::Lightning* l);
+
+	/** Set DepthTechnique .
+		 * @param Ogre::StringVector
+		 */
+	void addDepthTechnique(Ogre::StringVector materialNames);
 
 
 protected:

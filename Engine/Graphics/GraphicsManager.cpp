@@ -152,7 +152,7 @@ void GraphicsManager::loadScene(Event* event)
 
 	graphicsMeteoManager->createMeteo();
     graphicsMeteoManager->beafourt(0);
-    //graphicsMeteoManager->storm(true);
+    graphicsMeteoManager->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
 
 }
 

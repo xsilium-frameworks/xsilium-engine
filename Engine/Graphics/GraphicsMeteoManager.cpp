@@ -394,7 +394,7 @@ void GraphicsMeteoManager::initHydrax()
 			// Normal mode
 			Hydrax::MaterialManager::NM_VERTEX,
 			// Projected grid options
-			Hydrax::Module::ProjectedGrid::Options(/*264 /*Generic one*/));	// Set our module
+			Hydrax::Module::ProjectedGrid::Options(/*264 Generic one*/));	// Set our module
 	mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
 	// Load all parameters from config file
 	// Remarks: The config file must be in Hydrax resource group.
@@ -403,17 +403,14 @@ void GraphicsMeteoManager::initHydrax()
 	mHydrax->loadCfg("Hydrax.hdx");
 	// Create water
 	mHydrax->create();
+}
 
-	/**
-	// Charge une technique pour chaque Material.
-	// Voir GraphicsSceneLoader::getMaterialNames()
-
-	        Ogre::StringVector materialNames = getMaterialNames();
-        for(unsigned int i = 0;i < materialNames.size();i++)
-        {
-             mHydrax->getMaterialManager()->addDepthTechnique(materialNames[i]);
-        }
-		*/
+void GraphicsMeteoManager::addDepthTechnique(Ogre::StringVector materialNames)
+{
+	for(unsigned int i = 0;i < materialNames.size();i++)
+	{
+		mHydrax->getMaterialManager()->addDepthTechnique(static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialNames[i]))->createTechnique());
+	}
 }
 
 void GraphicsMeteoManager::initSkyX()
@@ -458,11 +455,10 @@ void GraphicsMeteoManager::initSkyX()
 	mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(mSkyX,mHydrax));
 }
 
-unsigned int GraphicsMeteoManager::beafourt(unsigned int beaf)
+void GraphicsMeteoManager::beafourt(unsigned int beaf)
 {
 	// New beafourt value (clamped)
 	mBeafourt = beaf;
-	if(mBeafourt < 0) mBeafourt=0;
 	if(mBeafourt > 12) mBeafourt=12;
 	// Compute environment values asssociated
 	computeColours();
@@ -494,14 +490,6 @@ void GraphicsMeteoManager::createMeteo()
 	initSkyX();
 	//! Setup initial beafourt number
 	beafourt(mBeafourt);
-
-	Ogre::ParticleSystem * ps;
-	ps = m_pSceneMgr->createParticleSystem("Rain", "Rain/Droplets");
-	m_pSceneMgr->getRootSceneNode()->attachObject(ps);
-	ps->setDefaultDimensions(ps->getDefaultWidth(), ps->getDefaultHeight());
-
-	Ogre::ParticleEmitter* partEmm = ps->getEmitter(0);
-	partEmm->setEmissionRate((unsigned int)(1000.f));
 
 }
 
