@@ -10,6 +10,7 @@ subdirs(OgrePaged)
 subdirs(Cegui)
 subdirs(Hydrax)
 subdirs(SkyX)
+subdirs(ParticleUniverse)
 
 #Update
 #subdirs(Curl)

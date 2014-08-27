@@ -1,0 +1,20 @@
+# The project's include directories
+include_directories(include)
+include_directories("${OGRE_INCLUDE_DIR}")
+
+set (PARTICLEUNIVERSE_PLUGIN_NAME "Plugin_ParticleUniverse")
+
+# The project's sources
+file(GLOB PROJECT_SOURCES
+	src/*.cpp
+	src/*/*.cpp
+)
+
+set (PARTICLEUNIVERSE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+set (PARTICLEUNIVERSE_LIBRARIES ${PARTICLEUNIVERSE_PLUGIN_NAME} PARENT_SCOPE)
+
+add_definitions(-DPARTICLE_UNIVERSE_EXPORTS)
+
+add_library(${PARTICLEUNIVERSE_PLUGIN_NAME} SHARED ${PROJECT_SOURCES})
+target_link_libraries(${PARTICLEUNIVERSE_PLUGIN_NAME} ${LIBS} ${OGRE_LIBRARIES} )
+set_target_properties(${PARTICLEUNIVERSE_PLUGIN_NAME} PROPERTIES VERSION "1.9.0" SOVERSION "1.9.0" PREFIX "")
