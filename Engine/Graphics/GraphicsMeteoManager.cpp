@@ -455,7 +455,7 @@ void GraphicsMeteoManager::initSkyX()
 
 	mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(mSkyX,mHydrax));
 }
-/**
+
 unsigned int GraphicsMeteoManager::beafourt(unsigned int beaf)
 {
     // New beafourt value (clamped)
@@ -470,7 +470,7 @@ unsigned int GraphicsMeteoManager::beafourt(unsigned int beaf)
     computeStorm();
     computeHydrax();
 }
-*/
+
 void GraphicsMeteoManager::rain(bool flag)
 {
     mRain = flag;
