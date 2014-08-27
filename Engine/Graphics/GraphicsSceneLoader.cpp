@@ -1430,7 +1430,33 @@ void GraphicsSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
         //options supp.
          */
     }
-    void GraphicsSceneLoader::processHydrax(rapidxml::xml_node<>* XMLNode)
+
+	Ogre::StringVector GraphicsSceneLoader::getMaterialNames() 
+	{
+		Ogre::StringVector list;
+		Ogre::String matName;
+
+		if(!mTerrainGroup) 
+			return list;
+
+		Ogre::TerrainGroup::TerrainIterator it = mTerrainGroup->getTerrainIterator();
+
+		while(it.hasMoreElements())
+		{
+			Ogre::TerrainGroup::TerrainSlot *terrain = it.getNext();
+			if(terrain->instance && terrain->instance->isLoaded())
+			{
+				matName = terrain->instance->getMaterialName();
+				if(matName != "")
+					list.push_back(matName);
+			}
+
+		}
+
+		return list;
+	}
+
+	void GraphicsSceneLoader::processHydrax(rapidxml::xml_node<>* XMLNode)
     {
     	/*
         gestionnaireMeteo->createEau(getAttrib(XMLNode, "configFile"));

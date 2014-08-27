@@ -403,6 +403,17 @@ void GraphicsMeteoManager::initHydrax()
 	mHydrax->loadCfg("Hydrax.hdx");
 	// Create water
 	mHydrax->create();
+
+	/**
+	// Charge une technique pour chaque Material.
+	// Voir GraphicsSceneLoader::getMaterialNames()
+
+	        Ogre::StringVector materialNames = getMaterialNames();
+        for(unsigned int i = 0;i < materialNames.size();i++)
+        {
+             mHydrax->getMaterialManager()->addDepthTechnique(materialNames[i]);
+        }
+		*/
 }
 
 void GraphicsMeteoManager::initSkyX()
@@ -444,7 +455,7 @@ void GraphicsMeteoManager::initSkyX()
 
 	mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(mSkyX,mHydrax));
 }
-
+/**
 unsigned int GraphicsMeteoManager::beafourt(unsigned int beaf)
 {
     // New beafourt value (clamped)
@@ -459,7 +470,7 @@ unsigned int GraphicsMeteoManager::beafourt(unsigned int beaf)
     computeStorm();
     computeHydrax();
 }
-
+*/
 void GraphicsMeteoManager::rain(bool flag)
 {
     mRain = flag;
