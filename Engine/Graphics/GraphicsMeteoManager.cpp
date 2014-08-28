@@ -491,6 +491,15 @@ void GraphicsMeteoManager::createMeteo()
 	//! Setup initial beafourt number
 	beafourt(mBeafourt);
 
+	Ogre::ParticleSystem * ps;
+	ps = m_pSceneMgr->createParticleSystem("Rain", "Rain/Droplets");
+	m_pSceneMgr->getRootSceneNode()->attachObject(ps);
+	ps->setDefaultDimensions(ps->getDefaultWidth(), ps->getDefaultHeight());
+
+	Ogre::ParticleEmitter* partEmm = ps->getEmitter(0);
+	partEmm->setEmissionRate((unsigned int)(1000.f));
+
+
 }
 
 } /* namespace Engine */

@@ -10,7 +10,6 @@
 
 #include <Ogre.h>
 #include "GraphicsAnimation.h"
-#include "GraphicsObjet.h"
 #include "Event/Event.h"
 
 namespace Engine {
@@ -29,8 +28,6 @@ public:
 	void setRunSpeed(int runSpeed);
 	void setTurnSpeed(double turnSpeed);
 
-	Ogre::SceneNode *getSightNode ();
-	Ogre::SceneNode *getCameraNode ();
 	Ogre::Vector3 getWorldPosition ();
 
 	void degainerArme();
@@ -39,7 +36,7 @@ public:
 
 	void processEngine(Event * event);
 
-	void addEquipement(Ogre::String nomObjet,Ogre::String fileMesh,Ogre::String emplacement);
+	void addEquipement(Ogre::Entity * objet,Ogre::String emplacement);
 
 	void runAnimation();
 	void idleAnimation();
@@ -53,14 +50,9 @@ private:
 
 	Ogre::SceneManager* msceneMgr;
 	Ogre::SceneNode *mMainNode; // Main character node
-	Ogre::SceneNode *mSightNode; // "Sight" node - The character is supposed to be looking here
-	Ogre::SceneNode *mCameraNode; // Node for the chase camera
 	Ogre::Entity* mBodyEnt;
 
 	GraphicsAnimation * graphicsAnimation ;
-
-	std::map<int,GraphicsObjet*> listOfObject;
-	int countObjet;
 
 	bool degainer;
 

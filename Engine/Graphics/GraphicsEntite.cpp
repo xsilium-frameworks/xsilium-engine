@@ -13,11 +13,8 @@ GraphicsEntite::GraphicsEntite() {
 	charHeight = 0;
 	runSpeed = 0;
 	turnSpeed = 0;
-	countObjet = 0;
 	msceneMgr = 0;
 	mMainNode = 0;
-    mSightNode = 0;
-    mCameraNode = 0;
 	mBodyEnt = 0;
 	graphicsAnimation = 0;
 
@@ -35,8 +32,6 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 	this->nom = nom;
 
 	mMainNode = msceneMgr->getRootSceneNode ()->createChildSceneNode (nom);
-	mSightNode = mMainNode->createChildSceneNode (nom + "_sight", Ogre::Vector3 (0, 0, 100));
-	mCameraNode = mMainNode->createChildSceneNode (nom + "_camera", Ogre::Vector3 (0, 50, -100));
 
 	mBodyEnt = sceneMgr->createEntity(fileMesh);
 
@@ -54,21 +49,17 @@ void GraphicsEntite::setCharHeight(int charHeight)
 {
 	this->charHeight = charHeight;
 }
+
 void GraphicsEntite::setRunSpeed(int runSpeed)
 {
 	this->runSpeed = runSpeed;
 }
+
 void GraphicsEntite::setTurnSpeed(double turnSpeed)
 {
 	this->turnSpeed = turnSpeed;
 }
 
-Ogre::SceneNode * GraphicsEntite::getSightNode () {
-	return mSightNode;
-}
-Ogre::SceneNode * GraphicsEntite::getCameraNode () {
-	return mCameraNode;
-}
 Ogre::Vector3 GraphicsEntite::getWorldPosition () {
 	return mMainNode->_getDerivedPosition ();
 }
@@ -84,7 +75,7 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 	{
 		if (graphicsAnimation->getTime() >= mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() / 2 && graphicsAnimation->getTime() - timeSinceLastFrame < mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() / 2 )
 		{
-			std::map<int,GraphicsObjet*>::iterator it;
+	/*		std::map<int,GraphicsObjet*>::iterator it;
 			degainer = !degainer;
 			it=listOfObject.find(1);
 			mBodyEnt->detachObjectFromBone(it->second->getObjet());
@@ -92,7 +83,7 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 			it=listOfObject.find(2);
 			mBodyEnt->detachObjectFromBone(it->second->getObjet());
 			mBodyEnt->attachObjectToBone(degainer ? "Handle.R" : "Sheath.R", it->second->getObjet());
-
+*/
 			if(degainer)
 			{
 				graphicsAnimation->unsetAnimationSeul("HandsRelaxed");
@@ -134,15 +125,9 @@ void GraphicsEntite::idleAnimation()
 	graphicsAnimation->setAnimationHaut("IdleTop");
 }
 
-void GraphicsEntite::addEquipement(Ogre::String nomObjet,Ogre::String fileMesh,Ogre::String emplacement)
+void GraphicsEntite::addEquipement(Ogre::Entity * objet,Ogre::String emplacement)
 {
-	GraphicsObjet * graphicsObjetTemp = new GraphicsObjet();
-	graphicsObjetTemp->initObjet(msceneMgr,nomObjet,fileMesh);
-	countObjet += 1;
-	mBodyEnt->attachObjectToBone(emplacement, graphicsObjetTemp->getObjet());
-	listOfObject.insert ( std::pair<int,GraphicsObjet*>(countObjet,graphicsObjetTemp) );
-
-
+//	mBodyEnt->attachObjectToBone(emplacement, graphicsObjetTemp->getObjet());
 }
 
 } /* namespace Engine */
