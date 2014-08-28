@@ -9,6 +9,7 @@
 #define GRAPHICSOBJETMANAGER_H_
 
 #include "Graphics/GraphicsObjet.h"
+#include "Event/Event.h"
 
 namespace Engine {
 
@@ -20,8 +21,9 @@ public:
 	GraphicsObjetManager();
 	virtual ~GraphicsObjetManager();
 
-	void createEntite(Event * event);
-	//Entite * trouverEntite(std::string nom);
+	void createObjet(Event * event);
+	GraphicsObjet * trouverObjet(Ogre::String nom);
+	void deleteObjet(Ogre::String nom);
 
 	void setSceneManager(Ogre::SceneManager* msceneMgr);
 
@@ -31,8 +33,8 @@ public:
 
 
 private:
-	std::vector<GraphicsObjet *> listOfEntite ;
-	std::vector<GraphicsObjet *>::iterator entite ;
+	std::vector<GraphicsObjet *> listOfObjet ;
+	std::vector<GraphicsObjet *>::iterator objet ;
 
 	Ogre::SceneManager* msceneMgr;
 };

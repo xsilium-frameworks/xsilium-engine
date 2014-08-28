@@ -28,7 +28,10 @@ public:
 	void setRunSpeed(int runSpeed);
 	void setTurnSpeed(double turnSpeed);
 
+	void setPosition(Ogre::Vector3 position);
+
 	Ogre::Vector3 getWorldPosition ();
+	Ogre::String * getNom();
 
 	void degainerArme();
 
@@ -37,6 +40,7 @@ public:
 	void processEngine(Event * event);
 
 	void addEquipement(Ogre::Entity * objet,Ogre::String emplacement);
+	void deleteEquipement(Ogre::String emplacement);
 
 	void runAnimation();
 	void idleAnimation();
@@ -53,6 +57,8 @@ private:
 	Ogre::Entity* mBodyEnt;
 
 	GraphicsAnimation * graphicsAnimation ;
+
+	std::map<Ogre::String,Ogre::Entity*> listOfObject;
 
 	bool degainer;
 

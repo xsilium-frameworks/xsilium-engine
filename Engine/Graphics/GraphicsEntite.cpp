@@ -38,7 +38,6 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 	mBodyEnt->setCastShadows(true);
 
 	mMainNode->attachObject(mBodyEnt);
-	mMainNode->setScale(0.15,0.15,0.15);
 
 
 	graphicsAnimation = new GraphicsAnimation(mBodyEnt);
@@ -64,6 +63,11 @@ Ogre::Vector3 GraphicsEntite::getWorldPosition () {
 	return mMainNode->_getDerivedPosition ();
 }
 
+Ogre::String * GraphicsEntite::getNom()
+{
+	return &this->nom ;
+}
+
 void GraphicsEntite::degainerArme()
 {
 	graphicsAnimation->setAnimationHaut("DrawSwords",true);
@@ -75,15 +79,21 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 	{
 		if (graphicsAnimation->getTime() >= mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() / 2 && graphicsAnimation->getTime() - timeSinceLastFrame < mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() / 2 )
 		{
-	/*		std::map<int,GraphicsObjet*>::iterator it;
+			std::map<Ogre::String,Ogre::Entity*>::iterator it;
 			degainer = !degainer;
-			it=listOfObject.find(1);
-			mBodyEnt->detachObjectFromBone(it->second->getObjet());
-			mBodyEnt->attachObjectToBone(degainer ? "Handle.L" : "Sheath.L", it->second->getObjet());
-			it=listOfObject.find(2);
-			mBodyEnt->detachObjectFromBone(it->second->getObjet());
-			mBodyEnt->attachObjectToBone(degainer ? "Handle.R" : "Sheath.R", it->second->getObjet());
-*/
+			it=listOfObject.find(degainer ? "Handle.L" : "Sheath.L");
+			if (it != listOfObject.end() )
+			{
+				mBodyEnt->detachObjectFromBone(it->second);
+				mBodyEnt->attachObjectToBone(degainer ? "Handle.L" : "Sheath.L", it->second);
+			}
+			it=listOfObject.find(degainer ? "Handle.R" : "Sheath.R");
+			if (it != listOfObject.end() )
+			{
+				mBodyEnt->detachObjectFromBone(it->second);
+				mBodyEnt->attachObjectToBone(degainer ? "Handle.R" : "Sheath.R", it->second);
+			}
+
 			if(degainer)
 			{
 				graphicsAnimation->unsetAnimationSeul("HandsRelaxed");
@@ -125,9 +135,25 @@ void GraphicsEntite::idleAnimation()
 	graphicsAnimation->setAnimationHaut("IdleTop");
 }
 
+void GraphicsEntite::setPosition(Ogre::Vector3 position)
+{
+	mMainNode->setPosition(position);
+}
+
 void GraphicsEntite::addEquipement(Ogre::Entity * objet,Ogre::String emplacement)
 {
-//	mBodyEnt->attachObjectToBone(emplacement, graphicsObjetTemp->getObjet());
+	listOfObject[emplacement] = objet;
+	mBodyEnt->attachObjectToBone(emplacement, objet);
+}
+
+void GraphicsEntite::deleteEquipement(Ogre::String emplacement)
+{
+	std::map<Ogre::String,Ogre::Entity*>::iterator it = listOfObject.find(emplacement);
+	if (it != listOfObject.end())
+	{
+		listOfObject.erase(it);
+	}
+
 }
 
 } /* namespace Engine */

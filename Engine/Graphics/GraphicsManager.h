@@ -13,6 +13,7 @@
 #include "Graphics/GraphicsSceneLoader.h"
 #include "Graphics/GraphicsCamera.h";
 #include "Graphics/GraphicsMeteoManager.h"
+#include "Graphics/GraphicsObjetManager.h"
 #include "Input/InputManager.h"
 
 namespace Engine {
@@ -70,6 +71,7 @@ namespace Engine {
 	InputManager * inputManager;
 	GraphicsCamera * graphicsCamera;
 	GraphicsMeteoManager * graphicsMeteoManager;
+	GraphicsObjetManager * graphicsObjetManager;
 
 	};
 

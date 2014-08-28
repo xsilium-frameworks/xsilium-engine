@@ -11,6 +11,7 @@ namespace Engine {
 
 GraphicsEntiteManager::GraphicsEntiteManager() {
 	msceneMgr = 0;
+	graphicsObjetManager = 0;
 
 }
 
@@ -25,6 +26,11 @@ GraphicsEntiteManager::~GraphicsEntiteManager() {
 void GraphicsEntiteManager::setSceneManager(Ogre::SceneManager* msceneMgr)
 {
 	this->msceneMgr = msceneMgr ;
+}
+
+void GraphicsEntiteManager::setObjetManager(GraphicsObjetManager * graphicsObjetManager)
+{
+	this->graphicsObjetManager = graphicsObjetManager;
 }
 
 void GraphicsEntiteManager::createEntite(Event * event)
@@ -48,8 +54,43 @@ void GraphicsEntiteManager::createEntite(Event * event)
 
 	graphicsEntite->initEntite(msceneMgr , event->getProperty("NomEntite"), event->getProperty("fileMesh") );
 
+	if(event->hasProperty("PositionX"))
+	{
+		graphicsEntite->setPosition(Ogre::Vector3( atoi(event->getProperty("PositionX").c_str()),atoi(event->getProperty("PositionY").c_str()),atoi(event->getProperty("PositionZ").c_str()))) ;
+	}
+
 
 	listOfEntite.push_back(graphicsEntite);
+}
+
+
+
+GraphicsEntite * GraphicsEntiteManager::trouverEntite(Ogre::String nom)
+{
+	for (entite=listOfEntite.begin() ; entite!=listOfEntite.end() ; ++entite)
+	{
+		if ( nom.compare(0,(*entite)->getNom()->length(),*(*entite)->getNom()) ==0 )
+		{
+			return (*entite);
+		}
+	}
+	return NULL;
+}
+
+void GraphicsEntiteManager::deleteEntite(Ogre::String nom)
+{
+	for (entite=listOfEntite.begin() ; entite!=listOfEntite.end() ; ++entite)
+	{
+		if ( nom.compare(0,(*entite)->getNom()->length(),*(*entite)->getNom()) ==0 )
+		{
+			delete (*entite);
+		}
+	}
+}
+
+void GraphicsEntiteManager::assigneObjet(Event * event)
+{
+	trouverEntite(event->getProperty("NomEntite"))->addEquipement( graphicsObjetManager->trouverObjet( event->getProperty("NomObjet"))->getObjet(), event->getProperty("Emplacement") );
 }
 
 void GraphicsEntiteManager::processEvent(Event * event)
@@ -57,6 +98,10 @@ void GraphicsEntiteManager::processEvent(Event * event)
 	if(event->hasProperty("CreateEntite"))
 	{
 		createEntite(event);
+	}
+	if(event->hasProperty("AssigneObjet"))
+	{
+		assigneObjet(event);
 	}
 }
 

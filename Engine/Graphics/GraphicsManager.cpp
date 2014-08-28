@@ -26,6 +26,8 @@ GraphicsManager::GraphicsManager() {
 	Engine::getInstance()->getRoot()->addFrameListener(this);
 
 	graphicsEntiteManager = new GraphicsEntiteManager();
+	graphicsObjetManager = new GraphicsObjetManager();
+	graphicsEntiteManager->setObjetManager(graphicsObjetManager);
 	graphicsSceneLoader = new GraphicsSceneLoader();
 
 
@@ -36,6 +38,7 @@ GraphicsManager::~GraphicsManager() {
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
 	delete graphicsMeteoManager;
 	delete graphicsEntiteManager;
+	delete graphicsObjetManager;
 	delete graphicsSceneLoader;
 	delete graphicsCamera;
 	InputManager::DestroyInstance();
@@ -96,6 +99,7 @@ void GraphicsManager::createWindow()
 
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
+	graphicsObjetManager->setSceneManager(m_pSceneMgr);
 	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,m_pRoot,m_pRenderWnd);
 
 }
@@ -151,7 +155,7 @@ void GraphicsManager::loadScene(Event* event)
 	}
 
 	graphicsMeteoManager->createMeteo();
-    graphicsMeteoManager->beafourt(0);
+    graphicsMeteoManager->beafourt(2);
     graphicsMeteoManager->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
 
 }
@@ -168,11 +172,14 @@ void GraphicsManager::processEvent(Event* event)
 	{
 		graphicsEntiteManager->processEvent(event);
 	}
+	if(event->hasProperty("Objet"))
+	{
+		graphicsObjetManager->processEvent(event);
+	}
 	if(event->hasProperty("LoadScene"))
 	{
 		loadScene(event);
 	}
-
 }
 
 bool GraphicsManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
@@ -190,15 +197,16 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		deleteEvent();
 	}
 
+	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
+	graphicsCamera->frameRenderingQueued(m_FrameEvent);
+	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
+	graphicsObjetManager->update(m_FrameEvent.timeSinceLastFrame);
+	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
+
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->update();
 	}
-
-	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
-	graphicsCamera->frameRenderingQueued(m_FrameEvent);
-	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
-	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
 
 
 	return true;

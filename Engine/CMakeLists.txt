@@ -15,6 +15,7 @@ set( CORE_HEADER_FILES
 	 ./Graphics/GraphicsManager.h
 	 ./Graphics/GraphicsMeteoManager.h
 	 ./Graphics/GraphicsObjet.h
+	 ./Graphics/GraphicsObjetManager.h
 	 ./Graphics/GraphicsSceneLoader.h
 	 ./Gui/GuiManager.h
 	 ./Input/InputManager.h	
@@ -43,6 +44,7 @@ set (CORE_SOURCE_FILES
 	 ./Graphics/GraphicsManager.cpp
 	 ./Graphics/GraphicsMeteoManager.cpp
 	 ./Graphics/GraphicsObjet.cpp
+	 ./Graphics/GraphicsObjetManager.cpp
  	 ./Graphics/GraphicsSceneLoader.cpp
  	 ./Gui/GuiManager.cpp
 	 ./Input/InputManager.cpp
