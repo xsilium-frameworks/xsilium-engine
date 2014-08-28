@@ -67,6 +67,28 @@ void LoginState::createScene()
 
 
 	Engine::Engine::getInstance()->addEvent(event4);
+
+
+	Event event5 ;
+	event5.setProperty("Objet","1");
+	event5.setProperty("CreateObjet","1");
+	event5.setProperty("NomObjet","SinbadSword2");
+	event5.setProperty("fileMesh","Sword.mesh");
+
+
+	Engine::Engine::getInstance()->addEvent(event5);
+
+	Event event6 ;
+	event6.setProperty("Entite","1");
+	event6.setProperty("AssigneObjet","1");
+	event6.setProperty("NomEntite","Perso1");
+	event6.setProperty("NomObjet","SinbadSword2");
+	event6.setProperty("Emplacement","Sheath.R");
+
+
+	Engine::Engine::getInstance()->addEvent(event6);
+
+
 }
 
 void LoginState::exit()
