@@ -267,12 +267,36 @@ void GraphicsMeteoManager::computeStorm()
 	vclouds->getLightningManager()->setLightningTimeMultiplier(2.f);
 }
 
+void GraphicsMeteoManager::setWaves(unsigned int n, Ogre::Vector2 A, Ogre::Vector2 T, Ogre::Vector2 varDir, float varP)
+{
+  /*  unsigned int i;
+    Hydrax::Module::ProjectedGrid *mModule = (Hydrax::Module::ProjectedGrid*)mHydrax->getModule();
+    Hydrax::Noise::Perlin* mNoise = (Hydrax::Noise::Perlin*) mModule->getNoise();
+    // Hydrax reinitialization
+    for(i=0;i<nWaves;i++)
+        mNoise->  removeWave(0);
+    // Add waves
+    nWaves = n;
+    for(i=0;i<nWaves;i++){
+        Ogre::Vector2 dir;
+        dir.x = Ogre::Math::RangeRandom(1.f - varDir.x, 1.f + varDir.x);
+        dir.y = Ogre::Math::RangeRandom(-varDir.y, varDir.y);
+        dir.normalise();
+        float wA = Ogre::Math::RangeRandom(A.x, A.y);
+        float wT = Ogre::Math::RangeRandom(T.x, T.y);
+        float wP = Ogre::Math::RangeRandom(0.f, varP);
+        Hydrax::Noise::HydrOCLNoise::Wave w = Hydrax::Noise::HydrOCLNoise::Wave(dir,wA,wT,wP);
+        static_cast<Hydrax::Noise::HydrOCLNoise*>(mModule->getNoise())->addWave(w);
+    } */
+
+}
+
 void GraphicsMeteoManager::computeHydrax()
 {
-	/*
-    Hydrax::Module::HydrOCL *mModule = (Hydrax::Module::HydrOCL*)mHydrax->getModule();
-    Hydrax::Noise::HydrOCLNoise* mNoise = (Hydrax::Noise::HydrOCLNoise*)mModule->getNoise();
-    Hydrax::Noise::HydrOCLPerlin::Options opts = mNoise->getOptions();
+	
+    Hydrax::Module::ProjectedGrid *mModule = (Hydrax::Module::ProjectedGrid*) mHydrax->getModule();
+    Hydrax::Noise::Perlin * mNoise = (Hydrax::Noise::Perlin*)mModule->getNoise();
+    Hydrax::Noise::Perlin::Options opts = mNoise->getOptions();
     switch(mBeafourt){
         //! Beafourt = 0 : Calm
         case 0:
@@ -341,7 +365,7 @@ void GraphicsMeteoManager::computeHydrax()
             setWaves(20, Ogre::Vector2(0.3f,1.f), Ogre::Vector2(4.f,13.f));
             opts.GPU_Strength = 6.f; mNoise->setOptions(opts);
             break;
-    } */
+    }
 
 }
 
@@ -390,7 +414,7 @@ void GraphicsMeteoManager::initHydrax()
 			// Noise module
 			new Hydrax::Noise::Perlin(/*Generic one*/),
 			// Base plane
-			Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),
+			 Ogre::Plane(Ogre::Vector3::UNIT_Y, Ogre::Real(0.0f)),
 			// Normal mode
 			Hydrax::MaterialManager::NM_VERTEX,
 			// Projected grid options

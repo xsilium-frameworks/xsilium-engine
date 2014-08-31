@@ -13,9 +13,11 @@
 #endif
 
 #include "Engine/Engine.h"
-#include "Input/InputGui.h"
+#include "Gui/GuiInput.h"
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
+
+
 
 /*!
 * \namespace Engine
@@ -121,9 +123,15 @@ namespace Engine {
 		*/
 		void deleteInterfacePrincipal();
 
+		/*!
+		* \brief Méthode de destruction de l'interface principale GUI
+		*
+		*/
+		void loadRessource();
+
 	private:
 		std::string theme; /*!< Nom du theme configuré. */
-		InputGui* inputGui;
+		GuiInput* guiInput;
 		bool interfacePrincipale; /*!< Résultat désignant si interfacePrincpale() à été initialisé. */
 	};
 

@@ -141,6 +141,7 @@ void GraphicsManager::loadScene(Event* event)
 
 	Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("CamPricipal");
 	m_pCamera->setNearClipDistance(0.1);
+	m_pCamera->setFarClipDistance(99999);
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsCamera->setCamera(m_pCamera);
 	graphicsCamera->setStyle(CS_FREELOOK);
@@ -155,7 +156,6 @@ void GraphicsManager::loadScene(Event* event)
 	}
 
 	graphicsMeteoManager->createMeteo();
-    graphicsMeteoManager->beafourt(2);
     graphicsMeteoManager->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
 
 }
