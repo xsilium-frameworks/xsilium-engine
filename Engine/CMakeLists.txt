@@ -38,6 +38,7 @@ set (CORE_SOURCE_FILES
 	 ./Event/Event.cpp
 	 ./GameState/GameStateManager.cpp
 	 ./Graphics/GraphicsAnimation.cpp
+	 ./Graphics/GraphicsCamera.cpp
 	 ./Graphics/GraphicsEntite.cpp
 	 ./Graphics/GraphicsEntiteManager.cpp
 	 ./Graphics/GraphicsHydraxRttListener.cpp
