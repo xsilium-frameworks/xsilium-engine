@@ -14,9 +14,7 @@
 
 #include "Engine/Engine.h"
 #include "Gui/GuiInput.h"
-#include <CEGUI/CEGUI.h>
-#include <CEGUI/RendererModules/Ogre/Renderer.h>
-
+#include "Gui/GuiListenner.h"
 
 
 /*!
@@ -25,6 +23,8 @@
 */
 namespace Engine {
 
+class GuiListenner;
+
 	/*!
 	* \class GuiManager
 	* \brief Classe gestionnaire d'interface GUI.
@@ -32,7 +32,10 @@ namespace Engine {
 	* Classe permettant de gèrer les différentes interface graphique.
 	*
 	*/
-	class GuiManager : public EngineListenner , public Ogre::FrameListener {
+	class GuiManager : public Singleton<GuiManager>, public EngineListenner , public Ogre::FrameListener {
+
+		friend class Singleton<GuiManager>;
+
 	public:
 		/*!
 		*  \brief Constructeur.
@@ -104,6 +107,14 @@ namespace Engine {
 		void setTheme(Event* event);
 
 		/*!
+		* \brief Methode de configuration du theme GUI
+		*
+		* \praram
+		*
+		*/
+		void setTheme(Ogre::String theme);
+
+		/*!
 		* \brief Methode accesseur au nom du theme
 		*
 		* \return string nom du theme.
@@ -129,10 +140,15 @@ namespace Engine {
 		*/
 		void loadRessource();
 
+		void addGuiListenner(GuiListenner* guiListenner);
+
 	private:
-		std::string theme; /*!< Nom du theme configuré. */
+		Ogre::String theme; /*!< Nom du theme configuré. */
 		GuiInput* guiInput;
 		bool interfacePrincipale; /*!< Résultat désignant si interfacePrincpale() à été initialisé. */
+		CEGUI::OgreRenderer * mRenderer;
+
+		std::vector<GuiListenner*> listOfInterface;
 	};
 
 } /* namespace Engine */

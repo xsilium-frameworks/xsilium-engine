@@ -4,27 +4,28 @@ XsiliumApp::XsiliumApp()
 {
 	graphicsManager = 0;
 	gameStateManager = 0;
+	guiManager = 0;
 }
 
 XsiliumApp::~XsiliumApp()
 {
-	delete guiManager;
+	Engine::GuiManager::DestroyInstance()  ;
 	delete gameStateManager;
-	delete graphicsManager;
+	Engine::GraphicsManager::DestroyInstance();
 	Engine::Engine::DestroyInstance();
 }
 
 void XsiliumApp::start()
 {
 	Engine::Engine::getInstance()->initEngine("Xsilium",4);
-	graphicsManager = new Engine::GraphicsManager();
+	graphicsManager = Engine::GraphicsManager::getInstance();
 	graphicsManager->initOgre();
 	graphicsManager->createWindow();
 	graphicsManager->loadRessource();
 
 	gameStateManager = new Engine::GameStateManager();
 
-	guiManager = new Engine::GuiManager();
+	guiManager = Engine::GuiManager::getInstance();
 
 	LoginState::create<LoginState>(gameStateManager, "LoginState");
 

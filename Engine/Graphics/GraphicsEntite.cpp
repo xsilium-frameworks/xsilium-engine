@@ -23,7 +23,7 @@ GraphicsEntite::GraphicsEntite() {
 }
 
 GraphicsEntite::~GraphicsEntite() {
-	// TODO Auto-generated destructor stub
+	delete graphicsAnimation;
 }
 
 void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Ogre::String fileMesh)

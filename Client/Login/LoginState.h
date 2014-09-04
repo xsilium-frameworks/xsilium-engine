@@ -3,6 +3,8 @@
 
 //#include "Authentification/GestionnaireAuth.h"
 #include "GameState/GameState.h"
+#include "Gui/GuiAuth.h"
+
 
 class LoginState : public GameState
 {
@@ -19,6 +21,7 @@ public:
 
 private:
 	//GestionnaireAuth * gestionnaireAuth;
+	GuiAuth * guiAuth;
 
 };
 

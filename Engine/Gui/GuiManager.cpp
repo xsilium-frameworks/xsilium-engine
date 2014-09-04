@@ -15,14 +15,24 @@ GuiManager::GuiManager() {
 	Engine::getInstance()->addListenner(this);
 	Engine::getInstance()->getRoot()->addFrameListener(this);
 
-	CEGUI::OgreRenderer::bootstrapSystem();
+	mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
 
 	guiInput = new GuiInput();
 	loadRessource();
 }
 
 GuiManager::~GuiManager() {
+	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	std::vector<GuiListenner*>::iterator guiIterator;
+
+	for (guiIterator = listOfInterface.begin() ; guiIterator != listOfInterface.end(); ++guiIterator)
+	{
+		delete *guiIterator;
+	}
+	listOfInterface.clear();
+
 	delete guiInput;
+	deleteInterfacePrincipal();
 }
 
 void GuiManager::processEvent(Event* event)
@@ -30,6 +40,13 @@ void GuiManager::processEvent(Event* event)
 	if(event->hasProperty("GuiTheme"))
 	{
 		setTheme(event);
+	}
+
+	std::vector<GuiListenner*>::iterator guiIterator;
+
+	for (guiIterator = listOfInterface.begin() ; guiIterator != listOfInterface.end(); ++guiIterator)
+	{
+		(*guiIterator)->processEvent(event);
 	}
 }
 
@@ -59,7 +76,15 @@ bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 
 void GuiManager::setTheme(Event* event)
 {
-	theme = event->getProperty("GuiTeme");
+	theme = event->getProperty("GuiTheme");
+
+	CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
+}
+
+void GuiManager::setTheme(Ogre::String theme)
+{
+	this->theme = theme;
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
@@ -74,6 +99,8 @@ void GuiManager::interfacePrincipal()
 {
 	if(!interfacePrincipale)
 	{
+		setTheme("Alfisko");
+
 		CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 
 		CEGUI::Window* parent = winMgr.createWindow("DefaultWindow", "InterfaceG");
@@ -112,6 +139,13 @@ void GuiManager::loadRessource()
 	CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
 	if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
 		parser->setProperty("SchemaDefaultResourceGroup", "schemas");
+}
+
+void GuiManager::addGuiListenner(GuiListenner* guiListenner)
+{
+	interfacePrincipal();
+	guiListenner->initGui();
+	listOfInterface.push_back(guiListenner);
 }
 
 

@@ -7,20 +7,24 @@ LoginState::LoginState()
 {
 	m_bQuit         = false;
 	changeState 	= false;
-//	NetworkManager::getInstance()->createConnexion();
-//    gestionnaireAuth = NULL;
+	guiAuth = 0;
+	//	NetworkManager::getInstance()->createConnexion();
+	//    gestionnaireAuth = NULL;
 }
 
 LoginState::~LoginState()
 {
+	delete guiAuth;
 }
 void LoginState::enter()
 {
-//	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
+	//	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
 
 
-//    gestionnaireAuth = new GestionnaireAuth(this);
+	//    gestionnaireAuth = new GestionnaireAuth(this);
 	createScene();
+
+	Engine::GuiManager::getInstance()->addGuiListenner(new GuiAuth());
 
 }
 

@@ -9,6 +9,7 @@
 #define ENGINELISTENNER_H_
 
 #include "Event/EventManager.h"
+#include "Singleton/Singleton.h"
 
 /*!
  * \namespace Engine
