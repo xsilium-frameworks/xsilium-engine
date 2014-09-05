@@ -53,12 +53,12 @@ void GraphicsEntiteManager::createEntite(Event * event)
 	}
 
 	graphicsEntite->initEntite(msceneMgr , event->getProperty("NomEntite"), event->getProperty("fileMesh") );
-
+/**
 	if(event->hasProperty("PositionX"))
 	{
 		graphicsEntite->setPosition(Ogre::Vector3( atoi(event->getProperty("PositionX").c_str()),atoi(event->getProperty("PositionY").c_str()),atoi(event->getProperty("PositionZ").c_str()))) ;
 	}
-
+*/
 
 	listOfEntite.push_back(graphicsEntite);
 }

@@ -26,6 +26,8 @@ void GuiAuth::processEvent(Event* event)
 
 void GuiAuth::initGui()
 {
+	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 
 	loginWindow = winMgr.loadLayoutFromFile("Login.layout");

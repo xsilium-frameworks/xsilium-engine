@@ -11,8 +11,6 @@ namespace Engine {
 
 GuiListenner::GuiListenner() {
 
-	guiManager = 0;
-
 }
 
 GuiListenner::~GuiListenner() {
