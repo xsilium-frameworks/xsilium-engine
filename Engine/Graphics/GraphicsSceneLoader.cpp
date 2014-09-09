@@ -80,8 +80,11 @@ void GraphicsSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogr
 
     Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(SceneName, groupName );
 
+    
+    char * scene = new char [ strlen(stream->getAsString().c_str()) + 1 ];
+     std::strcpy(scene,stream->getAsString().c_str());
 
-    XMLDoc.parse<0>(const_cast<char*>(stream->getAsString().c_str()));
+    XMLDoc.parse<0>(scene);
 
     // Grab the scene node
     XMLRoot = XMLDoc.first_node("scene");
@@ -90,6 +93,7 @@ void GraphicsSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogr
     if( getAttrib(XMLRoot, "formatVersion", "") == "")
     {
         Ogre::LogManager::getSingleton().logMessage( "[GraphicsSceneLoader] Error: Invalid .scene File. Missing <scene>" );
+        delete scene;
         return;
     }
 
@@ -100,6 +104,7 @@ void GraphicsSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogr
 
     // Process the scene
     processScene(XMLRoot);
+    delete scene;
 
 }
 
