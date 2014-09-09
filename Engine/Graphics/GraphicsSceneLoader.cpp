@@ -73,15 +73,15 @@ void GraphicsSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogr
     m_sPrependNode = sPrependNode;
     staticObjects.clear();
     dynamicObjects.clear();
-   // gestionnaireMeteo = new GestionnaireMeteo(mSceneMgr);
 
     rapidxml::xml_document<> XMLDoc;    // character type defaults to char
 
     rapidxml::xml_node<>* XMLRoot;
 
     Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton().openResource(SceneName, groupName );
-    char* scene = strdup(stream->getAsString().c_str());
-    XMLDoc.parse<0>(scene);
+
+
+    XMLDoc.parse<0>(const_cast<char*>(stream->getAsString().c_str()));
 
     // Grab the scene node
     XMLRoot = XMLDoc.first_node("scene");
@@ -90,7 +90,6 @@ void GraphicsSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogr
     if( getAttrib(XMLRoot, "formatVersion", "") == "")
     {
         Ogre::LogManager::getSingleton().logMessage( "[GraphicsSceneLoader] Error: Invalid .scene File. Missing <scene>" );
-        delete scene;
         return;
     }
 
@@ -102,7 +101,6 @@ void GraphicsSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogr
     // Process the scene
     processScene(XMLRoot);
 
-    delete scene;
 }
 
 void GraphicsSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
@@ -325,31 +323,7 @@ void GraphicsSceneLoader::processScene(rapidxml::xml_node<>* XMLRoot)
             }
         }
         mTerrainGroup->loadAllTerrains(true);
-  /*      Ogre::TerrainGroup::TerrainIterator ti = mTerrainGroup->getTerrainIterator();
-        while(ti.hasMoreElements())
-        {
-            Ogre::Terrain* terrain = ti.getNext()->instance;
-
-            // re-use old material if exists
-            Ogre::MaterialPtr mat = terrain->getMaterial();
-
-            if (mat.isNull())
-            {
-                Ogre::MaterialManager &matMgr = Ogre::MaterialManager::getSingleton();
-
-                // it's important that the names are deterministic for a given terrain, so
-                // use the terrain pointer as an ID
-                const Ogre::String &matName = terrain->getMaterialName();
-                mat = matMgr.getByName(matName);
-
-                if (mat.isNull())
-                {
-                    mat = matMgr.create(matName,Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-                }
-            }
-         //   gestionnaireMeteo->addDepthTechnique(mat);
-        }*/
-
+  
         mTerrainGroup->freeTemporaryResources();
         //mTerrain->setPosition(mTerrainPosition);
     }
