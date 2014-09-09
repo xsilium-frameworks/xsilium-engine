@@ -9,7 +9,7 @@
 #define ENGINE_H_
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
-#import <Cocoa/Cocoa.h>
+#include <Cocoa/Cocoa.h>
 #endif
 
 
