@@ -17,7 +17,7 @@ InputManager::~InputManager( void ) {
 			mKeyboard = 0;
 		}
 
-		if( mJoysticks.size() > 0 ) {
+		if( !mJoysticks.empty() ) {
 			itJoystick    = mJoysticks.begin();
 			itJoystickEnd = mJoysticks.end();
 			for(; itJoystick != itJoystickEnd; ++itJoystick ) {
