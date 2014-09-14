@@ -22,7 +22,7 @@ void Event::setProperty(const std::string inName, const std::string inValue) {
 		mProperties.find(inName)->second = inValue;
 		return;
 	}
-	mProperties.insert( std::make_pair<std::string, std::string>(inName, inValue) );
+	mProperties.insert( std::make_pair(inName, inValue) );
 }
 
 std::string Event::getProperty(std::string inName) {
