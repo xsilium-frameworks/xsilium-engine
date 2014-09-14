@@ -22,6 +22,8 @@ set( CORE_HEADER_FILES
 	 ./Gui/GuiListenner.h
 	 ./Input/InputManager.h	
 	 ./Input/KeyboardMap.h
+	 ./Logging/easylogging++.h
+	 ./Logging/LogManager.h
 	 ./Network/Opcode/Opcode.h
 	 ./Network/StructurePacket/StructureGeneral.h
 	 ./Network/NetworkListener.h
@@ -53,6 +55,7 @@ set (CORE_SOURCE_FILES
  	 ./Gui/GuiListenner.cpp
 	 ./Input/InputManager.cpp
 	 ./Input/KeyboardMap.cpp
+	 ./Logging/LogManager.cpp
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp
 )
