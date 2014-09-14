@@ -67,7 +67,7 @@ class GuiListenner;
 		* \brief Méthode d'extinction
 		*
 		*/
-		void shutdown();
+		void exit();
 
 		/*!
 		* \brief Methode avant le chargement d'un frame

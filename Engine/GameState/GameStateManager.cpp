@@ -6,10 +6,12 @@ GameStateManager::GameStateManager()
 {
 	inputManager = InputManager::getInstance();
 	Engine::getInstance()->addListenner(this);
+	Engine::getInstance()->getRoot()->addFrameListener(this);
 }
 
 GameStateManager::~GameStateManager()
 {
+	Engine::getInstance()->getRoot()->removeFrameListener(this);
 	state_info si;
 
 	while(!m_ActiveStateStack.empty())
@@ -75,7 +77,6 @@ void GameStateManager::changeGameState(GameState* state)
 
 	if(!m_ActiveStateStack.empty())
 	{
-		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
@@ -83,14 +84,12 @@ void GameStateManager::changeGameState(GameState* state)
 	m_ActiveStateStack.push_back(state);
 	init(state);
 	m_ActiveStateStack.back()->enter();
-	Engine::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
 }
 
 bool GameStateManager::pushGameState(GameState* state)
 {
 	if(!m_ActiveStateStack.empty())
 	{
-		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		if(!m_ActiveStateStack.back()->pause())
 			return false;
 	}
@@ -98,7 +97,6 @@ bool GameStateManager::pushGameState(GameState* state)
 	m_ActiveStateStack.push_back(state);
 	init(state);
 	m_ActiveStateStack.back()->enter();
-	Engine::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
 
 	return true;
 }
@@ -107,7 +105,6 @@ void GameStateManager::popGameState()
 {
 	if(!m_ActiveStateStack.empty())
 	{
-		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
@@ -116,7 +113,6 @@ void GameStateManager::popGameState()
 	{
 		init(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->resume();
-		Engine::getInstance()->getRoot()->addFrameListener(m_ActiveStateStack.back());
 	}
 	else
 		shutdown();
@@ -126,7 +122,6 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 {
 	while(!m_ActiveStateStack.empty())
 	{
-		Engine::getInstance()->getRoot()->removeFrameListener(m_ActiveStateStack.back());
 		m_ActiveStateStack.back()->exit();
 		m_ActiveStateStack.pop_back();
 	}
@@ -134,16 +129,37 @@ void GameStateManager::popAllAndPushGameState(GameState* state)
 	pushGameState(state);
 }
 
+bool GameStateManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
+{
+	if( !m_ActiveStateStack.empty() )
+	{
+        if (!isEmpty())
+        {
+            Event* event = getEvent();
+            processEvent(event);
+            deleteEvent();
+        }
+        m_ActiveStateStack.back()->update(m_FrameEvent.timeSinceLastFrame);
+    }
+
+	return true;
+}
+
 void GameStateManager::processEvent(Event * event)
 {
-	//m_ActiveStateStack.back()
+	m_ActiveStateStack.back()->processEvent(event);
 }
 
 
 void GameStateManager::shutdown()
 {
 	//Engine::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
-	Engine::getInstance()->shutdown();
+	Engine::getInstance()->stopEngine();
+}
+
+void GameStateManager::exit()
+{
+
 }
 
 void GameStateManager::init(GameState* state)

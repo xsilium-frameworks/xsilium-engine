@@ -99,7 +99,7 @@ void LoginState::exit()
 {
 }
 
-bool LoginState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
+void LoginState::update(double timeSinceLastFrame)
 {
 	if(m_bQuit)
 	{
@@ -110,7 +110,15 @@ bool LoginState::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 	{
 		changeGameState(findByName("JeuxState"));
 	}
-	return true;
 }
 
-
+void LoginState::processEvent(Event * event)
+{
+	if(event->hasProperty("Keyboard"))
+	{
+		if( (event->getProperty("Fonction").compare("QUIT")) == 0 )
+		{
+			m_bQuit = true;
+		}
+	}
+}

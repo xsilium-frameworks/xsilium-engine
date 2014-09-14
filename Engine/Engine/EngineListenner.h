@@ -43,7 +43,7 @@ public:
 	}
 	;
 	virtual void processEvent(Event * event) = 0;
-	virtual void shutdown() = 0;
+	virtual void exit() = 0;
 
 };
 

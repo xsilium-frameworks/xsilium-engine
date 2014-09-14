@@ -9,6 +9,7 @@ XsiliumApp::XsiliumApp()
 
 XsiliumApp::~XsiliumApp()
 {
+	Engine::KeyboardManager::DestroyInstance();
 	Engine::GuiManager::DestroyInstance()  ;
 	delete gameStateManager;
 	Engine::GraphicsManager::DestroyInstance();
@@ -28,6 +29,8 @@ void XsiliumApp::start()
 	guiManager = Engine::GuiManager::getInstance();
 
 	LoginState::create<LoginState>(gameStateManager, "LoginState");
+
+	Engine::KeyboardManager::getInstance();
 
 	gameStateManager->start(gameStateManager->findByName("LoginState"));
 

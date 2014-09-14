@@ -42,7 +42,7 @@ public:
 
 	void processEvent(Event* event);
 
-	void shutdown();
+	void exit();
 
 	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);

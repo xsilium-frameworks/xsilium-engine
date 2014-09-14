@@ -8,8 +8,6 @@
 #ifndef KEYBOARDMAP_H_
 #define KEYBOARDMAP_H_
 
-#include "Singleton/Singleton.h"
-
 #include <OISInputManager.h>
 #include <OISKeyboard.h>
 #include <string.h>
@@ -26,10 +24,7 @@ namespace Engine {
 /*
  *
  */
-class KeyboardMap : public Singleton<KeyboardMap> {
-
-	friend class Singleton<KeyboardMap>;
-
+class KeyboardMap{
 
 public:
 	KeyboardMap();

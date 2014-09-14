@@ -243,7 +243,7 @@ bool GraphicsManager::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonI
 	return true;
 }
 
-void GraphicsManager::shutdown()
+void GraphicsManager::exit()
 {
 #ifdef USE_RTSHADER_SYSTEM
 	// Finalize the RT Shader System.

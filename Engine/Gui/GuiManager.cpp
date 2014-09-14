@@ -50,7 +50,7 @@ void GuiManager::processEvent(Event* event)
 	}
 }
 
-void GuiManager::shutdown()
+void GuiManager::exit()
 {
 
 }

@@ -17,7 +17,9 @@ public:
 
 	void exit();
 
-	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
+	void update(double timeSinceLastFrame);
+
+	void processEvent(Event * event);
 
 private:
 	//GestionnaireAuth * gestionnaireAuth;

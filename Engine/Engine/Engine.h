@@ -82,7 +82,7 @@ public:
 	/*!
 	 *  \brief Méthode d'extinction des écouteurs du moteur
 	 */
-	void shutdown();
+	void stopEngine();
 
 	/*!
 	 *  \brief Méthode de récupération de Ogre::Root

@@ -61,14 +61,14 @@ void Engine::addEvent(Event event)
 	}
 }
 
-void Engine::shutdown()
+void Engine::stopEngine()
 {
 	m_pRoot->queueEndRendering(true);
 
 	std::vector<EngineListenner*>::iterator it;
 	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); ++it)
 	{
-		(*it)->shutdown();
+		(*it)->exit();
 	}
 
 

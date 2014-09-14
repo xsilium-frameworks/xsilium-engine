@@ -20,7 +20,8 @@ set( CORE_HEADER_FILES
 	 ./Gui/GuiManager.h
 	 ./Gui/GuiInput.h
 	 ./Gui/GuiListenner.h
-	 ./Input/InputManager.h	
+	 ./Input/InputManager.h
+ 	 ./Input/KeyboardManager.h	
 	 ./Input/KeyboardMap.h
 	 ./Network/Opcode/Opcode.h
 	 ./Network/StructurePacket/StructureGeneral.h
@@ -52,6 +53,7 @@ set (CORE_SOURCE_FILES
  	 ./Gui/GuiInput.cpp
  	 ./Gui/GuiListenner.cpp
 	 ./Input/InputManager.cpp
+	 ./Input/KeyboardManager.cpp
 	 ./Input/KeyboardMap.cpp
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp

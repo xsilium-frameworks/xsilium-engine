@@ -6,6 +6,7 @@
 #include "GameState/GameStateManager.h"
 #include "Gui/GuiManager.h"
 #include "Login/LoginState.h"
+#include "Input/KeyboardManager.h"
 
 class XsiliumApp
 {
