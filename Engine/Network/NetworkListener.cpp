@@ -68,7 +68,7 @@ bool NetworkListener::isEmpty()
 
 void NetworkListener::threadProcess(void * arguments)
 {
-	NetworkListener * moduleActif = (NetworkListener *) arguments ;
+	NetworkListener * moduleActif = static_cast<NetworkListener *>( arguments ) ;
 
 	while(!moduleActif->endThread)
 	{

@@ -12,6 +12,7 @@ namespace Engine {
 GraphicsObjet::GraphicsObjet() {
 	objetEnt = 0;
 	objetNode = 0;
+	isIndependant = true;
 
 }
 
@@ -52,9 +53,9 @@ void GraphicsObjet::setIndependant(bool seul)
 	{
 		isIndependant = seul;
 		if (seul)
-			objetNode->attachObject(objetEnt);
-		else
 			objetNode->detachObject(objetEnt);
+		else
+			objetNode->attachObject(objetEnt);
 	}
 }
 

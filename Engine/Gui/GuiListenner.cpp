@@ -11,6 +11,8 @@ namespace Engine {
 
 GuiListenner::GuiListenner() {
 
+	parent = 0;
+
 }
 
 GuiListenner::~GuiListenner() {

@@ -93,7 +93,7 @@ void NetworkManager::sendPacket( ENetPacket * packet , enet_uint8 channel)
 
 void* NetworkManager::threadConnexion(void* arguments)
 {
-	NetworkManager * networkManager = (NetworkManager *) arguments ;
+	NetworkManager * networkManager = static_cast<NetworkManager *>(arguments) ;
 	networkManager->packet = &networkManager->eventClient;
 
 	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 10) >= 0 ) && (networkManager->endThread == false )  )

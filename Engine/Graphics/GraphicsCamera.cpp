@@ -23,6 +23,7 @@ namespace Engine {
 		mGoingUp		= false;
 		mGoingDown		= false;
 		mFastMove		= false;
+		mStyle			= CS_MANUAL;
 	}
 
 	GraphicsCamera::~GraphicsCamera() {

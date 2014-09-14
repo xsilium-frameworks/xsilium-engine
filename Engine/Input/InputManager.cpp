@@ -17,7 +17,7 @@ InputManager::~InputManager( void ) {
 			mKeyboard = 0;
 		}
 
-		if( mJoysticks.size() > 0 ) {
+		if( !mJoysticks.empty() ) {
 			itJoystick    = mJoysticks.begin();
 			itJoystickEnd = mJoysticks.end();
 			for(; itJoystick != itJoystickEnd; ++itJoystick ) {
@@ -109,7 +109,7 @@ void InputManager::capture( float timeSinceLastFrame ) {
 		mKeyboard->capture();
 	}
 
-	if( mJoysticks.size() > 0 ) {
+	if( !mJoysticks.empty() ) {
 		itJoystick    = mJoysticks.begin();
 		itJoystickEnd = mJoysticks.end();
 		for(; itJoystick != itJoystickEnd; ++itJoystick ) {
@@ -145,7 +145,7 @@ void InputManager::addMouseListener( OIS::MouseListener *mouseListener, const st
 }
 
 void InputManager::addJoystickListener( OIS::JoyStickListener *joystickListener, const std::string& instanceName ) {
-	if( mJoysticks.size() > 0 ) {
+	if( !mJoysticks.empty() ) {
 		// Check for duplicate items
 		itJoystickListener = mJoystickListeners.find( instanceName );
 		if( itJoystickListener != mJoystickListeners.end() ) {

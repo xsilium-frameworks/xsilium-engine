@@ -55,7 +55,7 @@ void Engine::addListenner(EngineListenner * engineListenner)
 void Engine::addEvent(Event event)
 {
 	std::vector<EngineListenner*>::iterator it;
-	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
+	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); ++it)
 	{
 		(*it)->addEvent(event);
 	}
@@ -66,7 +66,7 @@ void Engine::shutdown()
 	m_pRoot->queueEndRendering(true);
 
 	std::vector<EngineListenner*>::iterator it;
-	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); it++)
+	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); ++it)
 	{
 		(*it)->shutdown();
 	}
