@@ -5,6 +5,7 @@
 #include "Graphics/GraphicsManager.h"
 #include "GameState/GameStateManager.h"
 #include "Gui/GuiManager.h"
+#include "Logging/LogManager.h"
 #include "Login/LoginState.h"
 
 class XsiliumApp
@@ -19,6 +20,7 @@ private:
 	Engine::GraphicsManager* graphicsManager;
 	Engine::GameStateManager* gameStateManager;
 	Engine::GuiManager* guiManager;
+	Engine::LogManager* logManager;
 
 };
 
