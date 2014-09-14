@@ -23,6 +23,8 @@ set( CORE_HEADER_FILES
 	 ./Input/InputManager.h
  	 ./Input/KeyboardManager.h	
 	 ./Input/KeyboardMap.h
+	 ./Logging/easylogging++.h
+	 ./Logging/LogManager.h
 	 ./Network/Opcode/Opcode.h
 	 ./Network/StructurePacket/StructureGeneral.h
 	 ./Network/NetworkListener.h
@@ -55,6 +57,7 @@ set (CORE_SOURCE_FILES
 	 ./Input/InputManager.cpp
 	 ./Input/KeyboardManager.cpp
 	 ./Input/KeyboardMap.cpp
+	 ./Logging/LogManager.cpp
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp
 )
