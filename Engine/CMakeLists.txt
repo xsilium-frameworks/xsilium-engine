@@ -23,7 +23,6 @@ set( CORE_HEADER_FILES
 	 ./Input/InputManager.h
  	 ./Input/KeyboardManager.h	
 	 ./Input/KeyboardMap.h
-	 ./Logging/easylogging++.h
 	 ./Logging/LogManager.h
 	 ./Network/Opcode/Opcode.h
 	 ./Network/StructurePacket/StructureGeneral.h

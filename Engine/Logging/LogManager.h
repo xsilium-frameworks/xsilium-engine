@@ -8,8 +8,6 @@
 #ifndef LOGMANAGER_H_
 #define LOGMANAGER_H_
 
-#include "easylogging++.h"
-
 /*!
 * \namespace Engine
 * \brief Espace de nommage regroupant les dfférentes classes du moteur.
