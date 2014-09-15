@@ -104,7 +104,7 @@ void LoginState::update(double timeSinceLastFrame)
 	if(m_bQuit)
 	{
 		popGameState();
-		return false;
+//		return false;
 	}
 	if(changeState)
 	{
