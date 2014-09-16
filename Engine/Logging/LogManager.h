@@ -15,7 +15,9 @@
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/utility/formatting_ostream.hpp>
 #include <boost/log/sources/record_ostream.hpp>
+#include <boost/log/support/date_time.hpp>
 
 #include "Engine/Engine.h"
 
@@ -34,20 +36,22 @@ namespace Engine {
 		critical
 	};
 
-	/*!
-	* \class LogManager
-	* \brief Classe gestionnaire de log.
-	*
-	* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
-	*
-	*/
-	class LogManager  {
+	BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", severity_level)
+
+		/*!
+		* \class LogManager
+		* \brief Classe gestionnaire de log.
+		*
+		* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
+		*
+		*/
+	class LogManager /** : public Ogre::LogListener*/{
 	public:
 		LogManager();
 		virtual ~LogManager();
 
 		void initLogging(Ogre::String fileName);
-
+		//		void messageLogged(const Ogre::String& name, const Ogre::String& message, Ogre::LogMessageLevel level, bool maskDebug);
 
 	};
 
