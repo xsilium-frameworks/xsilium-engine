@@ -11,11 +11,11 @@ namespace Engine {
 
 	LogManager::LogManager() {
 
-		m_pLog = 0;
+//		m_pLog = 0;
 		Ogre::LogManager* ogreLogManager = new Ogre::LogManager();
-		Ogre::LogManager::getSingleton().getDefaultLog()->addListener(this);
-		m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
-		m_pLog->setDebugOutputEnabled(true);
+		ogreLogManager->getSingleton().createLog("OgreLogfile.log", true, true, true);
+		ogreLogManager->getSingleton().getDefaultLog()->addListener(this);
+	//	m_pLog->setDebugOutputEnabled(true);
 
 		
 		

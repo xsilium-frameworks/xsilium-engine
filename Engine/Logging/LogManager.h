@@ -54,7 +54,8 @@ namespace Engine {
 		LogManager();
 		virtual ~LogManager();
 
-		Ogre::Log*				m_pLog;
+	//	Ogre::Log*				m_pLog;
+		Ogre::LogManager* ogreLogManager;
 
 		void initLogging(Ogre::String fileName);
 		void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage );
