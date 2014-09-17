@@ -20,6 +20,7 @@
 #include <boost/log/support/date_time.hpp>
 
 #include "Engine/Engine.h"
+#include <OgreLogManager.h>
 
 /*!
 * \namespace Engine
@@ -45,13 +46,19 @@ namespace Engine {
 		* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
 		*
 		*/
-	class LogManager /** : public Ogre::LogListener*/{
+
+		// log listener class
+
+	class LogManager : public Ogre::LogListener {
 	public:
 		LogManager();
 		virtual ~LogManager();
 
+		Ogre::Log*				m_pLog;
+		void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName);
+
 		void initLogging(Ogre::String fileName);
-		//		void messageLogged(const Ogre::String& name, const Ogre::String& message, Ogre::LogMessageLevel level, bool maskDebug);
+		void messageLogged(const Ogre::String& name, const Ogre::String& message, Ogre::LogMessageLevel level, bool maskDebug);
 
 	};
 

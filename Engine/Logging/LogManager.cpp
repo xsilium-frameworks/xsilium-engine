@@ -10,6 +10,14 @@
 namespace Engine {
 
 	LogManager::LogManager() {
+
+		m_pLog = 0;
+		Ogre::LogManager* ogreLogManager = new Ogre::LogManager();
+		m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
+		m_pLog->setDebugOutputEnabled(true);
+
+		Ogre::LogManager::getSingleton().getDefaultLog()->addListener(this);
+		
 		initLogging("client");
 
 		boost::log::add_common_attributes();
@@ -23,11 +31,20 @@ namespace Engine {
 	}
 
 	LogManager::~LogManager() {
+		Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(this);
+	}
 
+	void LogManager::messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName)
+	{
+		boost::log::sources::severity_logger< severity_level > logMgr;
+		BOOST_LOG_SEV(logMgr, normal) << message ;
+		
 	}
 
 	void LogManager::initLogging(Ogre::String fileName) {
 
+		
+		boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
 		boost::log::add_file_log
 			(
 			boost::log::keywords::file_name = fileName + "_%N.log",
@@ -37,8 +54,9 @@ namespace Engine {
 			boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
 
 			boost::log::keywords::format = boost::log::expressions::stream
-			<< "[" << severity << "] "
-			<< boost::log::expressions::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d %H:%M") << ": "
+			<< "<LEVEL " << severity << "> "
+			// Personalisation du TimeStamp
+			<< "[" << boost::log::expressions::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d %H:%M") << "] "
 			<< boost::log::expressions::message
 
 			);
