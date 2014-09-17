@@ -9,7 +9,7 @@
 #include "Login/LoginState.h"
 #include "Input/KeyboardManager.h"
 
-class XsiliumApp : public Engine::LogManager
+class XsiliumApp
 {
 public:
 	XsiliumApp();
