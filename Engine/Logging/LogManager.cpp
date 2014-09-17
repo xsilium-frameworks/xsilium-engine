@@ -35,7 +35,7 @@ namespace Engine {
 		Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(this);
 	}
 
-	void LogManager::messageLogged(const Ogre::String &name, const Ogre::String &message, Ogre::LogMessageLevel level, bool maskDebug, bool &skip)
+	void LogManager::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage )
 	{
 		boost::log::sources::severity_logger< severity_level > logMgr;
 		BOOST_LOG_SEV(logMgr, normal) << message ;
@@ -45,7 +45,7 @@ namespace Engine {
 	void LogManager::initLogging(Ogre::String fileName) {
 
 		
-		boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
+		//boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
 		boost::log::add_file_log
 			(
 			boost::log::keywords::file_name = fileName + "_%N.log",

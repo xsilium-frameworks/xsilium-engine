@@ -57,7 +57,7 @@ namespace Engine {
 		Ogre::Log*				m_pLog;
 
 		void initLogging(Ogre::String fileName);
-		void messageLogged(const Ogre::String &name, const Ogre::String &message, Ogre::LogMessageLevel level, bool maskDebug, bool &skip);
+		void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage );
 
 	};
 
