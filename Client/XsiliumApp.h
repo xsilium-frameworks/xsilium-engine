@@ -16,7 +16,6 @@ public:
 	~XsiliumApp();
 
 	void start();
-	void messageLogged(const Ogre::String& name, const Ogre::String& message, Ogre::LogMessageLevel level, bool maskDebug, bool& skip);
 
 private:
 	Engine::GraphicsManager* graphicsManager;
