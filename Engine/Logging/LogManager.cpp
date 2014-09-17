@@ -13,10 +13,11 @@ namespace Engine {
 
 		m_pLog = 0;
 		Ogre::LogManager* ogreLogManager = new Ogre::LogManager();
+		Ogre::LogManager::getSingleton().getDefaultLog()->addListener(this);
 		m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
 		m_pLog->setDebugOutputEnabled(true);
 
-		Ogre::LogManager::getSingleton().getDefaultLog()->addListener(this);
+		
 		
 		initLogging("client");
 
@@ -34,7 +35,7 @@ namespace Engine {
 		Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(this);
 	}
 
-	void LogManager::messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName)
+	void LogManager::messageLogged(const Ogre::String &name, const Ogre::String &message, Ogre::LogMessageLevel level, bool maskDebug, bool &skip)
 	{
 		boost::log::sources::severity_logger< severity_level > logMgr;
 		BOOST_LOG_SEV(logMgr, normal) << message ;

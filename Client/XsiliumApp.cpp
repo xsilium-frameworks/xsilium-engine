@@ -20,7 +20,7 @@ XsiliumApp::~XsiliumApp()
 
 void XsiliumApp::start()
 {
-//	logManager = new Engine::LogManager();
+	logManager = new Engine::LogManager();
 
 	Engine::Engine::getInstance()->initEngine("Xsilium",4);
 	graphicsManager = Engine::GraphicsManager::getInstance();
@@ -39,4 +39,5 @@ void XsiliumApp::start()
 	gameStateManager->start(gameStateManager->findByName("LoginState"));
 
 }
+
 

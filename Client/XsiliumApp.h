@@ -9,13 +9,14 @@
 #include "Login/LoginState.h"
 #include "Input/KeyboardManager.h"
 
-class XsiliumApp
+class XsiliumApp : public Engine::LogManager
 {
 public:
 	XsiliumApp();
 	~XsiliumApp();
 
 	void start();
+	void messageLogged(const Ogre::String& name, const Ogre::String& message, Ogre::LogMessageLevel level, bool maskDebug, bool& skip);
 
 private:
 	Engine::GraphicsManager* graphicsManager;
