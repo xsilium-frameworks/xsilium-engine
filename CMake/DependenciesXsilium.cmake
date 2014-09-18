@@ -210,7 +210,7 @@ endif()
 
 if(Boost_VERSION GREATER 105200)
 	# Use boost threading version 4 for boost 1.53 and above
-	add_definitions( -DBOOST_THREAD_VERSION=4 )
+	add_definitions( -DBOOST_LOG_DYN_LINK -DBOOST_THREAD_VERSION=4 )
 endif()
 
 if(Boost_FOUND AND NOT WIN32)
