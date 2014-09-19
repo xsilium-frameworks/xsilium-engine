@@ -15,12 +15,12 @@ XsiliumApp::~XsiliumApp()
 	delete gameStateManager;
 	Engine::GraphicsManager::DestroyInstance();
 	Engine::Engine::DestroyInstance();
-	delete logManager;
+	Engine::LogManager::DestroyInstance();
 }
 
 void XsiliumApp::start()
 {
-	logManager = new Engine::LogManager();
+	logManager = Engine::LogManager::getInstance();
 
 	Engine::Engine::getInstance()->initEngine("Xsilium",4);
 	graphicsManager = Engine::GraphicsManager::getInstance();

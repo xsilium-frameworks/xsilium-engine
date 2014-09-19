@@ -48,14 +48,17 @@ namespace Engine {
 	* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
 	*
 	*/
-	class LogManager : public Ogre::LogListener, CEGUI::Logger {
+	class LogManager : public Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
+		friend class Singleton<LogManager>;
+
 	public:
 		LogManager();
 		virtual ~LogManager();
 
 		Ogre::LogManager* ogreLogManager;
 
-		void initLogging(Ogre::String fileName);
+		void initOgreLog();
+		void setFileLog(Ogre::String fileName);
 		void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage);
 		void logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level);
 		void setLogFilename(const CEGUI::String &filename, bool append);

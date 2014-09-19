@@ -7,15 +7,13 @@
  */
 #include "LogManager.h"
 
+
 namespace Engine {
 
 	LogManager::LogManager() {
 
-		Ogre::LogManager* ogreLogManager = new Ogre::LogManager();
-		ogreLogManager->getSingleton().createLog("OgreLogfile.log", true, true, true);
-		ogreLogManager->getSingleton().getDefaultLog()->addListener(this);
-
-		initLogging("client");
+		initOgreLog();
+		setFileLog("client");
 
 		boost::log::add_common_attributes();
 		boost::log::sources::severity_logger< severity_level > logMgr;
@@ -26,6 +24,33 @@ namespace Engine {
 
 	LogManager::~LogManager() {
 		Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(this);
+	}
+
+	void LogManager::initOgreLog() {
+		Ogre::LogManager* ogreLogManager = new Ogre::LogManager();
+		ogreLogManager->getSingleton().createLog("OgreLogfile.log", true, true, true);
+		ogreLogManager->getSingleton().getDefaultLog()->addListener(this);
+
+	}
+
+	void LogManager::setFileLog(Ogre::String fileName) {
+
+		boost::log::add_file_log(
+			boost::log::keywords::file_name = fileName + "_%N.log",
+			// rotation des logs a chaque 1 mo
+			boost::log::keywords::rotation_size = 1 * 1024 * 1024,
+			// rotation des logs a minuit
+			boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
+
+			//Definition des attributs du log
+			boost::log::keywords::format = boost::log::expressions::stream
+			// Affichage du level
+			<< "<LEVEL " << severity << "> "
+			// Personalisation du TimeStamp
+			<< "[" << boost::log::expressions::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d %H:%M") << "] "
+			// Affichage du message
+			<< boost::log::expressions::message
+			);
 	}
 
 	// Listener event log de ogre
@@ -43,25 +68,6 @@ namespace Engine {
 	// Listener nom de fichier de cegui 
 	void LogManager::setLogFilename(const CEGUI::String &filename, bool append) {
 
-	}
-
-	void LogManager::initLogging(Ogre::String fileName) {
-
-		boost::log::add_file_log
-			(
-			boost::log::keywords::file_name = fileName + "_%N.log",
-			// rotation des logs a chaque 1 mo
-			boost::log::keywords::rotation_size = 1 * 1024 * 1024,
-			// rotation des logs a minuit
-			boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
-
-			boost::log::keywords::format = boost::log::expressions::stream
-			<< "<LEVEL " << severity << "> "
-			// Personalisation du TimeStamp
-			<< "[" << boost::log::expressions::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d %H:%M") << "] "
-			<< boost::log::expressions::message
-
-			);
 	}
 
 
