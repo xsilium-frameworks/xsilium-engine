@@ -21,6 +21,7 @@
 
 #include "Engine/Engine.h"
 #include <OgreLogManager.h>
+#include <CEGUI/Logger.h>
 
 /*!
 * \namespace Engine
@@ -28,37 +29,36 @@
 */
 namespace Engine {
 
-	enum severity_level
-	{
+	enum severity_level {
 		normal,
 		notification,
 		warning,
 		error,
-		critical
+		critical,
+		ogre,
+		cegui
 	};
 
 	BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", severity_level);
 
-		/*!
-		* \class LogManager
-		* \brief Classe gestionnaire de log.
-		*
-		* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
-		*
-		*/
-
-		// log listener class
-
-	class LogManager : public Ogre::LogListener {
+	/*!
+	* \class LogManager
+	* \brief Classe gestionnaire de log.
+	*
+	* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
+	*
+	*/
+	class LogManager : public Ogre::LogListener, CEGUI::Logger {
 	public:
 		LogManager();
 		virtual ~LogManager();
 
-	//	Ogre::Log*				m_pLog;
 		Ogre::LogManager* ogreLogManager;
 
 		void initLogging(Ogre::String fileName);
-		void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage );
+		void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage);
+		void logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level);
+		void setLogFilename(const CEGUI::String &filename, bool append);
 
 	};
 

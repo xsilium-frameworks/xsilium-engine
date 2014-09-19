@@ -11,14 +11,10 @@ namespace Engine {
 
 	LogManager::LogManager() {
 
-//		m_pLog = 0;
 		Ogre::LogManager* ogreLogManager = new Ogre::LogManager();
 		ogreLogManager->getSingleton().createLog("OgreLogfile.log", true, true, true);
 		ogreLogManager->getSingleton().getDefaultLog()->addListener(this);
-	//	m_pLog->setDebugOutputEnabled(true);
 
-		
-		
 		initLogging("client");
 
 		boost::log::add_common_attributes();
@@ -26,26 +22,31 @@ namespace Engine {
 
 		BOOST_LOG_SEV(logMgr, notification) << "######## Initialisation du LogManager ########";
 
-		BOOST_LOG_SEV(logMgr, normal) << "Message niveau normal";
-		BOOST_LOG_SEV(logMgr, warning) << "Message niveau avertissement";
-		BOOST_LOG_SEV(logMgr, critical) << "Message niveau critique";
 	}
 
 	LogManager::~LogManager() {
 		Ogre::LogManager::getSingleton().getDefaultLog()->removeListener(this);
 	}
 
-	void LogManager::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage )
-	{
+	// Listener event log de ogre
+	void LogManager::messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage) {
 		boost::log::sources::severity_logger< severity_level > logMgr;
-		BOOST_LOG_SEV(logMgr, normal) << message ;
-		
+		BOOST_LOG_SEV(logMgr, ogre) << message;
+	}
+
+	// Listener event log de cegui
+	void LogManager::logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level) {
+		boost::log::sources::severity_logger< severity_level > logMgr;
+		BOOST_LOG_SEV(logMgr, cegui) << message;
+	}
+
+	// Listener nom de fichier de cegui 
+	void LogManager::setLogFilename(const CEGUI::String &filename, bool append) {
+
 	}
 
 	void LogManager::initLogging(Ogre::String fileName) {
 
-		
-		//boost::log::register_simple_formatter_factory< boost::log::trivial::severity_level, char >("Severity");
 		boost::log::add_file_log
 			(
 			boost::log::keywords::file_name = fileName + "_%N.log",
