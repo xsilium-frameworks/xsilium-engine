@@ -21,7 +21,7 @@ XsiliumApp::~XsiliumApp()
 void XsiliumApp::start()
 {
 	logManager = Engine::LogManager::getInstance();
-	logManager->setFileLog("client");
+	logManager->initLog("client");
 
     logManager->setLogMessage("Initialisation de l\'engine", Engine::NOTIFICATION);
 	Engine::Engine::getInstance()->initEngine("Xsilium",4);

@@ -13,13 +13,6 @@ namespace Engine {
 	LogManager::LogManager() {
 
 		initOgreLog();
-		//setFileLog("client");
-
-	//	boost::log::add_common_attributes();
-		boost::log::sources::severity_logger< severity_level > logMgr;
-
-	//	BOOST_LOG_SEV(logMgr, notification) << "######## Initialisation du LogManager ########";
-		setLogMessage("######## Initialisation du LogManager ########", NOTIFICATION);
 
 	}
 
@@ -34,15 +27,15 @@ namespace Engine {
 
 	}
 
-	void LogManager::setFileLog(Ogre::String fileName) {
+	void LogManager::initLog(Ogre::String fileName) {
 
+		// Definition et creation des attributs du log
 		boost::log::add_file_log(
 			boost::log::keywords::file_name = fileName + "_%N.log",
 			// rotation des logs a chaque 1 mo
 			boost::log::keywords::rotation_size = 1 * 1024 * 1024,
 			// rotation des logs a minuit
 			boost::log::keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
-
 			//Definition des attributs du log
 			boost::log::keywords::format = boost::log::expressions::stream
 			// Affichage du level
@@ -52,6 +45,11 @@ namespace Engine {
 			// Affichage du message
 			<< boost::log::expressions::message
 			);
+
+		// Ajoutes les attributs 
+		boost::log::add_common_attributes();
+		boost::log::sources::severity_logger< severity_level > logMgr;
+		setLogMessage("######## Initialisation du LogManager ########", NOTIFICATION);
 	}
 
 	void LogManager::setLogMessage(Ogre::String logMessage, severity_level logLevel) {
