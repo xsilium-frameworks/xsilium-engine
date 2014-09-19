@@ -13,12 +13,13 @@ namespace Engine {
 	LogManager::LogManager() {
 
 		initOgreLog();
-		setFileLog("client");
+		//setFileLog("client");
 
-		boost::log::add_common_attributes();
+	//	boost::log::add_common_attributes();
 		boost::log::sources::severity_logger< severity_level > logMgr;
 
-		BOOST_LOG_SEV(logMgr, notification) << "######## Initialisation du LogManager ########";
+	//	BOOST_LOG_SEV(logMgr, notification) << "######## Initialisation du LogManager ########";
+		setLogMessage("######## Initialisation du LogManager ########", "notification");
 
 	}
 
@@ -51,6 +52,11 @@ namespace Engine {
 			// Affichage du message
 			<< boost::log::expressions::message
 			);
+	}
+
+	void LogManager::setLogMessage(Ogre::String logMessage, Ogre::String logLevel) {
+		boost::log::sources::severity_logger< severity_level > logMgr;
+		BOOST_LOG_SEV(logMgr, logLevel) << logMessage;
 	}
 
 	// Listener event log de ogre
