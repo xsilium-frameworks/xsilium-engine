@@ -1,12 +1,16 @@
 /*
-* \file LogManager.h
-*
-*  Created on: \date 12 septembre 2014
-*      Author: \author xelfe
-*  \brief : Fichier d'en-tête de la classe LogManager
-*/
+ * \file LogManager.h
+ *
+ *  Created on: \date 12 septembre 2014
+ *      Author: \author xelfe
+ *  \brief : Fichier d'en-tête de la classe LogManager
+ */
 #ifndef LOGMANAGER_H_
 #define LOGMANAGER_H_
+
+#include "Engine/Engine.h"
+#include <OgreLogManager.h>
+#include <CEGUI/Logger.h>
 
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -19,51 +23,48 @@
 #include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/support/date_time.hpp>
 
-#include "Engine/Engine.h"
-#include <OgreLogManager.h>
-#include <CEGUI/Logger.h>
-
 /*!
-* \namespace Engine
-* \brief Espace de nommage regroupant les dfférentes classes du moteur.
-*/
+ * \namespace Engine
+ * \brief Espace de nommage regroupant les dfférentes classes du moteur.
+ */
 namespace Engine {
 
-	enum severity_level {
-		normal,
-		notification,
-		warning,
-		error,
-		critical,
-		ogre,
-		cegui
-	};
+enum severity_level {
+	normal,
+	notification,
+	warning,
+	error,
+	critical,
+	ogre,
+	cegui
+};
 
-	BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", severity_level);
+BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", severity_level);
 
-	/*!
-	* \class LogManager
-	* \brief Classe gestionnaire de log.
-	*
-	* Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
-	*
-	*/
-	class LogManager : public Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
-		friend class Singleton<LogManager>;
+/*!
+ * \class LogManager
+ * \brief Classe gestionnaire de log.
+ *
+ * Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
+ *
+ */
+class LogManager : public Engine::Singleton<LogManager> , Ogre::LogListener, CEGUI::Logger {
 
-	public:
-		LogManager();
-		virtual ~LogManager();
+	friend class Engine::Singleton<LogManager> ;
 
-		Ogre::LogManager* ogreLogManager;
+public:
+	LogManager();
+	virtual ~LogManager();
 
-		void initOgreLog();
-		void setFileLog(Ogre::String fileName);
-		void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage);
-		void logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level);
-		void setLogFilename(const CEGUI::String &filename, bool append);
+	Ogre::LogManager* ogreLogManager;
 
-	};
+	void initOgreLog();
+	void setFileLog(Ogre::String fileName);
+	void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage);
+	void logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level);
+	void setLogFilename(const CEGUI::String &filename, bool append);
+
+};
 
 } /* namespace Engine */
 #endif /* LOGMANAGER_H_ */
