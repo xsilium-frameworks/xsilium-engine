@@ -209,8 +209,13 @@ if(Boost_FOUND AND Boost_VERSION GREATER 104900)
 endif()
 
 if(Boost_VERSION GREATER 105200)
-	# Use boost threading version 4 for boost 1.53 and above
+	if(UNIX)
+	#boost threading version 4 et Boost log dynamic
 	add_definitions( -DBOOST_LOG_DYN_LINK -DBOOST_THREAD_VERSION=4 )
+	else()
+	#boost threading version 4
+	add_definitions( -DBOOST_THREAD_VERSION=4 )
+	endif()
 endif()
 
 if(Boost_FOUND AND NOT WIN32)
