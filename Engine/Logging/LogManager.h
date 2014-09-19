@@ -34,13 +34,13 @@ namespace Engine {
 	 * \brief Constantes des niveaux de message.
 	 */
 	enum severity_level {
-		normal,			/*!< Niveau 1. */
-		notification,	/*!< Niveau 2. */
-		warning,		/*!< Niveau 3. */
-		error,			/*!< Niveau 4. */
-		critical,		/*!< Niveau 5. */
-		ogre,			/*!< Niveau 6. */
-		cegui			/*!< Niveau 7. */
+		NORMAL,			/*!< Niveau 1. */
+		NOTIFICATION,	/*!< Niveau 2. */
+		WARNING,		/*!< Niveau 3. */
+		ERROR,			/*!< Niveau 4. */
+		CRITICAL,		/*!< Niveau 5. */
+		OGRE,			/*!< Niveau 6. */
+		CEGUI			/*!< Niveau 7. */
 	};
 
 	BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", severity_level);
@@ -52,7 +52,7 @@ namespace Engine {
 	 * Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
 	 *
 	 */
-	class LogManager : Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
+	class LogManager : public Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
 
 		friend class Engine::Singleton<LogManager> ;
 
@@ -90,7 +90,7 @@ namespace Engine {
 		*  \param[in] logMessage : String de message a ajouter vers LogManager
 		*  \param[in] logLevel : String de niveau du message a ajouter vers LogManager
 		*/
-		void setLogMessage(Ogre::String logMessage, Ogre::String logLevel);
+		void setLogMessage(Ogre::String logMessage, severity_level logLevel);
 
 		/*!
 		*  \brief Méthode derive de Ogre::Log

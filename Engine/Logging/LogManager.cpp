@@ -19,7 +19,7 @@ namespace Engine {
 		boost::log::sources::severity_logger< severity_level > logMgr;
 
 	//	BOOST_LOG_SEV(logMgr, notification) << "######## Initialisation du LogManager ########";
-		setLogMessage("######## Initialisation du LogManager ########", "notification");
+		setLogMessage("######## Initialisation du LogManager ########", NOTIFICATION);
 
 	}
 
@@ -54,7 +54,7 @@ namespace Engine {
 			);
 	}
 
-	void LogManager::setLogMessage(Ogre::String logMessage, Ogre::String logLevel) {
+	void LogManager::setLogMessage(Ogre::String logMessage, severity_level logLevel) {
 		boost::log::sources::severity_logger< severity_level > logMgr;
 		BOOST_LOG_SEV(logMgr, logLevel) << logMessage;
 	}
@@ -62,13 +62,13 @@ namespace Engine {
 	// Listener event log de ogre
 	void LogManager::messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage) {
 		boost::log::sources::severity_logger< severity_level > logMgr;
-		BOOST_LOG_SEV(logMgr, ogre) << message;
+		BOOST_LOG_SEV(logMgr, OGRE) << message;
 	}
 
 	// Listener event log de cegui
 	void LogManager::logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level) {
 		boost::log::sources::severity_logger< severity_level > logMgr;
-		BOOST_LOG_SEV(logMgr, cegui) << message;
+		BOOST_LOG_SEV(logMgr, CEGUI) << message;
 	}
 
 	// Listener nom de fichier de cegui 

@@ -23,7 +23,7 @@ void XsiliumApp::start()
 	logManager = Engine::LogManager::getInstance();
 	logManager->setFileLog("client");
 
-	logManager->setLogMessage("Initialisation de l\'engine", "notification");
+    logManager->setLogMessage("Initialisation de l\'engine", Engine::NOTIFICATION);
 	Engine::Engine::getInstance()->initEngine("Xsilium",4);
 	graphicsManager = Engine::GraphicsManager::getInstance();
 	graphicsManager->initOgre();
