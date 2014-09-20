@@ -55,11 +55,11 @@ namespace Engine {
 	 */
 	class LogManager : public Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
 
-#ifdef __linux__ 
-		//linux code 
-		friend class Engine::Singleton<LogManager> ;
+#ifdef _WIN32
+        friend class Singleton < LogManager > ;
+
 #else
-		friend class Singleton < LogManager > ;
+        friend class Engine::Singleton<LogManager> ;
 #endif
 
 	public:
