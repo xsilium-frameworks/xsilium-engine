@@ -11,7 +11,7 @@
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/RendererModules/Ogre/Renderer.h>
 #include "Gui/GuiManager.h"
-#include "Event/Event.h"
+#include "Engine/Engine.h"
 
 namespace Engine {
 

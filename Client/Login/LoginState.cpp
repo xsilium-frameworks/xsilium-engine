@@ -30,7 +30,7 @@ void LoginState::enter()
 
 void LoginState::createScene()
 {
-	Event event ;
+/*	Event event ;
 	event.setProperty("LoadScene","1");
 	event.setProperty("NameScene","Xsilium1.scene");
 	event.setProperty("NameGroup","General");
@@ -91,7 +91,7 @@ void LoginState::createScene()
 
 
 	Engine::Engine::getInstance()->addEvent(event6);
-
+*/
 
 }
 
@@ -113,11 +113,12 @@ void LoginState::update(double timeSinceLastFrame)
 
 void LoginState::processEvent(Event * event)
 {
-	if(event->hasProperty("Keyboard"))
+	if(event->hasProperty("GUI"))
 	{
 		if( (event->getProperty("Fonction").compare("QUIT")) == 0 )
 		{
 			m_bQuit = true;
 		}
 	}
+
 }

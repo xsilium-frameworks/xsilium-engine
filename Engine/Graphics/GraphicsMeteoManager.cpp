@@ -398,10 +398,12 @@ void GraphicsMeteoManager::updateEnvironmentLighting()
 
 void GraphicsMeteoManager::update(float dt)
 {
-	updateEnvironmentLighting();
-	mHydrax->update(dt);
-	// SkyX use hours
-	mSkyX->update(dt);
+    if (mHydrax && mSkyX )
+        updateEnvironmentLighting();
+    if(mHydrax)
+        mHydrax->update(dt);
+    if(mSkyX)
+        mSkyX->update(dt);
 }
 
 void GraphicsMeteoManager::initHydrax()

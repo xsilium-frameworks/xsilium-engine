@@ -23,21 +23,18 @@ public:
 
 	void initGui();
 
-    bool connexionButton(const CEGUI::EventArgs &e);
-    bool quitterButton(const CEGUI::EventArgs &e);
+    bool validButton(const CEGUI::EventArgs &e);
+    bool cancelButton(const CEGUI::EventArgs &e);
 
     void switchEditBox();
 
-    const char * getLogin();
-    const char * getPassword();
-
-
-
-    void processEvent();
+    void validationAuth();
 
 private:
 
 	CEGUI::Window* loginWindow;
+	CEGUI::Window* progressionWindow;
+	CEGUI::Window* erreurWindow;
 };
 
 #endif /* GUIAUTH_H_ */
