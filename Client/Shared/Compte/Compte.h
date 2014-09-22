@@ -17,9 +17,9 @@
 /*
  *
  */
-class Compte : public xsilium::Singleton<Compte> {
+class Compte : public Engine::Singleton<Compte> {
 
-	friend class xsilium::Singleton<Compte>;
+	friend class Engine::Singleton<Compte>;
 
 public:
 	Compte();

@@ -63,15 +63,6 @@ public:
 
 	virtual void update(double timeSinceLastFrame) = 0;
 
-	void setExit()
-	{
-		m_bQuit = true;
-	}
-	void setChangeState()
-	{
-		changeState = true;
-	}
-
 	virtual void processEvent(Event * event) = 0;
 
 protected:
@@ -88,8 +79,6 @@ protected:
 
 	Engine::EventManager * eventManager ;
 
-	bool changeState;
-	bool m_bQuit;
 };
 
 

@@ -1,9 +1,8 @@
 #ifndef LOGIN_STATE_H
 #define LOGIN_STATE_H
 
-//#include "Authentification/GestionnaireAuth.h"
+#include "Authentification/GestionnaireAuth.h"
 #include "GameState/GameState.h"
-#include "Gui/GuiAuth.h"
 
 
 class LoginState : public GameState
@@ -22,8 +21,8 @@ public:
 	void processEvent(Event * event);
 
 private:
-	//GestionnaireAuth * gestionnaireAuth;
-	GuiAuth * guiAuth;
+	GestionnaireAuth * gestionnaireAuth;
+
 
 };
 

@@ -10,13 +10,18 @@ set(CORE_SOURCE_FILES
     main.cpp
     XsiliumApp.cpp
     Login/LoginState.cpp 
+    Login/Authentification/GestionnaireAuth.cpp
     Login/Gui/GuiAuth.cpp
+    Shared/Compte/Compte.cpp
 )
 
 set(CORE_HEADER_FILES
     XsiliumApp.h 
     Login/LoginState.h
+    Login/Authentification/GestionnaireAuth.h
+    Login/Authentification/StructurePacket/PacketAuth.h
     Login/Gui/GuiAuth.h
+    Shared/Compte/Compte.h
 )
 
 if(WIN32)

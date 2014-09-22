@@ -12,19 +12,11 @@
 #include <sstream>
 #include <cstring>
 
+#include "Engine/Network/NetworkListener.h"
 #include "StructurePacket/PacketAuth.h"
-#include "InputManager/InputManager.h"
-
-#include "GameState/GameState.h"
-
-#include "Interface/GestionnaireInterface.h"
-#include "Interface/GuiLogin.h"
-#include "Interface/GuiErreur.h"
-#include "Interface/GuiProgression.h"
-
 #include "Compte/Compte.h"
+#include "Gui/GuiAuth.h"
 
-#include "ModuleActif/ModuleActif.h"
 
 
 #define AUTH_HOST "85.25.143.49"
@@ -54,20 +46,15 @@ enum erreurOfAuth
 /*
  *
  */
-class GestionnaireAuth : public OIS::KeyListener , public ModuleActif , public ControleInterface {
+class GestionnaireAuth : public Engine::NetworkListener {
 
 public:
-	GestionnaireAuth(GameState * loginState);
+	GestionnaireAuth();
 	virtual ~GestionnaireAuth();
-
-	bool keyPressed(const OIS::KeyEvent &keyEventRef);
-	bool keyReleased(const OIS::KeyEvent &keyEventRef);
 
 	void run();
 
 	void processPacket(ENetEvent * packet);
-
-	void retourInterface(EventInterface eventInterface,int retour);
 
 	bool initNetwork();
 
@@ -77,27 +64,16 @@ public:
 
 	void cancelAuthentification();
 
-	void quitAuthentification();
-
 	void gestionnaireErreur(AUTHPACKET_ERROR * packetErreur );
 
-	void setAuthentification();
+	void setAuthentification(Event * event);
 
-
-protected:
-	Compte * compte;
-
-	GameState * loginState;
+	void processEvent(Event * event);
 
 
 private:
+	Compte * compte;
 
-	static void  threadAuthentification(void * arguments);
-
-	KeyboardMap * keyboardMap ;
-	InputManager * inputManager;
-
-	GestionnaireInterface * gestionnaireInterface;
 
 };
 

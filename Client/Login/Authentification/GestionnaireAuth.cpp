@@ -8,77 +8,20 @@
 
 #include "GestionnaireAuth.h"
 
-GestionnaireAuth::GestionnaireAuth(GameState * loginState) {
-
-	keyboardMap = KeyboardMap::getInstance();
-	inputManager = InputManager::getInstance();
+GestionnaireAuth::GestionnaireAuth() {
 
 	compte = Compte::getInstance();
-    
-    gestionnaireInterface = GestionnaireInterface::getInstance();
-
-	this->loginState = loginState;
-
-	gestionnaireInterface->addInterface(new GuiLogin());
-
-	gestionnaireInterface->addInterface(new GuiErreur());
-
-	gestionnaireInterface->addInterface(new GuiProgression());
-
-	inputManager->addKeyListener(this,"GestionnaireAuthKey");
-
-	gestionnaireInterface->addControleur(this);
-
-	EventEnregistre.push_back(LOGIN);
-
-	//gestionnaireInterface->sendEvenement(LOGIN,activeInterface());
-
-	//activeGUILogin = false;
-
-
+	Engine::GuiManager::getInstance()->addGuiListenner(new GuiAuth());
 }
 
 GestionnaireAuth::~GestionnaireAuth() {
 	networkManager->removelistenneur((XSILIUM_AUTH * 1000) + ID_AUTH);
-	inputManager->removeKeyListener(this);
-}
-
-
-bool GestionnaireAuth::keyPressed(const OIS::KeyEvent &keyEventRef)
-{
-
-	switch (keyEventRef.key)
-	{
-
-	case OIS::KC_RETURN:
-	/*	if(activeGUILogin)
-			setAuthentification();
-		else if(guiErreur->isActive())
-			cancelAuthentification();
-     */
-     
-		break;
-	case OIS::KC_TAB:
-		//guiLogin->switchEditBox();
-		break;
-	default:
-		break;
-	}
-    
-	return true;
-
-
-}
-bool GestionnaireAuth::keyReleased(const OIS::KeyEvent &keyEventRef)
-{
-	return true;
 }
 
 void GestionnaireAuth::run()
 {
 	networkManager->addlistenneur((XSILIUM_AUTH * 1000) + ID_AUTH,boost::bind(&GestionnaireAuth::setPacket, this));
-
-	ModuleActif::run();
+	NetworkListener::run();
 }
 
 bool GestionnaireAuth::initNetwork()
@@ -87,16 +30,20 @@ bool GestionnaireAuth::initNetwork()
 	int messageErreur = networkManager->connexionToHost(AUTH_HOST,AUTH_PORT);
 	if( messageErreur == 1)
 	{
-		XsiliumFramework::getInstance()->getLog()->logMessage("erreur de connexion : Le serveur est plein desoler ");
-	/*todo	guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le serveur est plein desoler"); */
+		//XsiliumFramework::getInstance()->getLog()->logMessage("erreur de connexion : Le serveur est plein desoler ");
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Le serveur est plein desoler");
+		Engine::Engine::getInstance()->addEvent(event);
 		return false;
 	}
 	if( messageErreur == 2)
 	{
-		XsiliumFramework::getInstance()->getLog()->logMessage("erreur de connexion : Impossible de se connecter au serveur");
-	/*todo	guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Impossible de se connecter au serveur");*/
+		//XsiliumFramework::getInstance()->getLog()->logMessage("erreur de connexion : Impossible de se connecter au serveur");
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Impossible de se connecter au serveur");
+		Engine::Engine::getInstance()->addEvent(event);
 		return false;
 	}
 	return true;
@@ -108,14 +55,30 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 	switch(data->typeAuth)
 	{
 	case ID_CHALLENGE :
+	{
 		compte->setEtapeDeLogin(2);
-//todo		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"3");
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("Progression","3");
+		event.setProperty("ProgressionTotal","4");
+		Engine::Engine::getInstance()->addEvent(event);
 		handleEtapeDeux(packet);
-		break;
+	}
+	break;
 	case ID_REPONSE :
-//todo		guiProgression->setEvent(ToString(PROGRESSION).c_str(),"4");
-		loginState->setChangeState();
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("Progression","4");
+		event.setProperty("ProgressionTotal","4");
+		Engine::Engine::getInstance()->addEvent(event);
+
+		Event event2 ;
+		event.setProperty("GAME","1");
+		event.setProperty("ChangeGameState","JeuxState");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	case ID_SEND_CANCEL:
 		cancelAuthentification();
 		break;
@@ -125,6 +88,18 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 	default:
 		break;
 	}
+}
+
+void GestionnaireAuth::processEvent(Event * event)
+{
+	if(event->hasProperty("AUTH"))
+	{
+		if( event->hasProperty("Login") && event->hasProperty("PassWord"))
+		{
+			setAuthentification(event);
+		}
+	}
+
 }
 
 void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
@@ -164,21 +139,10 @@ bool GestionnaireAuth::sendAuthentification()
 
 void GestionnaireAuth::cancelAuthentification()
 {
-    /* todo
-	guiProgression->setEvent(ToString(INVISIBLE).c_str());
-	guiProgression->setEvent(ToString(DESACTIVE).c_str());
-	guiErreur->setEvent(ToString(DESACTIVE).c_str());
-	guiLogin->setEvent(ToString(ACTIVE).c_str());
-     */
-}
-
-void GestionnaireAuth::quitAuthentification()
-{
-	loginState->setExit();
 }
 
 
-void GestionnaireAuth::setAuthentification()
+void GestionnaireAuth::setAuthentification(Event * event)
 {
 	if (!networkManager->isConnected())
 	{
@@ -186,113 +150,72 @@ void GestionnaireAuth::setAuthentification()
 			return;
 		run();
 	}
-    /* todo
-	guiLogin->setEvent(ToString(DESACTIVE).c_str());
-	guiProgression->setEvent(ToString(ACTIVE).c_str());
-	guiProgression->setEvent(ToString(VISIBLE).c_str());
-	guiProgression->setEvent(ToString(PROGRESSION).c_str(),"1");
 
-     
-     
-	if (std::strcmp(guiLogin->getLogin(),compte->getLogin()) == 0)
+	if( event->getProperty("Login").compare(compte->getLogin()) == 0)
 	{
 		compte->setEtapeDeLogin(1);
 	}
 
-	compte->setLogin(guiLogin->getLogin());
-	compte->setPassWord(guiLogin->getPassword());
-*/
+	compte->setLogin(event->getProperty("Login").c_str());
+	compte->setPassWord(event->getProperty("PassWord").c_str());
 	sendAuthentification();
 }
 
-void GestionnaireAuth::retourInterface(EventInterface eventInterface,int retour)
-{
-    
-	if(eventInterface == LOGIN)
-	{
-		switch(retour)
-		{
-		case CANCELBOUTON :
-			quitAuthentification();
-			break;
-		case OKBOUTON:
-			setAuthentification();
-			break;
-		default:
-			break;
-		}
-	}
-
-	if(eventInterface == NOTIFICATION)
-	{
-		switch(retour)
-		{
-		case OKBOUTON :
-			cancelAuthentification();
-			break;
-		default:
-			break;
-		}
-	}
-
-	if(eventInterface == CHARGEMENT)
-	{
-		switch(retour)
-		{
-		case CANCELBOUTON :
-			cancelAuthentification();
-			break;
-		default:
-
-			break;
-		}
-	}
-     
-}
-
 void GestionnaireAuth::gestionnaireErreur(AUTHPACKET_ERROR * packetErreur)
-{ /* todo
+{
 	switch(packetErreur->errorID)
 	{
 	case ID_ERROR_PACKET_SIZE :
-		guiProgression->setEvent(ToString(INVISIBLE).c_str());
-		guiProgression->setEvent(ToString(DESACTIVE).c_str());
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le serveur n'arrive pas a lire les donnees");
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Le serveur n'arrive pas a lire les donnees");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	case ID_CONNECTION_BANNED :
-		guiProgression->setEvent(ToString(INVISIBLE).c_str());
-		guiProgression->setEvent(ToString(DESACTIVE).c_str());
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"desoler Votre IP est banni ");
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","desoler Votre IP est banni ");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	case ID_INVALID_ACCOUNT_OR_PASSWORD :
-		guiProgression->setEvent(ToString(INVISIBLE).c_str());
-		guiProgression->setEvent(ToString(DESACTIVE).c_str());
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le login ou le mot de passe est incorrecte .");
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Le login ou le mot de passe est incorrecte .");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	case ID_COMPTE_BANNIE :
-		guiProgression->setEvent(ToString(INVISIBLE).c_str());
-		guiProgression->setEvent(ToString(DESACTIVE).c_str());
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Votre Compte a ete banni . \n Il est impossible de se connecter .");
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Votre Compte a ete banni . \n Il est impossible de se connecter .");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	case ID_INVALID_IP :
-		guiProgression->setEvent(ToString(INVISIBLE).c_str());
-		guiProgression->setEvent(ToString(DESACTIVE).c_str());
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Votre IP a ete banni .\n Il est imposible de se connecter .");
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Votre IP a ete banni .\n Il est imposible de se connecter .");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	case ID_ERROR_ETAPE :
-		guiProgression->setEvent(ToString(INVISIBLE).c_str());
-		guiProgression->setEvent(ToString(DESACTIVE).c_str());
-		guiErreur->setEvent(ToString(ACTIVE).c_str());
-		guiErreur->setEvent(ToString(MESSAGE).c_str(),"Le serveur a rencontre un probleme . ");
-		break;
+	{
+		Event event ;
+		event.setProperty("AUTH","1");
+		event.setProperty("ErreurMessage","Le serveur a rencontre un probleme . ");
+		Engine::Engine::getInstance()->addEvent(event);
+	}
+	break;
 	default:
 		break;
-	} */
+	}
 
 }
 
