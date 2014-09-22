@@ -29,12 +29,28 @@ public:
     void switchEditBox();
 
     void validationAuth();
+    void genererErreur(Event * event);
+    void updateProgression(Event * event);
+
+    void showLogin();
+    void hideLogin();
+
+    void showErreur();
+    void hideErreur();
+
+    void showProgression();
+    void hideProgression();
 
 private:
 
 	CEGUI::Window* loginWindow;
 	CEGUI::Window* progressionWindow;
 	CEGUI::Window* erreurWindow;
+
+	bool messageErreurActif;
+	bool progressionActif;
+	bool loginActif;
+
 };
 
 #endif /* GUIAUTH_H_ */

@@ -13,6 +13,7 @@ GraphicsManager::GraphicsManager() {
 	m_pRenderWnd		= 0;
 	m_pRenderSystem		= 0;
 	m_pSceneMgr         = 0;
+	m_pCamera			= 0;
 	graphicsMeteoManager = 0;
 	graphicsCamera = new GraphicsCamera();
 	inputManager = InputManager::getInstance();
@@ -92,12 +93,16 @@ void GraphicsManager::createWindow()
 
 	m_pRenderWnd->setActive(true);
 
+	m_pRenderWnd->getViewport(0)->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
 	inputManager->initialise(m_pRenderWnd);
 
 	inputManager->addKeyListener(this,"GraphicsKey");
 	inputManager->addMouseListener(this,"GraphicsMouse");
 
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
+	m_pCamera = m_pSceneMgr->createCamera("CamPricipal");
+	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
 	graphicsObjetManager->setSceneManager(m_pSceneMgr);
 	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,m_pRoot,m_pRenderWnd);
@@ -138,11 +143,8 @@ void GraphicsManager::loadRessource()
 
 void GraphicsManager::loadScene(Event* event)
 {
-
-	Ogre::Camera* m_pCamera = m_pSceneMgr->createCamera("CamPricipal");
 	m_pCamera->setNearClipDistance(0.1);
 	m_pCamera->setFarClipDistance(99999);
-	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsCamera->setCamera(m_pCamera);
 	graphicsCamera->setStyle(CS_FREELOOK);
 

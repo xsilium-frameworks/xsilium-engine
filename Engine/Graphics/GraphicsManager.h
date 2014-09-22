@@ -64,6 +64,7 @@ private:
 	Ogre::RenderWindow*			m_pRenderWnd;
 	Ogre::Root*					m_pRoot;
 	Ogre::SceneManager*			m_pSceneMgr;
+	Ogre::Camera* 				m_pCamera;
 
 	Ogre::String fenetreName;
 	bool sauvegardeParam;
