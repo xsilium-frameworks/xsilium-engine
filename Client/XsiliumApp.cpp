@@ -35,10 +35,11 @@ void XsiliumApp::start()
 	guiManager = Engine::GuiManager::getInstance();
 
 	LoginState::create<LoginState>(gameStateManager, "LoginState");
+	PlayState::create<PlayState>(gameStateManager, "PlayState");
 
 	Engine::KeyboardManager::getInstance();
 
-	gameStateManager->start(gameStateManager->findByName("LoginState"));
+	gameStateManager->start(gameStateManager->findByName("PlayState"));
 
 }
 

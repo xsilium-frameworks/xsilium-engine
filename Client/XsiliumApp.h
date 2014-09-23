@@ -2,6 +2,7 @@
 #define OGRE_XSILIUM_H
 
 #include "Engine/Engine.h"
+#include "Game/PlayState.h"
 #include "Graphics/GraphicsManager.h"
 #include "GameState/GameStateManager.h"
 #include "Gui/GuiManager.h"

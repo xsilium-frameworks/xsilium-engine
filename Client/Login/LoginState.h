@@ -3,6 +3,7 @@
 
 #include "Authentification/GestionnaireAuth.h"
 #include "GameState/GameState.h"
+#include "Logging/LogManager.h"
 
 
 class LoginState : public GameState
@@ -21,7 +22,7 @@ public:
 	void processEvent(Event * event);
 
 private:
-	GestionnaireAuth * gestionnaireAuth;
+	GestionnaireAuth* gestionnaireAuth;
 
 
 };

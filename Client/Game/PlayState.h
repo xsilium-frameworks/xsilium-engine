@@ -1,0 +1,32 @@
+/*
+* \file PlayStater.h
+*
+*  Created on: \date 24 septembre 2014
+*      Author: \author xelfe
+*  \brief : Fichier d'en-tête de la classe PlayState
+*/
+#ifndef PLAY_STATE_H
+#define PLAY_STATE_H
+
+#include "GameState/GameState.h"
+#include "Logging/LogManager.h"
+
+
+class PlayState : public GameState {
+public:
+	PlayState();
+	virtual ~PlayState();
+
+	void enter();
+	void createScene();
+
+	void exit();
+
+	void update(double timeSinceLastFrame);
+
+	void processEvent(Event * event);
+
+};
+
+
+#endif /* PLAY_STATE_H */

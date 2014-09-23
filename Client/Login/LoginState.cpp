@@ -12,11 +12,11 @@ LoginState::LoginState()
 LoginState::~LoginState()
 {
 	delete gestionnaireAuth;
+	Engine::LogManager::DestroyInstance();
 }
 void LoginState::enter()
 {
-	//	XsiliumFramework::getInstance()->getLog()->logMessage("Entering LoginState...");
-
+	Engine::LogManager::getInstance()->setLogMessage("Entree dans LoginState", Engine::NORMAL);
 
 	gestionnaireAuth = new GestionnaireAuth();
 	createScene();
