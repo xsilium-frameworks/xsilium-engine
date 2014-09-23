@@ -11,11 +11,15 @@
 GestionnaireAuth::GestionnaireAuth() {
 
 	compte = Compte::getInstance();
-	Engine::GuiManager::getInstance()->addGuiListenner(new GuiAuth());
+	guiAuth = new GuiAuth();
+	Engine::GuiManager::getInstance()->addGuiListenner(guiAuth);
 }
 
 GestionnaireAuth::~GestionnaireAuth() {
+	Engine::GuiManager::getInstance()->removeGuiListenner(guiAuth);
+	delete guiAuth;
 	networkManager->removelistenneur((XSILIUM_AUTH * 1000) + ID_AUTH);
+
 }
 
 void GestionnaireAuth::run()
@@ -75,7 +79,7 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 
 		Event event2 ;
 		event.setProperty("GAME","1");
-		event.setProperty("ChangeGameState","JeuxState");
+		event.setProperty("ChangeGameState","PlayState");
 		Engine::Engine::getInstance()->addEvent(event);
 	}
 	break;

@@ -73,6 +73,7 @@ public:
 
 private:
 	Compte * compte;
+	GuiAuth * guiAuth;
 
 
 };

@@ -148,5 +148,18 @@ void GuiManager::addGuiListenner(GuiListenner* guiListenner)
 	listOfInterface.push_back(guiListenner);
 }
 
+void GuiManager::removeGuiListenner(GuiListenner* guiListenner)
+{
+	std::vector<GuiListenner*>::iterator guiIterator;
+
+		for (guiIterator = listOfInterface.begin() ; guiIterator != listOfInterface.end(); )
+		{
+			if( (*guiIterator) == guiListenner)
+				guiIterator = listOfInterface.erase(guiIterator);
+			else
+				++guiIterator;
+		}
+}
+
 
 } /* namespace Engine */

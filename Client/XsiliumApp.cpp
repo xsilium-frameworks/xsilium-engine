@@ -39,7 +39,7 @@ void XsiliumApp::start()
 
 	Engine::KeyboardManager::getInstance();
 
-	gameStateManager->start(gameStateManager->findByName("PlayState"));
+	gameStateManager->start(gameStateManager->findByName("LoginState"));
 
 }
 

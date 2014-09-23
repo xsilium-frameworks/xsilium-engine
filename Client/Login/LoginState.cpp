@@ -11,7 +11,6 @@ LoginState::LoginState()
 
 LoginState::~LoginState()
 {
-	delete gestionnaireAuth;
 	Engine::LogManager::DestroyInstance();
 }
 void LoginState::enter()
@@ -32,6 +31,7 @@ void LoginState::createScene()
 
 void LoginState::exit()
 {
+	delete gestionnaireAuth;
 }
 
 void LoginState::update(double timeSinceLastFrame)

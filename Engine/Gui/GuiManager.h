@@ -141,6 +141,7 @@ class GuiListenner;
 		void loadRessource();
 
 		void addGuiListenner(GuiListenner* guiListenner);
+		void removeGuiListenner(GuiListenner* guiListenner);
 
 	private:
 		Ogre::String theme; /*!< Nom du theme configuré. */
