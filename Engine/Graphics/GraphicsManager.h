@@ -33,6 +33,7 @@ public:
 	void setParamettreOgre(Ogre::String key, Ogre::String valeur);
 
 	void createWindow();
+	void exit();
 
 	void loadRessource();
 
@@ -41,8 +42,6 @@ public:
 	Ogre::RenderWindow* getRenderWindow();
 
 	void processEvent(Event* event);
-
-	void exit();
 
 	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);

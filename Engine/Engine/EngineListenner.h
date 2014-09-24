@@ -42,8 +42,8 @@ public:
 	virtual ~EngineListenner() {
 	}
 	;
-	virtual void processEvent(Event * event) = 0;
-	virtual void exit() = 0;
+	void processEvent(Event * event){};
+	void exit(){};
 
 };
 

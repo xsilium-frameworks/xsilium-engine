@@ -141,10 +141,6 @@ void GameStateManager::shutdown() {
 	Engine::getInstance()->stopEngine();
 }
 
-void GameStateManager::exit() {
-
-}
-
 void GameStateManager::init(GameState* state) {
 	//Engine::getInstance()->getRenderWindow()->resetStatistics();
 }

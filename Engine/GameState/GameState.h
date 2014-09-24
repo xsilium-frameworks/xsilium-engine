@@ -52,14 +52,8 @@ public:
 
 	virtual void enter() = 0;
 	virtual void exit() = 0;
-	virtual bool pause()
-	{
-		return true;
-	}
-	virtual void resume()
-	{
-
-	};
+	bool pause(){ return true;};
+	void resume(){};
 
 	virtual void update(double timeSinceLastFrame) = 0;
 

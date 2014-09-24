@@ -50,11 +50,6 @@ void GuiManager::processEvent(Event* event)
 	}
 }
 
-void GuiManager::exit()
-{
-
-}
-
 bool GuiManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 {
 	return true;

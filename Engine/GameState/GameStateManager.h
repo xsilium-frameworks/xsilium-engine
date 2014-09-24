@@ -34,8 +34,6 @@ public:
 
     bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 
-    void exit();
-
 
 protected:
 	void init(GameState *state);

@@ -64,12 +64,6 @@ class GuiListenner;
 		void processEvent(Event* event);
 
 		/*!
-		* \brief Méthode d'extinction
-		*
-		*/
-		void exit();
-
-		/*!
 		* \brief Methode avant le chargement d'un frame
 		*
 		* \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
