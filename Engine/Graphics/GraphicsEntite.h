@@ -27,6 +27,8 @@ public:
 	void setCharHeight(int charHeight);
 	void setRunSpeed(int runSpeed);
 	void setTurnSpeed(double turnSpeed);
+	void setID(int id);
+	int getID();
 
 	void setPosition(Ogre::Vector3 position);
 
@@ -37,7 +39,7 @@ public:
 
 	void update(double timeSinceLastFrame);
 
-	void processEngine(Event * event);
+	void processEvent(Event * event);
 
 	void addEquipement(Ogre::Entity * objet,Ogre::String emplacement);
 	void deleteEquipement(Ogre::String emplacement);
@@ -45,8 +47,13 @@ public:
 	void runAnimation();
 	void idleAnimation();
 
+	void deplaceEntite(Ogre::Vector3 positionFinal );
+
+	void setOrientation(Ogre::Vector3 orientation);
+
 private:
 	Ogre::String  nom;
+	int id;
 
 	int  charHeight ;
 	int  runSpeed ;
@@ -61,6 +68,9 @@ private:
 	std::map<Ogre::String,Ogre::Entity*> listOfObject;
 
 	bool degainer;
+
+	Ogre::Vector3 positionFinal;
+	Ogre::Vector3 orientation;
 
 
 };

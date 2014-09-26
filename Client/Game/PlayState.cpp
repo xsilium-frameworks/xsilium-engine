@@ -29,6 +29,26 @@ void PlayState::createScene() {
 	event.setProperty("NameGroup", "General");
 
 	Engine::Engine::getInstance()->addEvent(event);
+
+	Event event2 ;
+	event2.setProperty("Entite","1");
+	event2.setProperty("CreateEntite","1");
+	event2.setProperty("idEntite","1");
+	event2.setProperty("CharHeight","5");
+	event2.setProperty("RunSpeed","17");
+	event2.setProperty("TurnSpeed","500.0");
+	event2.setProperty("NomEntite","Perso1");
+	event2.setProperty("fileMesh","Sinbad.mesh");
+
+	event2.setProperty("PositionX","5");
+	event2.setProperty("PositionY","5");
+	event2.setProperty("PositionZ","5");
+
+
+	Engine::Engine::getInstance()->addEvent(event2);
+
+
+
 }
 
 void PlayState::exit() {
@@ -40,5 +60,34 @@ void PlayState::update(double timeSinceLastFrame) {
 }
 
 void PlayState::processEvent(Event* event) {
+
+	if(event->hasProperty("Keyboard"))
+	{
+		if( (event->getProperty("Fonction").compare("AVANCER")) == 0 )
+		{
+			if( atoi(event->getProperty("Action").c_str()) == 1 )
+			{
+				Event event3 ;
+					event3.setProperty("Entite","1");
+					event3.setProperty("deplaceEntite","1");
+					event3.setProperty("idEntite","1");
+					event3.setProperty("NewPositionX","1");
+					event3.setProperty("NewPositionY","0");
+					event3.setProperty("NewPositionZ","0");
+					Engine::Engine::getInstance()->addEvent(event3);
+			}
+			else
+			{
+				Event event3 ;
+					event3.setProperty("Entite","1");
+					event3.setProperty("deplaceEntite","1");
+					event3.setProperty("idEntite","1");
+					event3.setProperty("NewPositionX","0");
+					event3.setProperty("NewPositionY","0");
+					event3.setProperty("NewPositionZ","0");
+					Engine::Engine::getInstance()->addEvent(event3);
+			}
+		}
+	}
 
 }

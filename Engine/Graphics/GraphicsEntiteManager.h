@@ -24,7 +24,7 @@ public:
 	virtual ~GraphicsEntiteManager();
 
 	void createEntite(Event * event);
-	GraphicsEntite * trouverEntite(Ogre::String nom);
+	GraphicsEntite * trouverEntite(int id);
 	void deleteEntite(Ogre::String nom);
 
 	void assigneObjet(Event * event);

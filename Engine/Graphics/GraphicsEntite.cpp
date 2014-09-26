@@ -17,6 +17,8 @@ GraphicsEntite::GraphicsEntite() {
 	mMainNode = 0;
 	mBodyEnt = 0;
 	graphicsAnimation = 0;
+	orientation = Ogre::Vector3::UNIT_X;
+	positionFinal = Ogre::Vector3::ZERO;
 
 	degainer = false;
 
@@ -121,6 +123,44 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 		}
 	}
 
+	if( positionFinal != Ogre::Vector3::ZERO )
+	{
+		Ogre::Vector3 mGoalDirection = Ogre::Vector3::ZERO;
+		// calculate actually goal direction in world based on player's key directions
+		mGoalDirection += positionFinal.z * orientation.z;
+		mGoalDirection += positionFinal.x * orientation.x;
+		mGoalDirection.y += positionFinal.y * orientation.y;
+		mGoalDirection.normalise();
+
+		Ogre::Quaternion toGoal = mMainNode->getOrientation().zAxis().getRotationTo(mGoalDirection);
+
+		// calculate how much the character has to turn to face goal direction
+		Ogre::Real yawToGoal = toGoal.getYaw().valueDegrees();
+		// this is how much the character CAN turn this frame
+		Ogre::Real yawAtSpeed = yawToGoal / Ogre::Math::Abs(yawToGoal) * timeSinceLastFrame * turnSpeed;
+
+		// turn as much as we can, but not more than we need to
+		if (yawToGoal < 0)
+			yawToGoal = std::min<Ogre::Real>(0, std::max<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, yawAtSpeed, 0);
+		else if (yawToGoal > 0)
+			yawToGoal = std::max<Ogre::Real>(0, std::min<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, 0, yawAtSpeed);
+
+		mMainNode->yaw(Ogre::Degree(yawToGoal));
+
+		// move in current body direction (not the goal direction)
+		mMainNode->translate(0, 0, timeSinceLastFrame * runSpeed,Ogre::Node::TS_LOCAL);
+		runAnimation();
+
+	}
+	else
+	{
+		if(graphicsAnimation->getNomAnimationBasActuel().compare("RunBase") == 0 )
+		{
+			idleAnimation();
+		}
+
+	}
+
 	graphicsAnimation->updateAnimation(timeSinceLastFrame) ;
 }
 
@@ -136,7 +176,7 @@ void GraphicsEntite::idleAnimation()
 }
 
 void GraphicsEntite::setPosition(Ogre::Vector3 position)
-{
+{   
 	mMainNode->setPosition(position);
 }
 
@@ -155,5 +195,46 @@ void GraphicsEntite::deleteEquipement(Ogre::String emplacement)
 	}
 
 }
+
+void GraphicsEntite::deplaceEntite(Ogre::Vector3 positionFinal)
+{
+    positionFinal.normalise();
+	this->positionFinal = positionFinal;
+}
+
+void GraphicsEntite::setOrientation(Ogre::Vector3 orientation)
+{
+	this->orientation = orientation;
+}
+
+void GraphicsEntite::setID(int id)
+{
+	this->id = id;
+}
+int GraphicsEntite::getID()
+{
+	return id;
+}
+
+void GraphicsEntite::processEvent(Event * event)
+{
+	if(event->hasProperty("NewPositionX"))
+	{
+		deplaceEntite( Ogre::Vector3(atoi(event->getProperty("NewPositionX").c_str()),
+				atoi(event->getProperty("NewPositionY").c_str()),
+				atoi(event->getProperty("NewPositionZ").c_str()))  );
+	}
+
+	if(event->hasProperty("NewOrientationX"))
+	{
+		deplaceEntite( Ogre::Vector3(
+				atoi(event->getProperty("NewOrientationX").c_str()),
+				atoi(event->getProperty("NewOrientationY").c_str()),
+				atoi(event->getProperty("NewOrientationZ").c_str()))  );
+	}
+
+}
+
+
 
 } /* namespace Engine */
