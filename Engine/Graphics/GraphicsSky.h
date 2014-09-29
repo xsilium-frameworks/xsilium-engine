@@ -7,6 +7,7 @@
  */
 #ifndef GRAPHICSSKY_H_
 #define GRAPHICSSKY_H_
+#include "SkyX.h"
 
 namespace Engine {
 

@@ -478,7 +478,7 @@ void GraphicsMeteoManager::initSkyX()
 	// Register as lighting listener in order to play sounds
 	//mSkyX->getVCloudsManager()->getVClouds()->getLightningManager()->addListener(this);
 
-	mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(mSkyX,mHydrax));
+	mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(/**mSkyX,*/mHydrax));
 }
 
 void GraphicsMeteoManager::beafourt(unsigned int beaf)
