@@ -31,7 +31,7 @@ namespace Engine {
  */
 class GraphicsHydraxRttListener : public Hydrax::RttManager::RttListener {
 public:
-	GraphicsHydraxRttListener(SkyX::SkyX* mSkyX,Hydrax::Hydrax* mHydrax);
+	GraphicsHydraxRttListener(/**SkyX::SkyX* mSkyX,*/Hydrax::Hydrax* mHydrax);
 	virtual ~GraphicsHydraxRttListener();
 
 	void preRenderTargetUpdate(const Hydrax::RttManager::RttType& Rtt);
@@ -39,7 +39,7 @@ public:
 	void postRenderTargetUpdate(const Hydrax::RttManager::RttType& Rtt);
 
 private:
-	SkyX::SkyX* mSkyX ;
+//	SkyX::SkyX* mSkyX ;
 	Hydrax::Hydrax* mHydrax;
 };
 

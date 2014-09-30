@@ -9,8 +9,8 @@
 
 namespace Engine {
 
-GraphicsHydraxRttListener::GraphicsHydraxRttListener(SkyX::SkyX* mSkyX,Hydrax::Hydrax* mHydrax) {
-	this->mSkyX = mSkyX;
+GraphicsHydraxRttListener::GraphicsHydraxRttListener(/** SkyX::SkyX* mSkyX,*/Hydrax::Hydrax* mHydrax) {
+//	this->mSkyX = mSkyX;
 	this->mHydrax = mHydrax;
 
 }
@@ -29,7 +29,7 @@ void GraphicsHydraxRttListener::preRenderTargetUpdate(const Hydrax::RttManager::
 		case Hydrax::RttManager::RTT_REFLECTION:
 		{
 			// No stars in the reflection map
-			mSkyX->setStarfieldEnabled(false);
+//			mSkyX->setStarfieldEnabled(false);
 		}
 		break;
 
@@ -41,8 +41,8 @@ void GraphicsHydraxRttListener::preRenderTargetUpdate(const Hydrax::RttManager::
 		case Hydrax::RttManager::RTT_DEPTH: case Hydrax::RttManager::RTT_DEPTH_REFLECTION:
 		{
 			// Hide SkyX components in depth maps
-			mSkyX->getMeshManager()->getEntity()->setVisible(false);
-			mSkyX->getMoonManager()->getMoonBillboard()->setVisible(false);
+//			mSkyX->getMeshManager()->getEntity()->setVisible(false);
+//			mSkyX->getMoonManager()->getMoonBillboard()->setVisible(false);
 		}
 		break;
 		default:
@@ -59,7 +59,7 @@ void GraphicsHydraxRttListener::postRenderTargetUpdate(const Hydrax::RttManager:
 	{
 		case Hydrax::RttManager::RTT_REFLECTION:
 		{
-			mSkyX->setStarfieldEnabled(true);
+//			mSkyX->setStarfieldEnabled(true);
 		}
 		break;
 
@@ -70,8 +70,10 @@ void GraphicsHydraxRttListener::postRenderTargetUpdate(const Hydrax::RttManager:
 
 		case Hydrax::RttManager::RTT_DEPTH: case Hydrax::RttManager::RTT_DEPTH_REFLECTION:
 		{
+		/**
 			mSkyX->getMeshManager()->getEntity()->setVisible(true);
 			mSkyX->getMoonManager()->getMoonBillboard()->setVisible(true);
+		*/
 		}
 		break;
 		default:
