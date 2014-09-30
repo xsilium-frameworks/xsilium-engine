@@ -16,6 +16,8 @@ namespace Engine {
 		this->m_pRenderWnd = m_pRenderWnd;
 		m_pCamera = 0;
 
+		m_pCamera = m_pSceneMgr->getCamera("CamPricipal");
+
 	}
 
 	GraphicsWater::~GraphicsWater() {
@@ -36,7 +38,8 @@ namespace Engine {
 			// Noise module
 			new Hydrax::Noise::Perlin(/*Generic one*/),
 			// Base plane
-			Ogre::Plane(Ogre::Vector3(0, 1, 0), Ogre::Vector3(0, 0, 0)),
+			//Ogre::Plane(Ogre::Vector3(0, 1, 0), Ogre::Vector3(0, 0, 0)),
+			Ogre::Plane(Ogre::Vector3::UNIT_Y, Ogre::Real(0.0f)),
 			// Normal mode
 			Hydrax::MaterialManager::NM_VERTEX,
 			// Projected grid options
@@ -51,7 +54,7 @@ namespace Engine {
 
 		// Create water
 		m_pHydrax->create();
-
+		/**
 		Ogre::TerrainGroup::TerrainIterator ti = m_pTerrainGroup->getTerrainIterator();
 		while (ti.hasMoreElements())
 		{
@@ -59,7 +62,7 @@ namespace Engine {
 			Ogre::MaterialPtr ptr = t->getMaterial();
 			m_pHydrax->getMaterialManager()->addDepthTechnique(ptr->createTechnique());
 		}
-
+		*/
 		m_pHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(m_pHydrax));
 
 	}
