@@ -103,7 +103,7 @@ void GraphicsManager::createWindow()
 	inputManager->addMouseListener(this,"GraphicsMouse");
 
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
-	m_pCamera = m_pSceneMgr->createCamera("CamPricipal");
+	m_pCamera = m_pSceneMgr->createCamera("CamPrincipal");
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
 	graphicsObjetManager->setSceneManager(m_pSceneMgr);
@@ -208,6 +208,7 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 	graphicsCamera->frameRenderingQueued(m_FrameEvent);
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsObjetManager->update(m_FrameEvent.timeSinceLastFrame);
+	graphicsWater->update(m_FrameEvent.timeSinceLastFrame);
 //	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
 
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)

@@ -28,6 +28,8 @@ public:
 
 	void initHydrax();
 
+	void update(float dt);
+
 private:
 
 	Ogre::SceneManager*			m_pSceneMgr;

@@ -14,9 +14,7 @@ namespace Engine {
 		m_pSceneMgr = sm;
 		this->m_pRoot = m_pRoot;
 		this->m_pRenderWnd = m_pRenderWnd;
-		m_pCamera = 0;
-
-		m_pCamera = m_pSceneMgr->getCamera("CamPricipal");
+		m_pCamera = m_pSceneMgr->getCamera("CamPrincipal");
 
 	}
 
@@ -65,6 +63,11 @@ namespace Engine {
 		*/
 		m_pHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(m_pHydrax));
 
+	}
+
+	void GraphicsWater::update(float dt)
+	{
+		m_pHydrax->update(dt);
 	}
 
 } /* namespace Engine */

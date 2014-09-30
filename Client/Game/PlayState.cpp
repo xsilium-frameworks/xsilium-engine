@@ -47,14 +47,14 @@ void PlayState::createScene() {
 
 	Engine::Engine::getInstance()->addEvent(event2);
     
-    Event event3 ;
+  /*  Event event3 ;
     event3.setProperty("Entite","1");
     event3.setProperty("deplaceEntite","1");
     event3.setProperty("idEntite","1");
     event3.setProperty("NewPositionX","1");
     event3.setProperty("NewPositionY","0");
     event3.setProperty("NewPositionZ","0");
-    Engine::Engine::getInstance()->addEvent(event3);
+    Engine::Engine::getInstance()->addEvent(event3); */
 
 
 
