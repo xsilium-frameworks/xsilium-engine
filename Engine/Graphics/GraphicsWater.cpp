@@ -65,9 +65,19 @@ namespace Engine {
 
 	}
 
+	void GraphicsWater::addDepthTechnique(Ogre::StringVector materialNames)
+	{
+		for(unsigned int i = 0;i < materialNames.size();i++)
+		{
+			m_pHydrax->getMaterialManager()->addDepthTechnique(static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialNames[i]))->createTechnique());
+		}
+	}
+
+
 	void GraphicsWater::update(float dt)
 	{
-		m_pHydrax->update(dt);
+        if(m_pHydrax)
+            m_pHydrax->update(dt);
 	}
 
 } /* namespace Engine */

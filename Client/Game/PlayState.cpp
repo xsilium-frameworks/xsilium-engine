@@ -46,6 +46,12 @@ void PlayState::createScene() {
 
 
 	Engine::Engine::getInstance()->addEvent(event2);
+
+	Event event3;
+
+	event3.setProperty("Water","1");
+	event3.setProperty("InitWater","1");
+	Engine::Engine::getInstance()->addEvent(event3);
     
   /*  Event event3 ;
     event3.setProperty("Entite","1");

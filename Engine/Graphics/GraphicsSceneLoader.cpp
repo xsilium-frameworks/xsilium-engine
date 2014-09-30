@@ -1417,7 +1417,7 @@ namespace Engine {
 				//options supp.
 				*/
 	}
-	/**
+
 	Ogre::StringVector GraphicsSceneLoader::getMaterialNames()
 	{
 		Ogre::StringVector list;
@@ -1442,7 +1442,7 @@ namespace Engine {
 
 		return list;
 	}
-	*/
+
 	void GraphicsSceneLoader::processHydrax(rapidxml::xml_node<>* XMLNode)
 	{
 		/*

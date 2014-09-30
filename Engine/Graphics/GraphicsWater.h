@@ -30,6 +30,8 @@ public:
 
 	void update(float dt);
 
+	void addDepthTechnique(Ogre::StringVector materialNames);
+
 private:
 
 	Ogre::SceneManager*			m_pSceneMgr;

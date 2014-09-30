@@ -14,7 +14,7 @@ GraphicsManager::GraphicsManager() {
 	m_pRenderSystem		= 0;
 	m_pSceneMgr         = 0;
 	m_pCamera			= 0;
-//	graphicsMeteoManager = 0;
+	//	graphicsMeteoManager = 0;
 	graphicsWater = 0;
 	graphicsCamera = new GraphicsCamera();
 	inputManager = InputManager::getInstance();
@@ -38,7 +38,7 @@ GraphicsManager::GraphicsManager() {
 GraphicsManager::~GraphicsManager() {
 
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
-//	delete graphicsMeteoManager;
+	//	delete graphicsMeteoManager;
 	delete graphicsWater;
 	delete graphicsEntiteManager;
 	delete graphicsObjetManager;
@@ -107,7 +107,7 @@ void GraphicsManager::createWindow()
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
 	graphicsObjetManager->setSceneManager(m_pSceneMgr);
-//	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,m_pRoot,m_pRenderWnd);
+	//	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,m_pRoot,m_pRenderWnd);
 	graphicsWater = new GraphicsWater(m_pSceneMgr, m_pRoot, m_pRenderWnd);
 
 }
@@ -160,11 +160,8 @@ void GraphicsManager::loadScene(Event* event)
 		graphicsSceneLoader->mPGHandles[ij]->setCamera(m_pCamera);
 	}
 
-//	graphicsMeteoManager->createMeteo();
-//    graphicsMeteoManager->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
-	graphicsWater->initHydrax();
-	
-
+	//	graphicsMeteoManager->createMeteo();
+	//    graphicsMeteoManager->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
 }
 
 
@@ -187,6 +184,15 @@ void GraphicsManager::processEvent(Event* event)
 	{
 		loadScene(event);
 	}
+	if(event->hasProperty("Water"))
+	{
+		if(event->hasProperty("InitWater"))
+		{
+			graphicsWater->initHydrax();
+			graphicsWater->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
+		}
+	}
+
 }
 
 bool GraphicsManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
@@ -209,7 +215,7 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsObjetManager->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsWater->update(m_FrameEvent.timeSinceLastFrame);
-//	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
+	//	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
 
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
 	{
