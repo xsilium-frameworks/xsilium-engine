@@ -1,28 +1,32 @@
 /*
  * \file NetworkManager.h
  *
- *  Created on: \date 3 aožt 2014
+ *  Created on: \date 3 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
 #ifndef NETWORKMANAGER_H_
 #define NETWORKMANAGER_H_
 
-#include <boost/thread.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+
 #include "enet/enet.h"
 #include "Singleton/Singleton.h"
 #include "Callback/Callback.h"
 #include "Opcode/Opcode.h"
-#include "StructurePacket/StructureGeneral.h"
+#include "NetworkListener.h"
 
 namespace Engine {
 
 /*
  *
  */
-class NetworkManager : public Singleton<NetworkManager>, public Callback {
+class NetworkManager : public Singleton<NetworkManager> {
 
-	friend class Singleton<NetworkManager>;
+	friend class Engine::Singleton<NetworkManager> ;
 
 
 public:
@@ -36,15 +40,13 @@ public:
 
 	bool disconnexion();
 
-	ENetEvent * getPacket();
-
-	ENetHost * getClient();
-
-	void deletePacket(ENetPacket * packet);
-
-	void sendPacket( ENetPacket * packet, enet_uint8 channel = 0);
+	void sendPacket( MessagePacket * messagePacket, enet_uint8 channel = 0);
 
 	bool isConnected();
+
+    void addlistenneur(int identifiant, NetworkListener * networkListener);
+	void removelistenneur(int identifiant);
+	void callback(int identifiant, MessagePacket * messagePacket = 0);
 
 private:
 
@@ -57,11 +59,11 @@ private:
 	ENetAddress address;
 	ENetHost * client;
 	ENetEvent eventClient;
-	ENetEvent * packet;
 	ENetPeer *peer;
 
 	boost::mutex mutexSend;
-	boost::mutex mutexDelete;
+
+	std::map<int,NetworkListener* > listOfListenner ;
 };
 
 } /* namespace Engine */

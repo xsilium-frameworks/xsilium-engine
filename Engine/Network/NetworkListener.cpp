@@ -1,7 +1,7 @@
 /*
  * \file NetworkListener.cpp
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -10,7 +10,6 @@
 namespace Engine {
 
 NetworkListener::NetworkListener() {
-	this->networkManager = NetworkManager::getInstance();
 	endThread = false;
 
 }
@@ -37,19 +36,19 @@ void NetworkListener::stopThread()
 }
 
 
-ENetEvent NetworkListener::getPacket()
+MessagePacket* NetworkListener::getPacket()
 {
 	boost::unique_lock<boost::mutex> lock(mutexList);
-	ENetEvent  packet = ListOfPacket.front();
+	MessagePacket * packet = ListOfPacket.front();
 	ListOfPacket.pop();
 	return packet;
 }
 
-void NetworkListener::setPacket()
+void NetworkListener::setPacket(MessagePacket* messagePacket)
 {
 	boost::unique_lock<boost::mutex> lock(mutexList);
 
-	ListOfPacket.push(*(networkManager->getPacket()));
+	ListOfPacket.push(messagePacket);
 	lock.unlock();
 	condition_Queue.notify_one();
 }
@@ -74,9 +73,8 @@ void NetworkListener::threadProcess(void * arguments)
 	{
 		if(!moduleActif->isEmpty())
 		{
-			ENetEvent packet = moduleActif->getPacket();
-			moduleActif->processPacket(&packet);
-			moduleActif->networkManager->deletePacket(packet.packet);
+			MessagePacket * packet = moduleActif->getPacket();
+			moduleActif->processPacket(packet);
 		}
 	}
 }

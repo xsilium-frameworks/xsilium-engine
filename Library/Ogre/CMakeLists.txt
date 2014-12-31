@@ -98,22 +98,6 @@ elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
     set(CMAKE_OSX_SYSROOT macosx)
   endif()
 
-  if (NOT CMAKE_OSX_ARCHITECTURES)
-    if(OGRE_BUILD_RENDERSYSTEM_GL3PLUS)
-      if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
-        set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD_64_BIT}")
-      else()
-        set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_64_BIT)")
-      endif()
-    else()
-      if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
-        set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD_32_64_BIT}")
-      else()
-        set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_64_BIT)")
-      endif()
-    endif()
-  endif()
-
   # 10.7 is the minimum for libc++ support
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
   

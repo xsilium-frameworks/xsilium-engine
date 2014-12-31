@@ -12,15 +12,14 @@
 #include <sstream>
 #include <cstring>
 
-#include "Engine/Network/NetworkListener.h"
-#include "StructurePacket/PacketAuth.h"
+#include "Engine/Network/NetworkManager.h"
 #include "Compte/Compte.h"
 #include "Gui/GuiAuth.h"
 
 
 
-#define AUTH_HOST "85.25.143.49"
-//#define AUTH_HOST "127.0.0.1"
+//#define AUTH_HOST "85.25.143.49"
+#define AUTH_HOST "127.0.0.1"
 #define AUTH_PORT 60000
 
 enum typeForAuth
@@ -54,17 +53,17 @@ public:
 
 	void run();
 
-	void processPacket(ENetEvent * packet);
+	void processPacket(Engine::MessagePacket * messagePacket);
 
 	bool initNetwork();
 
-	void handleEtapeDeux(ENetEvent * packet);
+	void handleEtapeDeux(Engine::MessagePacket * messagePacket);
 
 	bool sendAuthentification();
 
 	void cancelAuthentification();
 
-	void gestionnaireErreur(AUTHPACKET_ERROR * packetErreur );
+	void gestionnaireErreur(Engine::MessagePacket * messagePacket);
 
 	void setAuthentification(Event * event);
 
@@ -74,6 +73,7 @@ public:
 private:
 	Compte * compte;
 	GuiAuth * guiAuth;
+	Engine::NetworkManager * networkManager;
 
 
 };

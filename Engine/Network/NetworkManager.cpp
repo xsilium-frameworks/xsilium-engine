@@ -1,7 +1,7 @@
 /*
  * \file NetworkManager.cpp
  *
- *  Created on: \date 3 aožt 2014
+ *  Created on: \date 3 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -12,14 +12,13 @@ namespace Engine {
 NetworkManager::NetworkManager() {
 	enet_initialize();
 	peer = NULL;
-	packet = NULL;
 	client = NULL;
 	isConnectedflag = false;
 	endThread = false;
 }
 
 NetworkManager::~NetworkManager() {
-    disconnexion();
+	disconnexion();
 	enet_deinitialize();
 }
 
@@ -69,32 +68,25 @@ int NetworkManager::connexionToHost(std::string url,int port)
 	}
 }
 
-ENetEvent * NetworkManager::getPacket()
-{
-	return packet;
-}
-
-ENetHost * NetworkManager::getClient()
-{
-	return client;
-}
-
-void NetworkManager::deletePacket(ENetPacket * packet)
-{
-	boost::unique_lock<boost::mutex> lock(mutexDelete);
-	enet_packet_destroy (packet);
-}
-
-void NetworkManager::sendPacket( ENetPacket * packet , enet_uint8 channel)
+void NetworkManager::sendPacket( MessagePacket * messagePacket , enet_uint8 channel)
 {
 	boost::unique_lock<boost::mutex> lock(mutexSend);
+
+	std::ostringstream archive_stream;
+	std::string messageSend;
+
+	boost::archive::text_oarchive archive(archive_stream);
+	archive << messagePacket;
+
+	messageSend = archive_stream.str();
+
+	ENetPacket * packet = enet_packet_create (messageSend.c_str(),messageSend.size() + 1,ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(peer,channel,packet);
 }
 
 void* NetworkManager::threadConnexion(void* arguments)
 {
 	NetworkManager * networkManager = static_cast<NetworkManager *>(arguments) ;
-	networkManager->packet = &networkManager->eventClient;
 
 	while ((enet_host_service (networkManager->client,&networkManager->eventClient, 10) >= 0 ) && (networkManager->endThread == false )  )
 	{
@@ -105,9 +97,15 @@ void* NetworkManager::threadConnexion(void* arguments)
 			break;
 		case ENET_EVENT_TYPE_RECEIVE:
 		{
-			structure_opcodeT * typePacket = (structure_opcodeT *) networkManager->eventClient.packet->data ;
+			MessagePacket * message = new MessagePacket();
 
-			networkManager->callback( (typePacket->cmd * 1000 ) +  (typePacket->opcode ));
+			std::istringstream archive_stream(std::string((char*)networkManager->eventClient.packet->data)) ;
+			boost::archive::text_iarchive archive(archive_stream);
+			archive >> message;
+
+			networkManager->callback(message->getOpcode(),message);
+
+			enet_packet_destroy (networkManager->eventClient.packet);
 
 			break;
 		}
@@ -137,6 +135,31 @@ bool NetworkManager::disconnexion()
 		return true;
 	}
 	return false;
+}
+
+void NetworkManager::addlistenneur(int identifiant,NetworkListener * networkListener)
+{
+	listOfListenner[identifiant] = networkListener ;
+}
+
+void NetworkManager::removelistenneur(int identifiant)
+{
+	std::map<int,NetworkListener *>::iterator listenner ;
+	listenner = listOfListenner.find(identifiant) ;
+	if ( listenner != listOfListenner.end())
+	{
+		listOfListenner.erase(listenner);
+	}
+}
+
+void NetworkManager::callback(int identifiant,MessagePacket * messagePacket)
+{
+	std::map<int,NetworkListener *>::iterator listenner ;
+	listenner = listOfListenner.find(identifiant) ;
+	if ( listenner != listOfListenner.end())
+	{
+		listenner->second->setPacket(messagePacket);
+	}
 }
 
 } /* namespace Engine */

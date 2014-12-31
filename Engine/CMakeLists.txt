@@ -27,9 +27,9 @@ set( CORE_HEADER_FILES
 	 ./Input/KeyboardMap.h
 	 ./Logging/LogManager.h
 	 ./Network/Opcode/Opcode.h
-	 ./Network/StructurePacket/StructureGeneral.h
 	 ./Network/NetworkListener.h
 	 ./Network/NetworkManager.h
+	 ./Network/MessagePacket.h
 	 ./Singleton/Singleton.h
 )	 
 
@@ -63,6 +63,7 @@ set (CORE_SOURCE_FILES
 	 ./Logging/LogManager.cpp
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp
+ 	 ./Network/MessagePacket.cpp
 )
 
 include_directories(

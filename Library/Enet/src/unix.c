@@ -2,13 +2,14 @@
  @file  unix.c
  @brief ENet Unix system specific functions
 */
-#ifndef WIN32
+#ifndef _WIN32
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <string.h>
@@ -18,19 +19,36 @@
 #define ENET_BUILDING_LIB 1
 #include "enet/enet.h"
 
-#ifdef HAS_FCNTL
-#include <fcntl.h>
+#ifdef __APPLE__
+#ifdef HAS_POLL
+#undef HAS_POLL
+#endif
+#ifndef HAS_FCNTL
+#define HAS_FCNTL 1
+#endif
+#ifndef HAS_INET_PTON
+#define HAS_INET_PTON 1
+#endif
+#ifndef HAS_INET_NTOP
+#define HAS_INET_NTOP 1
+#endif
+#ifndef HAS_MSGHDR_FLAGS
+#define HAS_MSGHDR_FLAGS 1
+#endif
+#ifndef HAS_SOCKLEN_T
+#define HAS_SOCKLEN_T 1
+#endif
 #endif
 
-#ifdef __APPLE__
-#undef HAS_POLL
+#ifdef HAS_FCNTL
+#include <fcntl.h>
 #endif
 
 #ifdef HAS_POLL
 #include <sys/poll.h>
 #endif
 
-#ifndef _SOCKLEN_T
+#ifndef HAS_SOCKLEN_T
 #ifndef __socklen_t_defined
 typedef int socklen_t;
 #endif
@@ -51,6 +69,12 @@ enet_initialize (void)
 void
 enet_deinitialize (void)
 {
+}
+
+enet_uint32
+enet_host_random_seed (void)
+{
+    return (enet_uint32) time (NULL);
 }
 
 enet_uint32
@@ -116,7 +140,12 @@ enet_address_get_host_ip (const ENetAddress * address, char * name, size_t nameL
 #else
     char * addr = inet_ntoa (* (struct in_addr *) & address -> host);
     if (addr != NULL)
-        strncpy (name, addr, nameLength);
+    {
+        size_t addrLen = strlen(addr);
+        if (addrLen >= nameLength)
+          return -1;
+        memcpy (name, addr, addrLen + 1);
+    } 
     else
 #endif
         return -1;
@@ -148,8 +177,13 @@ enet_address_get_host (const ENetAddress * address, char * name, size_t nameLeng
 
     if (hostEntry == NULL)
       return enet_address_get_host_ip (address, name, nameLength);
-
-    strncpy (name, hostEntry -> h_name, nameLength);
+    else
+    {
+       size_t hostLen = strlen (hostEntry -> h_name);
+       if (hostLen >= nameLength)
+         return -1;
+       memcpy (name, hostEntry -> h_name, hostLen + 1);
+    }
 
     return 0;
 }
@@ -177,6 +211,21 @@ enet_socket_bind (ENetSocket socket, const ENetAddress * address)
     return bind (socket,
                  (struct sockaddr *) & sin,
                  sizeof (struct sockaddr_in)); 
+}
+
+int
+enet_socket_get_address (ENetSocket socket, ENetAddress * address)
+{
+    struct sockaddr_in sin;
+    socklen_t sinLength = sizeof (struct sockaddr_in);
+
+    if (getsockname (socket, (struct sockaddr *) & sin, & sinLength) == -1)
+      return -1;
+
+    address -> host = (enet_uint32) sin.sin_addr.s_addr;
+    address -> port = ENET_NET_TO_HOST_16 (sin.sin_port);
+
+    return 0;
 }
 
 int 
@@ -222,11 +271,43 @@ enet_socket_set_option (ENetSocket socket, ENetSocketOption option, int value)
             break;
 
         case ENET_SOCKOPT_RCVTIMEO:
-            result = setsockopt (socket, SOL_SOCKET, SO_RCVTIMEO, (char *) & value, sizeof (int));
+        {
+            struct timeval timeVal;
+            timeVal.tv_sec = value / 1000;
+            timeVal.tv_usec = (value % 1000) * 1000;
+            result = setsockopt (socket, SOL_SOCKET, SO_RCVTIMEO, (char *) & timeVal, sizeof (struct timeval));
             break;
+        }
 
         case ENET_SOCKOPT_SNDTIMEO:
-            result = setsockopt (socket, SOL_SOCKET, SO_SNDTIMEO, (char *) & value, sizeof (int));
+        {
+            struct timeval timeVal;
+            timeVal.tv_sec = value / 1000;
+            timeVal.tv_usec = (value % 1000) * 1000;
+            result = setsockopt (socket, SOL_SOCKET, SO_SNDTIMEO, (char *) & timeVal, sizeof (struct timeval));
+            break;
+        }
+
+        case ENET_SOCKOPT_NODELAY:
+            result = setsockopt (socket, IPPROTO_TCP, TCP_NODELAY, (char *) & value, sizeof (int));
+            break;
+
+        default:
+            break;
+    }
+    return result == -1 ? -1 : 0;
+}
+
+int
+enet_socket_get_option (ENetSocket socket, ENetSocketOption option, int * value)
+{
+    int result = -1;
+    socklen_t len;
+    switch (option)
+    {
+        case ENET_SOCKOPT_ERROR:
+            len = sizeof (int);
+            result = getsockopt (socket, SOL_SOCKET, SO_ERROR, value, & len);
             break;
 
         default:
@@ -239,6 +320,7 @@ int
 enet_socket_connect (ENetSocket socket, const ENetAddress * address)
 {
     struct sockaddr_in sin;
+    int result;
 
     memset (& sin, 0, sizeof (struct sockaddr_in));
 
@@ -246,7 +328,11 @@ enet_socket_connect (ENetSocket socket, const ENetAddress * address)
     sin.sin_port = ENET_HOST_TO_NET_16 (address -> port);
     sin.sin_addr.s_addr = address -> host;
 
-    return connect (socket, (struct sockaddr *) & sin, sizeof (struct sockaddr_in));
+    result = connect (socket, (struct sockaddr *) & sin, sizeof (struct sockaddr_in));
+    if (result == -1 && errno == EINPROGRESS)
+      return 0;
+
+    return result;
 }
 
 ENetSocket
@@ -272,10 +358,17 @@ enet_socket_accept (ENetSocket socket, ENetAddress * address)
     return result;
 } 
     
+int
+enet_socket_shutdown (ENetSocket socket, ENetSocketShutdown how)
+{
+    return shutdown (socket, (int) how);
+}
+
 void
 enet_socket_destroy (ENetSocket socket)
 {
-    close (socket);
+    if (socket != -1)
+      close (socket);
 }
 
 int
@@ -393,7 +486,16 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
     pollCount = poll (& pollSocket, 1, timeout);
 
     if (pollCount < 0)
-      return -1;
+    {
+        if (errno == EINTR && * condition & ENET_SOCKET_WAIT_INTERRUPT)
+        {
+            * condition = ENET_SOCKET_WAIT_INTERRUPT;
+
+            return 0;
+        }
+
+        return -1;
+    }
 
     * condition = ENET_SOCKET_WAIT_NONE;
 
@@ -427,7 +529,16 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
     selectCount = select (socket + 1, & readSet, & writeSet, NULL, & timeVal);
 
     if (selectCount < 0)
-      return -1;
+    {
+        if (errno == EINTR && * condition & ENET_SOCKET_WAIT_INTERRUPT)
+        {
+            * condition = ENET_SOCKET_WAIT_INTERRUPT;
+
+            return 0;
+        }
+      
+        return -1;
+    }
 
     * condition = ENET_SOCKET_WAIT_NONE;
 

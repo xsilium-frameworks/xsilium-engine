@@ -21,7 +21,6 @@ set(CORE_HEADER_FILES
     Game/PlayState.h
     Login/LoginState.h
     Login/Authentification/GestionnaireAuth.h
-    Login/Authentification/StructurePacket/PacketAuth.h
     Login/Gui/GuiAuth.h
     Shared/Compte/Compte.h
 )

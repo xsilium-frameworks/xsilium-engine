@@ -13,6 +13,7 @@ GestionnaireAuth::GestionnaireAuth() {
 	compte = Compte::getInstance();
 	guiAuth = new GuiAuth();
 	Engine::GuiManager::getInstance()->addGuiListenner(guiAuth);
+	networkManager = Engine::NetworkManager::getInstance();
 }
 
 GestionnaireAuth::~GestionnaireAuth() {
@@ -24,7 +25,7 @@ GestionnaireAuth::~GestionnaireAuth() {
 
 void GestionnaireAuth::run()
 {
-	networkManager->addlistenneur((XSILIUM_AUTH * 1000) + ID_AUTH,boost::bind(&GestionnaireAuth::setPacket, this));
+	networkManager->addlistenneur((XSILIUM_AUTH * 1000) + ID_AUTH,this);
 	NetworkListener::run();
 }
 
@@ -53,10 +54,9 @@ bool GestionnaireAuth::initNetwork()
 	return true;
 }
 
-void GestionnaireAuth::processPacket(ENetEvent * packet)
+void GestionnaireAuth::processPacket(Engine::MessagePacket * messagePacket)
 {
-	AUTHPACKET_TYPE *data = (AUTHPACKET_TYPE *) packet->packet->data ;
-	switch(data->typeAuth)
+	switch(messagePacket->getSousOpcode())
 	{
 	case ID_CHALLENGE :
 	{
@@ -66,7 +66,7 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 		event.setProperty("Progression","3");
 		event.setProperty("ProgressionTotal","4");
 		Engine::Engine::getInstance()->addEvent(event);
-		handleEtapeDeux(packet);
+		handleEtapeDeux(messagePacket);
 	}
 	break;
 	case ID_REPONSE :
@@ -87,7 +87,7 @@ void GestionnaireAuth::processPacket(ENetEvent * packet)
 		cancelAuthentification();
 		break;
 	case ID_ERREUR:
-		gestionnaireErreur( (AUTHPACKET_ERROR *) packet->packet->data);
+		gestionnaireErreur(messagePacket);
 		break;
 	default:
 		break;
@@ -106,38 +106,29 @@ void GestionnaireAuth::processEvent(Event * event)
 
 }
 
-void GestionnaireAuth::handleEtapeDeux(ENetEvent * packet)
+void GestionnaireAuth::handleEtapeDeux(Engine::MessagePacket * messagePacket)
 {
-	if (packet->packet->dataLength < sizeof(AUTHPACKET_LC_S))
-	{
 
-	}
+	Engine::MessagePacket * messagePacketSend = new Engine::MessagePacket();
 
-	AUTHPACKET_LC_S *data = (AUTHPACKET_LC_S *) packet->packet->data ;
+	messagePacketSend->setOpcode(ID_AUTH);
+	messagePacketSend->setSousOpcode(ID_REPONSE);
+	messagePacketSend->setProperty("Password",compte->getPassWord());
+	networkManager->sendPacket(messagePacketSend);
 
-	printf("key : %d \n",data->key);
-
-	AUTHPACKET_P_C message2;
-	message2.authTypePacket.structure_opcode.cmd = XSILIUM_AUTH;
-	message2.authTypePacket.structure_opcode.opcode = ID_AUTH;
-	message2.authTypePacket.typeAuth = ID_REPONSE ;
-	std::strcpy(message2.A,compte->getPassWord());
-	ENetPacket * packetAEnvoyer = enet_packet_create ((const void *)&message2,sizeof(message2) + 1,ENET_PACKET_FLAG_RELIABLE);
-	networkManager->sendPacket(packetAEnvoyer,0);
 }
 
 bool GestionnaireAuth::sendAuthentification()
 {
 
-	AUTHPACKET_LC_C message;
-	message.authTypePacket.structure_opcode.cmd = XSILIUM_AUTH;
-	message.authTypePacket.structure_opcode.opcode = ID_AUTH;
-	message.authTypePacket.typeAuth = ID_CHALLENGE;
-	message.build = compte->getVersion();
-	message.login_len = std::strlen(compte->getLogin());
-	std::strcpy(message.login,compte->getLogin());
-	ENetPacket * packetAEnvoyer = enet_packet_create ((const void *)&message,sizeof(message) + 1,ENET_PACKET_FLAG_RELIABLE);
-	networkManager->sendPacket (packetAEnvoyer,0);
+	Engine::MessagePacket * messagePacketSend = new Engine::MessagePacket();
+
+	messagePacketSend->setOpcode(ID_AUTH);
+	messagePacketSend->setSousOpcode(ID_CHALLENGE);
+	messagePacketSend->setProperty("Build",compte->getVersion());
+	messagePacketSend->setProperty("Login",compte->getLogin());
+
+	networkManager->sendPacket(messagePacketSend);
 	return true;
 }
 
@@ -165,9 +156,9 @@ void GestionnaireAuth::setAuthentification(Event * event)
 	sendAuthentification();
 }
 
-void GestionnaireAuth::gestionnaireErreur(AUTHPACKET_ERROR * packetErreur)
+void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 {
-	switch(packetErreur->errorID)
+	switch(messagePacket->getSousOpcode())
 	{
 	case ID_ERROR_PACKET_SIZE :
 	{

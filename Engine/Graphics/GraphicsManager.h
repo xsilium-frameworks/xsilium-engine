@@ -11,7 +11,7 @@
 #include "Engine/Engine.h"
 #include "Graphics/GraphicsEntiteManager.h"
 #include "Graphics/GraphicsSceneLoader.h"
-#include "Graphics/GraphicsCamera.h";
+#include "Graphics/GraphicsCamera.h"
 #include "Graphics/GraphicsMeteoManager.h"
 #include "Graphics/GraphicsWater.h"
 #include "Graphics/GraphicsObjetManager.h"

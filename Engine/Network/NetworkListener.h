@@ -1,15 +1,17 @@
 /*
  * \file NetworkListener.h
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
 #ifndef NETWORKLISTENER_H_
 #define NETWORKLISTENER_H_
 
-#include "Network/NetworkManager.h"
 #include "Network/Opcode/Opcode.h"
+#include <boost/thread.hpp>
+
+#include "MessagePacket.h"
 
 #include <queue>
 
@@ -29,10 +31,10 @@ public:
 
 	void stopThread();
 
-	virtual void processPacket(ENetEvent * packet) = 0;
+	virtual void processPacket(MessagePacket * messagePacket) = 0;
 
-	void setPacket();
-	ENetEvent getPacket();
+	void setPacket(MessagePacket * messagePacket);
+	MessagePacket * getPacket();
 
 	bool isEmpty();
 
@@ -43,11 +45,10 @@ protected:
 
 	boost::condition_variable condition_Queue;
 	boost::thread_group groupThread;
-	NetworkManager * networkManager;
 	bool endThread;
 
 private:
-	std::queue<ENetEvent> ListOfPacket;
+	std::queue<MessagePacket*> ListOfPacket;
 	boost::mutex mutexList;
 };
 
