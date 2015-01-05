@@ -1,9 +1,9 @@
 /*
  * \file GraphicsManager.h
  *
- *  Created on: \date 26 août 2014
+ *  Created on: \date 26 aoï¿½t 2014
  *      Author: \author xelfe joda
- *  \brief : Fichier d'en-tête de la classe GraphicsManager
+ *  \brief : Fichier d'en-tï¿½te de la classe GraphicsManager
  */
 #ifndef GRAPHICSMANAGER_H_
 #define GRAPHICSMANAGER_H_
@@ -14,6 +14,7 @@
 #include "Graphics/GraphicsCamera.h"
 #include "Graphics/GraphicsMeteoManager.h"
 #include "Graphics/GraphicsWater.h"
+#include "Graphics/GraphicsSky.h"
 #include "Graphics/GraphicsObjetManager.h"
 #include "Input/InputManager.h"
 
@@ -73,7 +74,7 @@ namespace Engine {
 		GraphicsSceneLoader*		graphicsSceneLoader;
 		InputManager*				inputManager;
 		GraphicsCamera*				graphicsCamera;
-		//	GraphicsMeteoManager*	graphicsMeteoManager;
+		GraphicsSky *				graphicsSky;
 		GraphicsWater*				graphicsWater;
 		GraphicsObjetManager*		graphicsObjetManager;
 

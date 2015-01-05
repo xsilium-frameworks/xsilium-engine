@@ -3,7 +3,7 @@
  *
  *  Created on: \date 25 sept. 2014
  *      Author: \author joda xelfe
- *  \brief : Fichier d'en tête de la classe GraphicsWater
+ *  \brief : Fichier d'en tï¿½te de la classe GraphicsWater
  */
 #ifndef GRAPHICSWATER_H_
 #define GRAPHICSWATER_H_
@@ -31,6 +31,10 @@ public:
 	void update(float dt);
 
 	void addDepthTechnique(Ogre::StringVector materialNames);
+
+	void addRttListener(GraphicsHydraxRttListener * graphicsHydraxRttListener);
+
+	Hydrax::Hydrax* getHydraX();
 
 private:
 

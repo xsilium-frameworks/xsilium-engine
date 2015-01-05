@@ -37,9 +37,9 @@ void XsiliumApp::start()
 	LoginState::create<LoginState>(gameStateManager, "LoginState");
 	PlayState::create<PlayState>(gameStateManager, "PlayState");
 
-//	Engine::KeyboardManager::getInstance();
+	Engine::KeyboardManager::getInstance();
 
-	gameStateManager->start(gameStateManager->findByName("LoginState"));
+	gameStateManager->start(gameStateManager->findByName("PlayState"));
 
 }
 

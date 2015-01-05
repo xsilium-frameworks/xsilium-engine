@@ -7,7 +7,9 @@
  */
 #ifndef GRAPHICSSKY_H_
 #define GRAPHICSSKY_H_
+
 #include "SkyX.h"
+#include "Logging/LogManager.h"
 
 namespace Engine {
 
@@ -16,29 +18,21 @@ namespace Engine {
  */
 class GraphicsSky {
 public:
-	GraphicsSky();
+	GraphicsSky(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd);
 	virtual ~GraphicsSky();
 
-	/** Get the SkyX manager
-	 * @return SkyX manager
-	 */
-	SkyX::SkyX* skyxMgr() const {
-		return mSkyX;
-	}
-	/** Get the SkyX controller
-	 * @return SkyX controller
-	 */
-	SkyX::BasicController* skyxCtrl() const {
-		return mSkyXController;
-	}
+	void initSkyX();
 
-	/** Update method, that must be called every frame.
-	 * @param dt Time elapsed between frames (Time
-	 * multiplier will be imposed into the function).
-	 */
 	void update(float dt);
 
+	SkyX::SkyX* getSkyX();
+
 private:
+
+	Ogre::SceneManager*			m_pSceneMgr;
+	Ogre::Root* 				m_pRoot;
+	Ogre::RenderWindow* 		m_pRenderWnd;
+
 	SkyX::SkyX* mSkyX;
 	SkyX::BasicController * mSkyXController;
 

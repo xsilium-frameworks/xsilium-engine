@@ -22,9 +22,9 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include <Noise/FFT/FFT.h>
+#include "Noise/FFT/FFT.h"
 
-#include <Hydrax.h>
+#include "Hydrax.h"
 
 namespace Hydrax{namespace Noise
 {

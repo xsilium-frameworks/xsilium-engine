@@ -336,6 +336,10 @@ if (NOT OGRE_BUILD_COMPONENT_TERRAIN OR NOT OGRE_BUILD_COMPONENT_PAGING)
   set(OGRE_COMMENT_SAMPLE_ENDLESSWORLD "#")
 endif ()
 
+if (APPLE)
+  set(OGRE_MEDIA_DIR_DBG "Contents/Resources")
+endif ()
+
 
 # create resources.cfg
 configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${OGRE_BINARY_DIR}/bin/resources.cfg)

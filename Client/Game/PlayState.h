@@ -3,13 +3,14 @@
 *
 *  Created on: \date 24 septembre 2014
 *      Author: \author xelfe
-*  \brief : Fichier d'en-tête de la classe PlayState
+*  \brief : Fichier d'en-tï¿½te de la classe PlayState
 */
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 
 #include "GameState/GameState.h"
 #include "Logging/LogManager.h"
+#include "Chat/GestionnaireChat.h"
 
 
 class PlayState : public GameState {
@@ -25,6 +26,10 @@ public:
 	void update(double timeSinceLastFrame);
 
 	void processEvent(Event * event);
+
+private:
+	GestionnaireChat * gestionnaireChat;
+
 
 };
 

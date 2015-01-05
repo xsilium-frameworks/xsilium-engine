@@ -1,7 +1,7 @@
 /*
  * \file GestionnaireChat.h
  *
- *  Created on: \date 16 fŽvr. 2013
+ *  Created on: \date 16 fï¿½vr. 2013
  *      Author: \author joda
  *  \brief :
  */
@@ -9,49 +9,38 @@
 #ifndef GESTIONNAIRECHAT_H_
 #define GESTIONNAIRECHAT_H_
 
-#include "Network/NetworkManager.h"
-
-#include "Interface/GestionnaireInterface.h"
-
-#include "Interface/GuiChat.h"
-
-#include "Network/Opcode/Opcode.h"
-
-#include "Game/Chat/StructurePacket/PacketChat.h"
+#include "Engine/Network/NetworkManager.h"
+#include "Gui/GuiChat.h"
 
 #include "Compte/Compte.h"
 
-#include "ModuleActif/ModuleActif.h"
-
-#include "GestionnaireMouvement/GestionnaireMouvement.h"
+enum typeForChat
+{
+	ID_TOPERSO = 0
+};
 
 /*
  *
  */
-class GestionnaireChat : public ModuleActif , public ControleInterface , public OIS::KeyListener {
+class GestionnaireChat : public Engine::NetworkListener {
 public:
 	GestionnaireChat();
 	virtual ~GestionnaireChat();
 
 	void run();
 
-	void processPacket(ENetEvent * packet);
+	void processPacket(Engine::MessagePacket * messagePacket);
 
-	void retourInterface(EventInterface eventInterface,int retour);
+	void sendMessageChat(Event * event);
 
-	void sendMessageToChat(const char * message, int to);
+	void affichageMessage();
 
-	bool keyPressed(const OIS::KeyEvent &keyEventRef);
-	bool keyReleased(const OIS::KeyEvent &keyEventRef);
+	void processEvent(Event * event);
 
 
 private:
-	NetworkManager * networkManager;
-	Compte * compte;
-	GestionnaireInterface * gestionnaireInterface;
-
-	KeyboardMap * keyboardMap ;
-	InputManager * inputManager;
+	Engine::NetworkManager * networkManager;
+	GuiChat * guiChat;
 
 };
 

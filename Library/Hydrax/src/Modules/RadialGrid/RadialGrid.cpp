@@ -23,7 +23,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 */
 #pragma warning(disable:4244)
 
-#include <Modules/RadialGrid/RadialGrid.h>
+#include "Modules/RadialGrid/RadialGrid.h"
 
 namespace Hydrax{namespace Module
 {

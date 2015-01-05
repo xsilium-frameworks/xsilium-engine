@@ -1,124 +1,61 @@
 /*
  * \file GestionnaireChat.cpp
  *
- *  Created on: \date 16 fvr. 2013
+ *  Created on: \date 16 fï¿½vr. 2013
  *      Author: \author joda
  *  \brief :
  */
 
-#include "Chat/GestionnaireChat/GestionnaireChat.h"
+#include "Chat/GestionnaireChat.h"
 
 GestionnaireChat::GestionnaireChat() {
 
-	networkManager = NetworkManager::getInstance();
-    NetworkManager::getInstance()->createConnexion();
-	gestionnaireInterface = GestionnaireInterface::getInstance();
-	compte = Compte::getInstance();
-
-	keyboardMap = KeyboardMap::getInstance();
-	inputManager = InputManager::getInstance();
-
-
-
-	gestionnaireInterface->addInterface(new Chat());
-
-	int messageErreur = networkManager->connexionToHost("85.25.143.49",60001);
-
-	if( messageErreur > 0)
-	{
-		printf("erreur de connection: %d \n",messageErreur);
-	}
-	else
-	{
-		run();
-	}
-
-	inputManager->addKeyListener(this,"GestionnaireChatKey");
-
+	guiChat = new GuiChat();
+	Engine::GuiManager::getInstance()->addGuiListenner(guiChat);
+	networkManager = Engine::NetworkManager::getInstance();
 }
 
 GestionnaireChat::~GestionnaireChat() {
-	networkManager->removelistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT);
-    networkManager->disconnexion();
-	inputManager->removeKeyListener(this);
+	Engine::GuiManager::getInstance()->removeGuiListenner(guiChat);
+	delete guiChat;
+	networkManager->removelistenneur(ID_CHAT);
 }
 
 void GestionnaireChat::run()
 {
-	networkManager->addlistenneur((XSILIUM_KINGDOM * 1000) + ID_CHAT,boost::bind(&GestionnaireChat::setPacket, this));
+	networkManager->addlistenneur(ID_CHAT,this);
+	NetworkListener::run();
 
-	ModuleActif::run();
 }
 
-void GestionnaireChat::retourInterface(EventInterface eventInterface,int retour)
+void GestionnaireChat::processPacket(Engine::MessagePacket * messagePacket)
 {
+	Event event ;
+	event.setProperty("CHAT","1");
+	event.setProperty("Perso",messagePacket->getProperty("Perso").c_str());
+	event.setProperty("Message",messagePacket->getProperty("Message").c_str());
+	Engine::Engine::getInstance()->addEvent(event);
 }
 
-void GestionnaireChat::processPacket(ENetEvent * packet)
+void GestionnaireChat::sendMessageChat(Event * event)
 {
-	CHATPACKET_C * typePacket = (CHATPACKET_C *) packet->packet->data ;
-	if (typePacket->charTypePacket.structure_opcode.cmd == XSILIUM_KINGDOM)
+	if(event->hasProperty("Message"))
 	{
-		printf("message recu %s \n",typePacket->message);
+		Engine::MessagePacket * messagePacketSend = new Engine::MessagePacket();
+		messagePacketSend->setOpcode(ID_CHAT);
+		messagePacketSend->setSousOpcode(0);
+		messagePacketSend->setProperty("Perso","Joda");
+		messagePacketSend->setProperty("Message",event->getProperty("Message").c_str() );
 
-
-		char messageConsole[576];
-		std::strcpy(messageConsole,(const char *)typePacket->perso); // copy string one into the result.
-		std::strcat(messageConsole," > ");
-		std::strcat(messageConsole,(const char *)typePacket->message);
-        
-		//guichat->setEvent(ToString(ALL).c_str(),messageConsole);
-
+		networkManager->sendPacket(messagePacketSend);
 	}
 }
 
-void GestionnaireChat::sendMessageToChat(const char * message, int to)
+void GestionnaireChat::processEvent(Event * event)
 {
-	CHATPACKET_C messagePacket ;
-
-	messagePacket.charTypePacket.structure_opcode.cmd = XSILIUM_KINGDOM ;
-	messagePacket.charTypePacket.structure_opcode.opcode = ID_CHAT ;
-	messagePacket.charTypePacket.typeChat = 0;
-
-	std::strcpy(messagePacket.perso,compte->getLogin());
-	std::strcpy(messagePacket.message,message);
-
-	ENetPacket * packetAEnvoyer = enet_packet_create ((const void *)&messagePacket,sizeof(messagePacket) + 1,ENET_PACKET_FLAG_RELIABLE);
-	networkManager->sendPacket(packetAEnvoyer,0);
-
-}
-
-
-bool GestionnaireChat::keyPressed(const OIS::KeyEvent &keyEventRef)
-{
-	switch (keyEventRef.key)
+	if(event->hasProperty("CHAT"))
 	{
-
-	case OIS::KC_RETURN:
-/*		if(guichat->saisiActiver())
-		{
-			if(std::strcmp(guichat->getSaisi(),""))
-			{
-				sendMessageToChat(guichat->getSaisi(),0);
-			}
-			guichat->effaceSaisi();
-			GestionnaireMouvement::getInstance()->activeDeplacement();
-		}
-		else
-		{
-			GestionnaireMouvement::getInstance()->desactiveDeplacement();
-			guichat->activeSaisi();
-
-		} */
-		break;
-	default:
-		break;
+		sendMessageChat(event);
 	}
-	return true;
 
-
-}
-bool GestionnaireChat::keyReleased(const OIS::KeyEvent &keyEventRef)
-{
-	return true;
 }

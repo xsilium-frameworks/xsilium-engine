@@ -11,7 +11,6 @@ LoginState::LoginState()
 
 LoginState::~LoginState()
 {
-	Engine::LogManager::DestroyInstance();
 }
 void LoginState::enter()
 {

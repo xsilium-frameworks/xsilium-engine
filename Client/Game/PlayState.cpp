@@ -1,25 +1,26 @@
 /*
-* \file PlayState.cpp
-*
-*  Created on: \date 23 septembre 2014
-*      Author: \author xelfe
-*  \brief : Fichier source de la classe PlayState
-*/
+ * \file PlayState.cpp
+ *
+ *  Created on: \date 23 septembre 2014
+ *      Author: \author xelfe
+ *  \brief : Fichier source de la classe PlayState
+ */
 #include "PlayState.h"
 
 using namespace Ogre;
 
 PlayState::PlayState() {
-
+	Engine::NetworkManager::getInstance()->createConnexion();
+	gestionnaireChat = NULL;
 }
 
 PlayState::~PlayState() {
-	Engine::LogManager::DestroyInstance();
 }
 
 void PlayState::enter() {
 	Engine::LogManager::getInstance()->setLogMessage("Entree dans PlayState", Engine::NORMAL);
 	createScene();
+	gestionnaireChat = new GestionnaireChat();
 }
 
 void PlayState::createScene() {
@@ -47,20 +48,26 @@ void PlayState::createScene() {
 
 	Engine::Engine::getInstance()->addEvent(event2);
 
-	Event event3;
+	/*Event event3;
 
 	event3.setProperty("Water","1");
 	event3.setProperty("InitWater","1");
-	Engine::Engine::getInstance()->addEvent(event3);
-    
-  /*  Event event3 ;
-    event3.setProperty("Entite","1");
-    event3.setProperty("deplaceEntite","1");
-    event3.setProperty("idEntite","1");
-    event3.setProperty("NewPositionX","1");
-    event3.setProperty("NewPositionY","0");
-    event3.setProperty("NewPositionZ","0");
-    Engine::Engine::getInstance()->addEvent(event3); */
+	Engine::Engine::getInstance()->addEvent(event3);*/
+
+	Event event4;
+
+	event4.setProperty("Sky","1");
+	event4.setProperty("InitSky","1");
+	Engine::Engine::getInstance()->addEvent(event4);
+
+	Event event5 ;
+    event5.setProperty("Entite","1");
+    event5.setProperty("deplaceEntite","1");
+    event5.setProperty("idEntite","1");
+    event5.setProperty("NewPositionX","1");
+    event5.setProperty("NewPositionY","0");
+    event5.setProperty("NewPositionZ","0");
+    Engine::Engine::getInstance()->addEvent(event5);
 
 
 
@@ -68,10 +75,10 @@ void PlayState::createScene() {
 
 void PlayState::exit() {
 	Engine::LogManager::getInstance()->setLogMessage("Sortie du PlayState", Engine::NORMAL);
+	delete gestionnaireChat;
 }
 
 void PlayState::update(double timeSinceLastFrame) {
-
 }
 
 void PlayState::processEvent(Event* event) {
@@ -83,26 +90,27 @@ void PlayState::processEvent(Event* event) {
 			if( atoi(event->getProperty("Action").c_str()) == 1 )
 			{
 				Event event3 ;
-					event3.setProperty("Entite","1");
-					event3.setProperty("deplaceEntite","1");
-					event3.setProperty("idEntite","1");
-					event3.setProperty("NewPositionX","1");
-					event3.setProperty("NewPositionY","0");
-					event3.setProperty("NewPositionZ","0");
-					Engine::Engine::getInstance()->addEvent(event3);
+				event3.setProperty("Entite","1");
+				event3.setProperty("deplaceEntite","1");
+				event3.setProperty("idEntite","1");
+				event3.setProperty("NewPositionX","1");
+				event3.setProperty("NewPositionY","0");
+				event3.setProperty("NewPositionZ","0");
+				Engine::Engine::getInstance()->addEvent(event3);
 			}
 			else
 			{
 				Event event3 ;
-					event3.setProperty("Entite","1");
-					event3.setProperty("deplaceEntite","1");
-					event3.setProperty("idEntite","1");
-					event3.setProperty("NewPositionX","0");
-					event3.setProperty("NewPositionY","0");
-					event3.setProperty("NewPositionZ","0");
-					Engine::Engine::getInstance()->addEvent(event3);
+				event3.setProperty("Entite","1");
+				event3.setProperty("deplaceEntite","1");
+				event3.setProperty("idEntite","1");
+				event3.setProperty("NewPositionX","0");
+				event3.setProperty("NewPositionY","0");
+				event3.setProperty("NewPositionZ","0");
+				Engine::Engine::getInstance()->addEvent(event3);
 			}
 		}
 	}
+	gestionnaireChat->processEvent(event);
 
 }

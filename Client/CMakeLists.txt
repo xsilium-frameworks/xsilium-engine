@@ -10,6 +10,8 @@ set(CORE_SOURCE_FILES
     main.cpp
     XsiliumApp.cpp
     Game/PlayState.cpp
+    Game/Chat/GestionnaireChat.cpp
+    Game/Gui/GuiChat.cpp
     Login/LoginState.cpp 
     Login/Authentification/GestionnaireAuth.cpp
     Login/Gui/GuiAuth.cpp
@@ -19,6 +21,8 @@ set(CORE_SOURCE_FILES
 set(CORE_HEADER_FILES
     XsiliumApp.h
     Game/PlayState.h
+    Game/Chat/GestionnaireChat.h
+    Game/Gui/GuiChat.h
     Login/LoginState.h
     Login/Authentification/GestionnaireAuth.h
     Login/Gui/GuiAuth.h
@@ -120,6 +124,8 @@ if (APPLE)
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
         COMMAND ditto 
 		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/SampleBrowser_OSX.icns ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
+		COMMAND cp 
+		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
 		)
 
 	# now plugins
@@ -127,7 +133,8 @@ if (APPLE)
 		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks
 		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Plugins)
 
-    set(FRAMEWORKS OgreOverlay
+    set(FRAMEWORKS 
+    	OgreOverlay
         OgrePaging
         OgreProperty
         OgreRTShaderSystem

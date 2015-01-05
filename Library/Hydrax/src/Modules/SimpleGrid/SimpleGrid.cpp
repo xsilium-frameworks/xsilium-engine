@@ -22,7 +22,7 @@ http://www.gnu.org/copyleft/lesser.txt.
 --------------------------------------------------------------------------------
 */
 
-#include <Modules/SimpleGrid/SimpleGrid.h>
+#include "Modules/SimpleGrid/SimpleGrid.h"
 
 namespace Hydrax{namespace Module
 {

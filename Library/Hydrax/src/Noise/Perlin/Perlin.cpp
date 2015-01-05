@@ -27,9 +27,9 @@ http://graphics.cs.lth.se/theses/projects/projgrid/
 */
 #pragma warning(disable:4244)
 
-#include <Noise/Perlin/Perlin.h>
+#include "Noise/Perlin/Perlin.h"
 
-#include <Hydrax.h>
+#include "Hydrax.h"
 
 #define _def_PackedNoise true
 
