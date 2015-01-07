@@ -1,7 +1,7 @@
 /*
  * \file GraphicsEntite.cpp
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -10,6 +10,7 @@
 namespace Engine {
 
 GraphicsEntite::GraphicsEntite() {
+	id  = 0;
 	charHeight = 0;
 	runSpeed = 0;
 	turnSpeed = 0;
@@ -22,10 +23,19 @@ GraphicsEntite::GraphicsEntite() {
 
 	degainer = false;
 
+	defaultBody = 0;
+	sceneBoxShape = 0;
+
 }
 
 GraphicsEntite::~GraphicsEntite() {
 	delete graphicsAnimation;
+
+	PhysicsManager::getInstance()->removeBody(defaultBody);
+	PhysicsManager::getInstance()->removeShape(sceneBoxShape);
+
+	delete sceneBoxShape;
+	delete defaultBody;
 }
 
 void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Ogre::String fileMesh)
@@ -44,6 +54,27 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 
 	graphicsAnimation = new GraphicsAnimation(mBodyEnt);
 	graphicsAnimation->loadAnimation();
+
+    Ogre::AxisAlignedBox boundingB = mBodyEnt->getBoundingBox();
+    Ogre::Vector3 size = Ogre::Vector3::ZERO;	// size of the box
+    size = boundingB.getSize();
+	// after that create the Bullet shape with the calculated size
+	sceneBoxShape = new OgreBulletCollisions::BoxCollisionShape(size);
+	// and the Bullet rigid body
+	defaultBody = new OgreBulletDynamics::RigidBody(nom.c_str(),PhysicsManager::getInstance()->getWorld());
+
+	defaultBody->setShape(	mMainNode,
+			sceneBoxShape,
+			0.6f,			// dynamic body restitution
+			0.6f,			// dynamic body friction
+			1.0f, 			// dynamic bodymass
+			mMainNode->getPosition(),		// starting position of the box
+			mMainNode->getOrientation());// orientation of the box
+
+	PhysicsManager::getInstance()->addBody(defaultBody);
+	PhysicsManager::getInstance()->addShape(sceneBoxShape);
+
+
 }
 
 void GraphicsEntite::setCharHeight(int charHeight)
@@ -198,7 +229,7 @@ void GraphicsEntite::deleteEquipement(Ogre::String emplacement)
 
 void GraphicsEntite::deplaceEntite(Ogre::Vector3 positionFinal)
 {
-    positionFinal.normalise();
+	positionFinal.normalise();
 	this->positionFinal = positionFinal;
 }
 

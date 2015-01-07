@@ -1,11 +1,16 @@
-cmake_minimum_required(VERSION 2.4)
 
 PROJECT(BULLET_PHYSICS)
-SET(BULLET_VERSION 2.75)
+SET(BULLET_VERSION 2.83)
 
+SUBDIRS(  Extras )
 
-add_subdirectory(src/BulletCollision)
-add_subdirectory(src/BulletDynamics)
-add_subdirectory(src/LinearMath)
-add_subdirectory(src/BulletSoftBody)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+
+#SUBDIRS(  Bullet3OpenCL Bullet3Serialize/Bullet2FileLoader Bullet3Dynamics Bullet3Collision Bullet3Geometry Bullet3Common )
+
+SUBDIRS(  BulletSoftBody BulletCollision BulletDynamics LinearMath )
+
+set(BULLET_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/Extras" CACHE PATH "" FORCE)
+
+set(BULLET_LIBRARIES "LinearMath" "BulletCollision" "BulletDynamics" "BulletSoftBody" "ConvexDecomposition" CACHE STRING "" FORCE)
 

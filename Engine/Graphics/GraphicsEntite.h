@@ -1,7 +1,7 @@
 /*
  * \file GraphicsEntite.h
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -11,6 +11,9 @@
 #include <Ogre.h>
 #include "GraphicsAnimation.h"
 #include "Event/Event.h"
+#include "Physics/PhysicsManager.h"
+
+#include "Shapes/OgreBulletCollisionsBoxShape.h"		 // for Boxes
 
 namespace Engine {
 
@@ -72,6 +75,8 @@ private:
 	Ogre::Vector3 positionFinal;
 	Ogre::Vector3 orientation;
 
+	OgreBulletDynamics::RigidBody *defaultBody;
+	OgreBulletCollisions::BoxCollisionShape *sceneBoxShape;
 
 };
 

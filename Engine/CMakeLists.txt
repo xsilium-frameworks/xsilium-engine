@@ -31,6 +31,7 @@ set( CORE_HEADER_FILES
 	 ./Network/NetworkManager.h
 	 ./Network/MessagePacket.h
 	 ./Singleton/Singleton.h
+  	 ./Physics/PhysicsManager.h
 )	 
 
 
@@ -64,6 +65,7 @@ set (CORE_SOURCE_FILES
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp
  	 ./Network/MessagePacket.cpp
+ 	 ./Physics/PhysicsManager.cpp
 )
 
 include_directories(
@@ -79,6 +81,8 @@ ${OGRE_Overlay_INCLUDE_DIR}
 ${ENET_INCLUDE_DIR}
 ${OGRE_RenderSystems_INCLUDE_DIR}
 ${OGREPAGED_INCLUDE_DIRS}
+${BULLET_INCLUDE_DIRS}
+${OGREBULLET_INCLUDE_DIRS}
 .
 )
 
@@ -96,6 +100,7 @@ ${ENET_LIBRARY}
 ${OGRE_RenderSystems_LIBRARIES}
 ${OIS_LIBRARIES}
 ${OGREPAGED_LIBRARIES}
+${OGREBULLET_LIBRARIES}
 )
 
 #add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})

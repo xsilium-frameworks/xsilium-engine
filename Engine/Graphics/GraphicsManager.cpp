@@ -38,12 +38,19 @@ GraphicsManager::GraphicsManager() {
 GraphicsManager::~GraphicsManager() {
 
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
-	delete graphicsWater;
-	delete graphicsSky;
-	delete graphicsEntiteManager;
-	delete graphicsObjetManager;
-	delete graphicsSceneLoader;
-	delete graphicsCamera;
+	if(graphicsWater)
+		delete graphicsWater;
+	if(graphicsSky)
+		delete graphicsSky;
+
+	if(graphicsObjetManager)
+		delete graphicsObjetManager;
+	if(graphicsEntiteManager)
+		delete graphicsEntiteManager;
+	if(graphicsSceneLoader)
+		delete graphicsSceneLoader;
+	if(graphicsCamera)
+		delete graphicsCamera;
 	InputManager::DestroyInstance();
 
 }
@@ -151,6 +158,7 @@ void GraphicsManager::loadScene(Event* event)
 	graphicsCamera->setCamera(m_pCamera);
 	graphicsCamera->setStyle(CS_FREELOOK);
 
+	PhysicsManager::getInstance()->initPhysics(m_pSceneMgr,Ogre::Vector3(0,-9.81,0),Ogre::AxisAlignedBox (Ogre::Vector3 (-10000, -10000, -10000),Ogre::Vector3 (10000,  10000,  10000)));
 
 
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
@@ -159,6 +167,7 @@ void GraphicsManager::loadScene(Event* event)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->setCamera(m_pCamera);
 	}
+
 }
 
 
@@ -230,7 +239,7 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		graphicsSceneLoader->mPGHandles[ij]->update();
 	}
 
-
+	PhysicsManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
 	return true;
 }
 bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)

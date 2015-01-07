@@ -1,7 +1,7 @@
 /*
  * \file GraphicsSceneLoader.h
  *
- *  Created on: \date 6 aožt 2014
+ *  Created on: \date 6 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -27,6 +27,9 @@
 #include "TreeLoader3D.h"
 
 #include "rapidxml.hpp"
+
+#include "Shapes/OgreBulletCollisionsTerrainShape.h"
+#include "Physics/PhysicsManager.h"
 
 // Forward declarations
 namespace Ogre
@@ -139,10 +142,6 @@ namespace Engine {
 	 Ogre::TerrainGroup* mTerrainGroup;
 	 Ogre::Vector3 mTerrainPosition;
 	 Ogre::Vector3 mLightDirection;
-	 //SkyX::SkyX * mSkyX ;
-	 //Hydrax::Hydrax* mHydrax;
-
-	 //GestionnaireMeteo * gestionnaireMeteo ;
 
 	 // paged geometry related values
 	 int mPGPageSize;

@@ -18,6 +18,8 @@
 #include "Graphics/GraphicsObjetManager.h"
 #include "Input/InputManager.h"
 
+#include "Physics/PhysicsManager.h"
+
 namespace Engine {
 
 	/*

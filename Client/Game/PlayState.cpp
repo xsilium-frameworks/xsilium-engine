@@ -48,7 +48,7 @@ void PlayState::createScene() {
 
 	Engine::Engine::getInstance()->addEvent(event2);
 
-	/*Event event3;
+/*	Event event3;
 
 	event3.setProperty("Water","1");
 	event3.setProperty("InitWater","1");
@@ -60,15 +60,14 @@ void PlayState::createScene() {
 	event4.setProperty("InitSky","1");
 	Engine::Engine::getInstance()->addEvent(event4);
 
-	Event event5 ;
-    event5.setProperty("Entite","1");
-    event5.setProperty("deplaceEntite","1");
-    event5.setProperty("idEntite","1");
-    event5.setProperty("NewPositionX","1");
-    event5.setProperty("NewPositionY","0");
-    event5.setProperty("NewPositionZ","0");
-    Engine::Engine::getInstance()->addEvent(event5);
-
+	/*Event event5 ;
+	event5.setProperty("Entite","1");
+	event5.setProperty("deplaceEntite","1");
+	event5.setProperty("idEntite","1");
+	event5.setProperty("NewPositionX","1");
+	event5.setProperty("NewPositionY","0");
+	event5.setProperty("NewPositionZ","0");
+	Engine::Engine::getInstance()->addEvent(event5);*/
 
 
 }

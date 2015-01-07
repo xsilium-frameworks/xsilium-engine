@@ -313,6 +313,7 @@ set(OGRE_RenderSystems_INCLUDE_DIR "${OGRE_SOURCE_DIR}/RenderSystems/GL/include"
 set(OGRE_RenderSystems_LIBRARIES "RenderSystem_GL")
 
 
+
 #######################################################################
 # Xsilium dependencies
 #######################################################################
@@ -327,6 +328,10 @@ set(CEGUI_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include" "${CMAKE
 # Find OgrePaged
 set(OGREPAGED_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/Library/OgrePaged/include")
 set(OGREPAGED_LIBRARIES "PagedGeometry")
+
+# Find OgreBullet
+set(OGREBULLET_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/Library/OgreBullet/Dynamics/include" "${CMAKE_SOURCE_DIR}/Library/OgreBullet/Collisions/include")
+set(OGREBULLET_LIBRARIES "OgreBulletDynamics")
 
 #find Xsilium
 set(XSILIUM_INCLUDE "${CMAKE_SOURCE_DIR}/Engine")

@@ -39,7 +39,7 @@ void GestionnaireChat::processPacket(Engine::MessagePacket * messagePacket)
 
 void GestionnaireChat::sendMessageChat(Event * event)
 {
-	if(event->hasProperty("Message"))
+	if(event->hasProperty("Message") && !event->hasProperty("Perso") )
 	{
 		Engine::MessagePacket * messagePacketSend = new Engine::MessagePacket();
 		messagePacketSend->setOpcode(ID_CHAT);

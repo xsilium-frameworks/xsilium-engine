@@ -1,7 +1,7 @@
 /*
  * \file GraphicsEntiteManager.h
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
