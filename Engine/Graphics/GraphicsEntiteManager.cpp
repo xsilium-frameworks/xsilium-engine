@@ -114,8 +114,8 @@ void GraphicsEntiteManager::processEvent(Event * event)
 			entite->processEvent(event);
 		}
 	}
-
 }
+
 
 void GraphicsEntiteManager::update(float time)
 {

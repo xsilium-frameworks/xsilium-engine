@@ -11,7 +11,6 @@ subdirs(Hydrax)
 subdirs(SkyX)
 
 subdirs(Bullet)
-subdirs(OgreBullet)
 
 #Update
 #subdirs(Curl)

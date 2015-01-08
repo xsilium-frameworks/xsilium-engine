@@ -329,10 +329,6 @@ set(CEGUI_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/Library/Cegui/cegui/include" "${CMAKE
 set(OGREPAGED_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/Library/OgrePaged/include")
 set(OGREPAGED_LIBRARIES "PagedGeometry")
 
-# Find OgreBullet
-set(OGREBULLET_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/Library/OgreBullet/Dynamics/include" "${CMAKE_SOURCE_DIR}/Library/OgreBullet/Collisions/include")
-set(OGREBULLET_LIBRARIES "OgreBulletDynamics")
-
 #find Xsilium
 set(XSILIUM_INCLUDE "${CMAKE_SOURCE_DIR}/Engine")
 set(XSILIUM_LIBRARY "XsiliumEngine")

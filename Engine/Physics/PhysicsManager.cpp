@@ -7,93 +7,172 @@
  */
 #include "PhysicsManager.h"
 
+
 namespace Engine {
 
 PhysicsManager::PhysicsManager() {
-	mWorld = 0;
-	debugDrawer = 0;
+	mColConfig = new btDefaultCollisionConfiguration;
+	mDispatcher = new btCollisionDispatcher(mColConfig);
+	mBroadphase = new btDbvtBroadphase;
+	mSolver = new btSequentialImpulseConstraintSolver;
+	mWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mColConfig);
+
+	mWorld->setGravity(btVector3(0, -9.81, 0));
+	mRootSceneNode = 0;
+
+	physicsDebugDrawer = 0;
+
 }
 
 PhysicsManager::~PhysicsManager() {
-	// OgreBullet physic delete - RigidBodies
-	std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
-	while (mBodies.end() != itBody)
+	for (int i = mWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
-		delete *itBody;
-		++itBody;
+		btCollisionObject * obj = mWorld->getCollisionObjectArray()[i];
+		btRigidBody * body = btRigidBody::upcast(obj);
+
+		if (body && body->getMotionState())
+			delete body->getMotionState();
+
+		mWorld->removeCollisionObject(obj);
+
+		delete obj;
 	}
-	// OgreBullet physic delete - Shapes
-	std::deque<OgreBulletCollisions::CollisionShape *>::iterator itShape = mShapes.begin();
-	while (mShapes.end() != itShape)
-	{
-		delete *itShape;
-		++itShape;
-	}
-	mBodies.clear();
-	mShapes.clear();
-	delete mWorld->getDebugDrawer();
-	mWorld->setDebugDrawer(0);
+
 	delete mWorld;
+	delete mSolver;
+	delete mBroadphase;
+	delete mDispatcher;
+	delete mColConfig;
+	delete physicsDebugDrawer;
 }
 
-void PhysicsManager::initPhysics(Ogre::SceneManager *sceneMgr,Ogre::Vector3 gravityVector,Ogre::AxisAlignedBox bounds)
+void PhysicsManager::addDynamicTerrain(float metersBetweenVertices,float w,float h,float* data,float minH,float maxH,const Ogre::Vector3& pos,float scale)
 {
-	// Start Bullet
-	mWorld = new OgreBulletDynamics::DynamicsWorld(sceneMgr, bounds, gravityVector);
+    btVector3 localScaling(metersBetweenVertices, 1, metersBetweenVertices);
 
-	// add Debug info display tool
-	debugDrawer = new OgreBulletCollisions::DebugDrawer();
-	debugDrawer->setDrawWireframe(true);	// we want to see the Bullet containers
+     btHeightfieldTerrainShape* groundShape = new btHeightfieldTerrainShape(
+                 w,
+                 h,
+				 data,
+                 1/*ignore*/,
+				 minH,
+				 maxH,
+                 1,
+                 PHY_FLOAT,
+                 true);
 
-	mWorld->setDebugDrawer(debugDrawer);
-	mWorld->setShowDebugShapes(true);		// enable it if you want to see the Bullet containers
-	Ogre::SceneNode *node = sceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
-	node->attachObject(static_cast <Ogre::SimpleRenderable *> (debugDrawer));
+     groundShape->setUseDiamondSubdivision(true);
+     groundShape->setLocalScaling(localScaling);
 
+     mCollisionShapes.push_back(groundShape);
+
+     btRigidBody * mGroundBody = new btRigidBody(0, new btDefaultMotionState(), groundShape);
+
+     mGroundBody->getWorldTransform().setOrigin(
+                 btVector3(
+                		 pos.x,
+						 pos.y + (maxH - minH)/2,
+						 pos.z));
+
+     mGroundBody->getWorldTransform().setRotation(
+                 btQuaternion(
+                     Ogre::Quaternion::IDENTITY.x,
+                     Ogre::Quaternion::IDENTITY.y,
+                     Ogre::Quaternion::IDENTITY.z,
+                     Ogre::Quaternion::IDENTITY.w));
+
+     mWorld->addRigidBody(mGroundBody);
 }
 
-
-void PhysicsManager::update(float dt)
+btRigidBody * PhysicsManager::addDynamicBox(Ogre::SceneNode * node, float m)
 {
-	mWorld->stepSimulation(dt);	// update Bullet Physics animation
+	btCollisionShape * colShape = new btBoxShape(btVector3(1, 1, 1));
+	mCollisionShapes.push_back(colShape);
+	btTransform boxTransform;
+	boxTransform.setIdentity();
+
+	btScalar mass(m);
+	btVector3 localInertia(0, 0, 0);
+
+	colShape->calculateLocalInertia(mass, localInertia);
+
+	boxTransform.setOrigin(btVector3(node->getPosition().x, node->getPosition().y, node->getPosition().z));
+
+	PhysicsMotionState * motionState = new PhysicsMotionState(boxTransform, node);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, colShape, localInertia);
+	btRigidBody * body = new btRigidBody(rbInfo);
+
+	mWorld->addRigidBody(body);
+
+	return body;
 }
 
-OgreBulletDynamics::DynamicsWorld * PhysicsManager::getWorld()
+btRigidBody * PhysicsManager::addRigidBody(btTransform transform, btCollisionShape * shape, btScalar mass, Ogre::SceneNode * node )
+{
+	mCollisionShapes.push_back(shape);
+	btVector3 localInertia(0, 0, 0);
+
+	shape->calculateLocalInertia(mass, localInertia);
+	PhysicsMotionState * motionState = new PhysicsMotionState(transform, node);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
+	btRigidBody * body = new btRigidBody(rbInfo);
+
+	mWorld->addRigidBody(body);
+
+	return body;
+}
+
+void PhysicsManager::addCollisionShape(btCollisionShape * colShape)
+{
+	mCollisionShapes.push_back(colShape);
+}
+
+btDiscreteDynamicsWorld * PhysicsManager::getDynamicsWorld()
 {
 	return mWorld;
 }
 
-
-void PhysicsManager::addShape(OgreBulletCollisions::CollisionShape * shape)
+btCollisionWorld * PhysicsManager::getCollisionWorld()
 {
-	mShapes.push_back(shape);
+	return mWorld->getCollisionWorld();
 }
-void PhysicsManager::removeShape(OgreBulletCollisions::CollisionShape * shape)
+
+btBroadphaseInterface * PhysicsManager::getBroadphase()
 {
-	std::deque<OgreBulletCollisions::CollisionShape *>::iterator itShape = mShapes.begin();
+	return mBroadphase;
+}
 
+void PhysicsManager::setRootSceneNode(Ogre::SceneNode * node)
+{
+	mRootSceneNode = node;
+	physicsDebugDrawer = new PhysicsDebugDrawer(node,this->getDynamicsWorld());
+	getDynamicsWorld()->setDebugDrawer(physicsDebugDrawer);
+}
 
-	while(itShape != mShapes.end())
+void PhysicsManager::shootBox(const Ogre::Vector3 & camPosition)
+{
+	if (mRootSceneNode)
 	{
-		if(*itShape == shape)
-			mShapes.erase(itShape);
-		++itShape;
+		Ogre::SceneNode * node = mRootSceneNode->createChildSceneNode(camPosition);
+		btRigidBody * box = addDynamicBox(node);
+		box->applyCentralImpulse(btVector3(50, 0, 0));
 	}
 }
 
-void PhysicsManager::addBody(OgreBulletDynamics::RigidBody * body)
+void PhysicsManager::debugBtVector3(const btVector3 & vec, const char * str)
 {
-	mBodies.push_back(body);
+	std::cout << str << " x: " << vec.x() << "; y: " << vec.y() << "; z: " << vec.z() << std::endl;
 }
-void PhysicsManager::removeBody(OgreBulletDynamics::RigidBody * body)
+
+void PhysicsManager::update(float dt)
 {
-	std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
-	while (mBodies.end() != itBody)
+	getDynamicsWorld()->stepSimulation(1 / 100.f, 10);
+	if(physicsDebugDrawer)
 	{
-		if(*itBody == body)
-			mBodies.erase(itBody);
-		++itBody;
+		physicsDebugDrawer->setDebugMode(true);
+		physicsDebugDrawer->step();
 	}
 }
+
 
 } /* namespace Engine */

@@ -28,9 +28,6 @@
 
 #include "rapidxml.hpp"
 
-#include "Shapes/OgreBulletCollisionsTerrainShape.h"
-#include "Physics/PhysicsManager.h"
-
 // Forward declarations
 namespace Ogre
 {

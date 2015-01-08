@@ -13,7 +13,7 @@ set( CORE_HEADER_FILES
 	 ./Graphics/GraphicsEntite.h
 	 ./Graphics/GraphicsHydraxRttListener.h
 	 ./Graphics/GraphicsManager.h
-	 ./Graphics/GraphicsMeteoManager.h
+	 ./Graphics/GraphicsMouvementManager.h
 	 ./Graphics/GraphicsObjet.h
 	 ./Graphics/GraphicsObjetManager.h
 	 ./Graphics/GraphicsSky.h
@@ -31,7 +31,12 @@ set( CORE_HEADER_FILES
 	 ./Network/NetworkManager.h
 	 ./Network/MessagePacket.h
 	 ./Singleton/Singleton.h
+  	 ./Physics/PhysicsConvert.h
+  	 ./Physics/PhysicsDebugDrawer.h
+  	 ./Physics/PhysicsDynamicLines.h
+  	 ./Physics/PhysicsDynamicRenderable.h
   	 ./Physics/PhysicsManager.h
+  	 ./Physics/PhysicsMotionState.h
 )	 
 
 
@@ -49,7 +54,7 @@ set (CORE_SOURCE_FILES
 	 ./Graphics/GraphicsEntiteManager.cpp
 	 ./Graphics/GraphicsHydraxRttListener.cpp
 	 ./Graphics/GraphicsManager.cpp
-	 ./Graphics/GraphicsMeteoManager.cpp
+	 ./Graphics/GraphicsMouvementManager.cpp
 	 ./Graphics/GraphicsObjet.cpp
 	 ./Graphics/GraphicsObjetManager.cpp
  	 ./Graphics/GraphicsSceneLoader.cpp
@@ -65,7 +70,12 @@ set (CORE_SOURCE_FILES
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp
  	 ./Network/MessagePacket.cpp
- 	 ./Physics/PhysicsManager.cpp
+ 	 ./Physics/PhysicsConvert.cpp
+  	 ./Physics/PhysicsDebugDrawer.cpp
+  	 ./Physics/PhysicsDynamicLines.cpp
+  	 ./Physics/PhysicsDynamicRenderable.cpp
+  	 ./Physics/PhysicsManager.cpp
+  	 ./Physics/PhysicsMotionState.cpp
 )
 
 include_directories(
@@ -82,7 +92,6 @@ ${ENET_INCLUDE_DIR}
 ${OGRE_RenderSystems_INCLUDE_DIR}
 ${OGREPAGED_INCLUDE_DIRS}
 ${BULLET_INCLUDE_DIRS}
-${OGREBULLET_INCLUDE_DIRS}
 .
 )
 
@@ -100,7 +109,7 @@ ${ENET_LIBRARY}
 ${OGRE_RenderSystems_LIBRARIES}
 ${OIS_LIBRARIES}
 ${OGREPAGED_LIBRARIES}
-${OGREBULLET_LIBRARIES}
+${BULLET_LIBRARIES}
 )
 
 #add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})

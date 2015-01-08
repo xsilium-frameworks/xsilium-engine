@@ -335,35 +335,6 @@ void GraphicsSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 	}
 	mTerrainGroup->loadAllTerrains(true);
 
-	Ogre::TerrainGroup::TerrainIterator it = mTerrainGroup->getTerrainIterator();
-
-	int incremant = 0;
-
-	while(it.hasMoreElements())
-	{
-		Ogre::Terrain* terrain = it.getNext()->instance;
-        unsigned page_size = terrain->getSize();
-
-		Ogre::Vector3 terrainScale( terrain->getWorldSize()/(page_size-1), terrain->getMaxHeight() ,terrain->getWorldSize()/(page_size-1));
-
-		OgreBulletCollisions::HeightmapCollisionShape * mTerrainShape = new OgreBulletCollisions::HeightmapCollisionShape (page_size, page_size, terrainScale, terrain->getHeightData(), true);
-
-		OgreBulletDynamics::RigidBody * defaultTerrainBody = new OgreBulletDynamics::RigidBody("Terrain" + incremant, PhysicsManager::getInstance()->getWorld());
-
-		const float      terrainBodyRestitution  = 0.1f;
-		const float      terrainBodyFriction     = 0.8f;
-
-
-		Ogre::SceneNode* pTerrainNode = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-		defaultTerrainBody->setStaticShape (pTerrainNode, mTerrainShape, terrainBodyRestitution, terrainBodyFriction, terrain->getPosition());
-
-		PhysicsManager::getInstance()->addBody(defaultTerrainBody);
-		PhysicsManager::getInstance()->addShape(mTerrainShape);
-
-		incremant++;
-	}
-
-
 	mTerrainGroup->freeTemporaryResources();
 	//mTerrain->setPosition(mTerrainPosition);
 }
