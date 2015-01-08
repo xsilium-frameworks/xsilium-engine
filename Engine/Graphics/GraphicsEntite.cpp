@@ -18,8 +18,7 @@ GraphicsEntite::GraphicsEntite() {
 	mMainNode = 0;
 	mBodyEnt = 0;
 	graphicsAnimation = 0;
-	orientation = Ogre::Vector3::UNIT_X;
-	positionFinal = Ogre::Vector3::ZERO;
+	direction = Ogre::Vector3::ZERO;
 
 	degainer = false;
 
@@ -55,13 +54,11 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 	graphicsAnimation = new GraphicsAnimation(mBodyEnt);
 	graphicsAnimation->loadAnimation();
 
-    Ogre::AxisAlignedBox boundingB = mBodyEnt->getBoundingBox();
-    Ogre::Vector3 size = Ogre::Vector3::ZERO;	// size of the box
-    size = boundingB.getSize();
-	// after that create the Bullet shape with the calculated size
-	sceneBoxShape = new OgreBulletCollisions::BoxCollisionShape(size);
+	OgreBulletCollisions::AnimatedMeshToShapeConverter * amsc = new OgreBulletCollisions::AnimatedMeshToShapeConverter(mBodyEnt);
+
+	sceneBoxShape = amsc->createBox();
 	// and the Bullet rigid body
-	defaultBody = new OgreBulletDynamics::RigidBody(nom.c_str(),PhysicsManager::getInstance()->getWorld());
+	defaultBody = new OgreBulletDynamics::  RigidBody(nom.c_str(),PhysicsManager::getInstance()->getWorld());
 
 	defaultBody->setShape(	mMainNode,
 			sceneBoxShape,
@@ -73,7 +70,6 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 
 	PhysicsManager::getInstance()->addBody(defaultBody);
 	PhysicsManager::getInstance()->addShape(sceneBoxShape);
-
 
 }
 
@@ -154,16 +150,9 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 		}
 	}
 
-	if( positionFinal != Ogre::Vector3::ZERO )
+	if( direction != Ogre::Vector3::ZERO )
 	{
-		Ogre::Vector3 mGoalDirection = Ogre::Vector3::ZERO;
-		// calculate actually goal direction in world based on player's key directions
-		mGoalDirection += positionFinal.z * orientation.z;
-		mGoalDirection += positionFinal.x * orientation.x;
-		mGoalDirection.y += positionFinal.y * orientation.y;
-		mGoalDirection.normalise();
-
-		Ogre::Quaternion toGoal = mMainNode->getOrientation().zAxis().getRotationTo(mGoalDirection);
+		Ogre::Quaternion toGoal = mMainNode->getOrientation().zAxis().getRotationTo(direction);
 
 		// calculate how much the character has to turn to face goal direction
 		Ogre::Real yawToGoal = toGoal.getYaw().valueDegrees();
@@ -181,7 +170,6 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 		// move in current body direction (not the goal direction)
 		mMainNode->translate(0, 0, timeSinceLastFrame * runSpeed,Ogre::Node::TS_LOCAL);
 		runAnimation();
-
 	}
 	else
 	{
@@ -227,15 +215,15 @@ void GraphicsEntite::deleteEquipement(Ogre::String emplacement)
 
 }
 
-void GraphicsEntite::deplaceEntite(Ogre::Vector3 positionFinal)
+void GraphicsEntite::deplaceEntite(Ogre::Vector3 direction)
 {
-	positionFinal.normalise();
-	this->positionFinal = positionFinal;
+	direction.normalise();
+	this->direction = direction;
 }
 
-void GraphicsEntite::setOrientation(Ogre::Vector3 orientation)
+void GraphicsEntite::setOrientation(Ogre::Quaternion orientation)
 {
-	this->orientation = orientation;
+	mMainNode->setOrientation(orientation);
 }
 
 void GraphicsEntite::setID(int id)
@@ -249,21 +237,21 @@ int GraphicsEntite::getID()
 
 void GraphicsEntite::processEvent(Event * event)
 {
-	if(event->hasProperty("NewPositionX"))
+	if(event->hasProperty("NewDirection"))
 	{
 		deplaceEntite( Ogre::Vector3(atoi(event->getProperty("NewPositionX").c_str()),
 				atoi(event->getProperty("NewPositionY").c_str()),
 				atoi(event->getProperty("NewPositionZ").c_str()))  );
 	}
 
-	if(event->hasProperty("NewOrientationX"))
+	if(event->hasProperty("NewOrientation"))
 	{
-		deplaceEntite( Ogre::Vector3(
+		setOrientation( Ogre::Quaternion(
+				atoi(event->getProperty("NewOrientationW").c_str()),
 				atoi(event->getProperty("NewOrientationX").c_str()),
 				atoi(event->getProperty("NewOrientationY").c_str()),
 				atoi(event->getProperty("NewOrientationZ").c_str()))  );
 	}
-
 }
 
 

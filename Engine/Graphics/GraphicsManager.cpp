@@ -42,7 +42,6 @@ GraphicsManager::~GraphicsManager() {
 		delete graphicsWater;
 	if(graphicsSky)
 		delete graphicsSky;
-
 	if(graphicsObjetManager)
 		delete graphicsObjetManager;
 	if(graphicsEntiteManager)

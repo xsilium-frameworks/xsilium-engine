@@ -14,6 +14,7 @@
 #include "Physics/PhysicsManager.h"
 
 #include "Shapes/OgreBulletCollisionsBoxShape.h"		 // for Boxes
+#include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
 
 namespace Engine {
 
@@ -50,9 +51,9 @@ public:
 	void runAnimation();
 	void idleAnimation();
 
-	void deplaceEntite(Ogre::Vector3 positionFinal );
+	void deplaceEntite(Ogre::Vector3 direction );
 
-	void setOrientation(Ogre::Vector3 orientation);
+	void setOrientation(Ogre::Quaternion orientation);
 
 private:
 	Ogre::String  nom;
@@ -72,8 +73,7 @@ private:
 
 	bool degainer;
 
-	Ogre::Vector3 positionFinal;
-	Ogre::Vector3 orientation;
+	Ogre::Vector3 direction;
 
 	OgreBulletDynamics::RigidBody *defaultBody;
 	OgreBulletCollisions::BoxCollisionShape *sceneBoxShape;

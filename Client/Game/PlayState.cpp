@@ -42,13 +42,13 @@ void PlayState::createScene() {
 	event2.setProperty("fileMesh","Sinbad.mesh");
 
 	event2.setProperty("PositionX","5");
-	event2.setProperty("PositionY","5");
+	event2.setProperty("PositionY","50");
 	event2.setProperty("PositionZ","5");
 
 
 	Engine::Engine::getInstance()->addEvent(event2);
 
-/*	Event event3;
+	/*	Event event3;
 
 	event3.setProperty("Water","1");
 	event3.setProperty("InitWater","1");
@@ -59,16 +59,6 @@ void PlayState::createScene() {
 	event4.setProperty("Sky","1");
 	event4.setProperty("InitSky","1");
 	Engine::Engine::getInstance()->addEvent(event4);
-
-	/*Event event5 ;
-	event5.setProperty("Entite","1");
-	event5.setProperty("deplaceEntite","1");
-	event5.setProperty("idEntite","1");
-	event5.setProperty("NewPositionX","1");
-	event5.setProperty("NewPositionY","0");
-	event5.setProperty("NewPositionZ","0");
-	Engine::Engine::getInstance()->addEvent(event5);*/
-
 
 }
 
@@ -82,34 +72,7 @@ void PlayState::update(double timeSinceLastFrame) {
 
 void PlayState::processEvent(Event* event) {
 
-	if(event->hasProperty("Keyboard"))
-	{
-		if( (event->getProperty("Fonction").compare("AVANCER")) == 0 )
-		{
-			if( atoi(event->getProperty("Action").c_str()) == 1 )
-			{
-				Event event3 ;
-				event3.setProperty("Entite","1");
-				event3.setProperty("deplaceEntite","1");
-				event3.setProperty("idEntite","1");
-				event3.setProperty("NewPositionX","1");
-				event3.setProperty("NewPositionY","0");
-				event3.setProperty("NewPositionZ","0");
-				Engine::Engine::getInstance()->addEvent(event3);
-			}
-			else
-			{
-				Event event3 ;
-				event3.setProperty("Entite","1");
-				event3.setProperty("deplaceEntite","1");
-				event3.setProperty("idEntite","1");
-				event3.setProperty("NewPositionX","0");
-				event3.setProperty("NewPositionY","0");
-				event3.setProperty("NewPositionZ","0");
-				Engine::Engine::getInstance()->addEvent(event3);
-			}
-		}
-	}
+
 	gestionnaireChat->processEvent(event);
 
 }
