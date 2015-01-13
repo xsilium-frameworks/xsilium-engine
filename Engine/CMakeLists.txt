@@ -13,7 +13,7 @@ set( CORE_HEADER_FILES
 	 ./Graphics/GraphicsEntite.h
 	 ./Graphics/GraphicsHydraxRttListener.h
 	 ./Graphics/GraphicsManager.h
-	 ./Graphics/GraphicsMouvementManager.cpp
+	 ./Graphics/GraphicsMouvementManager.h
 	 ./Graphics/GraphicsObjet.h
 	 ./Graphics/GraphicsObjetManager.h
 	 ./Graphics/GraphicsSky.h
@@ -31,7 +31,12 @@ set( CORE_HEADER_FILES
 	 ./Network/NetworkManager.h
 	 ./Network/MessagePacket.h
 	 ./Singleton/Singleton.h
+  	 ./Physics/PhysicsConvert.h
+  	 ./Physics/PhysicsDebugDrawer.h
+  	 ./Physics/PhysicsDynamicLines.h
+  	 ./Physics/PhysicsDynamicRenderable.h
   	 ./Physics/PhysicsManager.h
+  	 ./Physics/PhysicsMotionState.h
 )	 
 
 
@@ -65,7 +70,12 @@ set (CORE_SOURCE_FILES
 	 ./Network/NetworkListener.cpp
 	 ./Network/NetworkManager.cpp
  	 ./Network/MessagePacket.cpp
- 	 ./Physics/PhysicsManager.cpp
+ 	 ./Physics/PhysicsConvert.cpp
+  	 ./Physics/PhysicsDebugDrawer.cpp
+  	 ./Physics/PhysicsDynamicLines.cpp
+  	 ./Physics/PhysicsDynamicRenderable.cpp
+  	 ./Physics/PhysicsManager.cpp
+  	 ./Physics/PhysicsMotionState.cpp
 )
 
 include_directories(

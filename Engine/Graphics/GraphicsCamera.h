@@ -1,9 +1,9 @@
 /*
 * \file GraphicsCamera.h
 *
-*  Created on: \date 31 août 2014
+*  Created on: \date 31 aoï¿½t 2014
 *      Author: \author xelfe 
-*  \brief : Fichier d'en-tête du gestionnaire d'interface GUI
+*  \brief : Fichier d'en-tï¿½te du gestionnaire d'interface GUI
 */
 #ifndef __GraphicsCamera_H__
 #define __GraphicsCamera_H__
@@ -16,7 +16,7 @@
 
 /*!
 * \namespace Engine
-* \brief Espace de nommage regroupant les dfférentes classes du moteur.
+* \brief Espace de nommage regroupant les dffï¿½rentes classes du moteur.
 */
 namespace Engine {
 
@@ -36,7 +36,7 @@ namespace Engine {
 	* \class GraphicsCamera
 	* \brief Classe de controle de la camera.
 	*
-	* Classe permettant de gèrer les différent style de camera.
+	* Classe permettant de gï¿½rer les diffï¿½rent style de camera.
 	*
 	*/
 	class GraphicsCamera {
@@ -86,32 +86,11 @@ namespace Engine {
 		virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
 		/*-----------------------------------------------------------------------------
-		| Processes key presses for free-look style movement.
-		-----------------------------------------------------------------------------*/
-		virtual void injectKeyDown(const OIS::KeyEvent& evt);
-
-		/*-----------------------------------------------------------------------------
-		| Processes key releases for free-look style movement.
-		-----------------------------------------------------------------------------*/
-		virtual void injectKeyUp(const OIS::KeyEvent& evt);
-
-		/*-----------------------------------------------------------------------------
 		| Processes mouse movement differently for each style.
 		-----------------------------------------------------------------------------*/
 		virtual void injectMouseMove(const OIS::MouseEvent& evt);
 
-		/*-----------------------------------------------------------------------------
-		| Processes mouse presses. Only applies for orbit style.
-		| Left button is for orbiting, and right button is for zooming.
-		-----------------------------------------------------------------------------*/
-		virtual void injectMouseDown(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
-
-
-		/*-----------------------------------------------------------------------------
-		| Processes mouse releases. Only applies for orbit style.
-		| Left button is for orbiting, and right button is for zooming.
-		-----------------------------------------------------------------------------*/
-		virtual void injectMouseUp(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+		void setDirection(Ogre::Vector3 direction);
 			
 	protected:
 
@@ -122,13 +101,8 @@ namespace Engine {
 		bool				mZooming;
 		Ogre::Real			mTopSpeed;
 		Ogre::Vector3		mVelocity;
-		bool				mGoingForward;
-		bool				mGoingBack;
-		bool				mGoingLeft;
-		bool				mGoingRight;
-		bool				mGoingUp;
-		bool				mGoingDown;
 		bool				mFastMove;
+		Ogre::Vector3 		direction;
 	};
 }
 

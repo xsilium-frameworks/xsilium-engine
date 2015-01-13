@@ -31,6 +31,9 @@ GraphicsManager::GraphicsManager() {
 	graphicsObjetManager = new GraphicsObjetManager();
 	graphicsEntiteManager->setObjetManager(graphicsObjetManager);
 	graphicsSceneLoader = new GraphicsSceneLoader();
+	PhysicsManager::getInstance();
+	graphicsMouvementManager = new GraphicsMouvementManager();
+
 
 
 }
@@ -38,6 +41,7 @@ GraphicsManager::GraphicsManager() {
 GraphicsManager::~GraphicsManager() {
 
 	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	PhysicsManager::DestroyInstance();
 	if(graphicsWater)
 		delete graphicsWater;
 	if(graphicsSky)
@@ -48,6 +52,8 @@ GraphicsManager::~GraphicsManager() {
 		delete graphicsEntiteManager;
 	if(graphicsSceneLoader)
 		delete graphicsSceneLoader;
+	if(graphicsMouvementManager)
+		delete graphicsMouvementManager ;
 	if(graphicsCamera)
 		delete graphicsCamera;
 	InputManager::DestroyInstance();
@@ -105,15 +111,13 @@ void GraphicsManager::createWindow()
 
 	inputManager->initialise(m_pRenderWnd);
 
-	inputManager->addKeyListener(this,"GraphicsKey");
-	inputManager->addMouseListener(this,"GraphicsMouse");
-
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	m_pCamera = m_pSceneMgr->createCamera("CamPrincipal");
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
 	graphicsObjetManager->setSceneManager(m_pSceneMgr);
 	graphicsWater = new GraphicsWater(m_pSceneMgr, m_pRoot, m_pRenderWnd);
+	PhysicsManager::getInstance()->setRootSceneNode(m_pSceneMgr->getRootSceneNode());
 
 	graphicsSky = new GraphicsSky(m_pSceneMgr, m_pRoot, m_pRenderWnd);
 
@@ -156,8 +160,7 @@ void GraphicsManager::loadScene(Event* event)
 	m_pCamera->setNearClipDistance(1);
 	graphicsCamera->setCamera(m_pCamera);
 	graphicsCamera->setStyle(CS_FREELOOK);
-
-	PhysicsManager::getInstance()->initPhysics(m_pSceneMgr,Ogre::Vector3(0,-9.81,0),Ogre::AxisAlignedBox (Ogre::Vector3 (-10000, -10000, -10000),Ogre::Vector3 (10000,  10000,  10000)));
+	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
 
 
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
@@ -166,6 +169,37 @@ void GraphicsManager::loadScene(Event* event)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->setCamera(m_pCamera);
 	}
+
+
+	Ogre::TerrainGroup::TerrainIterator it = graphicsSceneLoader->getTerrainGroup()->getTerrainIterator();
+	while(it.hasMoreElements())
+	{
+		Ogre::Terrain* terrain = it.getNext()->instance;
+
+        float* terrainHeightData = terrain->getHeightData();
+        float * pDataConvert= new float[terrain->getSize() *terrain->getSize()];
+        for(int i=0;i<terrain->getSize();i++)
+            memcpy(
+                   pDataConvert+terrain->getSize() * i, // source
+                   terrainHeightData + terrain->getSize() * (terrain->getSize()-i-1), // target
+                   sizeof(float)*(terrain->getSize()) // size
+                   );
+
+
+		float metersBetweenVertices = terrain->getWorldSize()/(terrain->getSize()-1);
+
+		PhysicsManager::getInstance()->addDynamicTerrain(
+				metersBetweenVertices,
+				terrain->getSize(),
+				terrain->getSize(),
+				pDataConvert,
+				terrain->getMinHeight(),
+				terrain->getMaxHeight(),
+				terrain->getPosition(),
+				terrain->getWorldSize()/(terrain->getSize()-1) );
+
+	}
+
 
 }
 
@@ -196,7 +230,7 @@ void GraphicsManager::processEvent(Event* event)
 			graphicsWater->initHydrax();
 			graphicsWater->addDepthTechnique(graphicsSceneLoader->getMaterialNames());
 			if(graphicsSky->getSkyX())
-                graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
+				graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
 		}
 	}
 	if(event->hasProperty("Sky"))
@@ -205,9 +239,11 @@ void GraphicsManager::processEvent(Event* event)
 		{
 			graphicsSky->initSkyX();
 			if(graphicsWater->getHydraX())
-                graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
+				graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
 		}
 	}
+
+	graphicsMouvementManager->processEvent(event);
 
 }
 
@@ -232,44 +268,16 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 	graphicsObjetManager->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsWater->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsSky->update(m_FrameEvent.timeSinceLastFrame);
+	PhysicsManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
 
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->update();
 	}
-
-	PhysicsManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
 	return true;
 }
 bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 {
-	return true;
-}
-
-bool GraphicsManager::keyPressed( const OIS::KeyEvent &e )
-{
-	graphicsCamera->injectKeyDown(e);
-	return true;
-}
-bool GraphicsManager::keyReleased( const OIS::KeyEvent &e )
-{
-	graphicsCamera->injectKeyUp(e);
-	return true;
-}
-
-bool GraphicsManager::mouseMoved( const OIS::MouseEvent &e )
-{
-	graphicsCamera->injectMouseMove(e);
-	return true;
-}
-bool GraphicsManager::mousePressed( const OIS::MouseEvent &e, OIS::MouseButtonID id )
-{
-	graphicsCamera->injectMouseDown(e,id);
-	return true;
-}
-bool GraphicsManager::mouseReleased( const OIS::MouseEvent &e, OIS::MouseButtonID id )
-{
-	graphicsCamera->injectMouseUp(e,id);
 	return true;
 }
 

@@ -13,9 +13,6 @@
 #include "Event/Event.h"
 #include "Physics/PhysicsManager.h"
 
-#include "Shapes/OgreBulletCollisionsBoxShape.h"		 // for Boxes
-#include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
-
 namespace Engine {
 
 /*
@@ -74,9 +71,6 @@ private:
 	bool degainer;
 
 	Ogre::Vector3 direction;
-
-	OgreBulletDynamics::RigidBody *defaultBody;
-	OgreBulletCollisions::BoxCollisionShape *sceneBoxShape;
 
 };
 

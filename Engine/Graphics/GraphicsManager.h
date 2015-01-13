@@ -12,7 +12,7 @@
 #include "Graphics/GraphicsEntiteManager.h"
 #include "Graphics/GraphicsSceneLoader.h"
 #include "Graphics/GraphicsCamera.h"
-#include "Graphics/GraphicsMeteoManager.h"
+#include "Graphics/GraphicsMouvementManager.h"
 #include "Graphics/GraphicsWater.h"
 #include "Graphics/GraphicsSky.h"
 #include "Graphics/GraphicsObjetManager.h"
@@ -25,7 +25,7 @@ namespace Engine {
 	/*
 	 *
 	 */
-	class GraphicsManager : public Singleton<GraphicsManager>, public EngineListenner, public Ogre::FrameListener, public OIS::KeyListener, public OIS::MouseListener {
+	class GraphicsManager : public Singleton<GraphicsManager>, public EngineListenner, public Ogre::FrameListener {
 
 		friend class Singleton < GraphicsManager > ;
 	public:
@@ -51,13 +51,6 @@ namespace Engine {
 		bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 		bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
-		bool keyPressed(const OIS::KeyEvent &e);
-		bool keyReleased(const OIS::KeyEvent &e);
-
-		bool mouseMoved(const OIS::MouseEvent &e);
-		bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-		bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-
 	private:
 		Ogre::String				m_SceneFile;
 
@@ -79,6 +72,7 @@ namespace Engine {
 		GraphicsSky *				graphicsSky;
 		GraphicsWater*				graphicsWater;
 		GraphicsObjetManager*		graphicsObjetManager;
+		GraphicsMouvementManager *  graphicsMouvementManager;
 
 	};
 
