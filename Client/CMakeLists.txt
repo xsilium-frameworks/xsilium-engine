@@ -60,7 +60,6 @@ ${OGRE_Terrain_INCLUDE_DIR}
 ${OGRE_RenderSystems_INCLUDE_DIR}
 ${OGREPAGED_INCLUDE_DIRS}
 ${BULLET_INCLUDE_DIRS}
-${OGREBULLET_INCLUDE_DIRS}
 Login
 Game
 Shared
@@ -68,7 +67,7 @@ Shared
 )
 
 link_libraries(
-	${XSILIUM_LIBRARY} ${DirectX_LIBRARY}
+	${XSILIUM_LIBRARY} ${DirectX_LIBRARY} ${BULLET_LIBRARIES}
 )
 xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
 
