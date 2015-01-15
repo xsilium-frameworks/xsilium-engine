@@ -67,7 +67,7 @@ Shared
 )
 
 link_libraries(
-	${XSILIUM_LIBRARY} ${DirectX_LIBRARY}
+	${XSILIUM_LIBRARY} ${DirectX_LIBRARY} ${BULLET_LIBRARIES}
 )
 xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
 
