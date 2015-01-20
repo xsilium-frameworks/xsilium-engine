@@ -79,7 +79,30 @@ void GraphicsMouvementManager::processEvent(Event * event)
 			}
 		}
 
+		if( (event->getProperty("Fonction").compare("SAUTE")) == 0 )
+		{
+			if( atoi(event->getProperty("Action").c_str()) == 1 )
+			{
+				saute = true;
+			}
+		}
+
 		graphicsCamera->setDirection(direction);
+
+		Event event2 ;
+		event2.setProperty("Entite","1");
+		event2.setProperty("deplaceEntite","1");
+		event2.setProperty("idEntite","1");
+		event2.setProperty("NewDirection","1");
+		event2.setProperty("NewPositionX",ToString(direction.x).c_str());
+		event2.setProperty("NewPositionY",ToString(direction.y).c_str());
+		event2.setProperty("NewPositionZ",ToString(direction.z).c_str());
+		if(saute)
+		{
+			event2.setProperty("Jump","1");
+			saute = false;
+		}
+		Engine::getInstance()->addEvent(event2);
 
 	}
 
@@ -94,11 +117,11 @@ bool GraphicsMouvementManager::mouseMoved(const OIS::MouseEvent &e)
 }
 bool GraphicsMouvementManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-
+	return true;
 }
 bool GraphicsMouvementManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-
+	return true;
 }
 
 

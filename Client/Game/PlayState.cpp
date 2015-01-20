@@ -45,8 +45,16 @@ void PlayState::createScene() {
 	event2.setProperty("PositionY","50");
 	event2.setProperty("PositionZ","5");
 
-
 	Engine::Engine::getInstance()->addEvent(event2);
+
+	Event event3 ;
+	event3.setProperty("Entite","1");
+	event3.setProperty("deplaceEntite","1");
+	event3.setProperty("idEntite","1");
+	event3.setProperty("Camera","1");
+	Engine::Engine::getInstance()->addEvent(event3);
+
+
 
 	/*	Event event3;
 

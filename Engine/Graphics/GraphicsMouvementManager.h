@@ -8,7 +8,7 @@
 #ifndef ENGINE_GRAPHICS_GRAPHICSMOUVEMENTMANAGER_H_
 #define ENGINE_GRAPHICS_GRAPHICSMOUVEMENTMANAGER_H_
 
-#include "Event/Event.h"
+#include "Engine/Engine.h"
 #include "Input/InputManager.h"
 #include "GraphicsCamera.h"
 
@@ -38,6 +38,8 @@ public:
 private:
 	GraphicsCamera * graphicsCamera;
 	Ogre::Vector3 direction;
+
+	bool saute;
 
 };
 

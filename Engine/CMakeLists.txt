@@ -35,6 +35,7 @@ set( CORE_HEADER_FILES
   	 ./Physics/PhysicsDebugDrawer.h
   	 ./Physics/PhysicsDynamicLines.h
   	 ./Physics/PhysicsDynamicRenderable.h
+  	 ./Physics/PhysicsEntite.h
   	 ./Physics/PhysicsManager.h
   	 ./Physics/PhysicsMotionState.h
 )	 
@@ -74,6 +75,7 @@ set (CORE_SOURCE_FILES
   	 ./Physics/PhysicsDebugDrawer.cpp
   	 ./Physics/PhysicsDynamicLines.cpp
   	 ./Physics/PhysicsDynamicRenderable.cpp
+  	 ./Physics/PhysicsEntite.cpp
   	 ./Physics/PhysicsManager.cpp
   	 ./Physics/PhysicsMotionState.cpp
 )

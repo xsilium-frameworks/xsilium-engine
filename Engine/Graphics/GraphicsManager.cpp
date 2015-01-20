@@ -16,7 +16,7 @@ GraphicsManager::GraphicsManager() {
 	m_pCamera			= 0;
 	graphicsSky = 0;
 	graphicsWater = 0;
-	graphicsCamera = new GraphicsCamera();
+	graphicsCamera = GraphicsCamera::getInstance();
 	inputManager = InputManager::getInstance();
 	sauvegardeParam = false;
 
@@ -54,8 +54,7 @@ GraphicsManager::~GraphicsManager() {
 		delete graphicsSceneLoader;
 	if(graphicsMouvementManager)
 		delete graphicsMouvementManager ;
-	if(graphicsCamera)
-		delete graphicsCamera;
+	GraphicsCamera::DestroyInstance();
 	InputManager::DestroyInstance();
 
 }
@@ -88,9 +87,10 @@ void GraphicsManager::initOgre()
 		// Set defaults per RenderSystem
 		m_pRenderSystem->setConfigOption("Full Screen", "No");
 		m_pRenderSystem->setConfigOption("VSync", "No");
-		m_pRenderSystem->setConfigOption("Video Mode", "800 x 600");
+		m_pRenderSystem->setConfigOption("Video Mode", "1024 x 768");
 		m_pRenderSystem->setConfigOption("FSAA", "0");
 		m_pRenderSystem->setConfigOption("sRGB Gamma Conversion", "No");
+        
 
 		m_pRoot->setRenderSystem(m_pRenderSystem);
 	}
@@ -157,7 +157,7 @@ void GraphicsManager::loadRessource()
 
 void GraphicsManager::loadScene(Event* event)
 {
-	m_pCamera->setNearClipDistance(1);
+	m_pCamera->setNearClipDistance(5);
 	graphicsCamera->setCamera(m_pCamera);
 	graphicsCamera->setStyle(CS_FREELOOK);
 	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
@@ -176,14 +176,14 @@ void GraphicsManager::loadScene(Event* event)
 	{
 		Ogre::Terrain* terrain = it.getNext()->instance;
 
-        float* terrainHeightData = terrain->getHeightData();
-        float * pDataConvert= new float[terrain->getSize() *terrain->getSize()];
-        for(int i=0;i<terrain->getSize();i++)
-            memcpy(
-                   pDataConvert+terrain->getSize() * i, // source
-                   terrainHeightData + terrain->getSize() * (terrain->getSize()-i-1), // target
-                   sizeof(float)*(terrain->getSize()) // size
-                   );
+		float* terrainHeightData = terrain->getHeightData();
+		float * pDataConvert= new float[terrain->getSize() *terrain->getSize()];
+		for(int i=0;i<terrain->getSize();i++)
+			memcpy(
+					pDataConvert+terrain->getSize() * i, // source
+					terrainHeightData + terrain->getSize() * (terrain->getSize()-i-1), // target
+					sizeof(float)*(terrain->getSize()) // size
+			);
 
 
 		float metersBetweenVertices = terrain->getWorldSize()/(terrain->getSize()-1);
@@ -249,6 +249,8 @@ void GraphicsManager::processEvent(Event* event)
 
 bool GraphicsManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 {
+	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
+	PhysicsManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
 	return true;
 }
 bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
@@ -262,18 +264,21 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		deleteEvent();
 	}
 
-	inputManager->capture(m_FrameEvent.timeSinceLastFrame);
+
 	graphicsCamera->frameRenderingQueued(m_FrameEvent);
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsObjetManager->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsWater->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsSky->update(m_FrameEvent.timeSinceLastFrame);
-	PhysicsManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
+
 
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
 	{
 		graphicsSceneLoader->mPGHandles[ij]->update();
 	}
+
+	printf("FPS %f \n",m_pRenderWnd->getStatistics().lastFPS);
+
 	return true;
 }
 bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)

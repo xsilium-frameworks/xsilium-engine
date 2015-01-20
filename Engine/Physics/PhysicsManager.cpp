@@ -166,7 +166,7 @@ void PhysicsManager::debugBtVector3(const btVector3 & vec, const char * str)
 
 void PhysicsManager::update(float dt)
 {
-	getDynamicsWorld()->stepSimulation(1 / 100.f, 10);
+	getDynamicsWorld()->stepSimulation(dt);
 	if(physicsDebugDrawer)
 	{
 		physicsDebugDrawer->setDebugMode(true);

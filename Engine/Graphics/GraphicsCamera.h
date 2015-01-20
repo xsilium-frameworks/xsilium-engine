@@ -12,7 +12,8 @@
 #include <limits>
 
 #include <OISMouse.h>
-#include <OISKeyboard.h>
+
+#include "Singleton/Singleton.h"
 
 /*!
 * \namespace Engine
@@ -39,7 +40,9 @@ namespace Engine {
 	* Classe permettant de g�rer les diff�rent style de camera.
 	*
 	*/
-	class GraphicsCamera {
+	class GraphicsCamera : public Singleton<GraphicsCamera> {
+
+		friend class Singleton<GraphicsCamera>;
 
 	public:
 		GraphicsCamera();

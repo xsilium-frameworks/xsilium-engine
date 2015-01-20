@@ -19,12 +19,35 @@ GraphicsEntite::GraphicsEntite() {
 	mBodyEnt = 0;
 	graphicsAnimation = 0;
 	direction = Ogre::Vector3::ZERO;
-
 	degainer = false;
+
+	mMoving = false;
+
+	physicsEntite = 0;
+
+
+	animNames[ANIM_IDLE_BASE] = "IdleBase" ;
+	animNames[ANIM_IDLE_TOP] =		"IdleTop" ;
+
+	animNames[ANIM_RUN_BASE] =		"RunBase";
+	animNames[ANIM_RUN_TOP] =		"RunTop";
+
+	animNames[ANIM_HANDS_CLOSED] =		"HandsClosed";
+	animNames[ANIM_HANDS_RELAXED] =		"HandsRelaxed";
+
+	animNames[ANIM_DRAW_SWORDS] =		"DrawSwords";
+
+	animNames[ANIM_SLICE_VERTICAL] =		"SliceVertical";
+	animNames[ANIM_SLICE_HORIZONTAL] =		"SliceHorizontal";
+
+	animNames[ANIM_JUMP_START] =		"JumpStart";
+	animNames[ANIM_JUMP_LOOP] =		"JumpLoop";
+	animNames[ANIM_JUMP_END] =		"JumpEnd";
 
 }
 
 GraphicsEntite::~GraphicsEntite() {
+	delete physicsEntite;
 	delete graphicsAnimation;
 }
 
@@ -44,6 +67,9 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 
 	graphicsAnimation = new GraphicsAnimation(mBodyEnt);
 	graphicsAnimation->loadAnimation();
+
+	physicsEntite = new PhysicsEntite();
+
 }
 
 void GraphicsEntite::setCharHeight(int charHeight)
@@ -72,12 +98,102 @@ Ogre::String * GraphicsEntite::getNom()
 
 void GraphicsEntite::degainerArme()
 {
-	graphicsAnimation->setAnimationHaut("DrawSwords",true);
+	graphicsAnimation->setAnimationHaut(animNames[ANIM_DRAW_SWORDS],true);
 }
 
 void GraphicsEntite::update(double timeSinceLastFrame)
 {
-	if(graphicsAnimation->getNomAnimationHautActuel().compare("DrawSwords") == 0)
+	Ogre::Vector3 playerPos = mMainNode->getPosition();
+
+	btVector3 pos = physicsEntite->getPosition();
+
+	Ogre::Vector3 position(pos.x(), pos.y(), pos.z());
+
+	if (position != playerPos)
+	{
+		mMainNode->translate((position - playerPos) * runSpeed * timeSinceLastFrame);
+
+		if (!mIsFalling && !physicsEntite->onGround()) // last frame we were on ground and now we're in "air"
+		{
+			mIsFalling = true;
+
+			graphicsAnimation->setAnimationBas(animNames[ANIM_JUMP_LOOP].c_str());
+		}
+		else if (physicsEntite->onGround() && mIsFalling) // last frame we were falling and now we're on the ground
+		{
+			mIsFalling = false;
+			graphicsAnimation->setAnimationBas(animNames[ANIM_JUMP_END].c_str());
+		}
+	}
+    
+	updateAnimation(timeSinceLastFrame);
+
+	if( direction != Ogre::Vector3::ZERO )
+	{
+		Ogre::Quaternion toGoal = mMainNode->getOrientation().zAxis().getRotationTo(direction);
+
+		// calculate how much the character has to turn to face goal direction
+		Ogre::Real yawToGoal = toGoal.getYaw().valueDegrees();
+		// this is how much the character CAN turn this frame
+		Ogre::Real yawAtSpeed = yawToGoal / Ogre::Math::Abs(yawToGoal) * timeSinceLastFrame * turnSpeed;
+
+		// turn as much as we can, but not more than we need to
+		if (yawToGoal < 0)
+			yawToGoal = std::min<Ogre::Real>(0, std::max<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, yawAtSpeed, 0);
+		else if (yawToGoal > 0)
+			yawToGoal = std::max<Ogre::Real>(0, std::min<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, 0, yawAtSpeed);
+
+		mMainNode->yaw(Ogre::Degree(yawToGoal));
+
+		physicsEntite->setWalkDirection(direction.x * runSpeed * timeSinceLastFrame, direction.y * runSpeed * timeSinceLastFrame, direction.z * runSpeed * timeSinceLastFrame);
+
+		if(!mMoving)
+		{
+			mMoving = true;
+			graphicsAnimation->setAnimationBas(animNames[ANIM_RUN_BASE].c_str());
+			graphicsAnimation->setAnimationHaut(animNames[ANIM_RUN_TOP].c_str());
+		}
+	}
+	else
+	{
+		if(mMoving)
+		{
+			mMoving = false;
+			physicsEntite->setWalkDirection(0, 0, 0);
+			graphicsAnimation->setAnimationBas(animNames[ANIM_IDLE_BASE].c_str());
+			graphicsAnimation->setAnimationHaut(animNames[ANIM_IDLE_TOP].c_str());
+		}
+
+	}
+
+	graphicsAnimation->updateAnimation(timeSinceLastFrame) ;
+}
+
+void GraphicsEntite::updateAnimation(double timeSinceLastFrame)
+{
+	if (graphicsAnimation->getNomAnimationBasActuel().compare(animNames[ANIM_JUMP_START]) == 0 && graphicsAnimation->getTime() >= mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationBasActuel())->getLength())
+	{
+		// takeoff animation finished, so time to leave the ground!
+		graphicsAnimation->setAnimationBas(animNames[ANIM_JUMP_LOOP].c_str(),1);
+	}
+	else if (graphicsAnimation->getNomAnimationBasActuel().compare(animNames[ANIM_JUMP_END]) == 0)
+	{
+		if (graphicsAnimation->getTime() >= mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationBasActuel())->getLength())
+		{
+			if (mMoving)
+			{
+				graphicsAnimation->setAnimationBas(animNames[ANIM_RUN_BASE].c_str());
+				graphicsAnimation->setAnimationHaut(animNames[ANIM_RUN_TOP].c_str());
+			}
+			else
+			{
+				graphicsAnimation->setAnimationBas(animNames[ANIM_IDLE_BASE].c_str());
+				graphicsAnimation->setAnimationHaut(animNames[ANIM_IDLE_TOP].c_str());
+			}
+		}
+	}
+
+	if(graphicsAnimation->getNomAnimationHautActuel().compare(animNames[ANIM_RUN_BASE]) == 0)
 	{
 		if (graphicsAnimation->getTime() >= mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() / 2 && graphicsAnimation->getTime() - timeSinceLastFrame < mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() / 2 )
 		{
@@ -98,73 +214,31 @@ void GraphicsEntite::update(double timeSinceLastFrame)
 
 			if(degainer)
 			{
-				graphicsAnimation->unsetAnimationSeul("HandsRelaxed");
-				graphicsAnimation->setAnimationSeul("HandsClosed");
+				graphicsAnimation->unsetAnimationSeul(animNames[ANIM_HANDS_RELAXED].c_str());
+				graphicsAnimation->setAnimationSeul(animNames[ANIM_HANDS_CLOSED].c_str());
 			}
 			else
 			{
-				graphicsAnimation->unsetAnimationSeul("HandsClosed");
-				graphicsAnimation->setAnimationSeul("HandsRelaxed");
+				graphicsAnimation->unsetAnimationSeul(animNames[ANIM_HANDS_CLOSED].c_str());
+				graphicsAnimation->setAnimationSeul(animNames[ANIM_HANDS_RELAXED].c_str());
 			}
 
 		}
 
 		if (graphicsAnimation->getTime() > mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationHautActuel())->getLength() )
 		{
-			if(graphicsAnimation->getNomAnimationBasActuel().compare("IdleBase") == 0 )
+			if(graphicsAnimation->getNomAnimationBasActuel().compare(animNames[ANIM_IDLE_BASE]) == 0 )
 			{
-				idleAnimation();
+				graphicsAnimation->setAnimationHaut(animNames[ANIM_IDLE_TOP].c_str());
 			}
 			else
 			{
-				runAnimation();
-				mBodyEnt->getAnimationState("RunTop")->setTimePosition(mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationBasActuel())->getTimePosition());
+				graphicsAnimation->setAnimationBas(animNames[ANIM_RUN_BASE].c_str());
+				graphicsAnimation->setAnimationHaut(animNames[ANIM_RUN_TOP].c_str());
+				mBodyEnt->getAnimationState(animNames[ANIM_RUN_TOP].c_str())->setTimePosition(mBodyEnt->getAnimationState(graphicsAnimation->getNomAnimationBasActuel())->getTimePosition());
 			}
 		}
 	}
-
-	if( direction != Ogre::Vector3::ZERO )
-	{
-		Ogre::Quaternion toGoal = mMainNode->getOrientation().zAxis().getRotationTo(direction);
-
-		// calculate how much the character has to turn to face goal direction
-		Ogre::Real yawToGoal = toGoal.getYaw().valueDegrees();
-		// this is how much the character CAN turn this frame
-		Ogre::Real yawAtSpeed = yawToGoal / Ogre::Math::Abs(yawToGoal) * timeSinceLastFrame * turnSpeed;
-
-		// turn as much as we can, but not more than we need to
-		if (yawToGoal < 0)
-			yawToGoal = std::min<Ogre::Real>(0, std::max<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, yawAtSpeed, 0);
-		else if (yawToGoal > 0)
-			yawToGoal = std::max<Ogre::Real>(0, std::min<Ogre::Real>(yawToGoal, yawAtSpeed)); //yawToGoal = Math::Clamp<Real>(yawToGoal, 0, yawAtSpeed);
-
-		mMainNode->yaw(Ogre::Degree(yawToGoal));
-
-		// move in current body direction (not the goal direction)
-		mMainNode->translate(0, 0, timeSinceLastFrame * runSpeed,Ogre::Node::TS_LOCAL);
-		runAnimation();
-	}
-	else
-	{
-		if(graphicsAnimation->getNomAnimationBasActuel().compare("RunBase") == 0 )
-		{
-			idleAnimation();
-		}
-
-	}
-
-	graphicsAnimation->updateAnimation(timeSinceLastFrame) ;
-}
-
-void GraphicsEntite::runAnimation()
-{
-	graphicsAnimation->setAnimationBas("RunBase");
-	graphicsAnimation->setAnimationHaut("RunTop");
-}
-void GraphicsEntite::idleAnimation()
-{
-	graphicsAnimation->setAnimationBas("IdleBase");
-	graphicsAnimation->setAnimationHaut("IdleTop");
 }
 
 void GraphicsEntite::setPosition(Ogre::Vector3 position)
@@ -212,7 +286,8 @@ void GraphicsEntite::processEvent(Event * event)
 {
 	if(event->hasProperty("NewDirection"))
 	{
-		deplaceEntite( Ogre::Vector3(atoi(event->getProperty("NewPositionX").c_str()),
+		deplaceEntite( Ogre::Vector3(
+				atoi(event->getProperty("NewPositionX").c_str()),
 				atoi(event->getProperty("NewPositionY").c_str()),
 				atoi(event->getProperty("NewPositionZ").c_str()))  );
 	}
@@ -225,6 +300,22 @@ void GraphicsEntite::processEvent(Event * event)
 				atoi(event->getProperty("NewOrientationY").c_str()),
 				atoi(event->getProperty("NewOrientationZ").c_str()))  );
 	}
+	if(event->hasProperty("Jump"))
+	{
+		if (physicsEntite->canJump())
+		{
+			physicsEntite->jump();
+			graphicsAnimation->setAnimationBas(animNames[ANIM_JUMP_START].c_str(),1);
+
+		}
+	}
+	if(event->hasProperty("Camera"))
+	{
+		GraphicsCamera::getInstance()->setTarget(mMainNode);
+		GraphicsCamera::getInstance()->setStyle(CS_ORBIT);
+
+	}
+
 }
 
 

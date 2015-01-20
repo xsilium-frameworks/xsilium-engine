@@ -125,6 +125,7 @@ void KeyboardMap::loadDefault()
 	KeyboardBinding["GAUCHE"] = static_cast<int>(0x1e);
 	KeyboardBinding["RECULER"] = static_cast<int>(0x1f);
 	KeyboardBinding["DEGAINER"] = static_cast<int>(0x2c);
+    KeyboardBinding["SAUTE"] = static_cast<int>(0x39);
 }
 
 } /* namespace Engine */
