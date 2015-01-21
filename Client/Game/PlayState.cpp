@@ -31,26 +31,29 @@ void PlayState::createScene() {
 
 	Engine::Engine::getInstance()->addEvent(event);
 
-	Event event2 ;
-	event2.setProperty("Entite","1");
-	event2.setProperty("CreateEntite","1");
-	event2.setProperty("idEntite","1");
-	event2.setProperty("CharHeight","5");
-	event2.setProperty("RunSpeed","17");
-	event2.setProperty("TurnSpeed","500.0");
-	event2.setProperty("NomEntite","Perso1");
-	event2.setProperty("fileMesh","Sinbad.mesh");
+	for(int i = 1;i <5; i++)
+	{
 
-	event2.setProperty("PositionX","5");
-	event2.setProperty("PositionY","50");
-	event2.setProperty("PositionZ","5");
+		Event event2 ;
+		event2.setProperty("Entite","1");
+		event2.setProperty("CreateEntite",ToString(i));
+		event2.setProperty("CharHeight","5");
+		event2.setProperty("RunSpeed","17");
+		event2.setProperty("TurnSpeed","500.0");
+		event2.setProperty("NomEntite","Perso" + ToString(i));
+		event2.setProperty("fileMesh","Sinbad.mesh");
 
-	Engine::Engine::getInstance()->addEvent(event2);
+		event2.setProperty("PositionX","5");
+		event2.setProperty("PositionY","50");
+		event2.setProperty("PositionZ","5");
+
+		Engine::Engine::getInstance()->addEvent(event2);
+
+	}
 
 	Event event3 ;
 	event3.setProperty("Entite","1");
-	event3.setProperty("deplaceEntite","1");
-	event3.setProperty("idEntite","1");
+	event3.setProperty("IdEntite","1");
 	event3.setProperty("Camera","1");
 	Engine::Engine::getInstance()->addEvent(event3);
 

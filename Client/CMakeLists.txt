@@ -115,10 +115,6 @@ if (APPLE)
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
 		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/resources.cfg 
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/samples.cfg 
-		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/quakemap.cfg 
-		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
 		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
 		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/datafiles
@@ -158,13 +154,13 @@ if (APPLE)
     endforeach(FWK)
 
     add_custom_command(TARGET ${TargetName} POST_BUILD
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIExpatParser.dylib
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIRapidXMLParser.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIBase.dylib
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIBase-0.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIOgreRenderer.dylib
+		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIOgreRenderer-0.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
 		)
 

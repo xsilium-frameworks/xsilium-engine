@@ -71,7 +71,6 @@ namespace Engine {
 		GraphicsCamera*				graphicsCamera;
 		GraphicsSky *				graphicsSky;
 		GraphicsWater*				graphicsWater;
-		GraphicsObjetManager*		graphicsObjetManager;
 		GraphicsMouvementManager *  graphicsMouvementManager;
 
 	};

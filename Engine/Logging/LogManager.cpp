@@ -31,7 +31,7 @@ namespace Engine {
 
 		// Definition et creation des attributs du log
 		boost::log::add_file_log(
-			boost::log::keywords::file_name = fileName + "_%N.log",
+			boost::log::keywords::file_name = *Engine::getInstance()->getResourcePath() + fileName + "_%N.log",
 			// rotation des logs a chaque 1 mo
 			boost::log::keywords::rotation_size = 1 * 1024 * 1024,
 			// rotation des logs a minuit

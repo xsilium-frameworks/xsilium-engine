@@ -11,7 +11,6 @@ namespace Engine {
 
 GraphicsEntiteManager::GraphicsEntiteManager() {
 	msceneMgr = 0;
-	graphicsObjetManager = 0;
 
 }
 
@@ -28,18 +27,13 @@ void GraphicsEntiteManager::setSceneManager(Ogre::SceneManager* msceneMgr)
 	this->msceneMgr = msceneMgr ;
 }
 
-void GraphicsEntiteManager::setObjetManager(GraphicsObjetManager * graphicsObjetManager)
-{
-	this->graphicsObjetManager = graphicsObjetManager;
-}
-
 void GraphicsEntiteManager::createEntite(Event * event)
 {
 	GraphicsEntite * graphicsEntite = new GraphicsEntite();
 
-	if(event->hasProperty("idEntite"))
+	if(event->hasProperty("CreateEntite"))
 	{
-		graphicsEntite->setID(atoi(event->getProperty("idEntite").c_str() ) );
+		graphicsEntite->setID(atoi(event->getProperty("CreateEntite").c_str() ) );
 	}
 
 	if(event->hasProperty("CharHeight"))
@@ -91,24 +85,15 @@ void GraphicsEntiteManager::deleteEntite(Ogre::String nom)
 	}
 }
 
-void GraphicsEntiteManager::assigneObjet(Event * event)
-{
-	trouverEntite(atoi(event->getProperty("idEntite").c_str()))->addEquipement( graphicsObjetManager->trouverObjet( event->getProperty("NomObjet"))->getObjet(), event->getProperty("Emplacement") );
-}
-
 void GraphicsEntiteManager::processEvent(Event * event)
 {
 	if(event->hasProperty("CreateEntite"))
 	{
 		createEntite(event);
 	}
-	if(event->hasProperty("AssigneObjet"))
+	if(event->hasProperty("IdEntite"))
 	{
-		assigneObjet(event);
-	}
-	if(event->hasProperty("deplaceEntite"))
-	{
-		GraphicsEntite * entite = trouverEntite(  atoi(event->getProperty("idEntite").c_str()));
+		GraphicsEntite * entite = trouverEntite(  atoi(event->getProperty("IdEntite").c_str()));
 		if(entite != NULL)
 		{
 			entite->processEvent(event);

@@ -1,7 +1,7 @@
 /*
  * \file GraphicsObjetManager.h
  *
- *  Created on: \date 27 aožt 2014
+ *  Created on: \date 27 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -10,13 +10,16 @@
 
 #include "Graphics/GraphicsObjet.h"
 #include "Event/Event.h"
+#include "Singleton/Singleton.h"
 
 namespace Engine {
 
 /*
  *
  */
-class GraphicsObjetManager {
+class GraphicsObjetManager : public Singleton<GraphicsObjetManager> {
+	friend class Singleton < GraphicsObjetManager > ;
+
 public:
 	GraphicsObjetManager();
 	virtual ~GraphicsObjetManager();

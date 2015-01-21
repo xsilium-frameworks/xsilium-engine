@@ -1,7 +1,7 @@
 /*
  * \file Engine.cpp
  *
- *  Created on: \date 2 aožt 2014
+ *  Created on: \date 2 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -32,8 +32,6 @@ void Engine::initEngine(Ogre::String configFile, int nbThread)
 #else
 	mResourcePath = "";
 #endif
-
-	initOgre(configFile);
 
 }
 

@@ -28,8 +28,6 @@ GraphicsManager::GraphicsManager() {
 	Engine::getInstance()->getRoot()->addFrameListener(this);
 
 	graphicsEntiteManager = new GraphicsEntiteManager();
-	graphicsObjetManager = new GraphicsObjetManager();
-	graphicsEntiteManager->setObjetManager(graphicsObjetManager);
 	graphicsSceneLoader = new GraphicsSceneLoader();
 	PhysicsManager::getInstance();
 	graphicsMouvementManager = new GraphicsMouvementManager();
@@ -46,8 +44,7 @@ GraphicsManager::~GraphicsManager() {
 		delete graphicsWater;
 	if(graphicsSky)
 		delete graphicsSky;
-	if(graphicsObjetManager)
-		delete graphicsObjetManager;
+	GraphicsObjetManager::DestroyInstance();
 	if(graphicsEntiteManager)
 		delete graphicsEntiteManager;
 	if(graphicsSceneLoader)
@@ -113,9 +110,10 @@ void GraphicsManager::createWindow()
 
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	m_pCamera = m_pSceneMgr->createCamera("CamPrincipal");
+	graphicsCamera->setCamera(m_pCamera);
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsEntiteManager->setSceneManager(m_pSceneMgr);
-	graphicsObjetManager->setSceneManager(m_pSceneMgr);
+	GraphicsObjetManager::getInstance()->setSceneManager(m_pSceneMgr);
 	graphicsWater = new GraphicsWater(m_pSceneMgr, m_pRoot, m_pRenderWnd);
 	PhysicsManager::getInstance()->setRootSceneNode(m_pSceneMgr->getRootSceneNode());
 
@@ -158,8 +156,6 @@ void GraphicsManager::loadRessource()
 void GraphicsManager::loadScene(Event* event)
 {
 	m_pCamera->setNearClipDistance(5);
-	graphicsCamera->setCamera(m_pCamera);
-	graphicsCamera->setStyle(CS_FREELOOK);
 	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
 
 
@@ -217,7 +213,7 @@ void GraphicsManager::processEvent(Event* event)
 	}
 	if(event->hasProperty("Objet"))
 	{
-		graphicsObjetManager->processEvent(event);
+		GraphicsObjetManager::getInstance()->processEvent(event);
 	}
 	if(event->hasProperty("LoadScene"))
 	{
@@ -267,7 +263,7 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 
 	graphicsCamera->frameRenderingQueued(m_FrameEvent);
 	graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
-	graphicsObjetManager->update(m_FrameEvent.timeSinceLastFrame);
+	GraphicsObjetManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsWater->update(m_FrameEvent.timeSinceLastFrame);
 	graphicsSky->update(m_FrameEvent.timeSinceLastFrame);
 

@@ -312,8 +312,6 @@ void GraphicsEntite::processEvent(Event * event)
 	if(event->hasProperty("Camera"))
 	{
 		GraphicsCamera::getInstance()->setTarget(mMainNode);
-		GraphicsCamera::getInstance()->setStyle(CS_ORBIT);
-
 	}
 
 }

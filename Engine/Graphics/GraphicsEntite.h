@@ -14,6 +14,7 @@
 #include "Event/Event.h"
 #include "Physics/PhysicsManager.h"
 #include "Physics/PhysicsEntite.h"
+#include "Graphics/GraphicsObjetManager.h"
 
 namespace Engine {
 

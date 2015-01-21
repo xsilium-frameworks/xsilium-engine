@@ -10,7 +10,6 @@
 
 #include "Event/Event.h"
 #include "GraphicsEntite.h"
-#include "Graphics/GraphicsObjetManager.h"
 #include <vector>
 
 namespace Engine {
@@ -27,10 +26,7 @@ public:
 	GraphicsEntite * trouverEntite(int id);
 	void deleteEntite(Ogre::String nom);
 
-	void assigneObjet(Event * event);
-
 	void setSceneManager(Ogre::SceneManager* msceneMgr);
-	void setObjetManager(GraphicsObjetManager * graphicsObjetManager);
 
 	void update(float time);
 
@@ -42,7 +38,6 @@ private:
 	std::vector<GraphicsEntite *>::iterator entite ;
 
 	Ogre::SceneManager* msceneMgr;
-	GraphicsObjetManager * graphicsObjetManager;
 };
 
 } /* namespace Engine */

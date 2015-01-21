@@ -20,11 +20,13 @@ XsiliumApp::~XsiliumApp()
 
 void XsiliumApp::start()
 {
+	Engine::Engine::getInstance()->initEngine("Xsilium",4);
 	logManager = Engine::LogManager::getInstance();
 	logManager->initLog("client");
 
     logManager->setLogMessage("Initialisation de l\'engine", Engine::NOTIFICATION);
-	Engine::Engine::getInstance()->initEngine("Xsilium",4);
+    Engine::Engine::getInstance()->initOgre("Xsilium");
+
 	graphicsManager = Engine::GraphicsManager::getInstance();
 	graphicsManager->initOgre();
 	graphicsManager->createWindow();

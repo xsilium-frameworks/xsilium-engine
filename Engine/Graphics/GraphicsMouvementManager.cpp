@@ -91,8 +91,7 @@ void GraphicsMouvementManager::processEvent(Event * event)
 
 		Event event2 ;
 		event2.setProperty("Entite","1");
-		event2.setProperty("deplaceEntite","1");
-		event2.setProperty("idEntite","1");
+		event2.setProperty("IdEntite","1");
 		event2.setProperty("NewDirection","1");
 		event2.setProperty("NewPositionX",ToString(direction.x).c_str());
 		event2.setProperty("NewPositionY",ToString(direction.y).c_str());
