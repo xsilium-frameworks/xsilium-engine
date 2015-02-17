@@ -18,7 +18,7 @@
 
 
 
-#define AUTH_HOST "85.25.143.49"
+#define AUTH_HOST "94.23.188.243"
 //#define AUTH_HOST "127.0.0.1"
 #define AUTH_PORT 60000
 

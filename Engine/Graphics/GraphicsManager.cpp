@@ -30,7 +30,7 @@ GraphicsManager::GraphicsManager() {
 	graphicsEntiteManager = new GraphicsEntiteManager();
 	graphicsSceneLoader = new GraphicsSceneLoader();
 	PhysicsManager::getInstance();
-	graphicsMouvementManager = new GraphicsMouvementManager();
+	graphicsMouvementManager = 0;
 
 
 
@@ -156,6 +156,7 @@ void GraphicsManager::loadRessource()
 void GraphicsManager::loadScene(Event* event)
 {
 	m_pCamera->setNearClipDistance(5);
+    graphicsMouvementManager = new GraphicsMouvementManager();
 	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
 
 
@@ -238,8 +239,8 @@ void GraphicsManager::processEvent(Event* event)
 				graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
 		}
 	}
-
-	graphicsMouvementManager->processEvent(event);
+    if(graphicsMouvementManager)
+        graphicsMouvementManager->processEvent(event);
 
 }
 

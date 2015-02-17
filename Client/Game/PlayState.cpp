@@ -31,7 +31,7 @@ void PlayState::createScene() {
 
 	Engine::Engine::getInstance()->addEvent(event);
 
-	for(int i = 1;i <5; i++)
+	for(int i = 1;i <200; i++)
 	{
 
 		Event event2 ;
