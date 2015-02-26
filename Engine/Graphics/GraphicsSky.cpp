@@ -9,12 +9,14 @@
 
 namespace Engine {
 
-GraphicsSky::GraphicsSky(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd) {
-	m_pSceneMgr = sm;
-	this->m_pRoot = m_pRoot ;
-	this->m_pRenderWnd = m_pRenderWnd;
+GraphicsSky::GraphicsSky() {
+
 	mSkyXController = 0;
 	mSkyX = 0;
+	m_pRenderWnd = 0;
+	m_pCamera = 0;
+	m_pSceneMgr = 0;
+	m_pRoot = 0;
 
 
 }
@@ -23,12 +25,15 @@ GraphicsSky::~GraphicsSky() {
 	// TODO Auto-generated destructor stub
 }
 
-void GraphicsSky::initSkyX()
+void GraphicsSky::init(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd,Ogre::Camera* m_pCamera)
 {
-	LogManager::getInstance()->setLogMessage("Initialisation de SkyX", NORMAL);
 
-	m_pSceneMgr->getLight("Sun")->setType(Ogre::Light::LT_DIRECTIONAL);
-	m_pSceneMgr->getLight("Sun")->setDirection(Ogre::Vector3(0.f, -1.f, -1.f));
+	m_pSceneMgr = sm;
+	this->m_pRoot = m_pRoot ;
+	this->m_pRenderWnd = m_pRenderWnd;
+	this->m_pCamera = m_pCamera;
+
+	LogManager::getInstance()->setLogMessage("Initialisation de SkyX", NORMAL);
 
 	// Create SkyX
 	mSkyXController = new SkyX::BasicController();
@@ -54,24 +59,32 @@ void GraphicsSky::initSkyX()
 		mSkyX->getCloudsManager()->removeAll();
 	}
 	if (!mSkyX->getVCloudsManager()->isCreated()) {
-		mSkyX->getVCloudsManager()->create(mSkyX->getMeshManager()->getSkydomeRadius(m_pSceneMgr->getCamera("CamPrincipal")));
+		mSkyX->getVCloudsManager()->create(mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera));
 	}
 
 	mSkyX->getVCloudsManager()->setAutoupdate(false);
 
-	mSkyX->setTimeMultiplier(1 / 3600.f);
+	mSkyX->setTimeMultiplier(1);
 
 }
 
 void GraphicsSky::update(float dt)
 {
 	if(mSkyX)
+	{
 		mSkyX->update(dt);
+	}
+
 }
 
 SkyX::SkyX* GraphicsSky::getSkyX()
 {
 	return this->mSkyX;
+}
+
+SkyX::BasicController * GraphicsSky::getBasicController()
+{
+	return this->mSkyXController;
 }
 
 

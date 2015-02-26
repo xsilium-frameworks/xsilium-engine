@@ -31,7 +31,7 @@ void PlayState::createScene() {
 
 	Engine::Engine::getInstance()->addEvent(event);
 
-	for(int i = 1;i <200; i++)
+	for(int i = 1;i <2; i++)
 	{
 
 		Event event2 ;
@@ -51,25 +51,25 @@ void PlayState::createScene() {
 
 	}
 
-	Event event3 ;
+	/*Event event3 ;
 	event3.setProperty("Entite","1");
 	event3.setProperty("IdEntite","1");
 	event3.setProperty("Camera","1");
-	Engine::Engine::getInstance()->addEvent(event3);
-
-
-
-	/*	Event event3;
-
-	event3.setProperty("Water","1");
-	event3.setProperty("InitWater","1");
 	Engine::Engine::getInstance()->addEvent(event3);*/
 
-	Event event4;
+    Event event4;
+    
+    event4.setProperty("Sky","1");
+    event4.setProperty("InitSky","1");
+    Engine::Engine::getInstance()->addEvent(event4);
 
-	event4.setProperty("Sky","1");
-	event4.setProperty("InitSky","1");
-	Engine::Engine::getInstance()->addEvent(event4);
+    Event event5;
+
+	event5.setProperty("Water","1");
+	event5.setProperty("InitWater","1");
+	Engine::Engine::getInstance()->addEvent(event5);
+
+
 
 }
 

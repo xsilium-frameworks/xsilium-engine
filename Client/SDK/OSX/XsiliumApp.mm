@@ -9,6 +9,41 @@
 }
 @end
 
+#if __LP64__
+// DisplayLink callback
+#if USE_DISPLAYLINK
+static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime,
+                                      CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+    if(Ogre::Root::getSingletonPtr() && Ogre::Root::getSingleton().isInitialised())
+    {
+        NSOpenGLContext *ctx = static_cast<Ogre::OSXCocoaWindow *>(xsiliumApp.getWindow() )->nsopenGLContext();
+        CGLContextObj cglContext = (CGLContextObj)[ctx CGLContextObj];
+        
+        // Lock the context before we render into it.
+        CGLLockContext(cglContext);
+        
+        // Calculate the time since we last rendered.
+        Ogre::Real deltaTime = 1.0 / (outputTime->rateScalar * (Ogre::Real)outputTime->videoTimeScale / (Ogre::Real)outputTime->videoRefreshPeriod);
+        
+        // Make the context current and dispatch the render.
+        [ctx makeCurrentContext];
+        dispatch_async(dispatch_get_main_queue(), ^(void)
+                       {
+                           Ogre::Root::getSingleton().renderOneFrame(deltaTime);
+                       });
+        
+        CGLUnlockContext(cglContext);
+    }
+    else if(Ogre::Root::getSingleton().endRenderingQueued())
+    {
+        [(XsiliumDelegate *)mAppDelegate shutdown];
+    }
+    return kCVReturnSuccess;
+}
+#endif
+#endif
+
 
 @implementation XsiliumDelegate
 
@@ -34,32 +69,84 @@
     }
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)go {
     
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     mLastFrameTime = 1;
     mTimer = nil;
     
-    xsilium = new XsiliumApp();
+    try {
+        xsiliumApp = new XsiliumApp();
+        xsiliumApp->start();
+        Ogre::Root::getSingleton().getRenderSystem()->_initRenderTargets();
+        
+        // Clear event times
+        Ogre::Root::getSingleton().clearEventTimes();
+    } catch( Ogre::Exception& e ) {
+        std::cerr << "An exception has occurred: " <<
+        e.getFullDescription().c_str() << std::endl;
+    }
+#if __LP64__ && USE_DISPLAYLINK
+    CVReturn ret = kCVReturnSuccess;
+    // Create a display link capable of being used with all active displays
+    ret = CVDisplayLinkCreateWithActiveCGDisplays(&mDisplayLink);
     
-    mTimer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)(1.0f / 60.0f) * mLastFrameTime
-                                              target:self
-                                            selector:@selector(renderOneFrame:)
-                                            userInfo:nil
-                                             repeats:YES];
-    xsilium->start();
+    // Set the renderer output callback function
+    ret = CVDisplayLinkSetOutputCallback(mDisplayLink, &MyDisplayLinkCallback, self);
     
+    // Set the display link for the current renderer
+    NSOpenGLContext *ctx = static_cast<Ogre::OSXCocoaWindow *>(xsiliumApp.getWindow())->nsopenGLContext();
+    NSOpenGLPixelFormat *fmt = static_cast<Ogre::OSXCocoaWindow *>(xsiliumApp.getWindow())->nsopenGLPixelFormat();
+    CGLContextObj cglContext = (CGLContextObj)[ctx CGLContextObj];
+    CGLPixelFormatObj cglPixelFormat = (CGLPixelFormatObj)[fmt CGLPixelFormatObj];
+    ret = CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(mDisplayLink, cglContext, cglPixelFormat);
+    
+    // Activate the display link
+    ret = CVDisplayLinkStart(mDisplayLink);
+#else
+    mTimer = [[NSTimer timerWithTimeInterval: 0.001 target:self selector:@selector(renderOneFrame:) userInfo:self repeats:true] retain];
+    [[NSRunLoop currentRunLoop] addTimer:mTimer forMode: NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:mTimer forMode: NSEventTrackingRunLoopMode]; // Ensure timer fires during resize
+#endif
     [pool release];
 }
 
-- (void) dealloc {
-    if(xsilium != NULL) delete xsilium;
-    [super dealloc];
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    
+    mLastFrameTime = 1;
+    mTimer = nil;
+    
+    [self go];
+}
+
+- (void)shutdown {
+    if(mDisplayLink)
+    {
+        CVDisplayLinkStop(mDisplayLink);
+        CVDisplayLinkRelease(mDisplayLink);
+        mDisplayLink = nil;
+    }
+    
+    [NSApp terminate:nil];
 }
 
 - (void)renderOneFrame:(id)sender
 {
-    Ogre::Root::getSingleton().renderOneFrame((Ogre::Real)[mTimer timeInterval]);
+    if(Ogre::Root::getSingletonPtr() && Ogre::Root::getSingleton().isInitialised() && !Ogre::Root::getSingleton().endRenderingQueued())
+    {
+        Ogre::Root::getSingleton().renderOneFrame();
+    }
+    else if(Ogre::Root::getSingleton().endRenderingQueued())
+    {
+        if(mTimer)
+        {
+            [mTimer invalidate];
+            mTimer = nil;
+        }
+        delete xsiliumApp;
+        [NSApp performSelector:@selector(terminate:) withObject:nil afterDelay:0.0];
+     
+    }
 }
 
 

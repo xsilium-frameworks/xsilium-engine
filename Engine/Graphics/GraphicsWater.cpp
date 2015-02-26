@@ -9,13 +9,13 @@
 
 namespace Engine {
 
-GraphicsWater::GraphicsWater(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd) {
+GraphicsWater::GraphicsWater() {
 	m_pHydrax = 0;
 	m_pTerrainGroup = 0;
-	m_pSceneMgr = sm;
-	this->m_pRoot = m_pRoot;
-	this->m_pRenderWnd = m_pRenderWnd;
-	m_pCamera = m_pSceneMgr->getCamera("CamPrincipal");
+	m_pSceneMgr = 0;
+	m_pRoot = 0;
+	m_pRenderWnd = 0;
+	m_pCamera = 0;
 
 }
 
@@ -23,7 +23,12 @@ GraphicsWater::~GraphicsWater() {
 	delete m_pHydrax;
 }
 
-void GraphicsWater::initHydrax() {
+void GraphicsWater::init(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd,Ogre::Camera* m_pCamera) {
+
+	m_pSceneMgr = sm;
+	this->m_pRoot = m_pRoot;
+	this->m_pRenderWnd = m_pRenderWnd;
+	this->m_pCamera = m_pCamera;
 
 	LogManager::getInstance()->setLogMessage("Initialisation de Hydrax", NORMAL);
 
@@ -56,12 +61,9 @@ void GraphicsWater::initHydrax() {
 
 }
 
-void GraphicsWater::addDepthTechnique(Ogre::StringVector materialNames)
+void GraphicsWater::addRttListener(GraphicsHydraxRttListener * graphicsHydraxRttListener)
 {
-	for(unsigned int i = 0;i < materialNames.size();i++)
-	{
-		m_pHydrax->getMaterialManager()->addDepthTechnique(static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialNames[i]))->createTechnique());
-	}
+        m_pHydrax->getRttManager()->addRttListener(graphicsHydraxRttListener);
 }
 
 
@@ -69,11 +71,6 @@ void GraphicsWater::update(float dt)
 {
 	if(m_pHydrax)
 		m_pHydrax->update(dt);
-}
-
-void GraphicsWater::addRttListener(GraphicsHydraxRttListener * graphicsHydraxRttListener)
-{
-	m_pHydrax->getRttManager()->addRttListener(graphicsHydraxRttListener);
 }
 
 Hydrax::Hydrax* GraphicsWater::getHydraX()

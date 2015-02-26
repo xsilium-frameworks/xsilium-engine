@@ -32,7 +32,7 @@ GuiManager::~GuiManager() {
 	listOfInterface.clear();
 
 	delete guiInput;
-	deleteInterfacePrincipal();
+	CEGUI::WindowManager::getSingleton().destroyAllWindows();
 }
 
 void GuiManager::processEvent(Event* event)
@@ -114,7 +114,6 @@ void GuiManager::deleteInterfacePrincipal()
 	if(interfacePrincipale)
 	{
 		CEGUI::Window * parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-		CEGUI::WindowManager::getSingleton().destroyWindow(parent);
 		parent->destroy();
 		interfacePrincipale = false;
 	}

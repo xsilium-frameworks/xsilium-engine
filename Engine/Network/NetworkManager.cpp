@@ -99,14 +99,11 @@ void* NetworkManager::threadConnexion(void* arguments)
 		{
 			MessagePacket * message = new MessagePacket();
 
-			std::istringstream archive_stream(std::string((char*)networkManager->eventClient.packet->data)) ;
+			std::istringstream archive_stream(std::string((char*)networkManager->eventClient.packet->data));
 			boost::archive::text_iarchive archive(archive_stream);
 			archive >> message;
 
 			networkManager->callback(message->getOpcode(),message);
-
-			enet_packet_destroy (networkManager->eventClient.packet);
-
 			break;
 		}
 
@@ -117,6 +114,7 @@ void* NetworkManager::threadConnexion(void* arguments)
 		default:
 			break;
 		}
+        enet_packet_destroy (networkManager->eventClient.packet);
 	}
 	return NULL;
 }

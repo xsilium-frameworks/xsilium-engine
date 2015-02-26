@@ -48,7 +48,6 @@ namespace Engine {
 
 		// Ajoutes les attributs 
 		boost::log::add_common_attributes();
-		boost::log::sources::severity_logger< severity_level > logMgr;
 		setLogMessage("######## Initialisation du LogManager ########", NOTIFICATION);
 	}
 

@@ -27,6 +27,7 @@
 #include "TreeLoader3D.h"
 
 #include "rapidxml.hpp"
+#include "GraphicsSky.h"
 
 // Forward declarations
 namespace Ogre

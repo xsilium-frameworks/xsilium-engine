@@ -8,17 +8,17 @@
 #ifndef GRAPHICSMANAGER_H_
 #define GRAPHICSMANAGER_H_
 
-#include "Engine/Engine.h"
-#include "Graphics/GraphicsEntiteManager.h"
-#include "Graphics/GraphicsSceneLoader.h"
-#include "Graphics/GraphicsCamera.h"
-#include "Graphics/GraphicsMouvementManager.h"
-#include "Graphics/GraphicsWater.h"
-#include "Graphics/GraphicsSky.h"
-#include "Graphics/GraphicsObjetManager.h"
-#include "Input/InputManager.h"
+#include <Engine/Engine.h>
+#include "GraphicsEntiteManager.h"
+#include "GraphicsSceneLoader.h"
+#include "GraphicsCamera.h"
+#include "GraphicsMouvementManager.h"
+#include "GraphicsObjetManager.h"
+#include "GraphicsMeteoManager.h"
 
-#include "Physics/PhysicsManager.h"
+#include <Input/InputManager.h>
+
+#include <Physics/PhysicsManager.h>
 
 namespace Engine {
 
@@ -69,9 +69,8 @@ namespace Engine {
 		GraphicsSceneLoader*		graphicsSceneLoader;
 		InputManager*				inputManager;
 		GraphicsCamera*				graphicsCamera;
-		GraphicsSky *				graphicsSky;
-		GraphicsWater*				graphicsWater;
 		GraphicsMouvementManager *  graphicsMouvementManager;
+		GraphicsMeteoManager * graphicsMeteoManager;
 
 	};
 

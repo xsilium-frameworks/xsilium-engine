@@ -33,8 +33,6 @@ GraphicsSceneLoader::GraphicsSceneLoader()
 GraphicsSceneLoader::~GraphicsSceneLoader() {
 	if (mGrassLoaderHandle)
 		delete mGrassLoaderHandle;
-	//if(gestionnaireMeteo)
-	//	delete gestionnaireMeteo;
 
 	std::vector<Forests::PagedGeometry *>::iterator it = mPGHandles.begin();
 	while (it != mPGHandles.end())
@@ -1343,79 +1341,74 @@ void GraphicsSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode
 
 void GraphicsSceneLoader::processSkyx(rapidxml::xml_node<>* XMLNode)
 {
-	/*        SkyX::BasicController* mBasicController = new SkyX::BasicController();
-				mSkyX = new SkyX::SkyX(mSceneMgr, mBasicController);
 
-				rapidxml::xml_node<>* pElement;
+	SkyX::BasicController* mBasicController = GraphicsSky::getInstance()->getBasicController();
+	SkyX::SkyX * mSkyX = GraphicsSky::getInstance()->getSkyX() ;
 
-				//Recup�ration des params SkyX (atmosphere)
-				SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
-				atOpt.RayleighMultiplier = getAttribReal(XMLNode, "rayleighMultiplier");
-				atOpt.MieMultiplier = getAttribReal(XMLNode, "mieMultiplier");
-				atOpt.Exposure = getAttribReal(XMLNode, "exposure");
-				atOpt.InnerRadius = getAttribReal(XMLNode, "innerRadius");
-				atOpt.OuterRadius = getAttribReal(XMLNode, "outerRadius");
-				atOpt.NumberOfSamples = Ogre::StringConverter::parseInt(XMLNode->first_attribute("sampleCount")->value());
-				atOpt.HeightPosition = getAttribReal(XMLNode, "height");
-				atOpt.SunIntensity = getAttribReal(XMLNode, "sunIntensity");
-				atOpt.G = getAttribReal(XMLNode, "G");
-				mSkyX->getAtmosphereManager()->setOptions(atOpt);
+	rapidxml::xml_node<>* pElement;
+
+	//Recup�ration des params SkyX (atmosphere)
+	SkyX::AtmosphereManager::Options atOpt = mSkyX->getAtmosphereManager()->getOptions();
+	atOpt.RayleighMultiplier = getAttribReal(XMLNode, "rayleighMultiplier");
+	atOpt.MieMultiplier = getAttribReal(XMLNode, "mieMultiplier");
+	atOpt.Exposure = getAttribReal(XMLNode, "exposure");
+	atOpt.InnerRadius = getAttribReal(XMLNode, "innerRadius");
+	atOpt.OuterRadius = getAttribReal(XMLNode, "outerRadius");
+	atOpt.NumberOfSamples = Ogre::StringConverter::parseInt(XMLNode->first_attribute("sampleCount")->value());
+	atOpt.HeightPosition = getAttribReal(XMLNode, "height");
+	atOpt.SunIntensity = getAttribReal(XMLNode, "sunIntensity");
+	atOpt.G = getAttribReal(XMLNode, "G");
+	mSkyX->getAtmosphereManager()->setOptions(atOpt);
 
 
-				pElement = XMLNode->first_node("time");
-				if(pElement)
-				{
-				mSkyX->setTimeMultiplier(getAttribReal(pElement, "multiplier"));
-				mBasicController->setTime(Ogre::Vector3(getAttribReal(pElement, "current"), getAttribReal(pElement, "sunRise"), getAttribReal(pElement, "sunSet")));
-				}
-				else
-				mSkyX->setTimeMultiplier(1.0f);
+	pElement = XMLNode->first_node("time");
+	if(pElement)
+	{
+		mBasicController->setTime(Ogre::Vector3(getAttribReal(pElement, "current"), getAttribReal(pElement, "sunRise"), getAttribReal(pElement, "sunSet")));
+	}
 
 
 
 
-				//Recup�ration des params SkyX (cloud)
-				//Manque �quivalences ogitor
-				pElement = XMLNode->first_node("vClouds");
-				if(pElement)
-				{
-				rapidxml::xml_node<>* pElement2;
-				SkyX::VClouds::VClouds * vclouds = mSkyX->getVCloudsManager()->getVClouds() ;
+	//Recup�ration des params SkyX (cloud)
+	//Manque �quivalences ogitor
+	pElement = XMLNode->first_node("vClouds");
+	if(pElement)
+	{
+		rapidxml::xml_node<>* pElement2;
+		SkyX::VClouds::VClouds * vclouds = mSkyX->getVCloudsManager()->getVClouds() ;
 
-				vclouds->setNoiseScale(getAttribReal(pElement, "noiseScale"));
-				vclouds->setWindSpeed(getAttribReal(pElement, "windSpeed"));
-				vclouds->setWindDirection(Ogre::StringConverter::parseAngle(getAttrib(pElement, "windDirection")));
-				vclouds->setCloudFieldScale(getAttribReal(pElement, "cloudScale"));
+		vclouds->setNoiseScale(getAttribReal(pElement, "noiseScale"));
+		vclouds->setWindSpeed(getAttribReal(pElement, "windSpeed"));
+		vclouds->setWindDirection(Ogre::StringConverter::parseAngle(getAttrib(pElement, "windDirection")));
+		vclouds->setCloudFieldScale(getAttribReal(pElement, "cloudScale"));
 
-				pElement2 = pElement->first_node("ambientColor");
-				if(pElement2)
-				{
-				vclouds->setAmbientColor(Ogre::Vector3(getAttribReal(pElement2, "R"), getAttribReal(pElement2, "G"), getAttribReal(pElement2, "B")));
-				}
-				pElement2 = pElement->first_node("lightReponse");
-				if(pElement2)
-				{
-				vclouds->setLightResponse(Ogre::Vector4(getAttribReal(pElement2, "X"), getAttribReal(pElement2, "Y"), getAttribReal(pElement2, "Z"),getAttribReal(pElement2, "W")));
-				}
-				pElement2 = pElement->first_node("ambientFactors");
-				if(pElement2)
-				{
-				vclouds->setAmbientFactors(Ogre::Vector4(getAttribReal(pElement2, "X"), getAttribReal(pElement2, "Y"), getAttribReal(pElement2, "Z"),getAttribReal(pElement2, "W")));
-				}
-				pElement2 = pElement->first_node("weather");
-				if(pElement2)
-				{
-				vclouds->setWheater(getAttribReal(pElement2, "X"), getAttribReal(pElement2, "Y"),false);
-				}
-				}
-				pElement = XMLNode->first_node("moon");
-				if(pElement)
-				{
-				mBasicController->setMoonPhase(getAttribReal(pElement, "phase"));
-				}
-				gestionnaireMeteo->createCiel(mSkyX);
-				//options supp.
-	 */
+		pElement2 = pElement->first_node("ambientColor");
+		if(pElement2)
+		{
+			vclouds->setAmbientColor(Ogre::Vector3(getAttribReal(pElement2, "R"), getAttribReal(pElement2, "G"), getAttribReal(pElement2, "B")));
+		}
+		pElement2 = pElement->first_node("lightReponse");
+		if(pElement2)
+		{
+			vclouds->setLightResponse(Ogre::Vector4(getAttribReal(pElement2, "X"), getAttribReal(pElement2, "Y"), getAttribReal(pElement2, "Z"),getAttribReal(pElement2, "W")));
+		}
+		pElement2 = pElement->first_node("ambientFactors");
+		if(pElement2)
+		{
+			vclouds->setAmbientFactors(Ogre::Vector4(getAttribReal(pElement2, "X"), getAttribReal(pElement2, "Y"), getAttribReal(pElement2, "Z"),getAttribReal(pElement2, "W")));
+		}
+		pElement2 = pElement->first_node("weather");
+		if(pElement2)
+		{
+			vclouds->setWheater(getAttribReal(pElement2, "X"), getAttribReal(pElement2, "Y"),false);
+		}
+	}
+	pElement = XMLNode->first_node("moon");
+	if(pElement)
+	{
+		mBasicController->setMoonPhase(getAttribReal(pElement, "phase"));
+	}
 }
 
 Ogre::StringVector GraphicsSceneLoader::getMaterialNames()

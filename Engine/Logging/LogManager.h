@@ -3,7 +3,7 @@
  *
  *  Created on: \date 12 septembre 2014
  *      Author: \author xelfe
- *  \brief : Fichier d'en-tête de la classe LogManager
+ *  \brief : Fichier d'en-tï¿½te de la classe LogManager
  */
 #ifndef LOGMANAGER_H_
 #define LOGMANAGER_H_
@@ -25,7 +25,7 @@
 
 /*!
  * \namespace Engine
- * \brief Espace de nommage regroupant les dfférentes classes du moteur.
+ * \brief Espace de nommage regroupant les dffï¿½rentes classes du moteur.
  */
 namespace Engine {
 
@@ -50,7 +50,7 @@ namespace Engine {
 	 * \class LogManager
 	 * \brief Classe gestionnaire de log.
 	 *
-	 * Classe permettant de gèrer les différentes niveaux de log selon la configuration de compile.
+	 * Classe permettant de gï¿½rer les diffï¿½rentes niveaux de log selon la configuration de compile.
 	 *
 	 */
 	class LogManager : public Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
@@ -84,14 +84,14 @@ namespace Engine {
 		void initOgreLog();
 
 		/*!
-		*  \brief Méthode qui initiliase LogManager
+		*  \brief Mï¿½thode qui initiliase LogManager
 		*
 		*  \param[in] fileName : String de nom du fichier de log
 		*/
 		void initLog(Ogre::String fileName);
 
 		/*!
-		*  \brief Méthode qui configure un message vers LogManager
+		*  \brief Mï¿½thode qui configure un message vers LogManager
 		*
 		*  \param[in] logMessage : String de message a ajouter vers LogManager
 		*  \param[in] logLevel : String de niveau du message a ajouter vers LogManager
@@ -99,35 +99,38 @@ namespace Engine {
 		void setLogMessage(Ogre::String logMessage, severity_level logLevel);
 
 		/*!
-		*  \brief Méthode derive de Ogre::Log
+		*  \brief Mï¿½thode derive de Ogre::Log
 		*
-		*  Méthode derive de Ogre::Log qui est appellé à chaque message gèré par ogre
+		*  Mï¿½thode derive de Ogre::Log qui est appellï¿½ ï¿½ chaque message gï¿½rï¿½ par ogre
 		*
-		*  \param[in] message : String de message envoyé par Ogre::Log
-		*  \param[in] lml : String de nom du niveau du message envoyé par Ogre::Log
+		*  \param[in] message : String de message envoyï¿½ par Ogre::Log
+		*  \param[in] lml : String de nom du niveau du message envoyï¿½ par Ogre::Log
 		*  \param[in] maskDebug : bool pour masquer les messages specific au mode debug
-		*  \param[in] skipThisMessage : bool pour designer si un message doit etre ignoré
+		*  \param[in] skipThisMessage : bool pour designer si un message doit etre ignorï¿½
 		*
 		*/
 		void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage);
 
 		/*!
-		*  \brief Méthode derive de CEGUI::Log
+		*  \brief Mï¿½thode derive de CEGUI::Log
 		*
-		*  Méthode derive de CEGUI::Log qui est appellé à chaque message gèré par cegui
+		*  Mï¿½thode derive de CEGUI::Log qui est appellï¿½ ï¿½ chaque message gï¿½rï¿½ par cegui
 		*
-		*  \param[in] message : String de message envoyé par CEGUI::Log
-		*  \param[in] level : String du nom de niveau du message envoyé par CEGUI::Log
+		*  \param[in] message : String de message envoyï¿½ par CEGUI::Log
+		*  \param[in] level : String du nom de niveau du message envoyï¿½ par CEGUI::Log
 		*/
 		void logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level);
 
 		/*!
-		*  \brief Méthode derive de CEGUI::Log qui configure le nom du fichier .log
+		*  \brief Mï¿½thode derive de CEGUI::Log qui configure le nom du fichier .log
 		*
 		*  \param[in] fileName : String de nom du fichier de log
 		*  \param[in] append : bool
 		*/
 		void setLogFilename(const CEGUI::String &filename, bool append);
+
+	private:
+		boost::log::sources::severity_logger< severity_level > logMgr;
 
 	};
 

@@ -1,14 +1,16 @@
 /*
  * \file GraphicsMeteoManager.h
  *
- *  Created on: \date 26 aožt 2014
+ *  Created on: \date 26 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
 #ifndef GRAPHICSMETEOMANAGER_H_
 #define GRAPHICSMETEOMANAGER_H_
 
-#include "Graphics/GraphicsHydraxRttListener.h"
+#include "GraphicsHydraxRttListener.h"
+#include "GraphicsWater.h"
+#include "GraphicsSky.h"
 
 namespace Engine {
 
@@ -17,20 +19,10 @@ namespace Engine {
  */
 class GraphicsMeteoManager {
 public:
-	GraphicsMeteoManager(Ogre::SceneManager *sm, Ogre::Root* m_pRoot , Ogre::RenderWindow* m_pRenderWnd);
+	GraphicsMeteoManager(Ogre::SceneManager *sm, Ogre::Root* m_pRoot , Ogre::RenderWindow* m_pRenderWnd,Ogre::Camera* m_pCamera);
 	virtual ~GraphicsMeteoManager();
 
-	void createMeteo();
-
-	Hydrax::Hydrax* hydraxMgr() const {return mHydrax;}
-	/** Get the SkyX manager
-	 * @return SkyX manager
-	 */
-	SkyX::SkyX* skyxMgr() const {return mSkyX;}
-	/** Get the SkyX controller
-	 * @return SkyX controller
-	 */
-	SkyX::BasicController* skyxCtrl() const {return mSkyXController;}
+	void init();
 
 	/** Set beafourt number.
 	 * @param beaf Beafourt number.
@@ -70,7 +62,7 @@ public:
 	/** Get wind vector.
 	 * @return Wind vector (length is the wind speed).
 	 */
-Ogre::Vector3 wind(){return mWind;}
+	Ogre::Vector3 wind(){return mWind;}
 
 	/** Update method, that must be called every frame.
 	 * @param dt Time elapsed between frames (Time
@@ -83,24 +75,13 @@ Ogre::Vector3 wind(){return mWind;}
 	 */
 	//void lightningAdded(SkyX::VClouds::Lightning* l);
 
-	/** Set DepthTechnique .
-		 * @param Ogre::StringVector
-		 */
-	void addDepthTechnique(Ogre::StringVector materialNames);
-
 
 protected:
-	/** Initialize Hydrax
-	 */
-	void initHydrax();
-
-	/** Initialize SkyX
-	 */
-	void initSkyX();
 
 	/** Setup the lighting according with setup.
 	 */
 	void updateEnvironmentLighting();
+	void updateShadowFarDistance();
 
 private:
 	/** Compute color gradients, function of beafourt number.
@@ -136,20 +117,20 @@ private:
 	Ogre::RenderWindow* 		m_pRenderWnd ;
 	Ogre::Camera*				m_pCamera;
 
-	SkyX::SkyX* mSkyX ;
-	SkyX::BasicController * mSkyXController;
+	GraphicsSky * graphicsSky;
+	GraphicsWater * graphicsWater;
 
-	Hydrax::Hydrax* mHydrax;
 
-	unsigned int mBeafourt;
-	/// Water color gradient
-	SkyX::ColorGradient mWaterGradient;
 	/// Sun color gradient
 	SkyX::ColorGradient mSunGradient;
 	/// Diffuse color gradient
 	SkyX::ColorGradient mDiffuseGradient;
 	/// Ambient color gradient
 	SkyX::ColorGradient mAmbientGradient;
+
+	unsigned int mBeafourt;
+	/// Water color gradient
+	SkyX::ColorGradient mWaterGradient;
 	/// Number of waves (added to Hydrax)
 	unsigned int nWaves;
 	/// Rain active/unactive
@@ -158,6 +139,8 @@ private:
 	bool mStorm;
 	/// Wind vector
 	Ogre::Vector3 mWind;
+
+	Ogre::Real mLastPositionLength;
 
 };
 

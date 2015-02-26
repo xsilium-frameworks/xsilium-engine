@@ -117,6 +117,8 @@ bool GameStateManager::frameRenderingQueued(
 			processEvent(event);
 			deleteEvent();
 		}
+    }
+    if (!m_ActiveStateStack.empty()) {
 		m_ActiveStateStack.back()->update(m_FrameEvent.timeSinceLastFrame);
 	}
 
@@ -137,12 +139,12 @@ void GameStateManager::processEvent(Event * event) {
 }
 
 void GameStateManager::shutdown() {
-	//Engine::getInstance()->getLog()->logMessage("Sortie de la boucle principale");
+	LogManager::getInstance()->setLogMessage("Sortie de la boucle principale", NORMAL);
 	Engine::getInstance()->stopEngine();
 }
 
 void GameStateManager::init(GameState* state) {
-	//Engine::getInstance()->getRenderWindow()->resetStatistics();
+	Engine::getInstance()->getRenderWindow()->resetStatistics();
 }
 
 }

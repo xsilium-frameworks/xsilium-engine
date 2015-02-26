@@ -13,6 +13,7 @@ set( CORE_HEADER_FILES
 	 ./Graphics/GraphicsEntite.h
 	 ./Graphics/GraphicsHydraxRttListener.h
 	 ./Graphics/GraphicsManager.h
+ 	 ./Graphics/GraphicsMeteoManager.h
 	 ./Graphics/GraphicsMouvementManager.h
 	 ./Graphics/GraphicsObjet.h
 	 ./Graphics/GraphicsObjetManager.h
@@ -55,6 +56,7 @@ set (CORE_SOURCE_FILES
 	 ./Graphics/GraphicsEntiteManager.cpp
 	 ./Graphics/GraphicsHydraxRttListener.cpp
 	 ./Graphics/GraphicsManager.cpp
+	 ./Graphics/GraphicsMeteoManager.cpp
 	 ./Graphics/GraphicsMouvementManager.cpp
 	 ./Graphics/GraphicsObjet.cpp
 	 ./Graphics/GraphicsObjetManager.cpp

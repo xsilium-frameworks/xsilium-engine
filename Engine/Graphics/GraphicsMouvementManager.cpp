@@ -12,6 +12,8 @@ namespace Engine {
 GraphicsMouvementManager::GraphicsMouvementManager() {
 	graphicsCamera = 0;
 	direction = Ogre::Vector3::ZERO ;
+	saute = false;
+	deplacement = false;
 }
 
 GraphicsMouvementManager::~GraphicsMouvementManager() {
@@ -86,22 +88,24 @@ void GraphicsMouvementManager::processEvent(Event * event)
 				saute = true;
 			}
 		}
-
-		graphicsCamera->setDirection(direction);
-
-		Event event2 ;
-		event2.setProperty("Entite","1");
-		event2.setProperty("IdEntite","1");
-		event2.setProperty("NewDirection","1");
-		event2.setProperty("NewPositionX",ToString(direction.x).c_str());
-		event2.setProperty("NewPositionY",ToString(direction.y).c_str());
-		event2.setProperty("NewPositionZ",ToString(direction.z).c_str());
-		if(saute)
+		if(deplacement)
 		{
-			event2.setProperty("Jump","1");
-			saute = false;
+			graphicsCamera->setDirection(direction);
+
+			/*Event event2 ;
+			event2.setProperty("Entite","1");
+			event2.setProperty("IdEntite","1");
+			event2.setProperty("NewDirection","1");
+			event2.setProperty("NewPositionX",ToString(direction.x).c_str());
+			event2.setProperty("NewPositionY",ToString(direction.y).c_str());
+			event2.setProperty("NewPositionZ",ToString(direction.z).c_str());
+			if(saute)
+			{
+				event2.setProperty("Jump","1");
+				saute = false;
+			}
+			Engine::getInstance()->addEvent(event2); */
 		}
-		Engine::getInstance()->addEvent(event2);
 
 	}
 
@@ -109,9 +113,11 @@ void GraphicsMouvementManager::processEvent(Event * event)
 
 bool GraphicsMouvementManager::mouseMoved(const OIS::MouseEvent &e)
 {
-	if(graphicsCamera)
-		graphicsCamera->injectMouseMove(e);
-
+	if(deplacement)
+	{
+		if(graphicsCamera)
+			graphicsCamera->injectMouseMove(e);
+	}
 	return true;
 }
 bool GraphicsMouvementManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
@@ -121,6 +127,15 @@ bool GraphicsMouvementManager::mousePressed(const OIS::MouseEvent &e, OIS::Mouse
 bool GraphicsMouvementManager::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
 	return true;
+}
+
+void GraphicsMouvementManager::activeMouvement()
+{
+	deplacement = true;
+}
+void GraphicsMouvementManager::deactiveMouvement()
+{
+	deplacement = false;
 }
 
 

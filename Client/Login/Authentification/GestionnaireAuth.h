@@ -12,7 +12,7 @@
 #include <sstream>
 #include <cstring>
 
-#include "Engine/Network/NetworkManager.h"
+#include <Network/NetworkManager.h>
 #include "Compte/Compte.h"
 #include "Gui/GuiAuth.h"
 

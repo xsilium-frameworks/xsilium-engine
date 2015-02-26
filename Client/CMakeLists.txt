@@ -85,7 +85,6 @@ if (APPLE)
 
    	set_target_properties(${TargetName} PROPERTIES
         LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo -framework ApplicationServices ")
-
     # Add the path where the Ogre framework was found, if it has been found somewhere
     if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "" AND OGRE_SDK_BUILD)
       set_target_properties(SampleBrowser PROPERTIES

@@ -34,12 +34,16 @@ public:
 	bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 	bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
+	void activeMouvement();
+	void deactiveMouvement();
 
 private:
 	GraphicsCamera * graphicsCamera;
 	Ogre::Vector3 direction;
 
 	bool saute;
+
+	bool deplacement;
 
 };
 

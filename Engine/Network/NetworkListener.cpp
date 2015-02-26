@@ -75,6 +75,7 @@ void NetworkListener::threadProcess(void * arguments)
 		{
 			MessagePacket * packet = moduleActif->getPacket();
 			moduleActif->processPacket(packet);
+            delete packet ;
 		}
 	}
 }

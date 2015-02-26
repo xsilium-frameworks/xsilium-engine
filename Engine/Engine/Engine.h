@@ -126,10 +126,13 @@ public:
 	 */
 	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
+	void setRenderWindow(Ogre::RenderWindow*	renderWindow);
+	Ogre::RenderWindow* getRenderWindow();
 private:
 
 	Ogre::String mResourcePath; /*!< Chemin vers les ressources */
 	Ogre::Root* m_pRoot; /*!< Instance de Ogre::root */
+	Ogre::RenderWindow*	renderWindow; /*!< Instance de Ogre::RenderWindow */
 
 	std::vector<EngineListenner*> listOfEngineListenner; /*!< liste des écouteurs du moteur */
 

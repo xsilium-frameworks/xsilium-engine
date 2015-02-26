@@ -10,6 +10,13 @@
 #include "Login/LoginState.h"
 #include "Input/KeyboardManager.h"
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+
+#define USE_DISPLAYLINK 0
+//#import <OSX/OgreOSXCocoaWindow.h>
+#import <QuartzCore/CVDisplayLink.h>
+#endif
+
 class XsiliumApp
 {
 public:
@@ -17,6 +24,8 @@ public:
 	~XsiliumApp();
 
 	void start();
+    
+    Ogre::RenderWindow* getWindow();
 
 private:
 	Engine::GraphicsManager* graphicsManager;
@@ -31,6 +40,7 @@ private:
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE)
 
+
 #if defined(MAC_OS_X_VERSION_10_6) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @interface XsiliumDelegate : NSObject <NSApplicationDelegate>
 #else
@@ -38,16 +48,22 @@ private:
 #endif
 {
     NSTimer *mTimer;
+    
+    NSDate *mDate;
     NSTimeInterval mLastFrameTime;
-    XsiliumApp *xsilium;
+    CVDisplayLinkRef mDisplayLink; //display link for managing rendering thread
 }
 
+- (void)go;
 - (void)renderOneFrame:(id)sender;
+- (void)shutdown;
 
-@property (retain) NSTimer *mTimer;
+@property (retain, atomic) NSTimer *mTimer;
 @property (nonatomic) NSTimeInterval mLastFrameTime;
 
 @end
+
+static XsiliumApp * xsiliumApp;
 
 #if __LP64__
 static id mAppDelegate;

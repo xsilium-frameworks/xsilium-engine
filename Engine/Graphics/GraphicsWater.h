@@ -21,16 +21,15 @@ namespace Engine {
 /*
  *
  */
-class GraphicsWater {
+class GraphicsWater : public Singleton<GraphicsWater> {
+	friend class Singleton < GraphicsWater > ;
 public:
-	GraphicsWater(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd);
+	GraphicsWater();
 	virtual ~GraphicsWater();
 
-	void initHydrax();
+	void init(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd,Ogre::Camera* m_pCamera);
 
 	void update(float dt);
-
-	void addDepthTechnique(Ogre::StringVector materialNames);
 
 	void addRttListener(GraphicsHydraxRttListener * graphicsHydraxRttListener);
 

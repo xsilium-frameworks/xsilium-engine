@@ -17,7 +17,7 @@ GraphicsCamera::GraphicsCamera() {
 	mTopSpeed		= 150;
 	mVelocity		= Ogre::Vector3::ZERO;
 	mFastMove		= false;
-	mStyle			= CS_MANUAL;
+	mStyle			= CS_FREELOOK;
 }
 
 GraphicsCamera::~GraphicsCamera() {

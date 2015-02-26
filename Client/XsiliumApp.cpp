@@ -41,8 +41,14 @@ void XsiliumApp::start()
 
 	Engine::KeyboardManager::getInstance();
 
-	gameStateManager->start(gameStateManager->findByName("LoginState"));
+	gameStateManager->start(gameStateManager->findByName("PlayState"));
 
 }
+
+Ogre::RenderWindow* XsiliumApp::getWindow()
+{
+    return graphicsManager->getRenderWindow();
+}
+
 
 

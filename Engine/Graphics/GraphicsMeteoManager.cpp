@@ -1,7 +1,7 @@
 /*
  * \file GraphicsMeteoManager.cpp
  *
- *  Created on: \date 26 aožt 2014
+ *  Created on: \date 26 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -9,27 +9,23 @@
 
 namespace Engine {
 
-GraphicsMeteoManager::GraphicsMeteoManager(Ogre::SceneManager *sm, Ogre::Root* m_pRoot , Ogre::RenderWindow* m_pRenderWnd) {
+GraphicsMeteoManager::GraphicsMeteoManager(Ogre::SceneManager *sm, Ogre::Root* m_pRoot , Ogre::RenderWindow* m_pRenderWnd , Ogre::Camera* m_pCamera) {
 	m_pSceneMgr = sm;
 	this->m_pRoot = m_pRoot ;
 	this->m_pRenderWnd = m_pRenderWnd ;
-	m_pCamera = 0;
-	mSkyX = 0;
-	mSkyXController = 0;
-	mHydrax = 0;
+	this->m_pCamera = m_pCamera;
 	mBeafourt = 0;
 	mRain = false;
 	nWaves = 0;
 	mStorm = false;
+
+	graphicsSky = GraphicsSky::getInstance();
+	graphicsWater = GraphicsWater::getInstance();
 }
 
 GraphicsMeteoManager::~GraphicsMeteoManager() {
-	if(mSkyX)
-	{
-		delete mSkyX;
-	}
-	if(mHydrax)
-		delete mHydrax;
+	GraphicsSky::DestroyInstance();
+	GraphicsWater::DestroyInstance();
 }
 
 void GraphicsMeteoManager::computeColours()
@@ -71,15 +67,16 @@ void GraphicsMeteoManager::computeColours()
 
 void GraphicsMeteoManager::computeSkyX()
 {
-	SkyX::AtmosphereManager::Options mSkyXOptions = mSkyX->getAtmosphereManager()->getOptions();
+
+	SkyX::AtmosphereManager::Options mSkyXOptions = graphicsSky->getSkyX()->getAtmosphereManager()->getOptions();
 	switch(mBeafourt){
 	//! Beafourt = 0 : Calm
 	case 0:
 		// Clouds
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.1f,0.25f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.63f,0.63f,0.7f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.35f, 0.2f, 0.92f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.4f, 0.7f, 0.f, 0.f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.1f,0.25f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.63f,0.63f,0.7f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.35f, 0.2f, 0.92f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.4f, 0.7f, 0.f, 0.f));
 		// Sky environment
 		mSkyXOptions.RayleighMultiplier = 0.0022f;
 		mSkyXOptions.MieMultiplier = 0.000675f;
@@ -88,10 +85,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 1 : Light air
 	case 1:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.1f,0.3f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.63f,0.63f,0.7f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.35f, 0.2f, 0.9f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.4f, 0.7f, 0.05f, 0.f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.1f,0.3f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.63f,0.63f,0.7f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.35f, 0.2f, 0.9f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.4f, 0.7f, 0.05f, 0.f));
 		mSkyXOptions.RayleighMultiplier = 0.0025f;
 		mSkyXOptions.MieMultiplier = 0.000675f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.57f, 0.52f, 0.44f);
@@ -99,10 +96,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 2 : Light breeze
 	case 2:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.2f,0.35f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.63f,0.63f,0.7f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.34f, 0.2f, 0.85f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.402f, 0.65f, 0.1f, 0.01f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.2f,0.35f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.63f,0.63f,0.7f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.34f, 0.2f, 0.85f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.402f, 0.65f, 0.1f, 0.01f));
 		mSkyXOptions.RayleighMultiplier = 0.0028f;
 		mSkyXOptions.MieMultiplier = 0.000675f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.569f, 0.52f, 0.445f);
@@ -110,10 +107,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 3 : Gentle breeze
 	case 3:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.3f,0.4f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.6f,0.6f,0.67f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.33f, 0.22f, 0.8f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.405f, 0.6f, 0.15f, 0.02f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.3f,0.4f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.6f,0.6f,0.67f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.33f, 0.22f, 0.8f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.405f, 0.6f, 0.15f, 0.02f));
 		mSkyXOptions.RayleighMultiplier = 0.0031f;
 		mSkyXOptions.MieMultiplier = 0.000675f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.568f, 0.52f, 0.45f);
@@ -121,10 +118,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 4 : Moderate breeze
 	case 4:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.4f,0.5f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.55f,0.55f,0.62f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.32f, 0.24f, 0.75f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.409f, 0.55f, 0.2f, 0.03f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.4f,0.5f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.55f,0.55f,0.62f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.32f, 0.24f, 0.75f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.409f, 0.55f, 0.2f, 0.03f));
 		mSkyXOptions.RayleighMultiplier = 0.0034f;
 		mSkyXOptions.MieMultiplier = 0.000675f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.567f, 0.52f, 0.455f);
@@ -132,10 +129,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 5 : Fresh breeze
 	case 5:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.5f,0.6f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.5f,0.5f,0.57f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.31f, 0.26f, 0.7f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.413f, 0.51f, 0.25f, 0.04f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.5f,0.6f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.5f,0.5f,0.57f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.31f, 0.26f, 0.7f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.413f, 0.51f, 0.25f, 0.04f));
 		mSkyXOptions.RayleighMultiplier = 0.0037f;
 		mSkyXOptions.MieMultiplier = 0.000625f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.566f, 0.52f, 0.46f);
@@ -143,10 +140,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 6 : Strong breeze
 	case 6:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.6f,0.7f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.45f,0.45f,0.51f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.30f, 0.28f, 0.65f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.42f, 0.45f, 0.3f, 0.05f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.6f,0.7f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.45f,0.45f,0.51f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.30f, 0.28f, 0.65f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.42f, 0.45f, 0.3f, 0.05f));
 		mSkyXOptions.RayleighMultiplier = 0.0040f;
 		mSkyXOptions.MieMultiplier = 0.000575f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.555f, 0.52f, 0.465f);
@@ -154,10 +151,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 7 : High wind, Moderate gale, Near gale
 	case 7:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.7f,0.8f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.4f,0.4f,0.45f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.29f, 0.3f, 0.6f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.428f, 0.42f, 0.35f, 0.06f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.7f,0.8f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.4f,0.4f,0.45f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.29f, 0.3f, 0.6f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.428f, 0.42f, 0.35f, 0.06f));
 		mSkyXOptions.RayleighMultiplier = 0.0043f;
 		mSkyXOptions.MieMultiplier = 0.000525f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.554f, 0.52f, 0.47f);
@@ -165,10 +162,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 8 : Gale, Fresh gale
 	case 8:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.8f,0.9f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.35f,0.35f,0.39f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.28f, 0.32f, 0.58f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.435f, 0.36f, 0.4f, 0.07f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.8f,0.9f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.35f,0.35f,0.39f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.28f, 0.32f, 0.58f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.435f, 0.36f, 0.4f, 0.07f));
 		mSkyXOptions.RayleighMultiplier = 0.0046f;
 		mSkyXOptions.MieMultiplier = 0.000475f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.553f, 0.52f, 0.48f);
@@ -176,10 +173,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 9 : Strong gale
 	case 9:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(0.9f,1.0f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.30f,0.30f,0.33f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.27f, 0.34f, 0.56f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.441f, 0.33f, 0.45f, 0.08f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(0.9f,1.0f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.30f,0.30f,0.33f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.27f, 0.34f, 0.56f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.441f, 0.33f, 0.45f, 0.08f));
 		mSkyXOptions.RayleighMultiplier = 0.0049f;
 		mSkyXOptions.MieMultiplier = 0.000425f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.552f, 0.52f, 0.49f);
@@ -187,10 +184,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 10 : Storm, Whole gale
 	case 10:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(1.0f,1.0f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.25f,0.25f,0.27f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.26f, 0.36f, 0.54f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.445f, 0.31f, 0.5f, 0.09f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(1.0f,1.0f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.25f,0.25f,0.27f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.26f, 0.36f, 0.54f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.445f, 0.31f, 0.5f, 0.09f));
 		mSkyXOptions.RayleighMultiplier = 0.0052f;
 		mSkyXOptions.MieMultiplier = 0.000375f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.551f, 0.52f, 0.50f);
@@ -198,10 +195,10 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 11 : Violent storm
 	case 11:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(1.0f,1.0f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.2f,0.2f,0.21f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.25f, 0.38f, 0.52f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.448f, 0.3f, 0.55f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(1.0f,1.0f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.2f,0.2f,0.21f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.25f, 0.38f, 0.52f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.448f, 0.3f, 0.55f, 0.1f));
 		mSkyXOptions.RayleighMultiplier = 0.0052f;
 		mSkyXOptions.MieMultiplier = 0.000375f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.55f, 0.52f, 0.51f);
@@ -209,21 +206,23 @@ void GraphicsMeteoManager::computeSkyX()
 		break;
 		//! Beafourt = 12 : Hurricane force
 	case 12:
-		mSkyX->getVCloudsManager()->getVClouds()->setWheater(1.0f,1.0f,false);
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.2f,0.2f,0.21f));
-		mSkyX->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.24f, 0.4f, 0.5f, 0.1f));
-		mSkyX->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.45f, 0.3f, 0.6f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setWheater(1.0f,1.0f,false);
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientColor(Ogre::Vector3(0.2f,0.2f,0.21f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setLightResponse(Ogre::Vector4(0.24f, 0.4f, 0.5f, 0.1f));
+		graphicsSky->getSkyX()->getVCloudsManager()->getVClouds()->setAmbientFactors(Ogre::Vector4(0.45f, 0.3f, 0.6f, 0.1f));
 		mSkyXOptions.RayleighMultiplier = 0.0052f;
 		mSkyXOptions.MieMultiplier = 0.000375f;
 		mSkyXOptions.WaveLength = Ogre::Vector3(0.55f, 0.52f, 0.52f);
 		mSkyXOptions.Exposure = 1.f;
 		break;
 	}
-	mSkyX->getAtmosphereManager()->setOptions(mSkyXOptions);
+	graphicsSky->getSkyX()->getAtmosphereManager()->setOptions(mSkyXOptions);
+
 }
 
 void GraphicsMeteoManager::computeWind()
 {
+	/*
 	// Direction (Hydrax compatibility)
 	SkyX::VClouds::VClouds* vclouds = mSkyX->getVCloudsManager()->getVClouds();
 	vclouds->setWindDirection(Ogre::Radian(180.f));
@@ -232,6 +231,7 @@ void GraphicsMeteoManager::computeWind()
 	mSkyX->getVCloudsManager()->setWindSpeed(3600.f * v);
 	mWind = v*Ogre::Vector3(25.f,0.f,0.f);
 	//SSS_APP->particlesManager()->rain()->wind(mWind);
+	 */
 }
 
 void GraphicsMeteoManager::computeRain()
@@ -255,6 +255,7 @@ void GraphicsMeteoManager::computeRain()
 
 void GraphicsMeteoManager::computeStorm()
 {
+	/*
 	SkyX::VClouds::VClouds* vclouds = mSkyX->getVCloudsManager()->getVClouds();
 	if( (!mStorm) || (mBeafourt <= 4) ){
 		vclouds->getLightningManager()->setEnabled(false);
@@ -265,11 +266,12 @@ void GraphicsMeteoManager::computeStorm()
 	vclouds->getLightningManager()->setAverageLightningApparitionTime(t);
 	vclouds->getLightningManager()->setLightningColor(Ogre::Vector3(1,0.976,0.92));
 	vclouds->getLightningManager()->setLightningTimeMultiplier(2.f);
+	 */
 }
 
 void GraphicsMeteoManager::setWaves(unsigned int n, Ogre::Vector2 A, Ogre::Vector2 T, Ogre::Vector2 varDir, float varP)
 {
-  /*  unsigned int i;
+	/*  unsigned int i;
     Hydrax::Module::ProjectedGrid *mModule = (Hydrax::Module::ProjectedGrid*)mHydrax->getModule();
     Hydrax::Noise::Perlin* mNoise = (Hydrax::Noise::Perlin*) mModule->getNoise();
     // Hydrax reinitialization
@@ -293,7 +295,7 @@ void GraphicsMeteoManager::setWaves(unsigned int n, Ogre::Vector2 A, Ogre::Vecto
 
 void GraphicsMeteoManager::computeHydrax()
 {
-	
+	/*
     Hydrax::Module::ProjectedGrid *mModule = (Hydrax::Module::ProjectedGrid*) mHydrax->getModule();
     Hydrax::Noise::Perlin * mNoise = (Hydrax::Noise::Perlin*)mModule->getNoise();
     Hydrax::Noise::Perlin::Options opts = mNoise->getOptions();
@@ -366,119 +368,91 @@ void GraphicsMeteoManager::computeHydrax()
             opts.GPU_Strength = 6.f; mNoise->setOptions(opts);
             break;
     }
+	 */
 
 }
 
 void GraphicsMeteoManager::updateEnvironmentLighting()
 {
-	Ogre::Vector3 lightDir = mSkyXController->getSunDirection();
 
-	// Calculate current color gradients point
+	Ogre::Vector3 lightDir = graphicsSky->getBasicController()->getSunDirection();
+
 	float point = (lightDir.y + 1.0f) / 2.0f;
-	mHydrax->setWaterColor(mWaterGradient.getColor(point));
 
-	if(lightDir.y > 0.0f)
-		lightDir *= -1.0f;
-	Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir*mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera)*0.1f;
-	mHydrax->setSunPosition(sunPos);
-
-	Ogre::Light *Light0 = m_pSceneMgr->getLight("Sun");
-
-	Light0->setPosition(m_pCamera->getDerivedPosition() - lightDir*mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera)*0.02f);
-	Light0->setDirection(lightDir);
+	Ogre::Light *sun = m_pSceneMgr->getLight("Sun");
 
 	Ogre::Vector3 sunCol = mSunGradient.getColor(point);
-	Light0->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
-	Ogre::Vector3 diffuseCol = mDiffuseGradient.getColor(point);
-	Light0->setDiffuseColour(diffuseCol.x, diffuseCol.y, diffuseCol.z);
+	sun->setSpecularColour(sunCol.x, sunCol.y, sunCol.z);
 	Ogre::Vector3 ambientCol = mAmbientGradient.getColor(point);
-	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(ambientCol.x, ambientCol.y, ambientCol.z, 1.f));
-	mHydrax->setSunColor(sunCol);
+	sun->setDiffuseColour(ambientCol.x, ambientCol.y, ambientCol.z);
+	graphicsWater->getHydraX()->setWaterColor(mWaterGradient.getColor(point));
+	graphicsWater->getHydraX()->setSunColor(mSunGradient.getColor(point));
+
+
+
+	if(graphicsSky->getBasicController()->getTime().x > graphicsSky->getBasicController()->getTime().y && graphicsSky->getBasicController()->getTime().x < graphicsSky->getBasicController()->getTime().z )
+	{
+		lightDir = graphicsSky->getBasicController()->getMoonDirection();
+		Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir*graphicsSky->getSkyX()->getMeshManager()->getSkydomeRadius(m_pCamera)*0.1;
+		graphicsWater->getHydraX()->setSunPosition(sunPos);
+
+		sun->setDirection(lightDir);
+		sun->setPosition(m_pCamera->getDerivedPosition() - lightDir*graphicsSky->getSkyX()->getMeshManager()->getSkydomeRadius(m_pCamera)*0.02);
+
+
+
+	}
+	else
+	{
+		lightDir = graphicsSky->getBasicController()->getSunDirection();
+		Ogre::Vector3 sunPos = m_pCamera->getDerivedPosition() - lightDir*graphicsSky->getSkyX()->getMeshManager()->getSkydomeRadius(m_pCamera)*0.1;
+		graphicsWater->getHydraX()->setSunPosition(sunPos);
+
+		sun->setDirection(lightDir);
+		sun->setPosition(m_pCamera->getDerivedPosition() - lightDir*graphicsSky->getSkyX()->getMeshManager()->getSkydomeRadius(m_pCamera)*0.02);
+
+	}
+
+
+
+
+}
+
+void GraphicsMeteoManager::updateShadowFarDistance()
+{
+	Ogre::Light* sun = m_pSceneMgr->getLight("Sun");
+	float currentLength = (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length();
+
+	if (currentLength < 1000)
+	{
+		mLastPositionLength = currentLength;
+		return;
+	}
+
+	if (currentLength - mLastPositionLength > 100)
+	{
+		mLastPositionLength += 100;
+
+		sun->setShadowFarDistance(sun->getShadowFarDistance() + 100);
+	}
+	else if (currentLength - mLastPositionLength < -100)
+	{
+		mLastPositionLength -= 100;
+
+		sun->setShadowFarDistance(sun->getShadowFarDistance() - 100);
+	}
 }
 
 void GraphicsMeteoManager::update(float dt)
 {
-    if (mHydrax && mSkyX )
-        updateEnvironmentLighting();
-    if(mHydrax)
-        mHydrax->update(dt);
-    if(mSkyX)
-        mSkyX->update(dt);
-}
-
-void GraphicsMeteoManager::initHydrax()
-{
-	// Create Hydrax object
-	mHydrax = new Hydrax::Hydrax(m_pSceneMgr, m_pCamera, m_pCamera->getViewport());
-	Hydrax::Module::ProjectedGrid *mModule
-	= new Hydrax::Module::ProjectedGrid(// Hydrax parent pointer
-			mHydrax,
-			// Noise module
-			new Hydrax::Noise::Perlin(/*Generic one*/),
-			// Base plane
-			 Ogre::Plane(Ogre::Vector3::UNIT_Y, Ogre::Real(0.0f)),
-			// Normal mode
-			Hydrax::MaterialManager::NM_VERTEX,
-			// Projected grid options
-			Hydrax::Module::ProjectedGrid::Options(/*264 Generic one*/));	// Set our module
-	mHydrax->setModule(static_cast<Hydrax::Module::Module*>(mModule));
-	// Load all parameters from config file
-	// Remarks: The config file must be in Hydrax resource group.
-	// All parameters can be set/updated directly by code(Like previous versions),
-	// but due to the high number of customizable parameters, Hydrax 0.4 allows save/load config files.
-	mHydrax->loadCfg("Hydrax.hdx");
-	// Create water
-	mHydrax->create();
-}
-
-void GraphicsMeteoManager::addDepthTechnique(Ogre::StringVector materialNames)
-{
-	for(unsigned int i = 0;i < materialNames.size();i++)
+	if (graphicsSky->getSkyX() && graphicsWater->getHydraX())
 	{
-		mHydrax->getMaterialManager()->addDepthTechnique(static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().getByName(materialNames[i]))->createTechnique());
-	}
-}
-
-void GraphicsMeteoManager::initSkyX()
-{
-
-	m_pSceneMgr->getLight("Sun")->setType(Ogre::Light::LT_DIRECTIONAL);
-	m_pSceneMgr->getLight("Sun")->setDirection(Ogre::Vector3(0.f, -1.f, -1.f));
-
-	// Create SkyX
-	mSkyXController = new SkyX::BasicController();
-	mSkyX = new SkyX::SkyX(m_pSceneMgr, mSkyXController);
-	mSkyX->create();
-	// Set moon phase
-	// mSkyXController->setMoonPhase(0.75f);
-	// Distance geometry falling is a feature introduced in SkyX 0.2
-	// When distance falling is enabled, the geometry linearly falls with the distance and the
-	// amount of falling in world units is determinated by the distance between the cloud field "plane"
-	// and the camera height multiplied by the falling factor.
-	// For this demo, a falling factor of two is good enough for the point of view we're using. That means that if the camera
-	// is at a distance of 100 world units from the cloud field, the fartest geometry will fall 2*100 = 200 world units.
-	// This way the cloud field covers a big part of the sky even if the camera is in at a very low altitude.
-	// The second parameter is the max amount of falling distance in world units. That's needed when for example, you've an
-	// ocean and you don't want to have the volumetric cloud field geometry falling into the water when the camera is underwater.
-	// -1 means that there's not falling limit.
-	mSkyX->getVCloudsManager()->getVClouds()->setDistanceFallingParams(Ogre::Vector2(2.f,-1.f));
-	// Register listeners
-	m_pRenderWnd->addListener(mSkyX);
-	// Clouds generation
-	if (!mSkyX->getCloudsManager()->getCloudLayers().empty()) {
-		mSkyX->getCloudsManager()->removeAll();
-	}
-	if (!mSkyX->getVCloudsManager()->isCreated()) {
-		mSkyX->getVCloudsManager()->create(mSkyX->getMeshManager()->getSkydomeRadius(m_pCamera));
+		updateEnvironmentLighting();
+		updateShadowFarDistance();
 	}
 
-	mSkyX->getVCloudsManager()->setAutoupdate(false);
-
-	mSkyX->setTimeMultiplier(1 / 3600.f);
-	// Register as lighting listener in order to play sounds
-	//mSkyX->getVCloudsManager()->getVClouds()->getLightningManager()->addListener(this);
-
-	//mHydrax->getRttManager()->addRttListener(new GraphicsHydraxRttListener(/**mSkyX,*/mHydrax));
+	graphicsSky->update(dt);
+	graphicsWater->update(dt);
 }
 
 void GraphicsMeteoManager::beafourt(unsigned int beaf)
@@ -507,20 +481,18 @@ void GraphicsMeteoManager::storm(bool flag)
 	computeStorm();
 }
 
-void GraphicsMeteoManager::createMeteo()
+void GraphicsMeteoManager::init()
 {
-	m_pCamera = m_pSceneMgr->getCamera("CamPricipal");
-	//! Start Hydrax manager
-	initHydrax();
-	//! Start SkyX manager
-	initSkyX();
-	//! Setup initial beafourt number
+	graphicsSky->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
+	graphicsWater->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
+	graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
+
 	beafourt(mBeafourt);
 
-	Ogre::ParticleSystem * ps;
-	ps = m_pSceneMgr->createParticleSystem("Rain", "Rain/Droplets");
-	m_pSceneMgr->getRootSceneNode()->attachObject(ps);
+	// Shadows
+	m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(new Ogre::FocusedShadowCameraSetup()));
 
+	mLastPositionLength =  (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length();
 }
 
 } /* namespace Engine */

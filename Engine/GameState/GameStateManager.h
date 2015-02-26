@@ -3,6 +3,7 @@
 
 #include "GameState.h"
 #include "Engine/EngineListenner.h"
+#include "Logging/LogManager.h"
 
 namespace Engine {
 

@@ -15,7 +15,8 @@ Engine::Engine() {
 }
 
 Engine::~Engine() {
-	// TODO Auto-generated destructor stub
+	if(m_pRoot)
+        delete m_pRoot ;
 }
 
 void Engine::initOgre(Ogre::String configFile)
@@ -68,17 +69,15 @@ void Engine::stopEngine()
 	{
 		(*it)->exit();
 	}
+}
 
-
-#if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
-
-	[NSApp terminate:nil];
-
-#endif
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
-	[mGestureView release];
-#endif
+void Engine::setRenderWindow(Ogre::RenderWindow*	renderWindow)
+{
+	this->renderWindow = renderWindow ;
+}
+Ogre::RenderWindow* Engine::getRenderWindow()
+{
+	return renderWindow;
 }
 
 } /* namespace Engine */

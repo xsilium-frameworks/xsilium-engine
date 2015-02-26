@@ -16,34 +16,29 @@ namespace Engine {
 /*
  *
  */
-class GraphicsSky {
+class GraphicsSky: public Singleton<GraphicsSky> {
+	friend class Singleton < GraphicsSky > ;
 public:
-	GraphicsSky(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd);
+	GraphicsSky();
 	virtual ~GraphicsSky();
 
-	void initSkyX();
+	void init(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::RenderWindow* m_pRenderWnd,Ogre::Camera* m_pCamera);
 
 	void update(float dt);
 
 	SkyX::SkyX* getSkyX();
+	SkyX::BasicController * getBasicController();
 
 private:
 
 	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::Root* 				m_pRoot;
 	Ogre::RenderWindow* 		m_pRenderWnd;
+	Ogre::Camera*				m_pCamera;
 
 	SkyX::SkyX* mSkyX;
 	SkyX::BasicController * mSkyXController;
 
-	/// Water color gradient
-	SkyX::ColorGradient mWaterGradient;
-	/// Sun color gradient
-	SkyX::ColorGradient mSunGradient;
-	/// Diffuse color gradient
-	SkyX::ColorGradient mDiffuseGradient;
-	/// Ambient color gradient
-	SkyX::ColorGradient mAmbientGradient;
 
 };
 

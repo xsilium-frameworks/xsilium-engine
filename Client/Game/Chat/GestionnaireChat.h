@@ -9,7 +9,7 @@
 #ifndef GESTIONNAIRECHAT_H_
 #define GESTIONNAIRECHAT_H_
 
-#include "Engine/Network/NetworkManager.h"
+#include <Network/NetworkManager.h>
 #include "Gui/GuiChat.h"
 
 #include "Compte/Compte.h"
