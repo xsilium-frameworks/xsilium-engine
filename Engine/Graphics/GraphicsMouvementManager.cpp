@@ -12,8 +12,8 @@ namespace Engine {
 GraphicsMouvementManager::GraphicsMouvementManager() {
 	graphicsCamera = 0;
 	direction = Ogre::Vector3::ZERO ;
-	saute = false;
 	deplacement = false;
+	newDirection = false;
 }
 
 GraphicsMouvementManager::~GraphicsMouvementManager() {
@@ -42,6 +42,7 @@ void GraphicsMouvementManager::processEvent(Event * event)
 			{
 				direction.x = 0;
 			}
+			newDirection = true;
 		}
 
 		if( (event->getProperty("Fonction").compare("DROITE")) == 0 )
@@ -54,6 +55,7 @@ void GraphicsMouvementManager::processEvent(Event * event)
 			{
 				direction.z = 0;
 			}
+			newDirection = true;
 		}
 
 
@@ -67,6 +69,7 @@ void GraphicsMouvementManager::processEvent(Event * event)
 			{
 				direction.z = 0;
 			}
+			newDirection = true;
 		}
 
 		if( (event->getProperty("Fonction").compare("RECULER")) == 0 )
@@ -79,33 +82,38 @@ void GraphicsMouvementManager::processEvent(Event * event)
 			{
 				direction.x = 0;
 			}
+			newDirection = true;
 		}
 
 		if( (event->getProperty("Fonction").compare("SAUTE")) == 0 )
 		{
 			if( atoi(event->getProperty("Action").c_str()) == 1 )
 			{
-				saute = true;
+				direction.y = 1;
 			}
-		}
-		if(deplacement)
-		{
-			graphicsCamera->setDirection(direction);
-
-			/*Event event2 ;
-			event2.setProperty("Entite","1");
-			event2.setProperty("IdEntite","1");
-			event2.setProperty("NewDirection","1");
-			event2.setProperty("NewPositionX",ToString(direction.x).c_str());
-			event2.setProperty("NewPositionY",ToString(direction.y).c_str());
-			event2.setProperty("NewPositionZ",ToString(direction.z).c_str());
-			if(saute)
+			else
 			{
-				event2.setProperty("Jump","1");
-				saute = false;
+				direction.y = 0;
 			}
-			Engine::getInstance()->addEvent(event2); */
+			newDirection = true;
 		}
+	}
+
+}
+
+void GraphicsMouvementManager::update(double timeSinceLastFrame)
+{
+	if(newDirection && deplacement)
+	{
+
+		Event event ;
+		event.setProperty("MouvementManager",1);
+		event.setProperty("X",direction.x);
+		event.setProperty("Y",direction.y);
+		event.setProperty("Z",direction.z);
+		Engine::getInstance()->addEvent(event);
+
+		newDirection = false;
 
 	}
 

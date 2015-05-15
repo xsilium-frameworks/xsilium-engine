@@ -5,10 +5,17 @@
  *      Author: \author joda
  *  \brief :
  */
+
+
+
 #ifndef NETWORKLISTENER_H_
 #define NETWORKLISTENER_H_
 
 #include "Network/Opcode/Opcode.h"
+
+// Pour mac boost 1.58
+#undef check
+
 #include <boost/thread.hpp>
 
 #include "MessagePacket.h"

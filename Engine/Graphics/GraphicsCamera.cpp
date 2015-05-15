@@ -85,6 +85,10 @@ void GraphicsCamera::setStyle(CameraStyle style) {
 		mCamera->setAutoTracking(false);
 		manualStop();
 	}
+	else if (mStyle != CS_3PERS && style == CS_3PERS) {
+		mCamera->setAutoTracking(false);
+		manualStop();
+	}
 
 	mStyle = style;
 }
@@ -183,9 +187,16 @@ void GraphicsCamera::injectMouseMove(const OIS::MouseEvent& evt) {
 
 }
 
-void GraphicsCamera::setDirection(Ogre::Vector3 direction)
+void GraphicsCamera::processEvent(Event * event)
 {
-	this->direction = direction;
+	if(event->hasProperty("MouvementManager"))
+	{
+		direction.x = atof(event->getProperty("X").c_str());
+		direction.y = atof(event->getProperty("Y").c_str());
+		direction.z = atof(event->getProperty("Z").c_str());
+	}
 }
+
+
 
 }

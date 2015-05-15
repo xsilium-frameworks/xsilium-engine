@@ -20,10 +20,31 @@ public:
 	Event();
 	virtual ~Event();
 
+	template<typename Type1, typename Type2>
+	void setProperty(Type1 inName, Type2 inValue = "")
+	{
+		std::string key = toString(inName);
+		std::string data = toString(inValue);
+		if ( hasProperty(key) ) {
+			mProperties.find(key)->second = data;
+			return;
+		}
+		mProperties.insert( std::make_pair(key, data) );
+	}
 
-	std::string getProperty(std::string inName);
-	void setProperty(std::string inName, std::string inValue = "");
-	bool hasProperty(std::string inName);
+	template<typename Type1>
+	std::string getProperty(Type1 inName)
+	{
+		std::string key = toString(inName);
+		return mProperties.find(key)->second;
+	}
+
+	template<typename Type1>
+	bool hasProperty(Type1 inName)
+	{
+		std::string key = toString(inName);
+		return (mProperties.find(key) != mProperties.end());
+	}
 
 	int getCountArgument();
 
@@ -31,16 +52,16 @@ private:
 
 	typedef std::map<std::string, std::string> property_t;
 	property_t mProperties;
+    
+    template<typename T>
+    std::string toString(T variable) {
+        std::ostringstream ss;
+        
+        ss << variable;
+        
+        return ss.str();
+    }
 
 };
-
-template<typename T>
-std::string ToString(T variable) {
-	std::ostringstream ss;
-
-	ss << variable;
-
-	return ss.str();
-}
 
 #endif /* EVENT_H_ */

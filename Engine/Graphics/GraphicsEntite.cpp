@@ -64,7 +64,6 @@ void GraphicsEntite::initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Og
 
 	mMainNode->attachObject(mBodyEnt);
 
-
 	graphicsAnimation = new GraphicsAnimation(mBodyEnt);
 	graphicsAnimation->loadAnimation();
 

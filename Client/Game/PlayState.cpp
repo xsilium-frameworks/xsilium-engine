@@ -36,15 +36,15 @@ void PlayState::createScene() {
 
 		Event event2 ;
 		event2.setProperty("Entite","1");
-		event2.setProperty("CreateEntite",ToString(i));
+		event2.setProperty("CreateEntite",i);
 		event2.setProperty("CharHeight","5");
 		event2.setProperty("RunSpeed","17");
 		event2.setProperty("TurnSpeed","500.0");
-		event2.setProperty("NomEntite","Perso" + ToString(i));
+		event2.setProperty("NomEntite","Perso" + i );
 		event2.setProperty("fileMesh","Sinbad.mesh");
 
 		event2.setProperty("PositionX","5");
-		event2.setProperty("PositionY","50");
+		event2.setProperty("PositionY","1000");
 		event2.setProperty("PositionZ","5");
 
 		Engine::Engine::getInstance()->addEvent(event2);
@@ -56,18 +56,6 @@ void PlayState::createScene() {
 	event3.setProperty("IdEntite","1");
 	event3.setProperty("Camera","1");
 	Engine::Engine::getInstance()->addEvent(event3);*/
-
-    Event event4;
-    
-    event4.setProperty("Sky","1");
-    event4.setProperty("InitSky","1");
-    Engine::Engine::getInstance()->addEvent(event4);
-
-    Event event5;
-
-	event5.setProperty("Water","1");
-	event5.setProperty("InitWater","1");
-	Engine::Engine::getInstance()->addEvent(event5);
 
 
 

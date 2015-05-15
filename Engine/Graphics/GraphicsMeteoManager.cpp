@@ -18,12 +18,15 @@ GraphicsMeteoManager::GraphicsMeteoManager(Ogre::SceneManager *sm, Ogre::Root* m
 	mRain = false;
 	nWaves = 0;
 	mStorm = false;
+	mLastPositionLength = 0;
+	graphicsHydraxRttListener = 0;
 
 	graphicsSky = GraphicsSky::getInstance();
 	graphicsWater = GraphicsWater::getInstance();
 }
 
 GraphicsMeteoManager::~GraphicsMeteoManager() {
+	delete graphicsHydraxRttListener;
 	GraphicsSky::DestroyInstance();
 	GraphicsWater::DestroyInstance();
 }
@@ -485,14 +488,17 @@ void GraphicsMeteoManager::init()
 {
 	graphicsSky->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
 	graphicsWater->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
-	graphicsWater->addRttListener(new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX()));
+	graphicsHydraxRttListener = new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX());
+	graphicsWater->addRttListener(graphicsHydraxRttListener);
 
 	beafourt(mBeafourt);
 
-	// Shadows
-	m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(new Ogre::FocusedShadowCameraSetup()));
-
 	mLastPositionLength =  (Ogre::Vector3(1500, 100, 1500) - m_pCamera->getDerivedPosition()).length();
+}
+
+void GraphicsMeteoManager::processEvent(Event * event)
+{
+
 }
 
 } /* namespace Engine */

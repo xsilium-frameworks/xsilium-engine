@@ -5,7 +5,7 @@ XsiliumApp::XsiliumApp()
 	graphicsManager = 0;
 	gameStateManager = 0;
 	guiManager = 0;
-	logManager = NULL;
+	logManager = 0;
 }
 
 XsiliumApp::~XsiliumApp()

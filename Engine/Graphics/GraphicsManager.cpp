@@ -14,6 +14,7 @@ GraphicsManager::GraphicsManager() {
 	m_pRenderSystem		= 0;
 	m_pSceneMgr         = 0;
 	m_pCamera			= 0;
+	graphicsMeteoManager = 0 ;
 	graphicsCamera = GraphicsCamera::getInstance();
 	inputManager = InputManager::getInstance();
 	sauvegardeParam = false;
@@ -29,8 +30,6 @@ GraphicsManager::GraphicsManager() {
 	graphicsSceneLoader = new GraphicsSceneLoader();
 	PhysicsManager::getInstance();
 	graphicsMouvementManager = new GraphicsMouvementManager();
-
-	graphicsMeteoManager = 0 ;
 
 
 
@@ -51,7 +50,6 @@ GraphicsManager::~GraphicsManager() {
 		delete graphicsMouvementManager ;
 	GraphicsCamera::DestroyInstance();
 	InputManager::DestroyInstance();
-
 }
 
 
@@ -112,7 +110,7 @@ void GraphicsManager::createWindow()
 	graphicsCamera->setCamera(m_pCamera);
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
-    graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,Engine::getInstance()->getRoot(),m_pRenderWnd,m_pCamera) ;
+
 
 }
 
@@ -150,8 +148,9 @@ void GraphicsManager::loadRessource()
 
 void GraphicsManager::loadScene(Event* event)
 {
-	m_pCamera->setNearClipDistance(5);
+	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,Engine::getInstance()->getRoot(),m_pRenderWnd,m_pCamera) ;
 	graphicsMeteoManager->init();
+
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
 	{
@@ -191,10 +190,7 @@ void GraphicsManager::loadScene(Event* event)
 				terrain->getWorldSize()/(terrain->getSize()-1) );
 
 	}
-
 	graphicsMouvementManager->activeMouvement();
-
-
 }
 
 
@@ -205,14 +201,17 @@ Ogre::RenderWindow* GraphicsManager::getRenderWindow()
 
 void GraphicsManager::processEvent(Event* event)
 {
-    if(event->hasProperty("LoadScene"))
-    {
-        loadScene(event);
-    }
+	if(event->hasProperty("LoadScene"))
+	{
+		loadScene(event);
+	}
 
-    graphicsEntiteManager->processEvent(event);
-    GraphicsObjetManager::getInstance()->processEvent(event);
+
 	graphicsMouvementManager->processEvent(event);
+	graphicsCamera->processEvent(event);
+	graphicsMeteoManager->processEvent(event);
+	graphicsEntiteManager->processEvent(event);
+	GraphicsObjetManager::getInstance()->processEvent(event);
 
 }
 
@@ -233,14 +232,14 @@ bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 		deleteEvent();
 	}
 
-    if(graphicsCamera)
-        graphicsCamera->frameRenderingQueued(m_FrameEvent);
-    if(graphicsEntiteManager)
-        graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
-    if(graphicsEntiteManager)
-        GraphicsObjetManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
-    if(graphicsMeteoManager)
-    	graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
+	graphicsCamera->frameRenderingQueued(m_FrameEvent);
+	if(graphicsEntiteManager)
+		graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
+	if(graphicsEntiteManager)
+		GraphicsObjetManager::getInstance()->update(m_FrameEvent.timeSinceLastFrame);
+	if(graphicsMeteoManager)
+		graphicsMeteoManager->update(m_FrameEvent.timeSinceLastFrame);
+	graphicsMouvementManager->update(m_FrameEvent.timeSinceLastFrame);
 
 
 	for(unsigned int ij = 0;ij < graphicsSceneLoader->mPGHandles.size();ij++)
@@ -258,7 +257,7 @@ bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 void GraphicsManager::exit()
 {
 #ifdef USE_RTSHADER_SYSTEM
-	// Finalize the RT Shader System.
+// Finalize the RT Shader System.
 	finalizeRTShaderSystem();
 #endif // USE_RTSHADER_SYSTEM
 }

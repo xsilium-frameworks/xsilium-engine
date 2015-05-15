@@ -40,8 +40,7 @@ public:
 private:
 	GraphicsCamera * graphicsCamera;
 	Ogre::Vector3 direction;
-
-	bool saute;
+	bool newDirection;
 
 	bool deplacement;
 

@@ -11,6 +11,7 @@ namespace Engine {
 
 Engine::Engine() {
 	m_pRoot = 0;
+	renderWindow=0;
 
 }
 

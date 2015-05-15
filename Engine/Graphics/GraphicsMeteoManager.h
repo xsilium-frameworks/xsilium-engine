@@ -11,6 +11,7 @@
 #include "GraphicsHydraxRttListener.h"
 #include "GraphicsWater.h"
 #include "GraphicsSky.h"
+#include "Event/Event.h"
 
 namespace Engine {
 
@@ -76,6 +77,9 @@ public:
 	//void lightningAdded(SkyX::VClouds::Lightning* l);
 
 
+	void processEvent(Event * event);
+
+
 protected:
 
 	/** Setup the lighting according with setup.
@@ -119,6 +123,7 @@ private:
 
 	GraphicsSky * graphicsSky;
 	GraphicsWater * graphicsWater;
+	GraphicsHydraxRttListener * graphicsHydraxRttListener;
 
 
 	/// Sun color gradient

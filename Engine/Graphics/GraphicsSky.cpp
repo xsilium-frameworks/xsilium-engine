@@ -64,7 +64,7 @@ void GraphicsSky::init(Ogre::SceneManager *sm, Ogre::Root* m_pRoot, Ogre::Render
 
 	mSkyX->getVCloudsManager()->setAutoupdate(false);
 
-	mSkyX->setTimeMultiplier(1);
+	mSkyX->setTimeMultiplier(1 / 3600);
 
 }
 

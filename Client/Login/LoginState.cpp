@@ -6,7 +6,7 @@ using namespace Ogre;
 LoginState::LoginState()
 {
 	Engine::NetworkManager::getInstance()->createConnexion();
-	gestionnaireAuth = NULL;
+	gestionnaireAuth = 0;
 }
 
 LoginState::~LoginState()
