@@ -107,7 +107,8 @@ void GraphicsManager::createWindow()
 
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	m_pCamera = m_pSceneMgr->createCamera("CamPrincipal");
-	graphicsCamera->setCamera(m_pCamera);
+    m_pCamera->setNearClipDistance(0.1);
+    graphicsCamera->setCamera(m_pCamera);
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
 
