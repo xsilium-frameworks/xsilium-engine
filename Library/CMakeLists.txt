@@ -9,7 +9,7 @@ subdirs(OgrePaged)
 subdirs(Cegui)
 subdirs(Hydrax)
 subdirs(SkyX)
-
+subdirs(openal-soft)
 subdirs(Bullet)
 
 #Update

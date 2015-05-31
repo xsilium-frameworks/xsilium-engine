@@ -9,8 +9,7 @@ subdirs(Source/ois)
 subdirs(Source/freetype)
 subdirs(Source/rapidxml-1.13)
 subdirs(Source/ZLib)
-
-
+subdirs(Source/libiconv)
 
 
 if (XSILIUM_USE_STATIC_FREEIMAGE)
