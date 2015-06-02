@@ -22,7 +22,7 @@ if(WIN32)
 endif()
 
 # Include libogg header files.
-include_directories(${dependencies_libogg_distr_dir}/include)
+include_directories(${OGG_INCLUDE_DIRS})
 
 # Include libvorbis header files.
 include_directories(include)
@@ -55,3 +55,5 @@ set(libvorbis_SRCS
     # lib/tone.c
 
 add_library(libvorbis ${libvorbis_SRCS})
+target_link_libraries(libvorbis ${OGG_LIBRARIES})
+

@@ -124,6 +124,9 @@ if (UNIX AND NOT APPLE AND NOT ANDROID AND NOT FLASHCC)
   mark_as_advanced(XAW_LIBRARY)
 endif ()
 
+# Ogg
+set(OGG_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ogg/include" "${CMAKE_BINARY_DIR}/Library/Dependencies/Source/ogg/include" )
+set(OGG_LIBRARIES "ogg")
 
 #######################################################################
 # RenderSystem dependencies
@@ -259,9 +262,11 @@ macro_log_feature(HLSL2GLSL_FOUND "HLSL2GLSL" "HLSL2GLSL" "http://hlsl2glslfork.
 find_package(PCRE)
 find_package(Fribidi)
 
-if (NOT WIN32)
-    find_package(Iconv REQUIRED)
-endif()
+
+# iconv
+set(ICONV_INCLUDE_DIR "${XSILIUM_DEP_DIR}/libiconv/include" "${CMAKE_BINARY_DIR}/Library/Dependencies/Source/libiconv/include" )
+set(ICONV_LIBRARIES "iconv")
+
 
 
 set(RAPIDXML_H_PATH "${XSILIUM_DEP_DIR}/rapidxml-1.13")
@@ -355,8 +360,6 @@ set(BINRELOC_LIBRARY "binreloc")
 
 # Display results, terminate if anything required is missing
 MACRO_DISPLAY_FEATURE_LOG()
-
-set(OGG_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ogg")
 
 # Add library and include paths from the dependencies
 include_directories(
