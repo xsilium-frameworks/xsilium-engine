@@ -356,6 +356,8 @@ set(BINRELOC_LIBRARY "binreloc")
 # Display results, terminate if anything required is missing
 MACRO_DISPLAY_FEATURE_LOG()
 
+set(OGG_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ogg")
+
 # Add library and include paths from the dependencies
 include_directories(
   ${ZLIB_INCLUDE_DIRS}
@@ -367,6 +369,7 @@ include_directories(
   ${X11_INCLUDE_DIR}
   ${DirectX_INCLUDE_DIRS}
   ${CppUnit_INCLUDE_DIRS}
+  ${OGG_INCLUDE_DIRS}
 )
 
 link_directories(

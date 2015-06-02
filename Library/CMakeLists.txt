@@ -10,6 +10,7 @@ subdirs(Cegui)
 subdirs(Hydrax)
 subdirs(SkyX)
 subdirs(openal-soft)
+subdirs(OgreOggSound)
 subdirs(Bullet)
 
 #Update
