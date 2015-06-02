@@ -78,8 +78,3 @@ set_target_properties ( iconv PROPERTIES COMPILE_FLAGS -DBUILDING_LIBICONV)
 add_executable ( iconvcli src/iconv_no_i18n.c )
 target_link_libraries ( iconvcli iconv icrt charset )
 set_target_properties ( iconvcli PROPERTIES OUTPUT_NAME iconv )
-
-install_library ( iconv charset )
-install_executable ( iconvcli )
-install_header ( include/iconv.h )
-install_data ( README AUTHORS COPYING )
