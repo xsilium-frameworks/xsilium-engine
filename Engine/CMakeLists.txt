@@ -116,10 +116,9 @@ ${OGREPAGED_LIBRARIES}
 ${BULLET_LIBRARIES}
 )
 
-#add_dependencies(XsiliumEngine ${OGRE_SAMPLES_LIST})
-
 add_library(XsiliumEngine ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})
 
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
 	set_source_files_properties(${CORE_SOURCE_FILES} ${CORE_HEADER_FILES}  PROPERTIES COMPILE_FLAGS "-x objective-c++ ")
+	set_target_properties(XsiliumEngine PROPERTIES LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon")
 endif()

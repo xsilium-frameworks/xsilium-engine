@@ -26,12 +26,12 @@ void PlayState::enter() {
 void PlayState::createScene() {
 	Event event;
 	event.setProperty("LoadScene", "1");
-	event.setProperty("NameScene", "Xsilium1.scene");
+	event.setProperty("NameScene", "SampleXSILIUM.scene");
 	event.setProperty("NameGroup", "General");
 
 	Engine::Engine::getInstance()->addEvent(event);
 
-	for(int i = 1;i <2; i++)
+	/*for(int i = 1;i <2; i++)
 	{
 
 		Event event2 ;
@@ -49,7 +49,7 @@ void PlayState::createScene() {
 
 		Engine::Engine::getInstance()->addEvent(event2);
 
-	}
+	}*/
 
 	/*Event event3 ;
 	event3.setProperty("Entite","1");
