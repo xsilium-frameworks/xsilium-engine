@@ -74,7 +74,7 @@ void GuiManager::setTheme(Event* event)
 	theme = event->getProperty("GuiTheme");
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "-Images/MouseArrow");
 }
 
 void GuiManager::setTheme(Ogre::String theme)
@@ -82,7 +82,7 @@ void GuiManager::setTheme(Ogre::String theme)
 	this->theme = theme;
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "-Images/MouseArrow");
 }
 
 std::string GuiManager::getTheme()
@@ -94,7 +94,7 @@ void GuiManager::interfacePrincipal()
 {
 	if(!interfacePrincipale)
 	{
-		setTheme("Alfisko");
+		setTheme("Vanilla");
 
 		CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 

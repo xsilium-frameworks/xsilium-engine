@@ -8,7 +8,8 @@ Chat::Chat()
 	d_historyPos = 0;
 	CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
-	d_root = winMgr.loadLayoutFromFile("Console.layout");
+	
+d_root = winMgr.loadLayoutFromFile("console.layout");
 	d_root->setDestroyedByParent(false);
 
 

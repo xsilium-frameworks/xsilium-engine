@@ -68,7 +68,7 @@ void GuiChat::initGui()
 
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 
-	chatWindow =  winMgr.loadLayoutFromFile("Console.layout");
+	chatWindow =  winMgr.loadLayoutFromFile("console.layout");
 
 	parent->subscribeEvent(CEGUI::Window::EventMouseButtonDown, CEGUI::Event::Subscriber(&GuiChat::handleMouse, this));
 

@@ -10,14 +10,14 @@
 
 GestionnaireChat::GestionnaireChat() {
 
-	//guiChat = new GuiChat();
-	//Engine::GuiManager::getInstance()->addGuiListenner(guiChat);
+	guiChat = new GuiChat();
+	Engine::GuiManager::getInstance()->addGuiListenner(guiChat);
 	networkManager = Engine::NetworkManager::getInstance();
 }
 
 GestionnaireChat::~GestionnaireChat() {
-	//Engine::GuiManager::getInstance()->removeGuiListenner(guiChat);
-	//delete guiChat;
+	Engine::GuiManager::getInstance()->removeGuiListenner(guiChat);
+	delete guiChat;
 	networkManager->removelistenneur(ID_CHAT);
 }
 
