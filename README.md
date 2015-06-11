@@ -19,11 +19,11 @@ The engine is based on librairies below:
 
 Dependencies:
 
-        - CMake
-        - Boost (1.58 or higher)
-        - Cg nvidia
-        - OpenGL
-        - C++ compiler
+	- CMake
+	- Boost (1.58 or higher)
+	- Cg nvidia
+	- OpenGL
+	- C++ compiler
 
 All other dependencies is include into this repository.
 
