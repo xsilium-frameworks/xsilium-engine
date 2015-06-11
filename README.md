@@ -1,15 +1,38 @@
+
+MMO engine based on OpenSource librairies.
+
+The main goal of our project is to make a mmo framework that can run on Linux, Mac and Windows.
+
 xsilium-engine
 ==============
+The xsilium-engine repo contain the engine and also a Demo/test client.
 
-MMO engine based on Ogre, bullet, OpenAl, enet, CEGUI, SkyX/Hydrax
 
-We want to manage all requierements to build a network client able to interact with others on Windows, Linux and MAC OS
+All other dependencies is include into this repository.
 
-We need dev. If you are able to helps us, dont hesitate !
-----------------------------------------------
+The engine is based on librairies below:
 
-MMORPG basé sur Ogre, bullet, OpenAl, enet, CEGUI, SkyX/Hydrax.
+	- Ogre	 (3d engine)
+	- CeGui	 (GUI librairie)
+	- Enet	 (Network API)
+	- Bullet (Physic & Collision)
+	- SkyX	 (Atmospheric system)
+	- Hydrax (Water system)	
+	- OpenAL (3d sound engine)
 
-Nous voulons gèrer tous le nécessaire afin de faire un client capable d'intéragir avec d'autres que ce soit sous Windows, linux et MAC OS
+Dependencies:
 
-Nous avons besoin de dev. Si vous êtes capable de nous aider, n'hésitez pas !
+        - CMake
+        - Boost (1.58 or higher)
+        - Cg nvidia
+        - OpenGL
+        - C++ compiler
+
+All other dependencies is include into this repository.
+
+To install:
+ 
+	- Run your cmake client inside xsilium-engine folder.
+	- Choose your compiler, choose a build folder and generate.
+	- Go to your build folder and compiling it.
+
