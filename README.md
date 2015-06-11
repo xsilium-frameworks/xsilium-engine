@@ -1,14 +1,11 @@
+xilium-engine
+==============
 
 MMO engine based on OpenSource librairies.
 
 The main goal of our project is to make a mmo framework that can run on Linux, Mac and Windows.
 
-xsilium-engine
-==============
 The xsilium-engine repo contain the engine and also a Demo/test client.
-
-
-All other dependencies is include into this repository.
 
 The engine is based on librairies below:
 
