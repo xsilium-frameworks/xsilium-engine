@@ -1,0 +1,3 @@
+[submodule "xsilium-assets"]
+	path = xsilium-assets
+	url = https://github.com/xsilium-frameworks/xsilium-assets.git
