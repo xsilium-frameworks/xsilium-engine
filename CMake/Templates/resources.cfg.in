@@ -26,18 +26,18 @@ FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/SkyX
 FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Hydrax
 
 [Perso]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media/Perso
+FileSystem=@OGRE_MEDIA_DIR_DBG@../Media/Perso
 
 [Imagesets]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/datafiles/imagesets
+FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/imagesets
 [Fonts]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/datafiles/fonts
+FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/fonts
 [Schemes]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/datafiles/schemes
+FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/schemes
 [LookNFeels]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/datafiles/looknfeel
+FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/looknfeel
 [Layouts]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/datafiles/layouts
+FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/layouts
 [schemas]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/datafiles/xml_schemas
+FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/xml_schemas
 
