@@ -33,7 +33,7 @@ void GestionnaireChat::processPacket(Engine::MessagePacket * messagePacket)
 	Event event ;
 	event.setProperty("CHAT","1");
 	event.setProperty("Perso",messagePacket->getProperty("Perso").c_str());
-	event.setProperty("Message",messagePacket->getProperty("Message").c_str());
+	event.setProperty("Message",messagePacket->getProperty("Text").c_str());
 	Engine::Engine::getInstance()->addEvent(event);
 }
 
@@ -45,7 +45,8 @@ void GestionnaireChat::sendMessageChat(Event * event)
 		messagePacketSend->setOpcode(ID_CHAT);
 		messagePacketSend->setSousOpcode(0);
 		messagePacketSend->setProperty("Perso","Joda");
-		messagePacketSend->setProperty("Message",event->getProperty("Message").c_str() );
+		messagePacketSend->setProperty("Canal","1");
+		messagePacketSend->setProperty("Text",event->getProperty("Message").c_str() );
 
 		networkManager->sendPacket(messagePacketSend);
 	}

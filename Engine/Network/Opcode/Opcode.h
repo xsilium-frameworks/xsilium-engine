@@ -1,7 +1,7 @@
 /*
  * \file Opcode.h
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -19,22 +19,30 @@ enum typerequete
 enum Opcode
 {
 	// partie generique
+
 	ID_CONNEXION = 0,
+
 	ID_DECONEXION,
 
 	// partie authentification
+
 	ID_AUTH,
+	ID_ROYAUME,
+	ID_ZONE,
 
-    //partie royaume
-    ID_CHAT,
+	//partie royaume
 
-    //partie ticket
-    ID_TICKET,
+	ID_CHAT,
 
-    //Partie message
-    ID_MAIL,
+	//partie ticket
 
-    ID_ALL
+	ID_TICKET,
+
+	//Partie message
+
+	ID_MAIL,
+
+	ID_ALL
 };
 
 

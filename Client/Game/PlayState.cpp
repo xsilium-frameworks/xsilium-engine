@@ -15,12 +15,16 @@ PlayState::PlayState() {
 }
 
 PlayState::~PlayState() {
+    delete gestionnaireChat;
 }
 
 void PlayState::enter() {
 	Engine::LogManager::getInstance()->setLogMessage("Entree dans PlayState", Engine::NORMAL);
 	createScene();
+
+	Engine::NetworkManager::getInstance()->connexionToHost("151.80.162.102",60001);
 	gestionnaireChat = new GestionnaireChat();
+    gestionnaireChat->run();
 }
 
 void PlayState::createScene() {
@@ -64,6 +68,7 @@ void PlayState::createScene() {
 void PlayState::exit() {
 	Engine::LogManager::getInstance()->setLogMessage("Sortie du PlayState", Engine::NORMAL);
 	delete gestionnaireChat;
+    Engine::NetworkManager::getInstance()->disconnexion();
 }
 
 void PlayState::update(double timeSinceLastFrame) {
