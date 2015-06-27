@@ -74,17 +74,8 @@ void GuiManager::setTheme(Event* event)
 	theme = event->getProperty("GuiTheme");
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
-<<<<<<< HEAD
-<<<<<<< HEAD
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() +"Skin/MouseArrow");
-=======
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
 
->>>>>>> 199736383c3e95b4bd6366ef0aa20ed6f24b73ee
-=======
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
-
->>>>>>> hotfix/BugSonar
 }
 
 void GuiManager::setTheme(Ogre::String theme)
