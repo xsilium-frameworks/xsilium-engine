@@ -114,9 +114,9 @@ if (APPLE)
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
 		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/resources.cfg 
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/Media
+		COMMAND ln ARGS -s -f ${CMAKE_SOURCE_DIR}/xsilium-assets/Media
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND ln ARGS -s -f ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Data/datafiles
+		COMMAND ln ARGS -s -f ${CMAKE_SOURCE_DIR}/xsilium-assets/datafiles
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
         COMMAND ditto 
 		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/SampleBrowser_OSX.icns ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
