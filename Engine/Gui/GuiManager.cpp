@@ -1,7 +1,7 @@
 /*
  * \file GuiManager.cpp
  *
- *  Created on: \date 7 aožt 2014
+ *  Created on: \date 7 aoï¿½t 2014
  *      Author: \author joda xelfe
  *  \brief :
  */
@@ -74,7 +74,12 @@ void GuiManager::setTheme(Event* event)
 	theme = event->getProperty("GuiTheme");
 
 	CEGUI::SchemeManager::getSingleton().createFromFile(getTheme() + "Skin.scheme");
+<<<<<<< HEAD
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() +"Skin/MouseArrow");
+=======
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage(getTheme() + "Skin/MouseArrow");
+
+>>>>>>> 199736383c3e95b4bd6366ef0aa20ed6f24b73ee
 }
 
 void GuiManager::setTheme(Ogre::String theme)

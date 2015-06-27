@@ -7,6 +7,7 @@
 [Popular]
 
 [General]
+<<<<<<< HEAD
 FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media
 FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media/Models
 FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media/Materials
@@ -25,6 +26,25 @@ FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media/SkyX
 
 [Hydrax]
 FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media/Hydrax
+=======
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/particle
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Models
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Materials
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Scripts
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/plants
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/terrain
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/textures
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/textures/diffusespecular
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/textures/normalheight
+
+[SkyX]
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/SkyX
+
+[Hydrax]
+FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Hydrax
+>>>>>>> 199736383c3e95b4bd6366ef0aa20ed6f24b73ee
 
 [Perso]
 FileSystem=@OGRE_MEDIA_DIR_DBG@../xsilium-assets/Media/Perso
