@@ -35,7 +35,7 @@ void GameStateManager::addGameState(Ogre::String stateName, GameState* state) {
 		delete state;
 		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR,
 				"Erreur de gestion d'un nouveau �tat\n"
-						+ Ogre::String(e.what()), "GameStateManager.cpp (39)");
+				+ Ogre::String(e.what()), "GameStateManager.cpp (39)");
 	}
 }
 
@@ -117,8 +117,8 @@ bool GameStateManager::frameRenderingQueued(
 			processEvent(event);
 			deleteEvent();
 		}
-    }
-    if (!m_ActiveStateStack.empty()) {
+	}
+	if (!m_ActiveStateStack.empty()) {
 		m_ActiveStateStack.back()->update(m_FrameEvent.timeSinceLastFrame);
 	}
 
@@ -127,11 +127,15 @@ bool GameStateManager::frameRenderingQueued(
 
 void GameStateManager::processEvent(Event * event) {
 	if (event->hasProperty("GAME")) {
-		if (event->hasProperty("ChangeGameState"))
+		if (!event->getProperty("GAME").compare("ChangeGameState"))
 		{
-			GameState * gameStateTemp = findByName(event->getProperty("ChangeGameState").c_str());
+			GameState * gameStateTemp = findByName(event->getProperty("GameState").c_str());
 			if (gameStateTemp != NULL)
 				changeGameState(gameStateTemp);
+		}
+		if(!event->getProperty("GAME").compare("Quit"))
+		{
+			popGameState();
 		}
 	}
 

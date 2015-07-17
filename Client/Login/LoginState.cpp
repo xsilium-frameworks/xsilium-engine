@@ -39,13 +39,5 @@ void LoginState::update(double timeSinceLastFrame)
 
 void LoginState::processEvent(Event * event)
 {
-	if(event->hasProperty("GUI"))
-	{
-		if( (event->getProperty("Fonction").compare("QUIT")) == 0 )
-		{
-			popGameState();
-		}
-	}
 	gestionnaireAuth->processEvent(event);
-
 }

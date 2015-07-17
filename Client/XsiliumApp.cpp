@@ -6,10 +6,12 @@ XsiliumApp::XsiliumApp()
 	gameStateManager = 0;
 	guiManager = 0;
 	logManager = 0;
+	Engine::NetworkManager::getInstance();
 }
 
 XsiliumApp::~XsiliumApp()
 {
+	Engine::NetworkManager::DestroyInstance();
 	Engine::KeyboardManager::DestroyInstance();
 	Engine::GuiManager::DestroyInstance()  ;
 	delete gameStateManager;

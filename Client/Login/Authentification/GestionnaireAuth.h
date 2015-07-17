@@ -25,6 +25,7 @@ enum typeForAuth
 {
 	ID_CHALLENGE = 0,
 	ID_REPONSE,
+	ID_REALMSLIST,
 	ID_SEND_CANCEL,
 	ID_ERREUR
 };
@@ -67,6 +68,8 @@ public:
 	void setAuthentification(Event * event);
 
 	void processEvent(Event * event);
+
+	void getRealmslist();
 
 
 private:

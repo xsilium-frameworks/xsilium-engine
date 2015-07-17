@@ -127,8 +127,7 @@ bool GuiAuth::cancelButton(const CEGUI::EventArgs &e)
 	if (senderID == "btnQuitter")
 	{
 		Event event ;
-		event.setProperty("GUI","1");
-		event.setProperty("Fonction","QUIT");
+		event.setProperty("GAME","Quit");
 		Engine::Engine::getInstance()->addEvent(event);
 	}
 	if (senderID == "ButtonAnnuler")

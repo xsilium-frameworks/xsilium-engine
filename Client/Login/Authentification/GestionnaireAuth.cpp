@@ -77,10 +77,15 @@ void GestionnaireAuth::processPacket(Engine::MessagePacket * messagePacket)
 		event.setProperty("ProgressionTotal","4");
 		Engine::Engine::getInstance()->addEvent(event);
 
+		getRealmslist();
+	}
+	break;
+	case ID_REALMSLIST :
+	{
 		Event event2 ;
-		event.setProperty("GAME","1");
-		event.setProperty("ChangeGameState","PlayState");
-		Engine::Engine::getInstance()->addEvent(event);
+		event2.setProperty("GAME","ChangeGameState");
+		event2.setProperty("GameState","PlayState");
+		Engine::Engine::getInstance()->addEvent(event2);
 	}
 	break;
 	case ID_SEND_CANCEL:
@@ -116,6 +121,16 @@ void GestionnaireAuth::handleEtapeDeux(Engine::MessagePacket * messagePacket)
 	messagePacketSend->setProperty("Password",compte->getPassWord());
 	networkManager->sendPacket(messagePacketSend);
 
+}
+
+void GestionnaireAuth::getRealmslist()
+{
+	Engine::MessagePacket * messagePacketSend = new Engine::MessagePacket();
+
+	messagePacketSend->setOpcode(ID_AUTH);
+	messagePacketSend->setSousOpcode(ID_REALMSLIST);
+	messagePacketSend->setProperty("versionClient","0.0.1");
+	networkManager->sendPacket(messagePacketSend);
 }
 
 bool GestionnaireAuth::sendAuthentification()
