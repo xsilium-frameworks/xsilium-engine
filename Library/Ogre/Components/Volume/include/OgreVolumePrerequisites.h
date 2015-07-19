@@ -30,24 +30,24 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#	if defined( OGRE_STATIC_LIB )
-#   	define _OgreVolumeExport
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 || OGRE_PLATFORM == OGRE_PLATFORM_WINRT
+#   if defined( OGRE_STATIC_LIB )
+#       define _OgreVolumeExport
 #   else
-#   	if defined( OGRE_VOLUME_EXPORTS )
-#       	define _OgreVolumeExport __declspec( dllexport )
-#   	else
+#       if defined( OGRE_VOLUME_EXPORTS )
+#           define _OgreVolumeExport __declspec( dllexport )
+#       else
 #           if defined( __MINGW32__ )
 #               define _OgreVolumeExport
 #           else
-#       	    define _OgreVolumeExport __declspec( dllimport )
+#               define _OgreVolumeExport __declspec( dllimport )
 #           endif
-#   	endif
-#	endif
+#       endif
+#   endif
 #elif defined ( OGRE_GCC_VISIBILITY )
 #   define _OgreVolumeExport __attribute__ ((visibility("default")))
 #else
-#	define _OgreVolumeExport
+#   define _OgreVolumeExport
 #endif 
 
 #endif

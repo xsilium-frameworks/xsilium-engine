@@ -32,16 +32,17 @@ THE SOFTWARE.
 
 namespace Ogre
 {
-	//-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
     void Particle::setRotation(const Radian& rot)
     {
-        rotation = rot;
-        if (rotation != Radian(0))
+        mRotation = rot;
+        if (mRotation != Radian(0))
             mParentSystem->_notifyParticleRotated();
     }
     //-----------------------------------------------------------------------
     void Particle::setDimensions(Real width, Real height)
     {
+        assert(width >= 0 && height >= 0 && "Particle dimensions can not be negative");
         mOwnDimensions = true;
         mWidth = width;
         mHeight = height;

@@ -32,18 +32,22 @@ THE SOFTWARE.
 
 #include "OgreLodStrategy.h"
 #include "OgreSingleton.h"
-#include "OgreNode.h"
 
 namespace Ogre {
 
-	/** \addtogroup Core
-	*  @{
-	*/
-	/** \addtogroup LOD
-	*  @{
-	*/
-	/** Abstract base class for level of detail strategy based on pixel count approximations from bounding sphere projection. */
-    class _OgreExport PixelCountLodStrategy : public LodStrategy
+    /** \addtogroup Core
+    *  @{
+    */
+    /** \addtogroup LOD
+    *  @{
+    */
+
+    class AbsolutePixelCountLodStrategy;
+    /// Backward compatible name for Distance_Box strategy.
+    typedef AbsolutePixelCountLodStrategy PixelCountLodStrategy;
+
+    /** Abstract base class for level of detail strategy based on pixel count approximations from bounding sphere projection. */
+    class _OgreExport PixelCountLodStrategyBase : public LodStrategy
     {
     protected:
         /// @copydoc LodStrategy::getValueImpl
@@ -51,7 +55,7 @@ namespace Ogre {
 
     public:
         /** Default constructor. */
-        PixelCountLodStrategy(const String& name);
+        PixelCountLodStrategyBase(const String& name);
 
         /// @copydoc LodStrategy::getBaseValue
         virtual Real getBaseValue() const;
@@ -71,10 +75,10 @@ namespace Ogre {
         /// @copydoc LodStrategy::isSorted
         virtual bool isSorted(const Mesh::LodValueList& values) const;
     };
-	/** @} */
-	/** @} */
+    /** @} */
+    /** @} */
 
-    class _OgreExport AbsolutePixelCountLodStrategy : public PixelCountLodStrategy, public Singleton<AbsolutePixelCountLodStrategy>
+    class _OgreExport AbsolutePixelCountLodStrategy : public PixelCountLodStrategyBase, public Singleton<AbsolutePixelCountLodStrategy>
     {
     public:
         /** Default constructor. */
@@ -119,7 +123,7 @@ namespace Ogre {
     /** @} */
     /** @} */
 
-    class _OgreExport ScreenRatioPixelCountLodStrategy : public PixelCountLodStrategy, public Singleton<ScreenRatioPixelCountLodStrategy>
+    class _OgreExport ScreenRatioPixelCountLodStrategy : public PixelCountLodStrategyBase, public Singleton<ScreenRatioPixelCountLodStrategy>
     {
     public:
         /** Default constructor. */

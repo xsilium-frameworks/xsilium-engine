@@ -28,14 +28,7 @@ THE SOFTWARE.
 #include "OgreStableHeaders.h"
 
 #include "OgrePatchSurface.h"
-
-#include "OgreMeshManager.h"
-#include "OgreMesh.h"
-#include "OgreSubMesh.h"
 #include "OgreException.h"
-#include "OgreHardwareBufferManager.h"
-#include "OgreHardwareVertexBuffer.h"
-#include "OgreHardwareIndexBuffer.h"
 
 #define LEVEL_WIDTH(lvl) ((1 << (lvl+1)) + 1)
 
@@ -550,8 +543,8 @@ namespace Ogre {
         {
             p32 = static_cast<unsigned int*>(
                 mIndexBuffer->lock(
-                    mIndexOffset * sizeof(unsigned int), 
-                    mRequiredIndexCount * sizeof(unsigned int), 
+                    mIndexOffset * sizeof(uint32), 
+                    mRequiredIndexCount * sizeof(uint32), 
                     HardwareBuffer::HBL_NO_OVERWRITE));
         }
         else

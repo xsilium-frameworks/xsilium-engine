@@ -38,9 +38,9 @@ namespace Ogre {
         size_t numIndexes, HardwareBuffer::Usage usage, 
         bool useSystemMemory, bool useShadowBuffer) 
         : HardwareBuffer(usage, useSystemMemory, useShadowBuffer)
-		, mMgr(mgr)
-		, mIndexType(idxType)
-		, mNumIndexes(numIndexes)
+        , mMgr(mgr)
+        , mIndexType(idxType)
+        , mNumIndexes(numIndexes)
     {
         // Calculate the size of the indexes
         switch (mIndexType)
@@ -66,15 +66,12 @@ namespace Ogre {
     //-----------------------------------------------------------------------------
     HardwareIndexBuffer::~HardwareIndexBuffer()
     {
-		if (mMgr)
-		{
-			mMgr->_notifyIndexBufferDestroyed(this);
-		}
-
-        if (mShadowBuffer)
+        if (mMgr)
         {
-            OGRE_DELETE mShadowBuffer;
+            mMgr->_notifyIndexBufferDestroyed(this);
         }
+
+        OGRE_DELETE mShadowBuffer;
     }
     //-----------------------------------------------------------------------------
     HardwareIndexBufferSharedPtr::HardwareIndexBufferSharedPtr(HardwareIndexBuffer* buf)

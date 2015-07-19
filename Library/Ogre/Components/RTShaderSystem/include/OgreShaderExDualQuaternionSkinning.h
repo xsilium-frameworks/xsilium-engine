@@ -31,9 +31,6 @@ THE SOFTWARE.
 
 #ifdef RTSHADER_SYSTEM_BUILD_EXT_SHADERS
 #include "OgreShaderExHardwareSkinningTechnique.h"
-#include "OgreShaderParameter.h"
-#include "OgreRenderSystem.h"
-#include "OgreShaderFunctionAtom.h"
 
 namespace Ogre {
 namespace RTShader {
@@ -65,20 +62,20 @@ public:
     /** Class default constructor */
     DualQuaternionSkinning();
 
-	/**
-	@see SubRenderState::resolveParameters.
-	*/
-	virtual bool resolveParameters(ProgramSet* programSet);
+    /**
+    @see SubRenderState::resolveParameters.
+    */
+    virtual bool resolveParameters(ProgramSet* programSet);
 
-	/**
-	@see SubRenderState::resolveDependencies.
-	*/
-	virtual bool resolveDependencies(ProgramSet* programSet);
+    /**
+    @see SubRenderState::resolveDependencies.
+    */
+    virtual bool resolveDependencies(ProgramSet* programSet);
 
-	/**
-	@see SubRenderState::addFunctionInvocations.
-	*/
-	virtual bool addFunctionInvocations(ProgramSet* programSet);
+    /**
+    @see SubRenderState::addFunctionInvocations.
+    */
+    virtual bool addFunctionInvocations(ProgramSet* programSet);
 
 // Protected methods
 protected:

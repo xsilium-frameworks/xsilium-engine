@@ -37,8 +37,7 @@ email                : janders@users.sf.net
 #ifndef OCTREE_H
 #define OCTREE_H
 
-#include <OgreAxisAlignedBox.h>
-#include <OgreWireBoundingBox.h>
+#include "OgreAxisAlignedBox.h"
 
 #include <list>
 
@@ -123,7 +122,7 @@ public:
     void _getCullBounds( AxisAlignedBox * ) const;
 
 
-	typedef list< OctreeNode * >::type NodeList;
+    typedef list< OctreeNode * >::type NodeList;
     /** Public list of SceneNodes attached to this particular octree
     */
     NodeList mNodes;

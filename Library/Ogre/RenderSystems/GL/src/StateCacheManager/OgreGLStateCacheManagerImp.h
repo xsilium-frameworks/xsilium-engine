@@ -41,9 +41,9 @@ namespace Ogre
     class _OgreGLExport GLStateCacheManagerImp : public StateCacheAlloc
     {
     private:
-        typedef HashMap<GLenum, GLuint> BindBufferMap;
-        typedef HashMap<GLenum, GLint> TexParameteriMap;
-        typedef HashMap<GLenum, bool> GLbooleanStateMap;
+        typedef OGRE_HashMap<GLenum, GLuint> BindBufferMap;
+        typedef OGRE_HashMap<GLenum, GLint> TexParameteriMap;
+        typedef OGRE_HashMap<GLenum, bool> GLbooleanStateMap;
 
         struct TextureUnitParams
         {
@@ -55,7 +55,7 @@ namespace Ogre
             TexParameteriMap mTexParameteriMap;
         };
 
-        typedef HashMap<GLuint, TextureUnitParams> TexUnitsMap;
+        typedef OGRE_HashMap<GLuint, TextureUnitParams> TexUnitsMap;
 
         /* These variables are used for caching OpenGL state.
          They are cached because state changes can be quite expensive,
@@ -98,7 +98,7 @@ namespace Ogre
         GLenum mDepthFunc;
         /// Stores the current stencil mask
         GLuint mStencilMask;
-		/// Stores the last bound texture id
+        /// Stores the last bound texture id
         GLuint mLastBoundTexID;
         /// Stores the currently active texture unit
         size_t mActiveTextureUnit;
@@ -134,7 +134,7 @@ namespace Ogre
         
         /// See GLStateCacheManager.clearCache.
         void clearCache();
-		
+        
         /// See GLStateCacheManager.bindGLBuffer.
         void bindGLBuffer(GLenum target, GLuint buffer, GLenum attach = 0, bool force = false);
         

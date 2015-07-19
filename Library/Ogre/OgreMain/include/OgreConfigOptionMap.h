@@ -32,17 +32,16 @@ THE SOFTWARE.
 #include "OgrePrerequisites.h"
 
 #include "OgreStringVector.h"
-#include "OgreString.h"
 
 
 namespace Ogre {
-	/** \addtogroup Core
-	*  @{
-	*/
-	/** \addtogroup General
-	*  @{
-	*/
-	/** Packages the details of a configuration option.
+    /** \addtogroup Core
+    *  @{
+    */
+    /** \addtogroup General
+    *  @{
+    */
+    /** Packages the details of a configuration option.
         @remarks
             Used for RenderSystem::getConfigOptions. If immutable is true, this
             option must be disabled for modifying.
@@ -56,8 +55,8 @@ namespace Ogre {
     } ConfigOption;
 
     typedef map< String, ConfigOption >::type ConfigOptionMap;
-	/** @} */
-	/** @} */
+    /** @} */
+    /** @} */
 }
 
 #endif

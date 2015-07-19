@@ -35,6 +35,7 @@ THE SOFTWARE.
 #include "OgreShaderGenerator.h"
 #include "OgreSceneManager.h"
 #include "OgreViewport.h"
+#include "OgreMaterialSerializer.h"
 
 
 namespace Ogre {
@@ -97,7 +98,7 @@ void FFPLighting::updateGpuProgramsParams(Renderable* rend, Pass* pass, const Au
 		ColourValue colour;
 
 		// Search a matching light from the current sorted lights of the given renderable.
-		for (unsigned int j = curSearchLightIndex; j < pLightList->size(); ++j)
+		for (unsigned int j = curSearchLightIndex; j < (pLightList ? pLightList->size() : 0); ++j)
 		{
 			if (pLightList->at(j)->getType() == curLightType)
 			{				

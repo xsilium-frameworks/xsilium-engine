@@ -86,7 +86,7 @@ namespace Ogre {
         if (mImp == NULL)
         {
             // Therefore we add a "dummy" cache if none are left
-            if (!mCaches.size())
+            if (mCaches.empty())
                 mCaches[0] = OGRE_NEW GLStateCacheManagerImp();
             mImp = mCaches.begin()->second;
         }
@@ -123,9 +123,9 @@ namespace Ogre {
     }
     
     bool GLStateCacheManager::activateGLTextureUnit(size_t unit)
-	{
+    {
         return mImp->activateGLTextureUnit(unit);
-	}
+    }
     
     void GLStateCacheManager::setBlendFunc(GLenum source, GLenum dest)
     {

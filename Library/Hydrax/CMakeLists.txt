@@ -17,7 +17,7 @@ set(Hydrax_SOURCES
 	
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 	
-include_directories("${OGRE_INCLUDE_DIR}")	
+include_directories("${OGRE_INCLUDE_DIRS}")	
 	
 add_definitions(-DHYDRAX_LIB -D_USRDLL)
 		

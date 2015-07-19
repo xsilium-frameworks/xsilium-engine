@@ -65,7 +65,7 @@ source_group(Source\ Files\\VClouds FILES ${VCLOUDS_SOURCE_FILES})
 
 # Add include directory
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/Include")
-include_directories("${OGRE_INCLUDE_DIR}")
+include_directories("${OGRE_INCLUDE_DIRS}")
 
 
 # Add needed definitions and nedmalloc include dir

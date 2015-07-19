@@ -27,11 +27,7 @@ THE SOFTWARE.
 */
 #include "OgreStableHeaders.h"
 #include "OgreErrorDialog.h"
-#include "resource.h"
-
-namespace {
-    Ogre::ErrorDialog* errdlg;  // This is a pointer to instance, since this is a static member
-}
+#include <iostream>
 
 namespace Ogre
 {
@@ -41,6 +37,6 @@ namespace Ogre
 
     void ErrorDialog::display(const String& errorMessage, String logName)
     {
-		std::cout << "*** ERROR: " << errorMessage << std::endl;
+        std::cout << "*** ERROR: " << errorMessage << std::endl;
     }
 }

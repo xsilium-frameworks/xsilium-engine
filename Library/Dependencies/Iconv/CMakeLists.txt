@@ -1,0 +1,60 @@
+# Copyright (C) 2007-2012 LuaDist.
+# Created by Peter Drahoš
+# Redistribution and use of this file is allowed according to the terms of the MIT license.
+# For details see the COPYRIGHT file distributed with LuaDist.
+# Please note that the package source code is licensed under its own license.
+
+project ( libiconv C )
+cmake_minimum_required ( VERSION 2.8 )
+include ( cmake/dist.cmake )
+include ( configure )
+
+# Options
+option ( ENABLE_EXTRA "Enable a few rarely used encodings" OFF)
+option ( ENABLE_NLS "Translation of program messages to the user's native
+   language is requested" OFF)
+#option ( ENABLE_RELOCATABLE "The package shall run at any location in the file system" ON )
+
+# iconv.h
+set ( USE_MBSTATE_T 1 )
+set ( BROKEN_WCHAR_H 0 )
+set ( HAVE_WCHAR_T 0)
+
+configure_file ( config.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config.h )
+configure_file ( include/iconv.h.build.in ${CMAKE_CURRENT_SOURCE_DIR}/include/iconv.h )
+configure_file ( libcharset/include/libcharset.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/libcharset.h )
+configure_file ( srclib/uniwidth.in.h ${CMAKE_CURRENT_SOURCE_DIR}/srclib/uniwidth.h )
+configure_file ( srclib/unitypes.in.h ${CMAKE_CURRENT_SOURCE_DIR}/srclib/unitypes.h )
+
+# Dirty fix for MinGW
+if ( MINGW )
+  add_definitions ( -DELOOP=0 -DHAVE_DECL_STRERROR_R=0 )
+  configure_file ( srclib/alloca.in.h ${CMAKE_CURRENT_SOURCE_DIR}/srclib/alloca.h )
+endif ()
+
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR} include srclib )
+add_definitions ( -Dset_relocation_prefix=libcharset_set_relocation_prefix -Drelocate=libcharset_relocate -DHAVE_CONFIG_H -DINSTALLPREFIX=NULL -DNO_XMALLOC -DBUILDING_LIBCHARSET -DINSTALLDIR="" -DLIBDIR="" -DENABLE_RELOCATABLE=1 -DBUILDING_DLL -DIN_LIBRARY )
+
+# libcharset
+set ( SRC_LIBCHARSET
+  libcharset/lib/localcharset.c
+  libcharset/lib/relocatable.c
+)
+
+add_library ( charset ${SRC_LIBCHARSET} )
+set_target_properties ( charset PROPERTIES COMPILE_FLAGS -DBUILDING_LIBCHARSET)
+
+# libiconv
+set ( SRC_LIBICONV
+  lib/iconv.c
+)
+
+add_library ( iconv ${SRC_LIBICONV} )
+target_link_libraries ( iconv charset )
+set_target_properties ( iconv PROPERTIES COMPILE_FLAGS -DBUILDING_LIBICONV)
+
+
+set(ICONV_INCLUDE_DIR "${libiconv_SOURCE_DIR}/include" CACHE PATH "" FORCE)
+set(ICONV_LIBRARY_DBG iconv CACHE STRING "" FORCE)
+set(ICONV_LIBRARY_REL iconv CACHE STRING "" FORCE)
+mark_as_advanced(ICONV_INCLUDE_DIR ICONV_LIBRARY_DBG ICONV_LIBRARY_REL)

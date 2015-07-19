@@ -37,7 +37,7 @@ namespace Ogre {
     {
         protected:
             /// Lock a box
-            PixelBox lockImpl(const Image::Box lockBox,  LockOptions options);
+            PixelBox lockImpl(const Image::Box &lockBox,  LockOptions options);
 
             /// Unlock a box
             void unlockImpl(void);
@@ -118,7 +118,7 @@ namespace Ogre {
             // Blitting implementation
             void blitFromTexture(GLES2TextureBuffer *src, const Image::Box &srcBox, const Image::Box &dstBox);
             
-#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID || OGRE_PLATFORM == OGRE_PLATFORM_EMSCRIPTEN
         // Friends.
         protected:
             friend class GLES2Texture;

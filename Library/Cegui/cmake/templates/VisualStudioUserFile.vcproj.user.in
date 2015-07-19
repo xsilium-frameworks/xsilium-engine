@@ -9,8 +9,8 @@
 			Name="Debug|Win32"
 			>
 			<DebugSettings
-				Command="bin/$(TargetFileName)"
-				WorkingDirectory="$(OutDir)"
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -37,8 +37,8 @@
 			Name="Release|Win32"
 			>
 			<DebugSettings
-				Command="bin/$(TargetFileName)"
-				WorkingDirectory="$(OutDir)"
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -65,8 +65,8 @@
 			Name="RelWithDebInfo|Win32"
 			>
 			<DebugSettings
-				Command="bin/$(TargetFileName)"
-				WorkingDirectory="$(OutDir)"
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -93,8 +93,8 @@
 			Name="MinSizeRel|Win32"
 			>
 			<DebugSettings
-				Command="bin/$(TargetFileName)"
-				WorkingDirectory="$(OutDir)"
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -117,5 +117,117 @@
 				MPIAcceptFilter=""
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			>
+			<DebugSettings
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
+				CommandArguments=""
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine=""
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment=""
+				EnvironmentMerge="true"
+				DebuggerFlavor="0"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			>
+			<DebugSettings
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
+				CommandArguments=""
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine=""
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment=""
+				EnvironmentMerge="true"
+				DebuggerFlavor="0"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="RelWithDebInfo|x64"
+			>
+			<DebugSettings
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
+				CommandArguments=""
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine=""
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment=""
+				EnvironmentMerge="true"
+				DebuggerFlavor="0"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="MinSizeRel|x64"
+			>
+			<DebugSettings
+				Command="$(TargetPath)"
+				WorkingDirectory="$(TargetDir)"
+				CommandArguments=""
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine=""
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment=""
+				EnvironmentMerge="true"
+				DebuggerFlavor="0"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>        
 	</Configurations>
 </VisualStudioUserFile>

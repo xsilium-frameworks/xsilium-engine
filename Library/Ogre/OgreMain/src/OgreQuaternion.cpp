@@ -35,10 +35,8 @@ THE SOFTWARE.
 // http://www.geometrictools.com/License/Boost/LICENSE_1_0.txt
 
 #include "OgreQuaternion.h"
-
-#include "OgreMath.h"
 #include "OgreMatrix3.h"
-#include "OgreVector3.h"
+
 
 namespace Ogre {
 
@@ -413,7 +411,7 @@ namespace Ogre {
 	bool Quaternion::equals(const Quaternion& rhs, const Radian& tolerance) const
 	{
         Real d = Dot(rhs);
-        Radian angle = Math::ACos(2 * d*d - 1.0);
+        Radian angle = Math::ACos(2.0f * d*d - 1.0f);
 
 		return Math::Abs(angle.valueRadians()) <= tolerance.valueRadians();
 	}

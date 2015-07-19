@@ -29,12 +29,8 @@ THE SOFTWARE.
 
 #include "OgreTagPoint.h"
 #include "OgreMatrix4.h"
-#include "OgreMatrix3.h"
 #include "OgreEntity.h"
-#include "OgreSceneNode.h"
-#include "OgreSkeleton.h"
 #include "OgreQuaternion.h"
-
 
 namespace Ogre {
 
@@ -107,7 +103,7 @@ namespace Ogre {
     //-----------------------------------------------------------------------------
     void TagPoint::needUpdate(bool forceParentUpdate)
     {
-		Bone::needUpdate(forceParentUpdate);
+        Bone::needUpdate(forceParentUpdate);
 
         // We need to tell parent entities node
         if (mParentEntity)

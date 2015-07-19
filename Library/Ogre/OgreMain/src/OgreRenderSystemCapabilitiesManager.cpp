@@ -28,12 +28,8 @@ THE SOFTWARE.
 #include "OgreStableHeaders.h"
 
 #include "OgreStringVector.h"
-#include "OgreLogManager.h"
 #include "OgreArchiveManager.h"
 #include "OgreArchive.h"
-#include "OgreStringConverter.h"
-
-#include "OgreException.h"
 #include "OgreRenderSystemCapabilitiesManager.h"
 #include "OgreRenderSystemCapabilitiesSerializer.h"
 
@@ -90,10 +86,10 @@ namespace Ogre {
         return mCapabilitiesMap[name];
     }
 
-	const map<String, RenderSystemCapabilities*>::type &RenderSystemCapabilitiesManager::getCapabilities() const
-	{
-		return mCapabilitiesMap;
-	}
+    const map<String, RenderSystemCapabilities*>::type &RenderSystemCapabilitiesManager::getCapabilities() const
+    {
+        return mCapabilitiesMap;
+    }
 
     /** Method used by RenderSystemCapabilitiesSerializer::parseScript */
     void RenderSystemCapabilitiesManager::_addRenderSystemCapabilities(const String& name, RenderSystemCapabilities* caps)

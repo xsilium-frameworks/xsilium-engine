@@ -32,10 +32,11 @@ THE SOFTWARE.
 
 #include "OgreVolumePrerequisites.h"
 #include "OgreVolumeSource.h"
-#include "OgreVolumeCSGSource.h"
 
 namespace Ogre {
 namespace Volume {
+
+    class CSGOperationSource;
 
     /** A volume source from a discrete 3d grid.
     */
@@ -48,11 +49,11 @@ namespace Volume {
 
         /// The texture height.
         size_t mHeight;
-		
+        
         /// The texture depth.
         size_t mDepth;
         
-		/// The scale of the position based on the world width.
+        /// The scale of the position based on the world width.
         Real mPosXScale;
         
         /// The scale of the position based on the world height.

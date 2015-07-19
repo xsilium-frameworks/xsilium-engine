@@ -27,7 +27,6 @@ THE SOFTWARE.
 */
 
 #include "OgreCgProgramFactory.h"
-#include "OgreString.h"
 #include "OgreCgProgram.h"
 
 namespace Ogre {
@@ -62,7 +61,7 @@ namespace Ogre {
         return OGRE_NEW CgProgram(creator, name, handle, group, isManual, loader, mCgContext);
     }
     //-----------------------------------------------------------------------
-	void CgProgramFactory::destroy(HighLevelGpuProgram* prog)
+    void CgProgramFactory::destroy(HighLevelGpuProgram* prog)
     {
         OGRE_DELETE prog;
     }

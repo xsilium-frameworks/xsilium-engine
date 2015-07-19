@@ -30,27 +30,26 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#include "OgreVector3.h"
-#include "OgreString.h"
-#include "OgreRenderOperation.h"
+#include "OgreHardwareIndexBuffer.h"
+#include "OgreHardwareVertexBuffer.h"
 #include "OgreAxisAlignedBox.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
-	/** \addtogroup Core
-	*  @{
-	*/
-	/** \addtogroup LOD
-	*  @{
-	*/
-	/** A surface which is defined by curves of some kind to form a patch, e.g. a Bezier patch.
+    /** \addtogroup Core
+    *  @{
+    */
+    /** \addtogroup LOD
+    *  @{
+    */
+    /** A surface which is defined by curves of some kind to form a patch, e.g. a Bezier patch.
         @remarks
             This object will take a list of control points with various assorted data, and will
             subdivide it into a patch mesh. Currently only Bezier curves are supported for defining
             the surface, but other techniques such as NURBS would follow the same basic approach.
     */
-	class _OgreExport PatchSurface : public PatchAlloc
+    class _OgreExport PatchSurface : public PatchAlloc
     {
     public:
         PatchSurface();
@@ -233,8 +232,8 @@ namespace Ogre {
 
     };
 
-	/** @} */
-	/** @} */
+    /** @} */
+    /** @} */
 
 } // namespace
 

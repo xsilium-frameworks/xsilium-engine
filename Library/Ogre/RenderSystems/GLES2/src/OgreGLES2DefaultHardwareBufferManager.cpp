@@ -66,9 +66,7 @@ namespace Ogre {
         // Nothing to do
     }
 
-    void* GLES2DefaultHardwareVertexBuffer::lock(size_t offset,
-                                              size_t length,
-                                              LockOptions options)
+    void* GLES2DefaultHardwareVertexBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
     {
         mIsLocked = true;
         return mData + offset;
@@ -105,13 +103,13 @@ namespace Ogre {
           // always software, never shadowed
     {
 #if OGRE_NO_GLES3_SUPPORT == 1
-		if (!Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(RSC_32BIT_INDEX) &&
+        if (!Root::getSingleton().getRenderSystem()->getCapabilities()->hasCapability(RSC_32BIT_INDEX) &&
             idxType == HardwareIndexBuffer::IT_32BIT)
-		{
-			OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR,
-				"32 bit hardware buffers are not allowed in OpenGL ES.",
-				"GLES2DefaultHardwareIndexBuffer");
-		}
+        {
+            OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR,
+                "32 bit hardware buffers are not allowed in OpenGL ES.",
+                "GLES2DefaultHardwareIndexBuffer");
+        }
 #endif
         mData = new unsigned char[mSizeInBytes];
     }
@@ -132,7 +130,7 @@ namespace Ogre {
         // Nothing to do
     }
 
-    void* GLES2DefaultHardwareIndexBuffer::lock(size_t offset, size_t length, LockOptions options)
+    void* GLES2DefaultHardwareIndexBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
     {
         mIsLocked = true;
         return mData + offset;
@@ -192,9 +190,7 @@ namespace Ogre {
         // Nothing to do
     }
 
-    void* GLES2DefaultHardwareUniformBuffer::lock(size_t offset,
-                                                    size_t length,
-                                                    LockOptions options)
+    void* GLES2DefaultHardwareUniformBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
     {
         mIsLocked = true;
         return mData + offset;
@@ -253,7 +249,7 @@ namespace Ogre {
     HardwareUniformBufferSharedPtr
     GLES2DefaultHardwareBufferManagerBase::createUniformBuffer(size_t sizeBytes, HardwareBuffer::Usage usage,
                                                                  bool useShadowBuffer, const String& name)
-	{
+    {
         if(!gleswIsSupported(3, 0))
         {
             OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR,
@@ -262,12 +258,16 @@ namespace Ogre {
         }
 
         return HardwareUniformBufferSharedPtr(new GLES2DefaultHardwareUniformBuffer(this, sizeBytes, usage, useShadowBuffer, name));
-	}
+    }
     
-	Ogre::RenderToVertexBufferSharedPtr GLES2DefaultHardwareBufferManagerBase::createRenderToVertexBuffer( void )
-	{
-        OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR,
-                "Cannot create RenderToVertexBuffer in GLES2DefaultHardwareBufferManagerBase", 
-                "GLES2DefaultHardwareBufferManagerBase::createRenderToVertexBuffer");
-	}
+    Ogre::RenderToVertexBufferSharedPtr GLES2DefaultHardwareBufferManagerBase::createRenderToVertexBuffer( void )
+    {
+        if(!gleswIsSupported(3, 0))
+        {
+            OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR,
+                    "Cannot create RenderToVertexBuffer in GLES2DefaultHardwareBufferManagerBase", 
+                    "GLES2DefaultHardwareBufferManagerBase::createRenderToVertexBuffer");
+        }
+//        return HardwareUniformBufferSharedPtr(new GLES2DefaultHardwareRenderToVertexBuffer(this, sizeBytes, usage, useShadowBuffer, name));
+    }
 }

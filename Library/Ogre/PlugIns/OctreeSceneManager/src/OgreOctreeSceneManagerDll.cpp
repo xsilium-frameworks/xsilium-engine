@@ -26,8 +26,9 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#include <OgreRoot.h>
-#include <OgreOctreePlugin.h>
+#include "OgreOctreePrerequisites.h"
+#include "OgreRoot.h"
+#include "OgreOctreePlugin.h"
 
 #ifndef OGRE_STATIC_LIB
 
@@ -46,8 +47,8 @@ extern "C" void _OgreOctreePluginExport dllStartPlugin( void )
 }
 extern "C" void _OgreOctreePluginExport dllStopPlugin( void )
 {
-	Root::getSingleton().uninstallPlugin(octreePlugin);
-	OGRE_DELETE octreePlugin;
+    Root::getSingleton().uninstallPlugin(octreePlugin);
+    OGRE_DELETE octreePlugin;
 }
 }
 

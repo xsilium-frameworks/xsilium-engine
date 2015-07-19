@@ -23,20 +23,16 @@ set(CMAKE_MODULE_PATH
     ${XSILIUM_SOURCE_DIR}/CMake/Packages
     ${XSILIUM_SOURCE_DIR}/CMake/Templates
     )
-include(CMakeDependentOption)
-include(CheckCXXCompilerFlag)
-include(ConfigXsilium)
-include(ConfigTargets)
-include(OgreAddTargets)
 include(MacroLogFeature)
-include(PreprocessorUtils)
+include(ConfigXsilium)
 
-configure_xsilium(${XSILIUM_SOURCE_DIR} ${XSILIUM_SOURCE_DIR}/Library/Ogre )
+
+configure_xsilium()
 
 subdirs(Library)
-subdirs(Engine)
+#subdirs(Engine)
 
-subdirs(Client)
+#subdirs(Client)
 #subdirs(SceneLoader)
 
 

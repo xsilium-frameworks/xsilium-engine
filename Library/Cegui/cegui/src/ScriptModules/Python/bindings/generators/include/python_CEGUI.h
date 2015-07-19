@@ -5,25 +5,27 @@
 
 #include "CEGUI/CEGUI.h"
 #include "CEGUI/falagard/XMLEnumHelper.h"
+#include "CEGUI/falagard/PropertyDefinition.h"
+#include "CEGUI/falagard/PropertyLinkDefinition.h"
 
 namespace boost
 {
     /*
-	 * Workaround that allows users to inherit CEGUI classes with methods
-	 * that deal with strings (almost all classes)
-	 *
-	 * The situation:
-	 * boost python can't recognize boost::ref(const CEGUI::String&) and doesn't
-	 * auto convert it to python unicode string. This works for all types that are
-	 * registered normally (CEGUI::String is always converted, the class is unknown
-	 * in python).
-	 *
-	 * The solution:
-	 * Make an overloaded version of boost::ref that just returns what it gets.
-	 *
-	 * Is this horrible?
-	 * YES!
-	 */
+     * Workaround that allows users to inherit CEGUI classes with methods
+     * that deal with strings (almost all classes)
+     *
+     * The situation:
+     * boost python can't recognize boost::ref(const CEGUI::String&) and doesn't
+     * auto convert it to python unicode string. This works for all types that are
+     * registered normally (CEGUI::String is always converted, the class is unknown
+     * in python).
+     *
+     * The solution:
+     * Make an overloaded version of boost::ref that just returns what it gets.
+     *
+     * Is this horrible?
+     * YES!
+     */
     inline const CEGUI::String& ref(const CEGUI::String& v)
     {
         return v;
@@ -60,7 +62,7 @@ public:
     {
         return PropertyHelper<Rectf >::fromString(str);
     }
-    static const Image*	stringToImage(const String& str)
+    static const Image* stringToImage(const String& str)
     {
         return PropertyHelper<Image*>::fromString(str);
     }
@@ -84,9 +86,45 @@ public:
     {
         return PropertyHelper<URect>::fromString(str);
     }
+    static USize stringToUSize(const String& str)
+    {
+        return PropertyHelper<USize>::fromString(str);
+    }
     static UBox stringToUBox(const String& str)
     {
         return PropertyHelper<UBox>::fromString(str);
+    }
+    static VerticalTextFormatting stringToVerticalTextFormatting(const String& str)
+    {
+        return PropertyHelper<VerticalTextFormatting>::fromString(str);
+    }
+    static HorizontalTextFormatting stringToHorizontalTextFormatting(const String& str)
+    {
+        return PropertyHelper<HorizontalTextFormatting>::fromString(str);
+    }
+    static VerticalFormatting stringToVerticalFormatting(const String& str)
+    {
+        return PropertyHelper<VerticalFormatting>::fromString(str);
+    }
+    static HorizontalFormatting stringToHorizontalFormatting(const String& str)
+    {
+        return PropertyHelper<HorizontalFormatting>::fromString(str);
+    }
+    static HorizontalAlignment stringToHorizontalAlignment(const String& str)
+    {
+        return PropertyHelper<HorizontalAlignment>::fromString(str);
+    }
+    static VerticalAlignment stringToVerticalAlignment(const String& str)
+    {
+        return PropertyHelper<VerticalAlignment>::fromString(str);
+    }
+    static const Font* stringToFont(const String& str)
+    {
+        return PropertyHelper<Font*>::fromString(str);
+    }
+    static AspectMode stringToAspectMode(const String& str)
+    {
+        return PropertyHelper<AspectMode>::fromString(str);
     }
 
     static String floatToString(float val)
@@ -137,10 +175,47 @@ public:
     {
         return PropertyHelper<URect>::toString(val);
     }
+    static String usizeToString(const USize& val)
+    {
+        return PropertyHelper<USize>::toString(val);
+    }
     static String uboxToString(const UBox& val)
     {
         return PropertyHelper<UBox>::toString(val);
     }
+    static String verticalTextFormattingToString(VerticalTextFormatting val)
+    {
+        return PropertyHelper<VerticalTextFormatting>::toString(val);
+    }
+    static String horizontalTextFormattingToString(HorizontalTextFormatting val)
+    {
+        return PropertyHelper<HorizontalTextFormatting>::toString(val);
+    }
+    static String verticalFormattingToString(VerticalFormatting val)
+    {
+        return PropertyHelper<VerticalFormatting>::toString(val);
+    }
+    static String horizontalFormattingToString(HorizontalFormatting val)
+    {
+        return PropertyHelper<HorizontalFormatting>::toString(val);
+    }
+    static String verticalAlignmentToString(VerticalAlignment val)
+    {
+        return PropertyHelper<VerticalAlignment>::toString(val);
+    }
+    static String horizontalAlignmentToString(HorizontalAlignment val)
+    {
+        return PropertyHelper<HorizontalAlignment>::toString(val);
+    }
+    static String fontToString(const Font* val)
+    {
+        return PropertyHelper<Font*>::toString(val);
+    }
+    static String aspectmodeToString(AspectMode val)
+    {
+        return PropertyHelper<AspectMode>::toString(val);
+    }
+
 };
 
 
@@ -238,6 +313,50 @@ public:
     }
 };
 
+class Workarounds
+{
+    public:
+        static PropertyDefinitionBase* PropertyDefinitionBaseMapGet(WidgetLookFeel::PropertyDefinitionBasePointerMap& map, const WidgetLookFeel::PropertyDefinitionBasePointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static PropertyInitialiser* PropertyInitialiserMapGet(WidgetLookFeel::PropertyInitialiserPointerMap& map, const WidgetLookFeel::PropertyInitialiserPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static WidgetComponent* WidgetComponentMapGet(WidgetLookFeel::WidgetComponentPointerMap& map, const WidgetLookFeel::WidgetComponentPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static ImagerySection* ImagerySectionMapGet(WidgetLookFeel::ImagerySectionPointerMap& map, const WidgetLookFeel::ImagerySectionPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static NamedArea* NamedAreaMapGet(WidgetLookFeel::NamedAreaPointerMap& map, const WidgetLookFeel::NamedAreaPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static StateImagery* StateImageryMapGet(WidgetLookFeel::StateImageryPointerMap& map, const WidgetLookFeel::StateImageryPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static EventLinkDefinition* EventLinkDefinitionMapGet(WidgetLookFeel::EventLinkDefinitionPointerMap& map, const WidgetLookFeel::EventLinkDefinitionPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+
+        static WidgetLookFeel* WidgetLookFeelMapGet(WidgetLookManager::WidgetLookPointerMap& map, const WidgetLookManager::WidgetLookPointerMap::key_type& key)
+        {
+            return map[key];
+        }
+};
+
 }
 
 // First we create a magic namespace to hold all our aliases
@@ -263,10 +382,16 @@ namespace pyplusplus
         // typedef std::vector<CEGUI::Scheme::AliasMapping> AliasMappingVector;
         typedef std::vector<CEGUI::PropertyInitialiser
             CEGUI_VECTOR_ALLOC(CEGUI::PropertyInitialiser)> PropertyInitialiserVector;
-        // typedef std::vector<CEGUI::Scheme::FalagardMapping> FalagardMappingVector; 
+        // typedef std::vector<CEGUI::Scheme::FalagardMapping> FalagardMappingVector;
         // typedef std::vector<CEGUI::Scheme::LoadableUIElement> LoadableUIElementVector;
         // typedef std::vector<CEGUI::Scheme::UIElementFactory> UIElementFactoryVector;
         // typedef std::vector<CEGUI::Scheme::UIModule> UIModuleVector;
+
+        typedef std::vector<CEGUI::TextComponent* CEGUI_VECTOR_ALLOC(CEGUI::TextComponent*)> TextComponentVector;
+        typedef std::vector<CEGUI::ImageryComponent* CEGUI_VECTOR_ALLOC(CEGUI::ImageryComponent*)> ImageryComponentVector;
+        typedef std::vector<CEGUI::FrameComponent* CEGUI_VECTOR_ALLOC(CEGUI::FrameComponent*)> FrameComponentVector;
+        typedef std::vector<CEGUI::LayerSpecification* CEGUI_VECTOR_ALLOC(CEGUI::LayerSpecification*)> LayerSpecificationVector;
+        typedef std::vector<CEGUI::SectionSpecification* CEGUI_VECTOR_ALLOC(CEGUI::SectionSpecification*)> SectionSpecificationVector;
 
         typedef ::CEGUI::Event::Connection Connection;
         typedef ::CEGUI::Event::Subscriber Subscriber;
@@ -314,7 +439,7 @@ namespace pyplusplus
         typedef std::multimap<Group, Connection
             CEGUI_MULTIMAP_ALLOC(Group, Connection)> SlotContainer;
         typedef std::map<CEGUI::String, CEGUI::Event*, CEGUI::StringFastLessCompare
-            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::String)>	EventMap;
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::String)>  EventMap;
         typedef std::map<CEGUI::String, CEGUI::Font*, CEGUI::StringFastLessCompare
             CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::Font*)> FontRegistry;
         typedef std::pair<CEGUI::Window*, bool> WindowStackEntry;
@@ -326,7 +451,7 @@ namespace pyplusplus
             CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::String)> UserStringMap;
         typedef std::set<CEGUI::String, CEGUI::StringFastLessCompare> StringSet;
         typedef std::vector<CEGUI::String
-            CEGUI_VECTOR_ALLOC(CEGUI::String)> TargetTypeStack;		//!< Type used to implement stack of target type names.
+            CEGUI_VECTOR_ALLOC(CEGUI::String)> TargetTypeStack;     //!< Type used to implement stack of target type names.
         typedef std::map<CEGUI::String, CEGUI::Window*, CEGUI::StringFastLessCompare
             CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::Window*)> WindowRegistry; //!< Type used to implement registry of Window objects
         typedef std::vector<CEGUI::Window*
@@ -337,6 +462,122 @@ namespace pyplusplus
             CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::WindowRendererFactory*)> WR_Registry;
         typedef std::map<CEGUI::String, CEGUI::String, CEGUI::StringFastLessCompare
             CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::String)> AttributeMap;
+
+
+        typedef std::map<CEGUI::String, CEGUI::EventLinkDefinition*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::EventLinkDefinition*)> EventLinkDefinitionMap;
+        typedef std::map<CEGUI::String, CEGUI::ImagerySection*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::ImagerySection*)> ImagerySectionMap;
+        typedef std::map<CEGUI::String, CEGUI::NamedArea*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::NamedArea*)> NamedAreaMap;
+        typedef std::map<CEGUI::String, CEGUI::PropertyDefinitionBase*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::PropertyDefinitionBase*)> PropertyDefinitionBaseMap;
+        typedef std::map<CEGUI::String, CEGUI::PropertyInitialiser*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::PropertyInitialiser*)> PropertyInitialiserMap;
+        typedef std::map<CEGUI::String, CEGUI::StateImagery*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::StateImagery*)> StateImageryMap;
+        typedef std::map<CEGUI::String, CEGUI::WidgetComponent*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::WidgetComponent*)> WidgetComponentMap;
+        typedef std::map<CEGUI::String, CEGUI::WidgetLookFeel*, CEGUI::StringFastLessCompare
+            CEGUI_MAP_ALLOC(CEGUI::String, CEGUI::WidgetLookFeel*)> WidgetLookFeelMap;
+
+        typedef CEGUI::ConstVectorIterator<std::vector<CEGUI::PropertyInitialiser
+           CEGUI_VECTOR_ALLOC(CEGUI::PropertyInitialiser)> > PropertyInitialiserVectorIterator;
+
+        typedef CEGUI::TypedProperty<float> TypedPropertyFloat;
+        typedef CEGUI::FalagardPropertyBase<float> FalagardPropertyBaseFloat;
+        typedef CEGUI::PropertyDefinition<float> PropertyDefinitionFloat;
+        typedef CEGUI::PropertyLinkDefinition<float> PropertyLinkDefinitionFloat;
+
+        typedef CEGUI::TypedProperty<unsigned int> TypedPropertyUint;
+        typedef CEGUI::FalagardPropertyBase<unsigned int> FalagardPropertyBaseUint;
+        typedef CEGUI::PropertyDefinition<unsigned int> PropertyDefinitionUint;
+        typedef CEGUI::PropertyLinkDefinition<unsigned int> PropertyLinkDefinitionUint;
+
+        typedef CEGUI::TypedProperty<bool> TypedPropertyBool;
+        typedef CEGUI::FalagardPropertyBase<bool> FalagardPropertyBaseBool;
+        typedef CEGUI::PropertyDefinition<bool> PropertyDefinitionBool;
+        typedef CEGUI::PropertyLinkDefinition<bool> PropertyLinkDefinitionBool;
+
+        typedef CEGUI::TypedProperty<CEGUI::Sizef> TypedPropertySizef;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::Sizef> FalagardPropertyBaseSizef;
+        typedef CEGUI::PropertyDefinition<CEGUI::Sizef> PropertyDefinitionSizef;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::Sizef> PropertyLinkDefinitionSizef;
+
+        typedef CEGUI::TypedProperty<CEGUI::Vector2f> TypedPropertyVector2f;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::Vector2f> FalagardPropertyBaseVector2f;
+        typedef CEGUI::PropertyDefinition<CEGUI::Vector2f> PropertyDefinitionVector2f;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::Vector2f> PropertyLinkDefinitionVector2f;
+
+        typedef CEGUI::TypedProperty<CEGUI::Rectf> TypedPropertyRectf;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::Rectf> FalagardPropertyBaseRectf;
+        typedef CEGUI::PropertyDefinition<CEGUI::Rectf> PropertyDefinitionRectf;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::Rectf> PropertyLinkDefinitionRectf;
+
+        typedef CEGUI::TypedProperty<CEGUI::Image*> TypedPropertyImage;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::Image*> FalagardPropertyBaseImage;
+        typedef CEGUI::PropertyDefinition<CEGUI::Image*> PropertyDefinitionImage;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::Image*> PropertyLinkDefinitionImage;
+
+        typedef CEGUI::TypedProperty<CEGUI::Colour> TypedPropertyColour;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::Colour> FalagardPropertyBaseColour;
+        typedef CEGUI::PropertyDefinition<CEGUI::Colour> PropertyDefinitionColour;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::Colour> PropertyLinkDefinitionColour;
+
+        typedef CEGUI::TypedProperty<CEGUI::ColourRect> TypedPropertyColourRect;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::ColourRect> FalagardPropertyBaseColourRect;
+        typedef CEGUI::PropertyDefinition<CEGUI::ColourRect> PropertyDefinitionColourRect;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::ColourRect> PropertyLinkDefinitionColourRect;
+
+        typedef CEGUI::TypedProperty<CEGUI::UDim> TypedPropertyColourUDim;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::UDim> FalagardPropertyBaseColourUDim;
+        typedef CEGUI::PropertyDefinition<CEGUI::UDim> PropertyDefinitionColourUDim;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::UDim> PropertyLinkDefinitionColourUDim;
+
+        typedef CEGUI::TypedProperty<CEGUI::UVector2> TypedPropertyColourUVector2;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::UVector2> FalagardPropertyBaseColourUVector2;
+        typedef CEGUI::PropertyDefinition<CEGUI::UVector2> PropertyDefinitionColourUVector2;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::UVector2> PropertyLinkDefinitionColourUVector2;
+
+        typedef CEGUI::TypedProperty<CEGUI::URect> TypedPropertyColourURect;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::URect> FalagardPropertyBaseColourURect;
+        typedef CEGUI::PropertyDefinition<CEGUI::URect> PropertyDefinitionColourURect;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::URect> PropertyLinkDefinitionColourURect;
+
+        typedef CEGUI::TypedProperty<CEGUI::UBox> TypedPropertyColourUBox;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::UBox> FalagardPropertyBaseColourUBox;
+        typedef CEGUI::PropertyDefinition<CEGUI::UBox> PropertyDefinitionColourUBox;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::UBox> PropertyLinkDefinitionColourUBox;
+
+        typedef CEGUI::TypedProperty<CEGUI::String> TypedPropertyString;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::String> FalagardPropertyBaseString;
+        typedef CEGUI::PropertyDefinition<CEGUI::String> PropertyDefinitionString;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::String> PropertyLinkDefinitionString;
+
+        typedef CEGUI::TypedProperty<CEGUI::VerticalTextFormatting> TypedPropertyVerticalTextFormatting;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::VerticalTextFormatting> FalagardPropertyBaseVerticalTextFormatting;
+        typedef CEGUI::PropertyDefinition<CEGUI::VerticalTextFormatting> PropertyDefinitionVerticalTextFormatting;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::VerticalTextFormatting> PropertyLinkDefinitionVerticalTextFormatting;
+
+        typedef CEGUI::TypedProperty<CEGUI::HorizontalTextFormatting> TypedPropertyHorizontalTextFormatting;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::HorizontalTextFormatting> FalagardPropertyBaseHorizontalTextFormatting;
+        typedef CEGUI::PropertyDefinition<CEGUI::HorizontalTextFormatting> PropertyDefinitionHorizontalTextFormatting;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::HorizontalTextFormatting> PropertyLinkDefinitionHorizontalTextFormatting;
+
+        typedef CEGUI::TypedProperty<CEGUI::VerticalFormatting> TypedPropertyVerticalFormatting;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::VerticalFormatting> FalagardPropertyBaseVerticalFormatting;
+        typedef CEGUI::PropertyDefinition<CEGUI::VerticalFormatting> PropertyDefinitionVerticalFormatting;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::VerticalFormatting> PropertyLinkDefinitionVerticalFormatting;
+
+        typedef CEGUI::TypedProperty<CEGUI::HorizontalFormatting> TypedPropertyHorizontalFormatting;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::HorizontalFormatting> FalagardPropertyBaseHorizontalFormatting;
+        typedef CEGUI::PropertyDefinition<CEGUI::HorizontalFormatting> PropertyDefinitionHorizontalFormatting;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::HorizontalFormatting> PropertyLinkDefinitionHorizontalFormatting;
+
+        typedef CEGUI::TypedProperty<CEGUI::Font*> TypedPropertyFont;
+        typedef CEGUI::FalagardPropertyBase<CEGUI::Font*> FalagardPropertyBaseFont;
+        typedef CEGUI::PropertyDefinition<CEGUI::Font*> PropertyDefinitionFont;
+        typedef CEGUI::PropertyLinkDefinition<CEGUI::Font*> PropertyLinkDefinitionFont;
     }
 }
 
@@ -405,6 +646,101 @@ namespace python_CEGUI
             sizeof( CEGUI::ConstMapIterator<std::map<CEGUI::String, CEGUI::StateImagery, CEGUI::StringFastLessCompare  CEGUI_MAP_ALLOC(const CEGUI::String, CEGUI::StateImagery) > > );
             sizeof( CEGUI::ConstVectorIterator<std::vector<CEGUI::SectionSpecification  CEGUI_VECTOR_ALLOC(CEGUI::SectionSpecification) > > );
             sizeof( CEGUI::ConstVectorIterator<std::vector<CEGUI::TextComponent  CEGUI_VECTOR_ALLOC(CEGUI::TextComponent) > > );
+
+            sizeof( CEGUI::TypedProperty<float> );
+            sizeof( CEGUI::FalagardPropertyBase<float> );
+            sizeof( CEGUI::PropertyDefinition<float> );
+            sizeof( CEGUI::PropertyLinkDefinition<float> );
+
+            sizeof( CEGUI::TypedProperty<unsigned int> );
+            sizeof( CEGUI::FalagardPropertyBase<unsigned int> );
+            sizeof( CEGUI::PropertyDefinition<unsigned int> );
+            sizeof( CEGUI::PropertyLinkDefinition<unsigned int> );
+
+            sizeof( CEGUI::TypedProperty<bool> );
+            sizeof( CEGUI::FalagardPropertyBase<bool> );
+            sizeof( CEGUI::PropertyDefinition<bool> );
+            sizeof( CEGUI::PropertyLinkDefinition<bool> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::Sizef> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::Sizef> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::Sizef> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::Sizef> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::Vector2f> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::Vector2f> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::Vector2f> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::Vector2f> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::Rectf> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::Rectf> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::Rectf> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::Rectf> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::Image*> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::Image*> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::Image*> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::Image*> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::Colour> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::Colour> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::Colour> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::Colour> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::ColourRect> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::ColourRect> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::ColourRect> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::ColourRect> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::UDim> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::UDim> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::UDim> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::UDim> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::UVector2> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::UVector2> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::UVector2> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::UVector2> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::URect> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::URect> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::URect> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::URect> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::UBox> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::UBox> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::UBox> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::UBox> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::String> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::String> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::String> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::String> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::VerticalTextFormatting> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::VerticalTextFormatting> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::VerticalTextFormatting> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::VerticalTextFormatting> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::HorizontalTextFormatting> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::HorizontalTextFormatting> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::HorizontalTextFormatting> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::HorizontalTextFormatting> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::VerticalFormatting> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::VerticalFormatting> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::VerticalFormatting> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::VerticalFormatting> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::HorizontalFormatting> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::HorizontalFormatting> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::HorizontalFormatting> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::HorizontalFormatting> );
+
+            sizeof( CEGUI::TypedProperty<CEGUI::Font*> );
+            sizeof( CEGUI::FalagardPropertyBase<CEGUI::Font*> );
+            sizeof( CEGUI::PropertyDefinition<CEGUI::Font*> );
+            sizeof( CEGUI::PropertyLinkDefinition<CEGUI::Font*> );
         }
     }
 }

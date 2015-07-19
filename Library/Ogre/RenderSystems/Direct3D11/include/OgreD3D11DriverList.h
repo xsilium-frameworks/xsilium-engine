@@ -34,22 +34,22 @@ THE SOFTWARE.
 
 namespace Ogre 
 {
-	class D3D11DriverList
-	{
-	private:
-		vector<D3D11Driver*>::type mDriverList;
+    class D3D11DriverList
+    {
+    public:
+        D3D11DriverList( IDXGIFactoryN* pDXGIFactory );
+        ~D3D11DriverList();
 
-	public:
-		D3D11DriverList( IDXGIFactoryN*	pDXGIFactory );
-		~D3D11DriverList();
+        size_t count() const; /// does not include hidden drivers like NVPerfHUD
+        D3D11Driver* item( size_t index );
+        D3D11Driver* item( const String &name );
 
-		BOOL enumerate(IDXGIFactoryN*	pDXGIFactory);
-		size_t count() const;
-		D3D11Driver* item( size_t index );
+    private:
+        BOOL enumerate(IDXGIFactoryN* pDXGIFactory);
 
-		D3D11Driver* item( const String &name );
-
-
-	};
+    private:
+        vector<D3D11Driver*>::type mDriverList;
+        unsigned                   mHiddenDriversCount;
+    };
 }
 #endif

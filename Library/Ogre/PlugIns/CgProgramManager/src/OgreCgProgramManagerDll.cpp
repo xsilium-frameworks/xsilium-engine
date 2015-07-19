@@ -26,8 +26,8 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
+#include "OgreCgPrerequisites.h"
 #include "OgreCgPlugin.h"
-#include "OgreCgProgram.h"
 #include "OgreRoot.h"
 
 namespace Ogre {
@@ -47,8 +47,8 @@ namespace Ogre {
     }
     extern "C" void _OgreCgPluginExport dllStopPlugin(void)
     {
-		Root::getSingleton().uninstallPlugin(cgPlugin);
-		OGRE_DELETE cgPlugin;
+        Root::getSingleton().uninstallPlugin(cgPlugin);
+        OGRE_DELETE cgPlugin;
     }
 #endif
 

@@ -30,21 +30,24 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
+#include "OgreLogManager.h"
+
 namespace Ogre {
     // Forward declarations
     class GL3PlusSupport;
     class GL3PlusRenderSystem;
     class GL3PlusTexture;
     class GL3PlusTextureManager;
-    class GL3PlusGpuProgram;
     class GL3PlusContext;
     class GL3PlusRTTManager;
     class GL3PlusFBOManager;
     class GL3PlusHardwarePixelBuffer;
     class GL3PlusRenderBuffer;
-	class GL3PlusDepthBuffer;
+    class GL3PlusDepthBuffer;
+    
+    class GLSLShader;
 
-    typedef SharedPtr<GL3PlusGpuProgram> GL3PlusGpuProgramPtr;
+    typedef SharedPtr<GLSLShader> GLSLShaderPtr;
     typedef SharedPtr<GL3PlusTexture> GL3PlusTexturePtr;
 }
 
@@ -52,7 +55,7 @@ namespace Ogre {
 #if !defined( __MINGW32__ )
 #   define WIN32_LEAN_AND_MEAN
 #  ifndef NOMINMAX
-#	define NOMINMAX // required to stop windows.h messing up std::min
+#   define NOMINMAX // required to stop windows.h messing up std::min
 #  endif
 #endif
 #   define WGL_WGLEXT_PROTOTYPES
@@ -62,15 +65,8 @@ namespace Ogre {
 #   include <GL/glext.h>
 #   include <GL/wglext.h>
 #elif OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-#   define GL_GLEXT_PROTOTYPES
-#   define GLX_GLXEXT_PROTOTYPES
-
-#   include <X11/Xlib.h>
 #   include <GL/gl3w.h>
 #   include <GL/glext.h>
-#   include <GL/glx.h>
-#   include <GL/glxext.h>
-#   include <GL/glu.h>
 #elif OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 #   include <GL/gl3w.h>
 #   include <OpenGL/gl3ext.h>
@@ -82,15 +78,15 @@ namespace Ogre {
 #endif
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(__MINGW32__) && !defined(OGRE_STATIC_LIB)
-#	ifdef RenderSystem_GL3Plus_EXPORTS
-#		define _OgreGL3PlusExport __declspec(dllexport)
-#	else
+#   ifdef RenderSystem_GL3Plus_EXPORTS
+#       define _OgreGL3PlusExport __declspec(dllexport)
+#   else
 #       if defined( __MINGW32__ )
 #           define _OgreGL3PlusExport
 #       else
-#    		define _OgreGL3PlusExport __declspec(dllimport)
+#           define _OgreGL3PlusExport __declspec(dllimport)
 #       endif
-#	endif
+#   endif
 #elif defined ( OGRE_GCC_VISIBILITY )
 #    define _OgreGL3PlusExport  __attribute__ ((visibility("default")))
 #else
@@ -104,8 +100,9 @@ namespace Ogre {
 #   define __PRETTY_FUNCTION__ __FUNCTION__
 #endif
 
-#define ENABLE_GL_CHECK 0
+#define ENABLE_GL_CHECK 1
 #if ENABLE_GL_CHECK
+#include "OgreStringVector.h"
 #define OGRE_CHECK_GL_ERROR(glFunc) \
 { \
     glFunc; \

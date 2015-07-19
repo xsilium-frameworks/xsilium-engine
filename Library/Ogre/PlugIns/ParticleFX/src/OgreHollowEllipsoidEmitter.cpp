@@ -92,7 +92,7 @@ namespace Ogre {
         // ellipsoid and the outer sphere (radius 1.0)
         // with alpha and beta we select on point on this random ellipsoid
         // and calculate the 3D coordinates of this point
-		Real sinbeta ( Math::Sin(beta) );
+        Real sinbeta ( Math::Sin(beta) );
         x = a * Math::Cos(alpha) * sinbeta;
         y = b * Math::Sin(alpha) * sinbeta;
         z = c * Math::Cos(beta);
@@ -100,16 +100,16 @@ namespace Ogre {
         // scale the found point to the ellipsoid's size and move it
         // relatively to the center of the emitter point
 
-        pParticle->position = mPosition + 
+        pParticle->mPosition = mPosition +
          + x * mXRange + y * mYRange + z * mZRange;
 
         // Generate complex data by reference
-        genEmissionColour(pParticle->colour);
-        genEmissionDirection( pParticle->position, pParticle->direction );
-        genEmissionVelocity(pParticle->direction);
+        genEmissionColour(pParticle->mColour);
+        genEmissionDirection( pParticle->mPosition, pParticle->mDirection );
+        genEmissionVelocity(pParticle->mDirection);
 
         // Generate simpler data
-        pParticle->timeToLive = pParticle->totalTimeToLive = genEmissionTTL();
+        pParticle->mTimeToLive = pParticle->mTotalTimeToLive = genEmissionTTL();
         
     }
     //-----------------------------------------------------------------------

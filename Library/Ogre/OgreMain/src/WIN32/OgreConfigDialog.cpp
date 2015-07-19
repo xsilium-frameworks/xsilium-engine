@@ -42,21 +42,27 @@ namespace Ogre
 {
     ConfigDialog::ConfigDialog()
     {
-#ifdef OGRE_STATIC_LIB
-		mHInstance = GetModuleHandle( NULL );
-#else
-#  if OGRE_DEBUG_MODE == 1
-        mHInstance = GetModuleHandle("OgreMain_d.dll");
-#  else
-        mHInstance = GetModuleHandle("OgreMain.dll");
-#  endif
-#endif
+		#ifdef __MINGW32__
+			#ifdef OGRE_STATIC_LIB
+        		mHInstance = GetModuleHandle( NULL );
+			#else
+				#if OGRE_DEBUG_MODE == 1
+					mHInstance = GetModuleHandle("OgreMain_d.dll");
+				#else
+					mHInstance = GetModuleHandle("OgreMain.dll");
+				#endif
+			#endif
+		#else
+			static const TCHAR staticVar;
+			GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, &staticVar, &mHInstance);
+		#endif
+
         mSelectedRenderSystem = 0;
     }
 
-	ConfigDialog::~ConfigDialog()
+    ConfigDialog::~ConfigDialog()
     {
-	}
+    }
 
 #if OGRE_ARCHITECTURE_64 == OGRE_ARCH_TYPE
     INT_PTR ConfigDialog::DlgProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
