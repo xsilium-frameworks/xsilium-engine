@@ -530,7 +530,7 @@ include_directories(Source/OpenEXR/IlmThread)
 include_directories(Source/OpenEXR/Imath)
 include_directories(Source/ZLib)
 
-add_definitions(-DOPJ_STATIC -DLIBRAW_NODLL -DLIBRAW_LIBRARY_BUILD -DFREEIMAGE_LIB -DNO_LCMS)
+add_definitions(-DOPJ_STATIC -DLIBRAW_NODLL -DNO_LCMS -DLIBRAW_LIBRARY_BUILD -DMNG_BUILD_SO -DFREEIMAGE_LIB)
 add_library(FreeImage STATIC ${FreeImage_SOURCES})
 
 if (APPLE)

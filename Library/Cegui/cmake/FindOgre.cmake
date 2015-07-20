@@ -190,13 +190,13 @@ if (OGRE_FOUND)
         set(OGRE_INCLUDE_DIR ${OGRE_INCLUDE_DIR};${Boost_INCLUDE_DIR})
 
         # Add the Boost libraries.
-        if (OGRE_LIBRARIES)
-          set (OGRE_LIBRARIES ${OGRE_LIBRARIES};${Boost_THREAD_LIBRARY_RELEASE};${Boost_SYSTEM_LIBRARY_RELEASE})
-        endif()
+#        if (OGRE_LIBRARIES)
+#          set (OGRE_LIBRARIES ${OGRE_LIBRARIES};${Boost_THREAD_LIBRARY_RELEASE};${Boost_SYSTEM_LIBRARY_RELEASE})
+#        endif()
 
-        if (OGRE_LIBRARIES_DBG)
-          set (OGRE_LIBRARIES_DBG ${OGRE_LIBRARIES_DBG};${Boost_THREAD_LIBRARY_DEBUG};${Boost_SYSTEM_LIBRARY_DEBUG})
-        endif()
+#        if (OGRE_LIBRARIES_DBG)
+#          set (OGRE_LIBRARIES_DBG ${OGRE_LIBRARIES_DBG};${Boost_THREAD_LIBRARY_DEBUG};${Boost_SYSTEM_LIBRARY_DEBUG})
+#        endif()
     endif()
 
     # look for required Ogre dependencies in case of static build

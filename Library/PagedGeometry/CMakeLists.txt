@@ -55,7 +55,8 @@ if(APPLE)
 endif(APPLE)
 
 include_directories(${OGRE_INCLUDE_DIRS})
-include_directories(${Boost_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+
 
 set(HEADER_FILES
 	include/BatchedGeometry.h
