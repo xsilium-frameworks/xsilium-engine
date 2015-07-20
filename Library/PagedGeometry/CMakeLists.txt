@@ -6,25 +6,14 @@ project(PagedGeometry)
 
 if(WIN32)
    set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
-   set(OGRE_SAMPLES_INCLUDEPATH
-      $ENV{OGRE_HOME}/Samples/include
-   )
 endif(WIN32)
  
 if(UNIX)
-   if(EXISTS "/usr/local/lib/OGRE/cmake")
-
-     set(CMAKE_MODULE_PATH "/usr/local/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
-     set(OGRE_SAMPLES_INCLUDEPATH "/usr/local/share/OGRE/samples/Common/include/") # We could just *assume* that developers uses this basepath : /usr/local
-
-   elseif(EXISTS "/usr/lib/OGRE/cmake")
-
-     set(CMAKE_MODULE_PATH "/usr/lib/OGRE/cmake/;${CMAKE_MODULE_PATH}")
-     set(OGRE_SAMPLES_INCLUDEPATH "/usr/share/OGRE/samples/Common/include/") # Otherwise, this one
-
+   if(EXISTS "${XSILIUM_SOURCE_DIR}/Library/Ogre/cmake")
+     set(CMAKE_MODULE_PATH "${XSILIUM_SOURCE_DIR}/Library/Ogre/cmake/Packages;${CMAKE_MODULE_PATH}")
    else ()
      message(SEND_ERROR "Failed to find module path.")
-   endif(EXISTS "/usr/local/lib/OGRE")
+   endif()
 endif(UNIX)
  
 
@@ -55,7 +44,8 @@ if(APPLE)
 endif(APPLE)
 
 include_directories(${OGRE_INCLUDE_DIRS})
-include_directories(${Boost_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+
 
 set(HEADER_FILES
 	include/BatchedGeometry.h

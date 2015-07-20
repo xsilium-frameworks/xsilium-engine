@@ -10,7 +10,7 @@ if (POLICY CMP0045)
     cmake_policy(SET CMP0045 OLD)
 endif()
 
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CEGUIMacros)
 include(CMakeDependentOption)
 
@@ -109,6 +109,8 @@ find_package(Lua51)
 find_package(TOLUAPP)
 find_package(PythonInterp)
 
+
+
 ## ensure python3 not picked up as default
 find_package(PythonVersion)
 if (UNIX AND PYTHON_VERSION_FOUND)
@@ -116,6 +118,7 @@ if (UNIX AND PYTHON_VERSION_FOUND)
 else()
   find_package(PythonLibs)
 endif()
+find_package(Boost 1.36.0 COMPONENTS python unit_test_framework system timer)
 
 find_package(Doxygen)
 #find_package(GTK2 COMPONENTS gtk)

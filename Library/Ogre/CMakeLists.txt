@@ -56,7 +56,6 @@ set(CMAKE_MODULE_PATH
   "${OGRE_SOURCE_DIR}/CMake"
   "${OGRE_SOURCE_DIR}/CMake/Utils"
   "${OGRE_SOURCE_DIR}/CMake/Packages"
-  "${CMAKE_MODULE_PATH}"
 )
 
 if(ANDROID)
