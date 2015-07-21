@@ -119,15 +119,5 @@ if(Boost_FOUND AND NOT WIN32)
   list(REMOVE_DUPLICATES Boost_LIBRARIES)
 endif()
 
-# Optional Boost libs (Boost_${COMPONENT}_FOUND
-#macro_log_feature(Boost_FOUND "boost" "Boost (general)" "http://boost.org" FALSE "" "")
-#macro_log_feature(Boost_THREAD_FOUND "boost-thread" "Used for threading support" "http://boost.org" FALSE "" "")
-#macro_log_feature(Boost_DATE_TIME_FOUND "boost-date_time" "Used for threading support" "http://boost.org" FALSE "" "")
-#if(Boost_VERSION GREATER 104900)
-#    macro_log_feature(Boost_SYSTEM_FOUND "boost-system" "Used for threading support" "http://boost.org" FALSE "" "")
-#    macro_log_feature(Boost_CHRONO_FOUND "boost-chrono" "Used for threading support" "http://boost.org" FALSE "" "")
-#	if(Boost_VERSION GREATER 105300)
-#		macro_log_feature(Boost_ATOMIC_FOUND "boost-atomic" "Used for threading support" "http://boost.org" FALSE "" "")
-#	endif()
-#endif()
+
 
