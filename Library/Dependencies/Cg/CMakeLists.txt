@@ -1,10 +1,9 @@
 project(Cg)
 
-set(Cg_INCLUDE_DIR "${Cg_SOURCE_DIR}/include" CACHE PATH "" FORCE)
-
-set(Cg_HOME ${Cg_SOURCE_DIR} CACHE PATH "")
-
 if (WIN32)
+  set(Cg_INCLUDE_DIR "${Cg_SOURCE_DIR}/include" CACHE PATH "" FORCE)
+  set(Cg_HOME ${Cg_SOURCE_DIR} CACHE PATH "")
+
   # manually copy to build and install the correct DLL
   if (XSILIUM_PLATFORM_X64)
     set(CG_DLL bin64/cg.dll)
