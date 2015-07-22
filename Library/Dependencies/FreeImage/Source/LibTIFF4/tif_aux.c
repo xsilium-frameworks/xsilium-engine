@@ -1,4 +1,4 @@
-/* $Id: tif_aux.c,v 1.2 2012/02/25 17:48:19 drolon Exp $ */
+/* $Id: tif_aux.c,v 1.11 2015/02/19 22:39:58 drolon Exp $ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler

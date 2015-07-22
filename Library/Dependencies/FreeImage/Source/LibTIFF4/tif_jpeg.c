@@ -1,4 +1,4 @@
-/* $Id: tif_jpeg.c,v 1.2 2012/02/25 17:48:20 drolon Exp $ */
+/* $Id: tif_jpeg.c,v 1.11 2015/02/19 22:39:58 drolon Exp $ */
 
 /*
  * Copyright (c) 1994-1997 Sam Leffler
@@ -658,7 +658,9 @@ alloc_downsampled_buffers(TIFF* tif, jpeg_component_info* comp_info,
 
 #define JPEG_MARKER_SOF0 0xC0
 #define JPEG_MARKER_SOF1 0xC1
-#define JPEG_MARKER_SOF3 0xC3
+#define JPEG_MARKER_SOF2 0xC2
+#define JPEG_MARKER_SOF9 0xC9
+#define JPEG_MARKER_SOF10 0xCA
 #define JPEG_MARKER_DHT 0xC4
 #define JPEG_MARKER_SOI 0xD8
 #define JPEG_MARKER_SOS 0xDA
@@ -729,6 +731,7 @@ JPEGFixupTagsSubsampling(TIFF* tif)
         _TIFFFillStriles( tif );
         
         if( tif->tif_dir.td_stripbytecount == NULL
+            || tif->tif_dir.td_stripoffset == NULL
             || tif->tif_dir.td_stripbytecount[0] == 0 )
         {
             /* Do not even try to check if the first strip/tile does not
@@ -816,8 +819,11 @@ JPEGFixupTagsSubsamplingSec(struct JPEGFixupTagsSubsamplingData* data)
 						JPEGFixupTagsSubsamplingSkip(data,n);
 				}
 				break;
-			case JPEG_MARKER_SOF0:
-			case JPEG_MARKER_SOF1:
+			case JPEG_MARKER_SOF0: /* Baseline sequential Huffman */
+			case JPEG_MARKER_SOF1: /* Extended sequential Huffman */
+			case JPEG_MARKER_SOF2: /* Progressive Huffman: normally not allowed by TechNote, but that doesn't hurt supporting it */
+			case JPEG_MARKER_SOF9: /* Extended sequential arithmetic */
+			case JPEG_MARKER_SOF10: /* Progressive arithmetic: normally not allowed by TechNote, but that doesn't hurt supporting it */
 				/* this marker contains the subsampling factors we're scanning for */
 				{
 					uint16 n;
@@ -1095,50 +1101,13 @@ JPEGPreDecode(TIFF* tif, uint16 s)
 		/* Component 0 should have expected sampling factors */
 		if (sp->cinfo.d.comp_info[0].h_samp_factor != sp->h_sampling ||
 		    sp->cinfo.d.comp_info[0].v_samp_factor != sp->v_sampling) {
-				TIFFWarningExt(tif->tif_clientdata, module,
-				    "Improper JPEG sampling factors %d,%d\n"
-				    "Apparently should be %d,%d.",
-				    sp->cinfo.d.comp_info[0].h_samp_factor,
-				    sp->cinfo.d.comp_info[0].v_samp_factor,
-				    sp->h_sampling, sp->v_sampling);
-
-				/*
-				 * There are potential security issues here
-				 * for decoders that have already allocated
-				 * buffers based on the expected sampling
-				 * factors. Lets check the sampling factors
-				 * dont exceed what we were expecting.
-				 */
-				if (sp->cinfo.d.comp_info[0].h_samp_factor
-					> sp->h_sampling
-				    || sp->cinfo.d.comp_info[0].v_samp_factor
-					> sp->v_sampling) {
-					TIFFErrorExt(tif->tif_clientdata,
-						     module,
-					"Cannot honour JPEG sampling factors"
-					" that exceed those specified.");
-					return (0);
-				}
-
-			    /*
-			     * XXX: Files written by the Intergraph software
-			     * has different sampling factors stored in the
-			     * TIFF tags and in the JPEG structures. We will
-			     * try to deduce Intergraph files by the presense
-			     * of the tag 33918.
-			     */
-			    if (!TIFFFindField(tif, 33918, TIFF_ANY)) {
-					TIFFWarningExt(tif->tif_clientdata, module,
-					"Decompressor will try reading with "
-					"sampling %d,%d.",
-					sp->cinfo.d.comp_info[0].h_samp_factor,
-					sp->cinfo.d.comp_info[0].v_samp_factor);
-
-				    sp->h_sampling = (uint16)
-					sp->cinfo.d.comp_info[0].h_samp_factor;
-				    sp->v_sampling = (uint16)
-					sp->cinfo.d.comp_info[0].v_samp_factor;
-			    }
+			TIFFErrorExt(tif->tif_clientdata, module,
+				       "Improper JPEG sampling factors %d,%d\n"
+				       "Apparently should be %d,%d.",
+				       sp->cinfo.d.comp_info[0].h_samp_factor,
+				       sp->cinfo.d.comp_info[0].v_samp_factor,
+				       sp->h_sampling, sp->v_sampling);
+			return (0);
 		}
 		/* Rest should have sampling factors 1,1 */
 		for (ci = 1; ci < sp->cinfo.d.num_components; ci++) {
@@ -1160,11 +1129,11 @@ JPEGPreDecode(TIFF* tif, uint16 s)
 	if (td->td_planarconfig == PLANARCONFIG_CONTIG &&
 	    sp->photometric == PHOTOMETRIC_YCBCR &&
 	    sp->jpegcolormode == JPEGCOLORMODE_RGB) {
-	/* Convert YCbCr to RGB */
+		/* Convert YCbCr to RGB */
 		sp->cinfo.d.jpeg_color_space = JCS_YCbCr;
 		sp->cinfo.d.out_color_space = JCS_RGB;
 	} else {
-			/* Suppress colorspace handling */
+		/* Suppress colorspace handling */
 		sp->cinfo.d.jpeg_color_space = JCS_UNKNOWN;
 		sp->cinfo.d.out_color_space = JCS_UNKNOWN;
 		if (td->td_planarconfig == PLANARCONFIG_CONTIG &&
@@ -1175,6 +1144,9 @@ JPEGPreDecode(TIFF* tif, uint16 s)
 	if (downsampled_output) {
 		/* Need to use raw-data interface to libjpeg */
 		sp->cinfo.d.raw_data_out = TRUE;
+#if JPEG_LIB_VERSION >= 70
+		sp->cinfo.d.do_fancy_upsampling = FALSE;
+#endif /* JPEG_LIB_VERSION >= 70 */
 		tif->tif_decoderow = DecodeRowError;
 		tif->tif_decodestrip = JPEGDecodeRaw;
 		tif->tif_decodetile = JPEGDecodeRaw;
@@ -1349,8 +1321,8 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 
 #if defined(JPEG_LIB_MK1_OR_12BIT)
 		unsigned short* tmpbuf = _TIFFmalloc(sizeof(unsigned short) *
-		    sp->cinfo.d.output_width *
-		    sp->cinfo.d.num_components);
+						     sp->cinfo.d.output_width *
+						     sp->cinfo.d.num_components);
 		if(tmpbuf==NULL) {
                         TIFFErrorExt(tif->tif_clientdata, "JPEGDecodeRaw",
 				     "Out of memory");
@@ -1362,10 +1334,10 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 			jpeg_component_info *compptr;
 			int ci, clumpoffset;
 
-                        if( cc < sp->bytesperline * sp->v_sampling ) {
-                            TIFFErrorExt(tif->tif_clientdata, "JPEGDecodeRaw",
-                                         "application buffer not large enough for all data.");
-                            return 0;
+                        if( cc < sp->bytesperline ) {
+				TIFFErrorExt(tif->tif_clientdata, "JPEGDecodeRaw",
+					     "application buffer not large enough for all data.");
+				return 0;
                         }
 
 			/* Reload downsampled-data buffer if needed */
@@ -1381,20 +1353,25 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 			 */
 			clumpoffset = 0;    /* first sample in clump */
 			for (ci = 0, compptr = sp->cinfo.d.comp_info;
-			    ci < sp->cinfo.d.num_components;
-			    ci++, compptr++) {
+			     ci < sp->cinfo.d.num_components;
+			     ci++, compptr++) {
 				int hsamp = compptr->h_samp_factor;
 				int vsamp = compptr->v_samp_factor;
 				int ypos;
 
 				for (ypos = 0; ypos < vsamp; ypos++) {
 					JSAMPLE *inptr = sp->ds_buffer[ci][sp->scancount*vsamp + ypos];
+					JDIMENSION nclump;
 #if defined(JPEG_LIB_MK1_OR_12BIT)
 					JSAMPLE *outptr = (JSAMPLE*)tmpbuf + clumpoffset;
 #else
 					JSAMPLE *outptr = (JSAMPLE*)buf + clumpoffset;
+					if (cc < (tmsize_t) (clumpoffset + samples_per_clump*(clumps_per_line-1) + hsamp)) {
+						TIFFErrorExt(tif->tif_clientdata, "JPEGDecodeRaw",
+							     "application buffer not large enough for all data, possible subsampling issue");
+						return 0;
+					}
 #endif
-					JDIMENSION nclump;
 
 					if (hsamp == 1) {
 						/* fast path for at least Cb and Cr */
@@ -1405,7 +1382,7 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 					} else {
 						int xpos;
 
-			/* general case */
+						/* general case */
 						for (nclump = clumps_per_line; nclump-- > 0; ) {
 							for (xpos = 0; xpos < hsamp; xpos++)
 								outptr[xpos] = *inptr++;
@@ -1428,9 +1405,9 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 					}
 				}
 				else
-					{         /* 12-bit */
+				{         /* 12-bit */
 					int value_pairs = (sp->cinfo.d.output_width
-					    * sp->cinfo.d.num_components) / 2;
+							   * sp->cinfo.d.num_components) / 2;
 					int iPair;
 					for( iPair = 0; iPair < value_pairs; iPair++ )
 					{
@@ -1438,7 +1415,7 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 						JSAMPLE *in_ptr = (JSAMPLE *) (tmpbuf + iPair * 2);
 						out_ptr[0] = (in_ptr[0] & 0xff0) >> 4;
 						out_ptr[1] = ((in_ptr[0] & 0xf) << 4)
-						    | ((in_ptr[1] & 0xf00) >> 8);
+							| ((in_ptr[1] & 0xf00) >> 8);
 						out_ptr[2] = ((in_ptr[1] & 0xff) >> 0);
 					}
 				}
@@ -1447,12 +1424,9 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 
 			sp->scancount ++;
 			tif->tif_row += sp->v_sampling;
-/*
-			buf += clumps_per_line*samples_per_clump;
-			cc -= clumps_per_line*samples_per_clump;
-*/
-			buf += sp->bytesperline * sp->v_sampling;
-			cc -= sp->bytesperline * sp->v_sampling;
+
+			buf += sp->bytesperline;
+			cc -= sp->bytesperline;
 
 			nrows -= sp->v_sampling;
 		} while (nrows > 0);
@@ -1465,7 +1439,7 @@ JPEGDecodeRaw(TIFF* tif, uint8* buf, tmsize_t cc, uint16 s)
 
 	/* Close down the decompressor if done. */
 	return sp->cinfo.d.output_scanline < sp->cinfo.d.output_height
-	    || TIFFjpeg_finish_decompress(sp);
+		|| TIFFjpeg_finish_decompress(sp);
 }
 
 
@@ -1483,6 +1457,15 @@ unsuppress_quant_table (JPEGState* sp, int tblno)
 }
 
 static void
+suppress_quant_table (JPEGState* sp, int tblno)
+{
+	JQUANT_TBL* qtbl;
+
+	if ((qtbl = sp->cinfo.c.quant_tbl_ptrs[tblno]) != NULL)
+		qtbl->sent_table = TRUE;
+}
+
+static void
 unsuppress_huff_table (JPEGState* sp, int tblno)
 {
 	JHUFF_TBL* htbl;
@@ -1491,6 +1474,17 @@ unsuppress_huff_table (JPEGState* sp, int tblno)
 		htbl->sent_table = FALSE;
 	if ((htbl = sp->cinfo.c.ac_huff_tbl_ptrs[tblno]) != NULL)
 		htbl->sent_table = FALSE;
+}
+
+static void
+suppress_huff_table (JPEGState* sp, int tblno)
+{
+	JHUFF_TBL* htbl;
+
+	if ((htbl = sp->cinfo.c.dc_huff_tbl_ptrs[tblno]) != NULL)
+		htbl->sent_table = TRUE;
+	if ((htbl = sp->cinfo.c.ac_huff_tbl_ptrs[tblno]) != NULL)
+		htbl->sent_table = TRUE;
 }
 
 static int
@@ -1542,17 +1536,38 @@ JPEGSetupEncode(TIFF* tif)
 	assert(sp != NULL);
 	assert(!sp->cinfo.comm.is_decompressor);
 
+	sp->photometric = td->td_photometric;
+
 	/*
 	 * Initialize all JPEG parameters to default values.
 	 * Note that jpeg_set_defaults needs legal values for
 	 * in_color_space and input_components.
 	 */
-	sp->cinfo.c.in_color_space = JCS_UNKNOWN;
-	sp->cinfo.c.input_components = 1;
+	if (td->td_planarconfig == PLANARCONFIG_CONTIG) {
+		sp->cinfo.c.input_components = td->td_samplesperpixel;
+		if (sp->photometric == PHOTOMETRIC_YCBCR) {
+			if (sp->jpegcolormode == JPEGCOLORMODE_RGB) {
+				sp->cinfo.c.in_color_space = JCS_RGB;
+			} else {
+				sp->cinfo.c.in_color_space = JCS_YCbCr;
+			}
+		} else {
+			if ((td->td_photometric == PHOTOMETRIC_MINISWHITE || td->td_photometric == PHOTOMETRIC_MINISBLACK) && td->td_samplesperpixel == 1)
+				sp->cinfo.c.in_color_space = JCS_GRAYSCALE;
+			else if (td->td_photometric == PHOTOMETRIC_RGB && td->td_samplesperpixel == 3)
+				sp->cinfo.c.in_color_space = JCS_RGB;
+			else if (td->td_photometric == PHOTOMETRIC_SEPARATED && td->td_samplesperpixel == 4)
+				sp->cinfo.c.in_color_space = JCS_CMYK;
+			else
+				sp->cinfo.c.in_color_space = JCS_UNKNOWN;
+		}
+	} else {
+		sp->cinfo.c.input_components = 1;
+		sp->cinfo.c.in_color_space = JCS_UNKNOWN;
+	}
 	if (!TIFFjpeg_set_defaults(sp))
 		return (0);
 	/* Set per-file parameters */
-	sp->photometric = td->td_photometric;
 	switch (sp->photometric) {
 	case PHOTOMETRIC_YCBCR:
 		sp->h_sampling = td->td_ycbcrsubsampling[0];
@@ -1712,10 +1727,7 @@ JPEGPreEncode(TIFF* tif, uint16 s)
 	if (td->td_planarconfig == PLANARCONFIG_CONTIG) {
 		sp->cinfo.c.input_components = td->td_samplesperpixel;
 		if (sp->photometric == PHOTOMETRIC_YCBCR) {
-			if (sp->jpegcolormode == JPEGCOLORMODE_RGB) {
-				sp->cinfo.c.in_color_space = JCS_RGB;
-			} else {
-				sp->cinfo.c.in_color_space = JCS_YCbCr;
+			if (sp->jpegcolormode != JPEGCOLORMODE_RGB) {
 				if (sp->h_sampling != 1 || sp->v_sampling != 1)
 					downsampled_input = TRUE;
 			}
@@ -1728,21 +1740,11 @@ JPEGPreEncode(TIFF* tif, uint16 s)
 			sp->cinfo.c.comp_info[0].h_samp_factor = sp->h_sampling;
 			sp->cinfo.c.comp_info[0].v_samp_factor = sp->v_sampling;
 		} else {
-			if ((td->td_photometric == PHOTOMETRIC_MINISWHITE || td->td_photometric == PHOTOMETRIC_MINISBLACK) && td->td_samplesperpixel == 1)
-				sp->cinfo.c.in_color_space = JCS_GRAYSCALE;
-			else if (td->td_photometric == PHOTOMETRIC_RGB)
-				sp->cinfo.c.in_color_space = JCS_RGB;
-			else if (td->td_photometric == PHOTOMETRIC_SEPARATED && td->td_samplesperpixel == 4)
-				sp->cinfo.c.in_color_space = JCS_CMYK;
-			else
-				sp->cinfo.c.in_color_space = JCS_UNKNOWN;
 			if (!TIFFjpeg_set_colorspace(sp, sp->cinfo.c.in_color_space))
 				return (0);
 			/* jpeg_set_colorspace set all sampling factors to 1 */
 		}
 	} else {
-		sp->cinfo.c.input_components = 1;
-		sp->cinfo.c.in_color_space = JCS_UNKNOWN;
 		if (!TIFFjpeg_set_colorspace(sp, JCS_UNKNOWN))
 			return (0);
 		sp->cinfo.c.comp_info[0].component_id = s;
@@ -1757,14 +1759,30 @@ JPEGPreEncode(TIFF* tif, uint16 s)
 	sp->cinfo.c.write_JFIF_header = FALSE;
 	sp->cinfo.c.write_Adobe_marker = FALSE;
 	/* set up table handling correctly */
-        if (!TIFFjpeg_set_quality(sp, sp->jpegquality, FALSE))
+	/* calling TIFFjpeg_set_quality() causes quantization tables to be flagged */
+	/* as being to be emitted, which we don't want in the JPEGTABLESMODE_QUANT */
+	/* mode, so we must manually suppress them. However TIFFjpeg_set_quality() */
+	/* should really be called when dealing with files with directories with */
+	/* mixed qualities. see http://trac.osgeo.org/gdal/ticket/3539 */
+	if (!TIFFjpeg_set_quality(sp, sp->jpegquality, FALSE))
 		return (0);
-	if (! (sp->jpegtablesmode & JPEGTABLESMODE_QUANT)) {
+	if (sp->jpegtablesmode & JPEGTABLESMODE_QUANT) {
+		suppress_quant_table(sp, 0);
+		suppress_quant_table(sp, 1);
+	}
+	else {
 		unsuppress_quant_table(sp, 0);
 		unsuppress_quant_table(sp, 1);
 	}
 	if (sp->jpegtablesmode & JPEGTABLESMODE_HUFF)
+	{
+		/* Explicit suppression is only needed if we did not go through the */
+		/* prepare_JPEGTables() code path, which may be the case if updating */
+		/* an existing file */
+		suppress_huff_table(sp, 0);
+		suppress_huff_table(sp, 1);
 		sp->cinfo.c.optimize_coding = FALSE;
+	}
 	else
 		sp->cinfo.c.optimize_coding = TRUE;
 	if (downsampled_input) {

@@ -44,29 +44,22 @@
 #include "FreeImageIO.h"
 #include "PSDParser.h"
 
-// ----------------------------------------------------------
-//   geotiff interface (see XTIFF.cpp)
-// ----------------------------------------------------------
-
-// Extended TIFF Directory GEO Tag Support
+// --------------------------------------------------------------------------
+// GeoTIFF profile (see XTIFF.cpp)
+// --------------------------------------------------------------------------
 void XTIFFInitialize();
+BOOL tiff_read_geotiff_profile(TIFF *tif, FIBITMAP *dib);
+BOOL tiff_write_geotiff_profile(TIFF *tif, FIBITMAP *dib);
 
-// GeoTIFF profile
-void tiff_read_geotiff_profile(TIFF *tif, FIBITMAP *dib);
-void tiff_write_geotiff_profile(TIFF *tif, FIBITMAP *dib);
-
+// --------------------------------------------------------------------------
+// TIFF Exif profile (see XTIFF.cpp)
 // ----------------------------------------------------------
-//   exif interface (see XTIFF.cpp)
-// ----------------------------------------------------------
-
-// TIFF Exif profile
 BOOL tiff_read_exif_tags(TIFF *tif, TagLib::MDMODEL md_model, FIBITMAP *dib);
 BOOL tiff_write_exif_tags(TIFF *tif, TagLib::MDMODEL md_model, FIBITMAP *dib);
 
-// ----------------------------------------------------------
+// --------------------------------------------------------------------------
 //   LogLuv conversion functions interface (see TIFFLogLuv.cpp)
-// ----------------------------------------------------------
-
+// --------------------------------------------------------------------------
 void tiff_ConvertLineXYZToRGB(BYTE *target, BYTE *source, double stonits, int width_in_pixels);
 void tiff_ConvertLineRGBToXYZ(BYTE *target, BYTE *source, int width_in_pixels);
 
@@ -141,19 +134,19 @@ typedef struct {
 static tmsize_t 
 _tiffReadProc(thandle_t handle, void *buf, tmsize_t size) {
 	fi_TIFFIO *fio = (fi_TIFFIO*)handle;
-	return fio->io->read_proc(buf, size, 1, fio->handle) * size;
+	return fio->io->read_proc(buf, (unsigned)size, 1, fio->handle) * size;
 }
 
 static tmsize_t
 _tiffWriteProc(thandle_t handle, void *buf, tmsize_t size) {
 	fi_TIFFIO *fio = (fi_TIFFIO*)handle;
-	return fio->io->write_proc(buf, size, 1, fio->handle) * size;
+	return fio->io->write_proc(buf, (unsigned)size, 1, fio->handle) * size;
 }
 
 static toff_t
 _tiffSeekProc(thandle_t handle, toff_t off, int whence) {
 	fi_TIFFIO *fio = (fi_TIFFIO*)handle;
-	fio->io->seek_proc(fio->handle, off, whence);
+	fio->io->seek_proc(fio->handle, (long)off, whence);
 	return fio->io->tell_proc(fio->handle);
 }
 
@@ -192,23 +185,11 @@ Open a TIFF file descriptor for reading or writing
 TIFF *
 TIFFFdOpen(thandle_t handle, const char *name, const char *mode) {
 	TIFF *tif;
-
-    // Set up the callback for extended TIFF directory tag support
-	// (see XTIFF.cpp)
-    XTIFFInitialize();	
 	
 	// Open the file; the callback will set everything up
 	tif = TIFFClientOpen(name, mode, handle,
 	    _tiffReadProc, _tiffWriteProc, _tiffSeekProc, _tiffCloseProc,
 	    _tiffSizeProc, _tiffMapProc, _tiffUnmapProc);
-
-	// Warning: tif_fd is declared as 'int' currently (see libTIFF), 
-    // may result in incorrect file pointers inside libTIFF on 
-    // 64bit machines (sizeof(int) != sizeof(long)). 
-    // Needs to be fixed within libTIFF.
-	if (tif) {
-		tif->tif_fd = (long)handle;
-	}
 
 	return tif;
 }
@@ -746,13 +727,20 @@ WriteCompression(TIFF *tiff, uint16 bitspersample, uint16 samplesperpixel, uint1
 			TIFFSetField(tiff, TIFFTAG_PREDICTOR, 1);
 		}
 	}
-	else if(compression == COMPRESSION_CCITTFAX3) {
-		// try to be compliant with the TIFF Class F specification
-		// that documents the TIFF tags specific to FAX applications
-		// see http://palimpsest.stanford.edu/bytopic/imaging/std/tiff-f.html
-		uint32 group3options = GROUP3OPT_2DENCODING | GROUP3OPT_FILLBITS;	
-		TIFFSetField(tiff, TIFFTAG_GROUP3OPTIONS, group3options);	// 2d-encoded, has aligned EOL
-		TIFFSetField(tiff, TIFFTAG_FILLORDER, FILLORDER_LSB2MSB);	// lsb-to-msb fillorder
+	else if((compression == COMPRESSION_CCITTFAX3) || (compression == COMPRESSION_CCITTFAX4)) {
+		uint32 imageLength = 0;
+		TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &imageLength);
+		// overwrite previous RowsPerStrip
+		TIFFSetField(tiff, TIFFTAG_ROWSPERSTRIP, imageLength);
+
+		if(compression == COMPRESSION_CCITTFAX3) {
+			// try to be compliant with the TIFF Class F specification
+			// that documents the TIFF tags specific to FAX applications
+			// see http://palimpsest.stanford.edu/bytopic/imaging/std/tiff-f.html
+			uint32 group3options = GROUP3OPT_2DENCODING | GROUP3OPT_FILLBITS;	
+			TIFFSetField(tiff, TIFFTAG_GROUP3OPTIONS, group3options);	// 2d-encoded, has aligned EOL
+			TIFFSetField(tiff, TIFFTAG_FILLORDER, FILLORDER_LSB2MSB);	// lsb-to-msb fillorder
+		}
 	}
 }
 
@@ -929,7 +917,6 @@ tiff_write_xmp_profile(TIFF *tiff, FIBITMAP *dib) {
 static BOOL
 tiff_write_exif_profile(TIFF *tiff, FIBITMAP *dib) {
 	BOOL bResult = FALSE;
-	uint32 exif_offset = 0;
 	
 	// write EXIF_MAIN tags, EXIF_EXIF not supported yet
 	bResult = tiff_write_exif_tags(tiff, TagLib::EXIF_MAIN, dib);
@@ -986,16 +973,21 @@ MimeType() {
 
 static BOOL DLL_CALLCONV
 Validate(FreeImageIO *io, fi_handle handle) {	
-	BYTE tiff_id1[] = { 0x49, 0x49, 0x2A, 0x00 };
-	BYTE tiff_id2[] = { 0x4D, 0x4D, 0x00, 0x2A };
+	BYTE tiff_id1[] = { 0x49, 0x49, 0x2A, 0x00 };	// Classic TIFF, little-endian
+	BYTE tiff_id2[] = { 0x4D, 0x4D, 0x00, 0x2A };	// Classic TIFF, big-endian
+	BYTE tiff_id3[] = { 0x49, 0x49, 0x2B, 0x00 };	// Big TIFF, little-endian
+	BYTE tiff_id4[] = { 0x4D, 0x4D, 0x00, 0x2B };	// Big TIFF, big-endian
 	BYTE signature[4] = { 0, 0, 0, 0 };
 
 	io->read_proc(signature, 1, 4, handle);
 
 	if(memcmp(tiff_id1, signature, 4) == 0)
 		return TRUE;
-
 	if(memcmp(tiff_id2, signature, 4) == 0)
+		return TRUE;
+	if(memcmp(tiff_id3, signature, 4) == 0)
+		return TRUE;
+	if(memcmp(tiff_id4, signature, 4) == 0)
 		return TRUE;
 
 	return FALSE;
@@ -1053,6 +1045,8 @@ Open(FreeImageIO *io, fi_handle handle, BOOL read) {
 	if (read) {
 		fio->tif = TIFFFdOpen((thandle_t)fio, "", "r");
 	} else {
+		// mode = "w"	: write Classic TIFF
+		// mode = "w8"	: write Big TIFF
 		fio->tif = TIFFFdOpen((thandle_t)fio, "", "w");
 	}
 	if(fio->tif == NULL) {
@@ -1097,11 +1091,10 @@ PageCount(FreeImageIO *io, fi_handle handle, void *data) {
 check for uncommon bitspersample values (e.g. 10, 12, ...)
 @param photometric TIFFTAG_PHOTOMETRIC tiff tag
 @param bitspersample TIFFTAG_BITSPERSAMPLE tiff tag
-@param samplesperpixel TIFFTAG_SAMPLESPERPIXEL tiff tag
 @return Returns FALSE if a uncommon bit-depth is encountered, returns TRUE otherwise
 */
 static BOOL 
-IsValidBitsPerSample(uint16 photometric, uint16 bitspersample, uint16 samplesperpixel) {
+IsValidBitsPerSample(uint16 photometric, uint16 bitspersample) {
 
 	switch(bitspersample) {
 		case 1:
@@ -1122,7 +1115,12 @@ IsValidBitsPerSample(uint16 photometric, uint16 bitspersample, uint16 samplesper
 			}
 			break;
 		case 32:
-			return TRUE;
+			if((photometric == PHOTOMETRIC_MINISWHITE) || (photometric == PHOTOMETRIC_MINISBLACK) || (photometric == PHOTOMETRIC_LOGLUV)) { 
+				return TRUE;
+			} else {
+				return FALSE;
+			}
+			break;
 		case 64:
 		case 128:
 			if(photometric == PHOTOMETRIC_MINISBLACK) { 
@@ -1367,7 +1365,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 		// check for unsupported formats
 		// ---------------------------------------------------------------------------------
 
-		if(IsValidBitsPerSample(photometric, bitspersample, samplesperpixel) == FALSE) {
+		if(IsValidBitsPerSample(photometric, bitspersample) == FALSE) {
 			FreeImage_OutputMessageProc(s_format_id, 
 				"Unable to handle this format: bitspersample = %d, samplesperpixel = %d, photometric = %d", 
 				(int)bitspersample, (int)samplesperpixel, (int)photometric);
@@ -1882,6 +1880,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 				if(buf == NULL) {
 					throw FI_MSG_ERROR_MEMORY;
 				}
+				memset(buf, 0, TIFFStripSize(tif) * sizeof(BYTE));
 				
 				BOOL bThrowMessage = FALSE;
 				
@@ -2019,8 +2018,8 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 
 				// calculate src line and dst pitch
 				int dst_pitch = FreeImage_GetPitch(dib);
-				int tileRowSize = TIFFTileRowSize(tif);
-				int imageRowSize = TIFFScanlineSize(tif);
+				uint32 tileRowSize = (uint32)TIFFTileRowSize(tif);
+				uint32 imageRowSize = (uint32)TIFFScanlineSize(tif);
 
 
 				// In the tiff file the lines are saved from up to down 
@@ -2028,11 +2027,10 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 
 				BYTE *bits = FreeImage_GetScanLine(dib, height - 1);
 				
-				uint32 x, y, rowSize;
-				for (y = 0; y < height; y += tileHeight) {						
+				for (uint32 y = 0; y < height; y += tileHeight) {						
 					int32 nrows = (y + tileHeight > height ? height - y : tileHeight);					
 
-					for (x = 0, rowSize = 0; x < width; x += tileWidth, rowSize += tileRowSize) {
+					for (uint32 x = 0, rowSize = 0; x < width; x += tileWidth, rowSize += tileRowSize) {
 						memset(tileBuffer, 0, tileSize);
 
 						// read one tile
@@ -2609,6 +2607,10 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 void DLL_CALLCONV
 InitTIFF(Plugin *plugin, int format_id) {
 	s_format_id = format_id;
+
+    // Set up the callback for extended TIFF directory tag support (see XTIFF.cpp)
+	// Must be called before using libtiff
+    XTIFFInitialize();	
 
 	plugin->format_proc = Format;
 	plugin->description_proc = Description;

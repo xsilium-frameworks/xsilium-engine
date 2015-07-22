@@ -1,4 +1,4 @@
-/* $Id: tif_vms.c,v 1.2 2012/02/25 17:48:20 drolon Exp $ */
+/* $Id: tif_vms.c,v 1.11 2015/02/19 22:39:59 drolon Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -264,6 +264,9 @@ TIFFOpen(const char* name, const char* mode)
 tdata_t
 _TIFFmalloc(tsize_t s)
 {
+        if (s == 0)
+                return ((void *) NULL);
+
 	return (malloc((size_t) s));
 }
 
