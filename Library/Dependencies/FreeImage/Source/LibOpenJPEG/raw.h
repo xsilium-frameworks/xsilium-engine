@@ -45,19 +45,19 @@ RAW encoding operations
 */
 typedef struct opj_raw {
 	/** temporary buffer where bits are coded or decoded */
-	OPJ_BYTE c;
+	unsigned char c;
 	/** number of bits already read or free to write */
-	OPJ_UINT32 ct;
+	unsigned int ct;
 	/** maximum length to decode */
-	OPJ_UINT32 lenmax;
+	unsigned int lenmax;
 	/** length decoded */
-	OPJ_UINT32 len;
+	unsigned int len;
 	/** pointer to the current position in the buffer */
-	OPJ_BYTE *bp;
+	unsigned char *bp;
 	/** pointer to the start of the buffer */
-	OPJ_BYTE *start;
+	unsigned char *start;
 	/** pointer to the end of the buffer */
-	OPJ_BYTE *end;
+	unsigned char *end;
 } opj_raw_t;
 
 /** @name Exported functions */
@@ -67,31 +67,31 @@ typedef struct opj_raw {
 Create a new RAW handle 
 @return Returns a new RAW handle if successful, returns NULL otherwise
 */
-opj_raw_t* opj_raw_create(void);
+opj_raw_t* raw_create(void);
 /**
 Destroy a previously created RAW handle
 @param raw RAW handle to destroy
 */
-void opj_raw_destroy(opj_raw_t *raw);
+void raw_destroy(opj_raw_t *raw);
 /**
 Return the number of bytes written/read since initialisation
 @param raw RAW handle to destroy
 @return Returns the number of bytes already encoded
 */
-OPJ_UINT32 opj_raw_numbytes(opj_raw_t *raw);
+int raw_numbytes(opj_raw_t *raw);
 /**
 Initialize the decoder
 @param raw RAW handle
 @param bp Pointer to the start of the buffer from which the bytes will be read
 @param len Length of the input buffer
 */
-void opj_raw_init_dec(opj_raw_t *raw, OPJ_BYTE *bp, OPJ_UINT32 len);
+void raw_init_dec(opj_raw_t *raw, unsigned char *bp, int len);
 /**
 Decode a symbol using raw-decoder. Cfr p.506 TAUBMAN
 @param raw RAW handle
 @return Returns the decoded symbol (0 or 1)
 */
-OPJ_UINT32 opj_raw_decode(opj_raw_t *raw);
+int raw_decode(opj_raw_t *raw);
 /* ----------------------------------------------------------------------- */
 /*@}*/
 

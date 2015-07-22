@@ -114,12 +114,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfRgba.h"
-#include "ImfChromaticities.h"
-#include "ImfNamespace.h"
+#include <ImfRgba.h>
+#include <ImfChromaticities.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
-
+namespace Imf {
 namespace RgbaYca {
 
 
@@ -134,10 +132,9 @@ static const int N2 = N / 2;
 //
 // Convert a set of primary chromaticities into a set of weighting
 // factors for computing a pixels's luminance, Y, from R, G and B
-//
- 
-IMF_EXPORT
-IMATH_NAMESPACE::V3f computeYw (const Chromaticities &cr);
+// 
+
+Imath::V3f computeYw (const Chromaticities &cr);
 
 
 //
@@ -151,8 +148,7 @@ IMATH_NAMESPACE::V3f computeYw (const Chromaticities &cr);
 // yw is a set of RGB-to-Y weighting factors, as computed by computeYw().
 //
 
-IMF_EXPORT
-void RGBAtoYCA (const IMATH_NAMESPACE::V3f &yw,
+void RGBAtoYCA (const Imath::V3f &yw,
 		int n,
 	        bool aIsValid,
 		const Rgba rgbaIn[/*n*/],
@@ -168,7 +164,6 @@ void RGBAtoYCA (const IMATH_NAMESPACE::V3f &yw,
 // "real" input pixel.
 //
 
-IMF_EXPORT
 void decimateChromaHoriz (int n,
 			  const Rgba ycaIn[/*n+N-1*/],
 			  Rgba ycaOut[/*n*/]);
@@ -179,7 +174,6 @@ void decimateChromaHoriz (int n,
 // of output pixels.
 //
 
-IMF_EXPORT
 void decimateChromaVert (int n,
 			 const Rgba * const ycaIn[N],
 			 Rgba ycaOut[/*n*/]);
@@ -191,7 +185,6 @@ void decimateChromaVert (int n,
 // are rounded to roundY and roundC bits respectively.
 //
 
-IMF_EXPORT
 void roundYCA (int n,
 	       unsigned int roundY,
 	       unsigned int roundC,
@@ -203,7 +196,6 @@ void roundYCA (int n,
 // reconstruct the missing chroma values.
 //
 
-IMF_EXPORT
 void reconstructChromaHoriz (int n,
 			     const Rgba ycaIn[/*n+N-1*/],
 			     Rgba ycaOut[/*n*/]);
@@ -213,7 +205,6 @@ void reconstructChromaHoriz (int n,
 // reconstruct chroma from the surronding N scan lines.
 //
 
-IMF_EXPORT
 void reconstructChromaVert (int n,
 			    const Rgba * const ycaIn[N],
 			    Rgba ycaOut[/*n*/]);
@@ -224,8 +215,7 @@ void reconstructChromaVert (int n,
 // yw is a set of RGB-to-Y weighting factors, as computed by computeYw().
 //
 
-IMF_EXPORT
-void YCAtoRGBA (const IMATH_NAMESPACE::V3f &yw,
+void YCAtoRGBA (const Imath::V3f &yw,
 		int n,
 		const Rgba ycaIn[/*n*/],
 		Rgba rgbaOut[/*n*/]);
@@ -247,13 +237,12 @@ void YCAtoRGBA (const IMATH_NAMESPACE::V3f &yw,
 // saturation of rgbaIn[1], and stores the result in rgbaOut.
 //
 
-IMF_EXPORT
-void fixSaturation (const IMATH_NAMESPACE::V3f &yw,
+void fixSaturation (const Imath::V3f &yw,
 		    int n,
 		    const Rgba * const rgbaIn[3],
 		    Rgba rgbaOut[/*n*/]);
 
 } // namespace RgbaYca
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

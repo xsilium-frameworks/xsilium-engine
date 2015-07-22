@@ -41,9 +41,8 @@
 
 #include <ImfKeyCode.h>
 #include "Iex.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
    
 KeyCode::KeyCode (int filmMfcCode,
@@ -102,7 +101,7 @@ void
 KeyCode::setFilmMfcCode (int filmMfcCode)
 {
     if (filmMfcCode < 0 || filmMfcCode > 99)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code film manufacturer code "
+	throw Iex::ArgExc ("Invalid key code film manufacturer code "
 			   "(must be between 0 and 99).");
 
     _filmMfcCode = filmMfcCode;
@@ -119,7 +118,7 @@ void
 KeyCode::setFilmType (int filmType)
 {
     if (filmType < 0 || filmType > 99)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code film type "
+	throw Iex::ArgExc ("Invalid key code film type "
 			   "(must be between 0 and 99).");
 
     _filmType = filmType;
@@ -136,7 +135,7 @@ void
 KeyCode::setPrefix (int prefix)
 {
     if (prefix < 0 || prefix > 999999)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code prefix "
+	throw Iex::ArgExc ("Invalid key code prefix "
 			   "(must be between 0 and 999999).");
 
     _prefix = prefix;
@@ -154,7 +153,7 @@ void
 KeyCode::setCount (int count)
 {
     if (count < 0 || count > 9999)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code count "
+	throw Iex::ArgExc ("Invalid key code count "
 			   "(must be between 0 and 9999).");
 
     _count = count;
@@ -172,7 +171,7 @@ void
 KeyCode::setPerfOffset (int perfOffset)
 {
     if (perfOffset < 0 || perfOffset > 119)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code perforation offset "
+	throw Iex::ArgExc ("Invalid key code perforation offset "
 			   "(must be between 0 and 119).");
 
     _perfOffset = perfOffset;
@@ -190,7 +189,7 @@ void
 KeyCode::setPerfsPerFrame (int perfsPerFrame)
 {
     if (perfsPerFrame < 1 || perfsPerFrame > 15)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code number of perforations per frame "
+	throw Iex::ArgExc ("Invalid key code number of perforations per frame "
 			   "(must be between 1 and 15).");
 
     _perfsPerFrame = perfsPerFrame;
@@ -208,10 +207,10 @@ void
 KeyCode::setPerfsPerCount (int perfsPerCount)
 {
     if (perfsPerCount < 20 || perfsPerCount > 120)
-	throw IEX_NAMESPACE::ArgExc ("Invalid key code number of perforations per count "
+	throw Iex::ArgExc ("Invalid key code number of perforations per count "
 			   "(must be between 20 and 120).");
 
     _perfsPerCount = perfsPerCount;
 }
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

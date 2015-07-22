@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -74,9 +74,8 @@
 #include "ImathLine.h"
 #include "ImathVecAlgo.h"
 #include "ImathFun.h"
-#include "ImathNamespace.h"
 
-IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imath {
 
 
 template <class T>
@@ -283,6 +282,6 @@ rotatePoint (const Vec3<T> p, Line3<T> l, T angle)
 }
 
 
-IMATH_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imath
 
-#endif // INCLUDED_IMATHLINEALGO_H
+#endif

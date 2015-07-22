@@ -22,13 +22,19 @@
 #include "FreeImage.h"
 #include "Utilities.h"
 #include "../LibOpenJPEG/openjpeg.h"
-#include "J2KHelper.h"
 
 // ==========================================================
 // Plugin Interface
 // ==========================================================
 
 static int s_format_id;
+
+// ==========================================================
+// Helper functions (see J2KHelper.cpp)
+// ==========================================================
+
+FIBITMAP* J2KImageToFIBITMAP(int format_id, const opj_image_t *image);
+opj_image_t* FIBITMAPToJ2KImage(int format_id, FIBITMAP *dib, const opj_cparameters_t *parameters);
 
 // ==========================================================
 // Internal functions
@@ -111,27 +117,27 @@ SupportsExportType(FREE_IMAGE_TYPE type) {
 
 static void * DLL_CALLCONV
 Open(FreeImageIO *io, fi_handle handle, BOOL read) {
-	// create the stream wrapper
-	J2KFIO_t *fio = opj_freeimage_stream_create(io, handle, read);
-	return fio;
+	return NULL;
 }
 
 static void DLL_CALLCONV
 Close(FreeImageIO *io, fi_handle handle, void *data) {
-	// destroy the stream wrapper
-	J2KFIO_t *fio = (J2KFIO_t*)data;
-	opj_freeimage_stream_destroy(fio);
 }
 
 // ----------------------------------------------------------
 
 static FIBITMAP * DLL_CALLCONV
 Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
-	J2KFIO_t *fio = (J2KFIO_t*)data;
-	if (handle && fio) {
-		opj_codec_t *d_codec = NULL;	// handle to a decompressor
-		opj_dparameters_t parameters;	// decompression parameters
+	if (handle) {
+		opj_dparameters_t parameters;	// decompression parameters 
+		opj_event_mgr_t event_mgr;		// event manager 
 		opj_image_t *image = NULL;		// decoded image 
+
+		BYTE *src = NULL; 
+		long file_length;
+
+		opj_dinfo_t* dinfo = NULL;	// handle to a decompressor 
+		opj_cio_t *cio = NULL;
 
 		FIBITMAP *dib = NULL;
 
@@ -140,64 +146,64 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 			return NULL;
 		}
 
-		BOOL header_only = (flags & FIF_LOAD_NOPIXELS) == FIF_LOAD_NOPIXELS;
-
-		// get the OpenJPEG stream
-		opj_stream_t *d_stream = fio->stream;
+		// configure the event callbacks
+		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+		event_mgr.error_handler = j2k_error_callback;
+		event_mgr.warning_handler = j2k_warning_callback;
+		event_mgr.info_handler = NULL;
 
 		// set decoding parameters to default values 
 		opj_set_default_decoder_parameters(&parameters);
 
 		try {
+			// read the input file and put it in memory
+
+			long start_pos = io->tell_proc(handle);
+			io->seek_proc(handle, 0, SEEK_END);
+			file_length = io->tell_proc(handle) - start_pos;
+			io->seek_proc(handle, start_pos, SEEK_SET);
+			src = (BYTE*)malloc(file_length * sizeof(BYTE));
+			if(!src) {
+				throw FI_MSG_ERROR_MEMORY;
+			}
+			if(io->read_proc(src, 1, file_length, handle) < 1) {
+				throw "Error while reading input stream";
+			}
+
 			// decode the JPEG-2000 codestream
 
-			// get a decoder handle
-			d_codec = opj_create_decompress(OPJ_CODEC_J2K);
+			// get a decoder handle 
+			dinfo = opj_create_decompress(CODEC_J2K);
 			
-			// configure the event callbacks
-			// catch events using our callbacks (no local context needed here)
-			opj_set_info_handler(d_codec, NULL, NULL);
-			opj_set_warning_handler(d_codec, j2k_warning_callback, NULL);
-			opj_set_error_handler(d_codec, j2k_error_callback, NULL);
+			// catch events using our callbacks
+			opj_set_event_mgr((opj_common_ptr)dinfo, &event_mgr, NULL);			
 
-			// setup the decoder decoding parameters using user parameters
-			if( !opj_setup_decoder(d_codec, &parameters) ) {
-				throw "Failed to setup the decoder\n";
-			}
-			
-			// read the main header of the codestream and if necessary the JP2 boxes
-			if( !opj_read_header(d_stream, d_codec, &image)) {
-				throw "Failed to read the header\n";
-			}
+			// setup the decoder decoding parameters using user parameters 
+			opj_setup_decoder(dinfo, &parameters);
 
-			// --- header only mode
-
-			if (header_only) {
-				// create output image 
-				dib = J2KImageToFIBITMAP(s_format_id, image, header_only);
-				if(!dib) {
-					throw "Failed to import JPEG2000 image";
-				}
-				// clean-up and return header data
-				opj_destroy_codec(d_codec);
-				opj_image_destroy(image);
-				return dib;
-			}
+			// open a byte stream 
+			cio = opj_cio_open((opj_common_ptr)dinfo, src, file_length);
 
 			// decode the stream and fill the image structure 
-			if( !( opj_decode(d_codec, d_stream, image) && opj_end_decompress(d_codec, d_stream) ) ) {
+			image = opj_decode(dinfo, cio);
+			if(!image) {
 				throw "Failed to decode image!\n";
 			}
+			
+			// close the byte stream 
+			opj_cio_close(cio);
+			cio = NULL;
+
+			// free the memory containing the code-stream 
+			free(src);
+			src = NULL;
 
 			// free the codec context
-			opj_destroy_codec(d_codec);
-			d_codec = NULL;
+			opj_destroy_decompress(dinfo);
 
 			// create output image 
-			dib = J2KImageToFIBITMAP(s_format_id, image, header_only);
-			if(!dib) {
-				throw "Failed to import JPEG2000 image";
-			}
+			dib = J2KImageToFIBITMAP(s_format_id, image);
+			if(!dib) throw "Failed to import JPEG2000 image";
 
 			// free image data structure
 			opj_image_destroy(image);
@@ -205,12 +211,13 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 			return dib;
 
 		} catch (const char *text) {
-			if(dib) {
-				FreeImage_Unload(dib);
-			}
+			if(src) free(src);
+			if(dib) FreeImage_Unload(dib);
 			// free remaining structures
-			opj_destroy_codec(d_codec);
+			opj_destroy_decompress(dinfo);
 			opj_image_destroy(image);
+			// close the byte stream
+			if(cio) opj_cio_close(cio);
 
 			FreeImage_OutputMessageProc(s_format_id, text);
 
@@ -223,36 +230,38 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 
 static BOOL DLL_CALLCONV
 Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void *data) {
-	J2KFIO_t *fio = (J2KFIO_t*)data;
-	if (dib && handle && fio) {
+	if ((dib) && (handle)) {
 		BOOL bSuccess;
-		opj_codec_t *c_codec = NULL;	// handle to a compressor
-		opj_cparameters_t parameters;	// compression parameters
-		opj_image_t *image = NULL;		// image to encode
+		opj_cparameters_t parameters;		// compression parameters 
+		opj_event_mgr_t event_mgr;			// event manager 
+		opj_image_t *image = NULL;			// image to encode
+		opj_cinfo_t* cinfo = NULL;			// codec context
+		opj_cio_t *cio = NULL;				// memory byte stream
 
-		// get the OpenJPEG stream
-		opj_stream_t *c_stream = fio->stream;
+		// configure the event callbacks
+		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+		event_mgr.error_handler = j2k_error_callback;
+		event_mgr.warning_handler = j2k_warning_callback;
+		event_mgr.info_handler = NULL;
 
 		// set encoding parameters to default values
 		opj_set_default_encoder_parameters(&parameters);
 
-		try {
-			parameters.tcp_numlayers = 0;
-			// if no rate entered, apply a 16:1 rate by default
-			if(flags == J2K_DEFAULT) {
-				parameters.tcp_rates[0] = (float)16;
-			} else {
-				// for now, the flags parameter is only used to specify the rate
-				parameters.tcp_rates[0] = (float)(flags & 0x3FF);
-			}
-			parameters.tcp_numlayers++;
-			parameters.cp_disto_alloc = 1;
+		parameters.tcp_numlayers = 0;
+		// if no rate entered, apply a 16:1 rate by default
+		if(flags == J2K_DEFAULT) {
+			parameters.tcp_rates[0] = (float)16;
+		} else {
+			// for now, the flags parameter is only used to specify the rate
+			parameters.tcp_rates[0] = (float)flags;
+		}
+		parameters.tcp_numlayers++;
+		parameters.cp_disto_alloc = 1;
 
+		try {
 			// convert the dib to a OpenJPEG image
 			image = FIBITMAPToJ2KImage(s_format_id, dib, &parameters);
-			if(!image) {
-				return FALSE;
-			}
+			if(!image) return FALSE;
 
 			// decide if MCT should be used
 			parameters.tcp_mct = (image->numcomps == 3) ? 1 : 0;
@@ -260,31 +269,32 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 			// encode the destination image
 
 			// get a J2K compressor handle
-			c_codec = opj_create_compress(OPJ_CODEC_J2K);
+			cinfo = opj_create_compress(CODEC_J2K);
 
-			// configure the event callbacks
-			// catch events using our callbacks (no local context needed here)
-			opj_set_info_handler(c_codec, NULL, NULL);
-			opj_set_warning_handler(c_codec, j2k_warning_callback, NULL);
-			opj_set_error_handler(c_codec, j2k_error_callback, NULL);
+			// catch events using our callbacks
+			opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, NULL);			
 
 			// setup the encoder parameters using the current image and using user parameters
-			opj_setup_encoder(c_codec, &parameters, image);
+			opj_setup_encoder(cinfo, &parameters, image);
+
+			// open a byte stream for writing, allocate memory for all tiles
+			cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
 
 			// encode the image
-			bSuccess = opj_start_compress(c_codec, image, c_stream);
-			if(bSuccess) {
-				bSuccess = bSuccess && opj_encode(c_codec, c_stream);
-				if(bSuccess) {
-					bSuccess = bSuccess && opj_end_compress(c_codec, c_stream);
-				}
-			}
+			bSuccess = opj_encode(cinfo, cio, image, NULL/*parameters.index*/);
 			if (!bSuccess) {
 				throw "Failed to encode image";
 			}
+			int codestream_length = cio_tell(cio);
+
+			// write the buffer to user's IO handle
+			io->write_proc(cio->buffer, 1, codestream_length, handle);
+
+			// close and free the byte stream 
+			opj_cio_close(cio);
 
 			// free remaining compression structures
-			opj_destroy_codec(c_codec);
+			opj_destroy_compress(cinfo);
 			
 			// free image data
 			opj_image_destroy(image);
@@ -292,7 +302,8 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 			return TRUE;
 
 		} catch (const char *text) {
-			if(c_codec) opj_destroy_codec(c_codec);
+			if(cio) opj_cio_close(cio);
+			if(cinfo) opj_destroy_compress(cinfo);
 			if(image) opj_image_destroy(image);
 			FreeImage_OutputMessageProc(s_format_id, text);
 			return FALSE;

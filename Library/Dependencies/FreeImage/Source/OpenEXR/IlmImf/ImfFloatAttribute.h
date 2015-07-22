@@ -43,16 +43,21 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
+#include <ImfAttribute.h>
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
 typedef TypedAttribute<float> FloatAttribute;
-template <> IMF_EXPORT const char *FloatAttribute::staticTypeName ();
+template <> const char *FloatAttribute::staticTypeName ();
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfFloatAttribute.cpp>
+#endif
 
 #endif

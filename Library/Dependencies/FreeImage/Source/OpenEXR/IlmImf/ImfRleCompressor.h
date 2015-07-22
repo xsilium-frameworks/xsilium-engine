@@ -43,13 +43,12 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfCompressor.h"
-#include "ImfNamespace.h"
+#include <ImfCompressor.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
-class IMF_EXPORT RleCompressor: public Compressor
+class RleCompressor: public Compressor
 {
   public:
 
@@ -75,6 +74,6 @@ class IMF_EXPORT RleCompressor: public Compressor
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

@@ -40,19 +40,17 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfCompressor.h"
-#include "ImfRleCompressor.h"
-#include "ImfZipCompressor.h"
-#include "ImfPizCompressor.h"
-#include "ImfPxr24Compressor.h"
-#include "ImfB44Compressor.h"
-#include "ImfDwaCompressor.h"
-#include "ImfCheckedArithmetic.h"
-#include "ImfNamespace.h"
+#include <ImfCompressor.h>
+#include <ImfRleCompressor.h>
+#include <ImfZipCompressor.h>
+#include <ImfPizCompressor.h>
+#include <ImfPxr24Compressor.h>
+#include <ImfB44Compressor.h>
+#include <ImfCheckedArithmetic.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
-using IMATH_NAMESPACE::Box2i;
+using Imath::Box2i;
 
 
 Compressor::Compressor (const Header &hdr): _header (hdr) {}
@@ -101,8 +99,6 @@ isValidCompression (Compression c)
       case PXR24_COMPRESSION:
       case B44_COMPRESSION:
       case B44A_COMPRESSION:
-      case DWAA_COMPRESSION:
-      case DWAB_COMPRESSION:
 
 	return true;
 
@@ -110,19 +106,6 @@ isValidCompression (Compression c)
 
 	return false;
     }
-}
-
-bool isValidDeepCompression(Compression c)
-{
-  switch(c)
-  {
-      case NO_COMPRESSION:
-      case RLE_COMPRESSION:
-      case ZIPS_COMPRESSION:
-          return true;
-      default :
-          return false;
-  }
 }
 
 
@@ -158,16 +141,6 @@ newCompressor (Compression c, size_t maxScanLineSize, const Header &hdr)
       case B44A_COMPRESSION:
 
 	return new B44Compressor (hdr, maxScanLineSize, 32, true);
-
-      case DWAA_COMPRESSION:
-
-	return new DwaCompressor (hdr, maxScanLineSize, 32, 
-                               DwaCompressor::STATIC_HUFFMAN);
-
-      case DWAB_COMPRESSION:
-
-	return new DwaCompressor (hdr, maxScanLineSize, 256, 
-                               DwaCompressor::STATIC_HUFFMAN);
 
       default:
 
@@ -209,12 +182,6 @@ newTileCompressor (Compression c,
 
 	return new B44Compressor (hdr, tileLineSize, numTileLines, true);
 
-      case DWAA_COMPRESSION:
-      case DWAB_COMPRESSION:
-
-	return new DwaCompressor (hdr, tileLineSize, numTileLines, 
-                               DwaCompressor::DEFLATE);
-
       default:
 
 	return 0;
@@ -222,5 +189,4 @@ newTileCompressor (Compression c,
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
-
+} // namespace Imf

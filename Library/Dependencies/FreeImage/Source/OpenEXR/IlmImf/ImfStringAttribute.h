@@ -43,29 +43,24 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
+#include <ImfAttribute.h>
 #include <string>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+
+namespace Imf {
 
 
 typedef TypedAttribute<std::string> StringAttribute;
-
-template <>
-IMF_EXPORT
-const char *StringAttribute::staticTypeName ();
-
-template <>
-IMF_EXPORT
-void StringAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &,
-                                    int) const;
-
-template <>
-IMF_EXPORT
-void StringAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &,
-                                     int, int);
+template <> const char *StringAttribute::staticTypeName ();
+template <> void StringAttribute::writeValueTo (OStream &, int) const;
+template <> void StringAttribute::readValueFrom (IStream &, int, int);
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfStringAttribute.cpp>
+#endif
 
 #endif

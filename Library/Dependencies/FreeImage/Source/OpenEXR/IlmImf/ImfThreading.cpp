@@ -38,25 +38,23 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfThreading.h"
 #include "IlmThreadPool.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 
 int
 globalThreadCount ()
 {
-    return ILMTHREAD_NAMESPACE::ThreadPool::globalThreadPool().numThreads();
+    return IlmThread::ThreadPool::globalThreadPool().numThreads();
 }
 
 
 void
 setGlobalThreadCount (int count)
 {
-    ILMTHREAD_NAMESPACE::ThreadPool::globalThreadPool().setNumThreads (count);
+    IlmThread::ThreadPool::globalThreadPool().setNumThreads (count);
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

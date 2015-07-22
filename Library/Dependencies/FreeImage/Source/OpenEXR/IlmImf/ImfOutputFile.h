@@ -43,18 +43,17 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfHeader.h"
-#include "ImfFrameBuffer.h"
-#include "ImfThreading.h"
-#include "ImfGenericOutputFile.h"
-#include "ImfNamespace.h"
-#include "ImfForward.h"
-#include "ImfExport.h"
+#include <ImfHeader.h>
+#include <ImfFrameBuffer.h>
+#include <ImfThreading.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
+
+class InputFile;
+struct PreviewRgba;
 
 
-class IMF_EXPORT OutputFile : public GenericOutputFile
+class OutputFile
 {
   public:
 
@@ -85,7 +84,7 @@ class IMF_EXPORT OutputFile : public GenericOutputFile
     // used to write the file (see ImfThreading.h).
     //------------------------------------------------------------
 
-    OutputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, const Header &header,
+    OutputFile (OStream &os, const Header &header,
                 int numThreads = globalThreadCount());
 
 
@@ -184,14 +183,6 @@ class IMF_EXPORT OutputFile : public GenericOutputFile
     //--------------------------------------------------------------
 
     void		copyPixels (InputFile &in);
-    
-    //-------------------------------------------------------------
-    // Shortcut to copy all pixels from an InputPart into this file
-    // - equivalent to copyPixel(InputFile &in) but for multipart files
-    //---------------------------------------------------------------
-    
-    void                copyPixels (InputPart &in);
-        
 
 
     //--------------------------------------------------------------
@@ -200,7 +191,7 @@ class IMF_EXPORT OutputFile : public GenericOutputFile
     // updatePreviewImage() supplies a new set of pixels for the
     // preview image attribute in the file's header.  If the header
     // does not contain a preview image, updatePreviewImage() throws
-    // an IEX_NAMESPACE::LogicExc.
+    // an Iex::LogicExc.
     //
     // Note: updatePreviewImage() is necessary because images are
     // often stored in a file incrementally, a few scan lines at a
@@ -236,28 +227,15 @@ class IMF_EXPORT OutputFile : public GenericOutputFile
 
   private:
 
-    //------------------------------------------------------------
-    // Constructor -- attaches the OutputStreamMutex to the
-    // given one from MultiPartOutputFile. Set the previewPosition
-    // and lineOffsetsPosition which have been acquired from
-    // the constructor of MultiPartOutputFile as well.
-    //------------------------------------------------------------
-    OutputFile (const OutputPartData* part);
-
     OutputFile (const OutputFile &);			// not implemented
     OutputFile & operator = (const OutputFile &);	// not implemented
 
     void		initialize (const Header &header);
 
     Data *		_data;
-
-
-    friend class MultiPartOutputFile;
-    
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
+} // namespace Imf
 
 #endif

@@ -45,10 +45,8 @@
 #include <errno.h>
 
 using namespace std;
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
-
+namespace Imf {
 namespace {
 
 void
@@ -64,11 +62,11 @@ checkError (istream &is, streamsize expected = 0)
     if (!is)
     {
 	if (errno)
-	    IEX_NAMESPACE::throwErrnoExc();
+	    Iex::throwErrnoExc();
 
 	if (is.gcount() < expected) 
 	{
-		THROW (IEX_NAMESPACE::InputExc, "Early end of file: read " << is.gcount() 
+		THROW (Iex::InputExc, "Early end of file: read " << is.gcount() 
 			<< " out of " << expected << " requested bytes.");
 	}
 	return false;
@@ -84,9 +82,9 @@ checkError (ostream &os)
     if (!os)
     {
 	if (errno)
-	    IEX_NAMESPACE::throwErrnoExc();
+	    Iex::throwErrnoExc();
 
-	throw IEX_NAMESPACE::ErrnoExc ("File output failed.");
+	throw Iex::ErrnoExc ("File output failed.");
     }
 }
 
@@ -94,20 +92,20 @@ checkError (ostream &os)
 
 
 StdIFStream::StdIFStream (const char fileName[]):
-    OPENEXR_IMF_INTERNAL_NAMESPACE::IStream (fileName),
+    IStream (fileName),
     _is (new ifstream (fileName, ios_base::binary)),
     _deleteStream (true)
 {
     if (!*_is)
     {
 	delete _is;
-	IEX_NAMESPACE::throwErrnoExc();
+	Iex::throwErrnoExc();
     }
 }
 
     
 StdIFStream::StdIFStream (ifstream &is, const char fileName[]):
-    OPENEXR_IMF_INTERNAL_NAMESPACE::IStream (fileName),
+    IStream (fileName),
     _is (&is),
     _deleteStream (false)
 {
@@ -126,7 +124,7 @@ bool
 StdIFStream::read (char c[/*n*/], int n)
 {
     if (!*_is)
-        throw IEX_NAMESPACE::InputExc ("Unexpected end of file.");
+        throw Iex::InputExc ("Unexpected end of file.");
 
     clearError();
     _is->read (c, n);
@@ -157,20 +155,20 @@ StdIFStream::clear ()
 
 
 StdOFStream::StdOFStream (const char fileName[]):
-    OPENEXR_IMF_INTERNAL_NAMESPACE::OStream (fileName),
+    OStream (fileName),
     _os (new ofstream (fileName, ios_base::binary)),
     _deleteStream (true)
 {
     if (!*_os)
     {
 	delete _os;
-	IEX_NAMESPACE::throwErrnoExc();
+	Iex::throwErrnoExc();
     }
 }
 
 
 StdOFStream::StdOFStream (ofstream &os, const char fileName[]):
-    OPENEXR_IMF_INTERNAL_NAMESPACE::OStream (fileName),
+    OStream (fileName),
     _os (&os),
     _deleteStream (false)
 {
@@ -209,7 +207,7 @@ StdOFStream::seekp (Int64 pos)
 }
 
 
-StdOSStream::StdOSStream (): OPENEXR_IMF_INTERNAL_NAMESPACE::OStream ("(string)")
+StdOSStream::StdOSStream (): OStream ("(string)")
 {
     // empty
 }
@@ -239,4 +237,4 @@ StdOSStream::seekp (Int64 pos)
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

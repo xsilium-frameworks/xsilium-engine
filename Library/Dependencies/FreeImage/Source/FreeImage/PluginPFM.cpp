@@ -63,13 +63,11 @@ Get an integer value from the actual position pointed by handle
 static int
 pfm_get_int(FreeImageIO *io, fi_handle handle) {
     char c = 0;
-	BOOL bFirstChar;
+	BOOL firstchar;
 
     // skip forward to start of next number
 
-	if(!io->read_proc(&c, 1, 1, handle)) {
-		throw FI_MSG_ERROR_PARSING;
-	}
+    if(!io->read_proc(&c, 1, 1, handle)) throw FI_MSG_ERROR_PARSING;
 
     while (1) {
         // eat comments
@@ -77,16 +75,15 @@ pfm_get_int(FreeImageIO *io, fi_handle handle) {
         if (c == '#') {
 			// if we're at a comment, read to end of line
 
-            bFirstChar = TRUE;
+            firstchar = TRUE;
 
             while (1) {
-				if(!io->read_proc(&c, 1, 1, handle)) {
-					throw FI_MSG_ERROR_PARSING;
-				}
+				if(!io->read_proc(&c, 1, 1, handle)) throw FI_MSG_ERROR_PARSING;
 
-				if (bFirstChar && c == ' ') {
+				if (firstchar && c == ' ') {
 					// loop off 1 sp after #
-					bFirstChar = FALSE;
+
+					firstchar = FALSE;
 				} else if (c == '\n') {
 					break;
 				}
@@ -95,12 +92,11 @@ pfm_get_int(FreeImageIO *io, fi_handle handle) {
 
         if (c >= '0' && c <='9') {
 			// we've found what we were looking for
+
             break;
 		}
 
-		if(!io->read_proc(&c, 1, 1, handle)) {
-			throw FI_MSG_ERROR_PARSING;
-		}
+        if(!io->read_proc(&c, 1, 1, handle)) throw FI_MSG_ERROR_PARSING;
     }
 
     // we're at the start of a number, continue until we hit a non-number
@@ -110,13 +106,10 @@ pfm_get_int(FreeImageIO *io, fi_handle handle) {
     while (1) {
         i = (i * 10) + (c - '0');
 
-		if(!io->read_proc(&c, 1, 1, handle)) {
-			throw FI_MSG_ERROR_PARSING;
-		}
+        if(!io->read_proc(&c, 1, 1, handle)) throw FI_MSG_ERROR_PARSING;
 
-		if (c < '0' || c > '9') {
-			break;
-		}
+        if (c < '0' || c > '9')
+            break;
     }
 
     return i;

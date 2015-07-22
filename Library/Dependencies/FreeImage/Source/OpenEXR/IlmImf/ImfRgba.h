@@ -43,9 +43,8 @@
 //-----------------------------------------------------------------------------
 
 #include "half.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
 //
@@ -100,10 +99,6 @@ enum RgbaChannels
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
-
-
-
+} // namespace Imf
 
 #endif

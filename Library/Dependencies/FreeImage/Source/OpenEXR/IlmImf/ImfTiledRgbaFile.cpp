@@ -51,14 +51,13 @@
 #include "IlmThreadMutex.h"
 #include "Iex.h"
 
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 using namespace std;
-using namespace IMATH_NAMESPACE;
+using namespace Imath;
 using namespace RgbaYca;
-using namespace ILMTHREAD_NAMESPACE;
+using namespace IlmThread;
 
 namespace {
 
@@ -78,7 +77,7 @@ insertChannels (Header &header,
 
 	if (rgbaChannels & WRITE_C)
 	{
-	    THROW (IEX_NAMESPACE::ArgExc, "Cannot open file \"" << fileName << "\" "
+	    THROW (Iex::ArgExc, "Cannot open file \"" << fileName << "\" "
 				"for writing.  Tiled image files do not "
 				"support subsampled chroma channels.");
 	}
@@ -214,7 +213,7 @@ TiledRgbaOutputFile::ToYa::writeTile (int dx, int dy, int lx, int ly)
 {
     if (_fbBase == 0)
     {
-	THROW (IEX_NAMESPACE::ArgExc, "No frame buffer was specified as the "
+	THROW (Iex::ArgExc, "No frame buffer was specified as the "
 			    "pixel data source for image file "
 			    "\"" << _outputFile.fileName() << "\".");
     }
@@ -281,7 +280,7 @@ TiledRgbaOutputFile::TiledRgbaOutputFile
 
 
 TiledRgbaOutputFile::TiledRgbaOutputFile
-    (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    (OStream &os,
      const Header &header,
      RgbaChannels rgbaChannels,
      int tileXSize,
@@ -310,11 +309,11 @@ TiledRgbaOutputFile::TiledRgbaOutputFile
      int tileYSize,
      LevelMode mode,
      LevelRoundingMode rmode,
-     const IMATH_NAMESPACE::Box2i &displayWindow,
-     const IMATH_NAMESPACE::Box2i &dataWindow,
+     const Imath::Box2i &displayWindow,
+     const Imath::Box2i &dataWindow,
      RgbaChannels rgbaChannels,
      float pixelAspectRatio,
-     const IMATH_NAMESPACE::V2f screenWindowCenter,
+     const Imath::V2f screenWindowCenter,
      float screenWindowWidth,
      LineOrder lineOrder,
      Compression compression,
@@ -350,7 +349,7 @@ TiledRgbaOutputFile::TiledRgbaOutputFile
      LevelRoundingMode rmode,
      RgbaChannels rgbaChannels,
      float pixelAspectRatio,
-     const IMATH_NAMESPACE::V2f screenWindowCenter,
+     const Imath::V2f screenWindowCenter,
      float screenWindowWidth,
      LineOrder lineOrder,
      Compression compression,
@@ -424,14 +423,14 @@ TiledRgbaOutputFile::frameBuffer () const
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 TiledRgbaOutputFile::displayWindow () const
 {
     return _outputFile->header().displayWindow();
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 TiledRgbaOutputFile::dataWindow () const
 {
     return _outputFile->header().dataWindow();
@@ -445,7 +444,7 @@ TiledRgbaOutputFile::pixelAspectRatio () const
 }
 
 
-const IMATH_NAMESPACE::V2f
+const Imath::V2f
 TiledRgbaOutputFile::screenWindowCenter () const
 {
     return _outputFile->header().screenWindowCenter();
@@ -564,28 +563,28 @@ TiledRgbaOutputFile::numYTiles (int ly) const
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaOutputFile::dataWindowForLevel (int l) const
 {
      return _outputFile->dataWindowForLevel (l);
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaOutputFile::dataWindowForLevel (int lx, int ly) const
 {
      return _outputFile->dataWindowForLevel (lx, ly);
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaOutputFile::dataWindowForTile (int dx, int dy, int l) const
 {
      return _outputFile->dataWindowForTile (dx, dy, l);
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaOutputFile::dataWindowForTile (int dx, int dy, int lx, int ly) const
 {
      return _outputFile->dataWindowForTile (dx, dy, lx, ly);
@@ -732,7 +731,7 @@ TiledRgbaInputFile::FromYa::readTile (int dx, int dy, int lx, int ly)
 {
     if (_fbBase == 0)
     {
-	THROW (IEX_NAMESPACE::ArgExc, "No frame buffer was specified as the "
+	THROW (Iex::ArgExc, "No frame buffer was specified as the "
 			    "pixel data destination for image file "
 			    "\"" << _inputFile.fileName() << "\".");
     }
@@ -779,7 +778,7 @@ TiledRgbaInputFile::TiledRgbaInputFile (const char name[], int numThreads):
 }
 
 
-TiledRgbaInputFile::TiledRgbaInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int numThreads):
+TiledRgbaInputFile::TiledRgbaInputFile (IStream &is, int numThreads):
     _inputFile (new TiledInputFile (is, numThreads)),
     _fromYa (0),
     _channelNamePrefix ("")
@@ -802,7 +801,7 @@ TiledRgbaInputFile::TiledRgbaInputFile (const char name[],
 }
 
 
-TiledRgbaInputFile::TiledRgbaInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+TiledRgbaInputFile::TiledRgbaInputFile (IStream &is,
 					const string &layerName,
 					int numThreads)
 :
@@ -907,14 +906,14 @@ TiledRgbaInputFile::frameBuffer () const
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 TiledRgbaInputFile::displayWindow () const
 {
     return _inputFile->header().displayWindow();
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 TiledRgbaInputFile::dataWindow () const
 {
     return _inputFile->header().dataWindow();
@@ -928,7 +927,7 @@ TiledRgbaInputFile::pixelAspectRatio () const
 }
 
 
-const IMATH_NAMESPACE::V2f	
+const Imath::V2f	
 TiledRgbaInputFile::screenWindowCenter () const
 {
     return _inputFile->header().screenWindowCenter();
@@ -1061,28 +1060,28 @@ TiledRgbaInputFile::numYTiles (int ly) const
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaInputFile::dataWindowForLevel (int l) const
 {
      return _inputFile->dataWindowForLevel (l);
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaInputFile::dataWindowForLevel (int lx, int ly) const
 {
      return _inputFile->dataWindowForLevel (lx, ly);
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaInputFile::dataWindowForTile (int dx, int dy, int l) const
 {
      return _inputFile->dataWindowForTile (dx, dy, l);
 }
 
 
-IMATH_NAMESPACE::Box2i
+Imath::Box2i
 TiledRgbaInputFile::dataWindowForTile (int dx, int dy, int lx, int ly) const
 {
      return _inputFile->dataWindowForTile (dx, dy, lx, ly);
@@ -1160,4 +1159,4 @@ TiledRgbaOutputFile::breakTile  (int dx, int dy, int lx, int ly,
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

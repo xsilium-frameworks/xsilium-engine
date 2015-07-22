@@ -43,7 +43,7 @@
 #include <ImfIntAttribute.h>
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 
 template <>
@@ -54,4 +54,4 @@ IntAttribute::staticTypeName ()
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT 
+} // namespace Imf

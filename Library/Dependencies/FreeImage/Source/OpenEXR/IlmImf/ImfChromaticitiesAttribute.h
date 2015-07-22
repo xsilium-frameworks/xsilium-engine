@@ -43,31 +43,30 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfChromaticities.h"
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+#include <ImfAttribute.h>
+#include <ImfChromaticities.h>
 
 
-typedef TypedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Chromaticities> ChromaticitiesAttribute;
+namespace Imf {
+
+
+typedef TypedAttribute<Chromaticities> ChromaticitiesAttribute;
 
 template <>
-IMF_EXPORT
 const char *ChromaticitiesAttribute::staticTypeName ();
 
 template <>
-IMF_EXPORT
-void ChromaticitiesAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &,
-                                            int) const;
+void ChromaticitiesAttribute::writeValueTo (OStream &, int) const;
 
 template <>
-IMF_EXPORT
-void ChromaticitiesAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &,
-                                             int,
-                                             int);
+void ChromaticitiesAttribute::readValueFrom (IStream &, int, int);
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfChromaticitiesAttribute.cpp>
+#endif
 
 #endif

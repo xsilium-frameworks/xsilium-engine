@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -44,11 +44,9 @@
 //--------------------------------------------------
 
 #include "ImathLimits.h"
-#include "ImathNamespace.h"
-
 #include "half.h"
 
-IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imath {
 
 
 template <>
@@ -63,6 +61,6 @@ struct limits <half>
 };
 
 
-IMATH_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imath
 
-#endif // INCLUDED_IMATHHALFLIMITS_H
+#endif

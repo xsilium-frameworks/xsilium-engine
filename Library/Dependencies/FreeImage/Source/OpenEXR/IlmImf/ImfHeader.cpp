@@ -49,12 +49,9 @@
 #include <ImfChannelListAttribute.h>
 #include <ImfChromaticitiesAttribute.h>
 #include <ImfCompressionAttribute.h>
-#include <ImfDeepImageStateAttribute.h>
 #include <ImfDoubleAttribute.h>
-#include <ImfDwaCompressor.h>
 #include <ImfEnvmapAttribute.h>
 #include <ImfFloatAttribute.h>
-#include <ImfFloatVectorAttribute.h>
 #include <ImfIntAttribute.h>
 #include <ImfKeyCodeAttribute.h>
 #include <ImfLineOrderAttribute.h>
@@ -67,23 +64,21 @@
 #include <ImfTileDescriptionAttribute.h>
 #include <ImfTimeCodeAttribute.h>
 #include <ImfVecAttribute.h>
-#include <ImfPartType.h>
 #include "IlmThreadMutex.h"
 #include "Iex.h"
 #include <sstream>
 #include <stdlib.h>
 #include <time.h>
 
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 using namespace std;
-using IMATH_NAMESPACE::Box2i;
-using IMATH_NAMESPACE::V2i;
-using IMATH_NAMESPACE::V2f;
-using ILMTHREAD_NAMESPACE::Mutex;
-using ILMTHREAD_NAMESPACE::Lock;
+using Imath::Box2i;
+using Imath::V2i;
+using Imath::V2f;
+using IlmThread::Mutex;
+using IlmThread::Lock;
 
 
 namespace {
@@ -114,17 +109,54 @@ initialize (Header &header,
     header.insert ("channels", ChannelListAttribute ());
 }
 
+
+bool
+usesLongNames (const Header &header)
+{
+    //
+    // If an OpenEXR file contains any attribute names, attribute type names
+    // or channel names longer than 31 characters, then the file cannot be
+    // read by older versions of the IlmImf library (up to OpenEXR 1.6.1).
+    // Before writing the file header, we check if the header contains
+    // any names longer than 31 characters; if it does, then we set the
+    // LONG_NAMES_FLAG in the file version number.  Older versions of the
+    // IlmImf library will refuse to read files that have the LONG_NAMES_FLAG
+    // set.  Without the flag, older versions of the library would mis-
+    // interpret the file as broken.
+    //
+
+    for (Header::ConstIterator i = header.begin();
+         i != header.end();
+         ++i)
+    {
+        if (strlen (i.name()) >= 32 || strlen (i.attribute().typeName()) >= 32)
+            return true;
+    }
+
+    const ChannelList &channels = header.channels();
+
+    for (ChannelList::ConstIterator i = channels.begin();
+         i != channels.end();
+         ++i)
+    {
+        if (strlen (i.name()) >= 32)
+            return true;
+    }
+
+    return false;
+}
+
 template <size_t N>
 void checkIsNullTerminated (const char (&str)[N], const char *what)
 {
-	for (size_t i = 0; i < N; ++i) {
+	for (int i = 0; i < N; ++i) {
 		if (str[i] == '\0')
 			return;
 	}
 	std::stringstream s;
 	s << "Invalid " << what << ": it is more than " << (N - 1) 
 		<< " characters long.";
-	throw IEX_NAMESPACE::InputExc(s);
+	throw Iex::InputExc(s);
 }
 
 } // namespace
@@ -253,31 +285,10 @@ Header::operator = (const Header &other)
 
 
 void
-Header::erase (const char name[])
-{
-    if (name[0] == 0)
-        THROW (IEX_NAMESPACE::ArgExc, "Image attribute name cannot be an empty string.");
-    
-    
-    AttributeMap::iterator i = _map.find (name);
-    if (i != _map.end())
-        _map.erase (i);
-
-}
-
-
-void
-Header::erase (const string &name)
-{
-    erase (name.c_str());
-}
-    
-    
-void
 Header::insert (const char name[], const Attribute &attribute)
 {
     if (name[0] == 0)
-	THROW (IEX_NAMESPACE::ArgExc, "Image attribute name cannot be an empty string.");
+	THROW (Iex::ArgExc, "Image attribute name cannot be an empty string.");
 
     AttributeMap::iterator i = _map.find (name);
 
@@ -298,7 +309,7 @@ Header::insert (const char name[], const Attribute &attribute)
     else
     {
 	if (strcmp (i->second->typeName(), attribute.typeName()))
-	    THROW (IEX_NAMESPACE::TypeExc, "Cannot assign a value of "
+	    THROW (Iex::TypeExc, "Cannot assign a value of "
 				 "type \"" << attribute.typeName() << "\" "
 				 "to image attribute \"" << name << "\" of "
 				 "type \"" << i->second->typeName() << "\".");
@@ -323,7 +334,7 @@ Header::operator [] (const char name[])
     AttributeMap::iterator i = _map.find (name);
 
     if (i == _map.end())
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot find image attribute \"" << name << "\".");
+	THROW (Iex::ArgExc, "Cannot find image attribute \"" << name << "\".");
 
     return *i->second;
 }
@@ -335,7 +346,7 @@ Header::operator [] (const char name[]) const
     AttributeMap::const_iterator i = _map.find (name);
 
     if (i == _map.end())
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot find image attribute \"" << name << "\".");
+	THROW (Iex::ArgExc, "Cannot find image attribute \"" << name << "\".");
 
     return *i->second;
 }
@@ -411,7 +422,7 @@ Header::find (const string &name) const
 }
 
 
-IMATH_NAMESPACE::Box2i &	
+Imath::Box2i &	
 Header::displayWindow ()
 {
     return static_cast <Box2iAttribute &>
@@ -419,7 +430,7 @@ Header::displayWindow ()
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 Header::displayWindow () const
 {
     return static_cast <const Box2iAttribute &>
@@ -427,7 +438,7 @@ Header::displayWindow () const
 }
 
 
-IMATH_NAMESPACE::Box2i &	
+Imath::Box2i &	
 Header::dataWindow ()
 {
     return static_cast <Box2iAttribute &>
@@ -435,7 +446,7 @@ Header::dataWindow ()
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 Header::dataWindow () const
 {
     return static_cast <const Box2iAttribute &>
@@ -459,7 +470,7 @@ Header::pixelAspectRatio () const
 }
 
 
-IMATH_NAMESPACE::V2f &	
+Imath::V2f &	
 Header::screenWindowCenter ()
 {
     return static_cast <V2fAttribute &>
@@ -467,7 +478,7 @@ Header::screenWindowCenter ()
 }
 
 
-const IMATH_NAMESPACE::V2f &	
+const Imath::V2f &	
 Header::screenWindowCenter () const
 {
     return static_cast <const V2fAttribute &>
@@ -540,162 +551,6 @@ Header::compression () const
 
 
 void
-Header::setName(const string& name)
-{
-    insert ("name", StringAttribute (name));
-}
-
-
-bool
-Header::hasName() const
-{
-    return findTypedAttribute <StringAttribute> ("name") != 0;
-}
-
-
-string &
-Header::name()
-{
-    return typedAttribute <StringAttribute> ("name").value();
-}
-
-
-const string &
-Header::name() const
-{
-    return typedAttribute <StringAttribute> ("name").value();
-}
-
-
-void
-Header::setType(const string& type)
-{
-    if (isSupportedType(type) == false)
-    {
-        throw IEX_NAMESPACE::ArgExc (type + "is not a supported image type." +
-                           "The following are supported: " +
-                           SCANLINEIMAGE + ", " +
-                           TILEDIMAGE + ", " +
-                           DEEPSCANLINE + " or " +
-                           DEEPTILE + ".");
-    }
-
-    insert ("type", StringAttribute (type));
-
-    // (TODO) Should we do it here?
-    if (isDeepData(type) && hasVersion() == false)
-    {
-        setVersion(1);
-    }
-}
-
-
-bool
-Header::hasType() const
-{
-    return findTypedAttribute <StringAttribute> ("type") != 0;
-}
-
-
-string &
-Header::type()
-{
-    return typedAttribute <StringAttribute> ("type").value();
-}
-
-
-const string &
-Header::type() const
-{
-    return typedAttribute <StringAttribute> ("type").value();
-}
-
-
-void
-Header::setView(const string& view)
-{
-    insert ("view", StringAttribute (view));
-}
-
-
-bool
-Header::hasView() const
-{
-    return findTypedAttribute <StringAttribute> ("view") != 0;
-}
-
-
-string &
-Header::view()
-{
-    return typedAttribute <StringAttribute> ("view").value();
-}
-
-
-const string &
-Header::view() const
-{
-    return typedAttribute <StringAttribute> ("view").value();
-}
-
-
-void
-Header::setVersion(const int version)
-{
-    if (version != 1)
-    {
-        throw IEX_NAMESPACE::ArgExc ("We can only process version 1");
-    }
-
-    insert ("version", IntAttribute (version));
-}
-
-
-bool
-Header::hasVersion() const
-{
-    return findTypedAttribute <IntAttribute> ("version") != 0;
-}
-
-
-int &
-Header::version()
-{
-    return typedAttribute <IntAttribute> ("version").value();
-}
-
-
-const int &
-Header::version() const
-{
-    return typedAttribute <IntAttribute> ("version").value();
-}
-
-void 
-Header::setChunkCount(int chunks)
-{
-    insert("chunkCount",IntAttribute(chunks));
-}
-
-bool 
-Header::hasChunkCount() const
-{
-   return findTypedAttribute<IntAttribute>("chunkCount") != 0;
-}
-
-int& 
-Header::chunkCount()
-{
-    return typedAttribute <IntAttribute> ("chunkCount").value();
-}
-
-const int& 
-Header::chunkCount() const
-{
-    return typedAttribute <IntAttribute> ("chunkCount").value();
-}
-
-void
 Header::setTileDescription(const TileDescription& td)
 {
     insert ("tiles", TileDescriptionAttribute (td));
@@ -751,7 +606,7 @@ Header::hasPreviewImage () const
 
 
 void		
-Header::sanityCheck (bool isTiled, bool isMultipartFile) const
+Header::sanityCheck (bool isTiled) const
 {
     //
     // The display window and the data window must each
@@ -770,7 +625,7 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 	displayWindow.max.x >=  (INT_MAX / 2) ||
 	displayWindow.max.y >=  (INT_MAX / 2))
     {
-	throw IEX_NAMESPACE::ArgExc ("Invalid display window in image header.");
+	throw Iex::ArgExc ("Invalid display window in image header.");
     }
 
     const Box2i &dataWindow = this->dataWindow();
@@ -782,34 +637,22 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 	dataWindow.max.x >=  (INT_MAX / 2) ||
 	dataWindow.max.y >=  (INT_MAX / 2))
     {
-	throw IEX_NAMESPACE::ArgExc ("Invalid data window in image header.");
+	throw Iex::ArgExc ("Invalid data window in image header.");
     }
 
     if (maxImageWidth > 0 &&
-        maxImageWidth < (dataWindow.max.x - dataWindow.min.x + 1))
+	maxImageWidth < dataWindow.max.x - dataWindow.min.x + 1)
     {
-	THROW (IEX_NAMESPACE::ArgExc, "The width of the data window exceeds the "
+	THROW (Iex::ArgExc, "The width of the data window exceeds the "
 			    "maximum width of " << maxImageWidth << "pixels.");
     }
 
     if (maxImageHeight > 0 &&
 	maxImageHeight < dataWindow.max.y - dataWindow.min.y + 1)
     {
-	THROW (IEX_NAMESPACE::ArgExc, "The width of the data window exceeds the "
+	THROW (Iex::ArgExc, "The width of the data window exceeds the "
 			    "maximum width of " << maxImageHeight << "pixels.");
     }
-
-   // chunk table must be smaller than the maximum image area
-   // (only reachable for unknown types or damaged files: will have thrown earlier
-   //  for regular image types)
-   if( maxImageHeight>0 && maxImageWidth>0 && 
-       hasChunkCount() && chunkCount()>Int64(maxImageWidth)*Int64(maxImageHeight))
-   {
-       THROW (IEX_NAMESPACE::ArgExc, "chunkCount exceeds maximum area of "
-       << Int64(maxImageWidth)*Int64(maxImageHeight) << " pixels." );
-       
-   }
-
 
     //
     // The pixel aspect ratio must be greater than 0.
@@ -830,7 +673,7 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
     if (pixelAspectRatio < MIN_PIXEL_ASPECT_RATIO ||
 	pixelAspectRatio > MAX_PIXEL_ASPECT_RATIO)
     {
-	throw IEX_NAMESPACE::ArgExc ("Invalid pixel aspect ratio in image header.");
+	throw Iex::ArgExc ("Invalid pixel aspect ratio in image header.");
     }
 
     //
@@ -844,43 +687,10 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
     float screenWindowWidth = this->screenWindowWidth();
 
     if (screenWindowWidth < 0)
-	throw IEX_NAMESPACE::ArgExc ("Invalid screen window width in image header.");
+	throw Iex::ArgExc ("Invalid screen window width in image header.");
 
     //
-    // If the file has multiple parts, verify that each header has attribute
-    // name and type.
-    // (TODO) We may want to check more stuff here.
-    //
-
-    if (isMultipartFile)
-    {
-        if (!hasName())
-        {
-            throw IEX_NAMESPACE::ArgExc ("Headers in a multipart file should"
-                               " have name attribute.");
-        }
-
-        if (!hasType())
-        {
-            throw IEX_NAMESPACE::ArgExc ("Headers in a multipart file should"
-                               " have type attribute.");
-        }
-
-    }
-    
-    const std::string & part_type=hasType() ? type() : "";
-    
-    if(part_type!="" && !isSupportedType(part_type))
-    {
-        //
-        // skip remaining sanity checks with unsupported types - they may not hold
-        //
-        return;
-    }
-    
-   
-    //
-    // If the file is tiled, verify that the tile description has reasonable
+    // If the file is tiled, verify that the tile description has resonable
     // values and check to see if the lineOrder is one of the predefined 3.
     // If the file is not tiled, then the lineOrder can only be INCREASING_Y
     // or DECREASING_Y.
@@ -892,50 +702,48 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
     {
 	if (!hasTileDescription())
 	{
-	    throw IEX_NAMESPACE::ArgExc ("Tiled image has no tile "
+	    throw Iex::ArgExc ("Tiled image has no tile "
 			       "description attribute.");
 	}
 
 	const TileDescription &tileDesc = tileDescription();
 
 	if (tileDesc.xSize <= 0 || tileDesc.ySize <= 0)
-	    throw IEX_NAMESPACE::ArgExc ("Invalid tile size in image header.");
+	    throw Iex::ArgExc ("Invalid tile size in image header.");
 
 	if (maxTileWidth > 0 &&
-	    maxTileWidth < int(tileDesc.xSize))
+	    maxTileWidth < tileDesc.xSize)
 	{
-	    THROW (IEX_NAMESPACE::ArgExc, "The width of the tiles exceeds the maximum "
+	    THROW (Iex::ArgExc, "The width of the tiles exceeds the maximum "
 				"width of " << maxTileWidth << "pixels.");
 	}
 
 	if (maxTileHeight > 0 &&
-	    maxTileHeight < int(tileDesc.ySize))
+	    maxTileHeight < tileDesc.ySize)
 	{
-	    THROW (IEX_NAMESPACE::ArgExc, "The width of the tiles exceeds the maximum "
+	    THROW (Iex::ArgExc, "The width of the tiles exceeds the maximum "
 				"width of " << maxTileHeight << "pixels.");
 	}
 
 	if (tileDesc.mode != ONE_LEVEL &&
 	    tileDesc.mode != MIPMAP_LEVELS &&
 	    tileDesc.mode != RIPMAP_LEVELS)
-	    throw IEX_NAMESPACE::ArgExc ("Invalid level mode in image header.");
+	    throw Iex::ArgExc ("Invalid level mode in image header.");
 
 	if (tileDesc.roundingMode != ROUND_UP &&
 	    tileDesc.roundingMode != ROUND_DOWN)
-	    throw IEX_NAMESPACE::ArgExc ("Invalid level rounding mode in image header.");
+	    throw Iex::ArgExc ("Invalid level rounding mode in image header.");
 
 	if (lineOrder != INCREASING_Y &&
 	    lineOrder != DECREASING_Y &&
 	    lineOrder != RANDOM_Y)
-	    throw IEX_NAMESPACE::ArgExc ("Invalid line order in image header.");
+	    throw Iex::ArgExc ("Invalid line order in image header.");
     }
     else
     {
-        if (lineOrder != INCREASING_Y &&
-            lineOrder != DECREASING_Y)
-            throw IEX_NAMESPACE::ArgExc ("Invalid line order in image header.");
-        
-        
+	if (lineOrder != INCREASING_Y &&
+	    lineOrder != DECREASING_Y)
+	    throw Iex::ArgExc ("Invalid line order in image header.");
     }
 
     //
@@ -943,13 +751,7 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
     //
 
     if (!isValidCompression (this->compression()))
-  	throw IEX_NAMESPACE::ArgExc ("Unknown compression type in image header.");
-    
-    if(isDeepData(part_type))
-    {
-        if (!isValidDeepCompression (this->compression()))
-            throw IEX_NAMESPACE::ArgExc ("Compression type in header not valid for deep data");
-    }
+	throw Iex::ArgExc ("Unknown compression type in image header.");
 
     //
     // Check the channel list:
@@ -972,24 +774,24 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 	     i != channels.end();
 	     ++i)
 	{
-	    if (i.channel().type != OPENEXR_IMF_INTERNAL_NAMESPACE::UINT &&
-		    i.channel().type != OPENEXR_IMF_INTERNAL_NAMESPACE::HALF &&
-		    i.channel().type != OPENEXR_IMF_INTERNAL_NAMESPACE::FLOAT)
+	    if (i.channel().type != UINT &&
+		i.channel().type != HALF &&
+		i.channel().type != FLOAT)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "Pixel type of \"" << i.name() << "\" "
+		THROW (Iex::ArgExc, "Pixel type of \"" << i.name() << "\" "
 			            "image channel is invalid.");
 	    }
 
 	    if (i.channel().xSampling != 1)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "The x subsampling factor for the "
+		THROW (Iex::ArgExc, "The x subsampling factor for the "
 				    "\"" << i.name() << "\" channel "
 				    "is not 1.");
 	    }	
 
 	    if (i.channel().ySampling != 1)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "The y subsampling factor for the "
+		THROW (Iex::ArgExc, "The y subsampling factor for the "
 				    "\"" << i.name() << "\" channel "
 				    "is not 1.");
 	    }	
@@ -1001,31 +803,31 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 	     i != channels.end();
 	     ++i)
 	{
-	    if (i.channel().type != OPENEXR_IMF_INTERNAL_NAMESPACE::UINT &&
-		    i.channel().type != OPENEXR_IMF_INTERNAL_NAMESPACE::HALF &&
-		    i.channel().type != OPENEXR_IMF_INTERNAL_NAMESPACE::FLOAT)
+	    if (i.channel().type != UINT &&
+		i.channel().type != HALF &&
+		i.channel().type != FLOAT)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "Pixel type of \"" << i.name() << "\" "
+		THROW (Iex::ArgExc, "Pixel type of \"" << i.name() << "\" "
 			            "image channel is invalid.");
 	    }
 
 	    if (i.channel().xSampling < 1)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "The x subsampling factor for the "
+		THROW (Iex::ArgExc, "The x subsampling factor for the "
 				    "\"" << i.name() << "\" channel "
 				    "is invalid.");
 	    }
 
 	    if (i.channel().ySampling < 1)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "The y subsampling factor for the "
+		THROW (Iex::ArgExc, "The y subsampling factor for the "
 				    "\"" << i.name() << "\" channel "
 				    "is invalid.");
 	    }
 
 	    if (dataWindow.min.x % i.channel().xSampling)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "The minimum x coordinate of the "
+		THROW (Iex::ArgExc, "The minimum x coordinate of the "
 				    "image's data window is not a multiple "
 				    "of the x subsampling factor of "
 				    "the \"" << i.name() << "\" channel.");
@@ -1033,7 +835,7 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 
 	    if (dataWindow.min.y % i.channel().ySampling)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "The minimum y coordinate of the "
+		THROW (Iex::ArgExc, "The minimum y coordinate of the "
 				    "image's data window is not a multiple "
 				    "of the y subsampling factor of "
 				    "the \"" << i.name() << "\" channel.");
@@ -1042,7 +844,7 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 	    if ((dataWindow.max.x - dataWindow.min.x + 1) %
 		    i.channel().xSampling)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "Number of pixels per row in the "
+		THROW (Iex::ArgExc, "Number of pixels per row in the "
 				    "image's data window is not a multiple "
 				    "of the x subsampling factor of "
 				    "the \"" << i.name() << "\" channel.");
@@ -1051,7 +853,7 @@ Header::sanityCheck (bool isTiled, bool isMultipartFile) const
 	    if ((dataWindow.max.y - dataWindow.min.y + 1) %
 		    i.channel().ySampling)
 	    {
-		THROW (IEX_NAMESPACE::ArgExc, "Number of pixels per column in the "
+		THROW (Iex::ArgExc, "Number of pixels per column in the "
 				    "image's data window is not a multiple "
 				    "of the y subsampling factor of "
 				    "the \"" << i.name() << "\" channel.");
@@ -1077,22 +879,25 @@ Header::setMaxTileSize (int maxWidth, int maxHeight)
 }
 
 
-bool
-Header::readsNothing()
-{
-    return _readsNothing;
-}
-
-
 Int64
-Header::writeTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, bool isTiled) const
+Header::writeTo (OStream &os, bool isTiled) const
 {
     //
     // Write a "magic number" to identify the file as an image file.
     // Write the current file format version number.
     //
 
+    Xdr::write <StreamIO> (os, MAGIC);
+
     int version = EXR_VERSION;
+
+    if (isTiled)
+        version |= TILED_FLAG;
+
+    if (usesLongNames (*this))
+        version |= LONG_NAMES_FLAG;
+
+    Xdr::write <StreamIO> (os, version);
 
     //
     // Write all attributes.  If we have a preview image attribute,
@@ -1110,8 +915,8 @@ Header::writeTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, bool isTiled) cons
 	// Write the attribute's name and type.
 	//
 
-	OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (os, i.name());
-	OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (os, i.attribute().typeName());
+	Xdr::write <StreamIO> (os, i.name());
+	Xdr::write <StreamIO> (os, i.attribute().typeName());
 
 	//
 	// Write the size of the attribute value,
@@ -1122,32 +927,59 @@ Header::writeTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, bool isTiled) cons
 	i.attribute().writeValueTo (oss, version);
 
 	std::string s = oss.str();
-	OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (os, (int) s.length());
+	Xdr::write <StreamIO> (os, (int) s.length());
 
 	if (&i.attribute() == preview)
 	    previewPosition = os.tellp();
 
-	os.write (s.data(), int(s.length()));
+	os.write (s.data(), s.length());
     }
 
     //
     // Write zero-length attribute name to mark the end of the header.
     //
 
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (os, "");
+    Xdr::write <StreamIO> (os, "");
 
     return previewPosition;
 }
 
 
 void
-Header::readFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int &version)
+Header::readFrom (IStream &is, int &version)
 {
+    //
+    // Read the magic number and the file format version number.
+    // Then check if we can read the rest of this file.
+    //
+
+    int magic;
+
+    Xdr::read <StreamIO> (is, magic);
+    Xdr::read <StreamIO> (is, version);
+
+    if (magic != MAGIC)
+    {
+	throw Iex::InputExc ("File is not an image file.");
+    }
+
+    if (getVersion (version) != EXR_VERSION)
+    {
+	THROW (Iex::InputExc, "Cannot read "
+			      "version " << getVersion (version) << " "
+			      "image files.  Current file format version "
+			      "is " << EXR_VERSION << ".");
+    }
+    
+    if (!supportsFlags (getFlags (version)))
+    {
+	THROW (Iex::InputExc, "The file format version number's flag field "
+			      "contains unrecognized flags.");
+    }
+
     //
     // Read all attributes.
     //
-
-    int attrCount = 0;
 
     while (true)
     {
@@ -1157,16 +989,10 @@ Header::readFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int &version)
 	//
 
 	char name[Name::SIZE];
-	OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (is, Name::MAX_LENGTH, name);
+	Xdr::read <StreamIO> (is, Name::MAX_LENGTH, name);
 
 	if (name[0] == 0)
-	{
-	    if (attrCount == 0) _readsNothing = true;
-	    else                _readsNothing = false;
 	    break;
-	}
-
-	attrCount++;
 
 	checkIsNullTerminated (name, "attribute name");
 
@@ -1177,9 +1003,9 @@ Header::readFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int &version)
 	char typeName[Name::SIZE];
 	int size;
 
-	OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (is, Name::MAX_LENGTH, typeName);
+	Xdr::read <StreamIO> (is, Name::MAX_LENGTH, typeName);
 	checkIsNullTerminated (typeName, "attribute type name");
-	OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (is, size);
+	Xdr::read <StreamIO> (is, size);
 
 	AttributeMap::iterator i = _map.find (name);
 
@@ -1192,7 +1018,7 @@ Header::readFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int &version)
 	    //
 
 	    if (strncmp (i->second->typeName(), typeName, sizeof (typeName)))
-		THROW (IEX_NAMESPACE::InputExc, "Unexpected type for image attribute "
+		THROW (Iex::InputExc, "Unexpected type for image attribute "
 				      "\"" << name << "\".");
 
 	    i->second->readValueFrom (is, size, version);
@@ -1249,11 +1075,9 @@ staticInitialize ()
 	ChannelListAttribute::registerAttributeType();
 	CompressionAttribute::registerAttributeType();
 	ChromaticitiesAttribute::registerAttributeType();
-	DeepImageStateAttribute::registerAttributeType();
 	DoubleAttribute::registerAttributeType();
 	EnvmapAttribute::registerAttributeType();
 	FloatAttribute::registerAttributeType();
-	FloatVectorAttribute::registerAttributeType();
 	IntAttribute::registerAttributeType();
 	KeyCodeAttribute::registerAttributeType();
 	LineOrderAttribute::registerAttributeType();
@@ -1273,11 +1097,10 @@ staticInitialize ()
 	V3dAttribute::registerAttributeType();
 	V3fAttribute::registerAttributeType();
 	V3iAttribute::registerAttributeType();
-	DwaCompressor::initializeFuncs();
 
 	initialized = true;
     }
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

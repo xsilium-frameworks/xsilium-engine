@@ -43,11 +43,9 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfCompressor.h"
-#include "ImfZip.h"
-#include "ImfNamespace.h"
+#include <ImfCompressor.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
 class ZipCompressor: public Compressor
@@ -75,15 +73,11 @@ class ZipCompressor: public Compressor
 
     int		_maxScanLineSize;
     int		_numScanLines;
+    char *	_tmpBuffer;
     char *	_outBuffer;
-    Zip     _zip;
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
-
-
-
+} // namespace Imf
 
 #endif

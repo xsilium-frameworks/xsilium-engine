@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2006-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2006, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -42,10 +42,9 @@
 //
 //----------------------------------------------------------------------------
 
-#include "ImathNamespace.h"
 #include <limits.h>
 
-IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imath {
 
 
 #if (defined _WIN32 || defined _WIN64) && _MSC_VER >= 1300
@@ -57,6 +56,6 @@ IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
 #endif
 
 
-IMATH_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imath
 
-#endif // INCLUDED_IMATH_INT64_H
+#endif

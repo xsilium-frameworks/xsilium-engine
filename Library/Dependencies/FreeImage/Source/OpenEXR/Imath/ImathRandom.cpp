@@ -1,6 +1,7 @@
+
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -42,7 +43,7 @@
 #include "ImathRandom.h"
 #include "ImathInt64.h"
 
-IMATH_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imath {
 namespace {
 
 //
@@ -133,7 +134,7 @@ erand48 (unsigned short state[3])
 double
 drand48 ()
 {
-    return IMATH_INTERNAL_NAMESPACE::erand48 (staticState);
+    return Imath::erand48 (staticState);
 }
 
 
@@ -154,7 +155,7 @@ nrand48 (unsigned short state[3])
 long int
 lrand48 ()
 {
-    return IMATH_INTERNAL_NAMESPACE::nrand48 (staticState);
+    return Imath::nrand48 (staticState);
 }
 
 
@@ -191,4 +192,4 @@ Rand32::nextf ()
     return u.f - 1;
 }
 
-IMATH_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imath

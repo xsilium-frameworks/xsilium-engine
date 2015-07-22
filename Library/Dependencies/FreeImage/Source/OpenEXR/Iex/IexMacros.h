@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -55,19 +55,13 @@
 //	
 //----------------------------------------------------------------------------
 
-#include "IexExport.h"
-#include "IexForward.h"
-
-IEX_EXPORT void iex_debugTrap();
-
-#define THROW(type, text)       \
-    do                          \
-    {                           \
-        iex_debugTrap();        \
-        std::stringstream s;	\
-        s << text;              \
-        throw type (s);         \
-    }                           \
+#define THROW(type, text)	\
+    do				\
+    {				\
+	std::stringstream s;	\
+	s << text;		\
+	throw type (s);		\
+    }				\
     while (0)
 
 
@@ -94,22 +88,22 @@ IEX_EXPORT void iex_debugTrap();
 //	}
 //----------------------------------------------------------------------------
 
-#define APPEND_EXC(exc, text)   \
-    do                          \
-    {                           \
-        std::stringstream s;    \
-        s << text;              \
-        exc.append (s);         \
-    }                           \
+#define APPEND_EXC(exc, text)	\
+    do				\
+    {				\
+	std::stringstream s;	\
+	s << text;		\
+	exc.append (s);		\
+    }				\
     while (0)
 
-#define REPLACE_EXC(exc, text)  \
-    do                          \
-    {                           \
-        std::stringstream s;    \
-        s << text;              \
-        exc.assign (s);         \
-    }                           \
+#define REPLACE_EXC(exc, text)	\
+    do				\
+    {				\
+	std::stringstream s;	\
+	s << text;		\
+	exc.assign (s);		\
+    }				\
     while (0)
 
 
@@ -123,13 +117,13 @@ IEX_EXPORT void iex_debugTrap();
 //
 //-------------------------------------------------------------
 
-#define THROW_ERRNO(text)                         \
-    do                                            \
-    {                                             \
-        std::stringstream s;                      \
-        s << text;                                \
-        ::IEX_NAMESPACE::throwErrnoExc (s.str()); \
-    }                                             \
+#define THROW_ERRNO(text)		\
+    do					\
+    {					\
+	std::stringstream s;		\
+	s << text;			\
+	::Iex::throwErrnoExc (s.str());	\
+    }					\
     while (0)
 
 
@@ -138,33 +132,17 @@ IEX_EXPORT void iex_debugTrap();
 //
 // Example:
 //
-//	ASSERT (ptr != 0, NullExc, "Null pointer" );
+//	ASSERT (ptr != NULL, NullExc, "Null pointer" );
 //
 //-------------------------------------------------------------
 
 #define ASSERT(assertion, type, text)   \
     do                                  \
     {                                   \
-        if( (assertion) == false )      \
-        {                               \
-            THROW( type, text );        \
-        }                               \
+	if ((assertion) == false)       \
+	    THROW (type, text);         \
     }                                   \
     while (0)
 
-//-------------------------------------------------------------
-// A macro to throw an IEX_NAMESPACE::LogicExc if an assertion is false,
-// with the text composed from the source code file, line number,
-// and assertion argument text.
-//
-// Example:
-//
-//      LOGIC_ASSERT (i < n);
-//
-//-------------------------------------------------------------
-#define LOGIC_ASSERT(assertion)           \
-    ASSERT(assertion,                     \
-           IEX_NAMESPACE::LogicExc,       \
-           __FILE__ << "(" << __LINE__ << "): logical assertion failed: " << #assertion )
 
 #endif

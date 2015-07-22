@@ -40,14 +40,18 @@
 /* Unsigned 32-bit type */
 #define TIFF_UINT32_T unsigned int
 
-/* Signed / Unsigned 64-bit type */
+/* Signed 64-bit type */
 #ifdef _MSC_VER
 #define TIFF_INT64_T signed __int64
+#else
+#define TIFF_INT64_T signed long
+#endif // _MSC_VER
+
+/* Unsigned 64-bit type */
+#ifdef _MSC_VER
 #define TIFF_UINT64_T unsigned __int64
 #else
-#include <inttypes.h>
-#define TIFF_INT64_T int64_t
-#define TIFF_UINT64_T uint64_t
+#define TIFF_UINT64_T unsigned long
 #endif // _MSC_VER
 
 /* Signed 64-bit type */

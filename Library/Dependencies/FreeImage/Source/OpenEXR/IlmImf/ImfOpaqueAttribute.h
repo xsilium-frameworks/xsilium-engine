@@ -49,14 +49,13 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfArray.h"
-#include "ImfNamespace.h"
+#include <ImfAttribute.h>
+#include <ImfArray.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
-class IMF_EXPORT OpaqueAttribute: public Attribute
+class OpaqueAttribute: public Attribute
 {
   public:
 
@@ -87,10 +86,10 @@ class IMF_EXPORT OpaqueAttribute: public Attribute
     // I/O and copying
     //----------------
 
-    virtual void		writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    virtual void		writeValueTo (OStream &os,
 					      int version) const;
 
-    virtual void		readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+    virtual void		readValueFrom (IStream &is,
 					       int size,
 					       int version);
 
@@ -105,6 +104,11 @@ class IMF_EXPORT OpaqueAttribute: public Attribute
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfOpaqueAttribute.cpp>
+#endif
 
 #endif

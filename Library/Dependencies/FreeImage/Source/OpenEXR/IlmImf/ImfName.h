@@ -45,9 +45,8 @@
 //-----------------------------------------------------------------------------
 
 #include <string.h>
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
 class Name
@@ -142,9 +141,6 @@ operator < (const Name &x, const Name &y)
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
-
-
+} // namespace IMF
 
 #endif

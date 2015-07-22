@@ -1,9 +1,22 @@
 /* gzread.c -- zlib functions for reading gzip files
- * Copyright (C) 2004, 2005, 2010, 2011, 2012, 2013 Mark Adler
+ * Copyright (C) 2004, 2005, 2010, 2011 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 #include "gzguts.h"
+
+/** added by FreeImage */
+#ifdef _MSC_VER
+#include <io.h>	/* read, close */
+/**
+disable warning "The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name"
+*/
+#pragma warning(disable : 4996)
+#endif /* _MSC_VER */
+
+#ifndef _WIN32
+#  include <unistd.h>
+#endif
 
 /* Local functions */
 local int gz_load OF((gz_statep, unsigned char *, unsigned, unsigned *));
@@ -57,14 +70,8 @@ local int gz_avail(state)
     if (state->err != Z_OK && state->err != Z_BUF_ERROR)
         return -1;
     if (state->eof == 0) {
-        if (strm->avail_in) {       /* copy what's there to the start */
-            unsigned char *p = state->in;
-            unsigned const char *q = strm->next_in;
-            unsigned n = strm->avail_in;
-            do {
-                *p++ = *q++;
-            } while (--n);
-        }
+        if (strm->avail_in)
+            memmove(state->in, strm->next_in, strm->avail_in);
         if (gz_load(state, state->in + strm->avail_in,
                     state->size - strm->avail_in, &got) == -1)
             return -1;
@@ -91,8 +98,8 @@ local int gz_look(state)
     /* allocate read buffers and inflate memory */
     if (state->size == 0) {
         /* allocate buffers */
-        state->in = (unsigned char *)malloc(state->want);
-        state->out = (unsigned char *)malloc(state->want << 1);
+        state->in = malloc(state->want);
+        state->out = malloc(state->want << 1);
         if (state->in == NULL || state->out == NULL) {
             if (state->out != NULL)
                 free(state->out);
@@ -346,21 +353,21 @@ int ZEXPORT gzread(file, buf, len)
             /* get more output, looking for header if required */
             if (gz_fetch(state) == -1)
                 return -1;
-            continue;       /* no progress yet -- go back to copy above */
+            continue;       /* no progress yet -- go back to memcpy() above */
             /* the copy above assures that we will leave with space in the
                output buffer, allowing at least one gzungetc() to succeed */
         }
 
         /* large len -- read directly into user buffer */
         else if (state->how == COPY) {      /* read directly */
-            if (gz_load(state, (unsigned char *)buf, len, &n) == -1)
+            if (gz_load(state, buf, len, &n) == -1)
                 return -1;
         }
 
         /* large len -- decompress directly into user buffer */
         else {  /* state->how == GZIP */
             strm->avail_out = len;
-            strm->next_out = (unsigned char *)buf;
+            strm->next_out = buf;
             if (gz_decomp(state) == -1)
                 return -1;
             n = state->x.have;
@@ -379,12 +386,7 @@ int ZEXPORT gzread(file, buf, len)
 }
 
 /* -- see zlib.h -- */
-#ifdef Z_PREFIX_SET
-#  undef z_gzgetc
-#else
-#  undef gzgetc
-#endif
-int ZEXPORT gzgetc(file)
+int ZEXPORT gzgetc_(file)
     gzFile file;
 {
     int ret;
@@ -413,11 +415,12 @@ int ZEXPORT gzgetc(file)
     return ret < 1 ? -1 : buf[0];
 }
 
-int ZEXPORT gzgetc_(file)
+#undef gzgetc
+int ZEXPORT gzgetc(file)
 gzFile file;
 {
-    return gzgetc(file);
-}
+    return gzgetc_(file);
+}    
 
 /* -- see zlib.h -- */
 int ZEXPORT gzungetc(c, file)
@@ -523,7 +526,7 @@ char * ZEXPORT gzgets(file, buf, len)
 
         /* look for end-of-line in current output buffer */
         n = state->x.have > left ? left : state->x.have;
-        eol = (unsigned char *)memchr(state->x.next, '\n', n);
+        eol = memchr(state->x.next, '\n', n);
         if (eol != NULL)
             n = (unsigned)(eol - state->x.next) + 1;
 

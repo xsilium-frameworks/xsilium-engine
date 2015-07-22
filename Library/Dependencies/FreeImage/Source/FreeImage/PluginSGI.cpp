@@ -178,7 +178,7 @@ Description() {
 
 static const char * DLL_CALLCONV
 Extension() {
-  return "sgi,rgb,rgba,bw";
+  return "sgi";
 }
 
 static const char * DLL_CALLCONV

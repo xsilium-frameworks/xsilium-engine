@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2004-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2004, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -47,11 +47,14 @@
 #include "ImathLimits.h"
 #include "ImathMath.h"
 #include "ImathVec.h"
-#include "ImathNamespace.h"
+
 #include <iostream>
 
 
-IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imath {
+
+
+
 
 template <class T> class Shear6
 {
@@ -458,7 +461,7 @@ bool
 Shear6<T>::equalWithAbsError (const Shear6<T> &h, T e) const
 {
     for (int i = 0; i < 6; i++)
-	if (!IMATH_INTERNAL_NAMESPACE::equalWithAbsError ((*this)[i], h[i], e))
+	if (!Imath::equalWithAbsError ((*this)[i], h[i], e))
 	    return false;
 
     return true;
@@ -469,7 +472,7 @@ bool
 Shear6<T>::equalWithRelError (const Shear6<T> &h, T e) const
 {
     for (int i = 0; i < 6; i++)
-	if (!IMATH_INTERNAL_NAMESPACE::equalWithRelError ((*this)[i], h[i], e))
+	if (!Imath::equalWithRelError ((*this)[i], h[i], e))
 	    return false;
 
     return true;
@@ -651,6 +654,6 @@ operator * (S a, const Shear6<T> &h)
 }
 
 
-IMATH_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imath
 
-#endif // INCLUDED_IMATHSHEAR_H
+#endif

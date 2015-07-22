@@ -38,21 +38,19 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfTiledInputFile.h"
-#include "ImfTileDescriptionAttribute.h"
-#include "ImfChannelList.h"
-#include "ImfMisc.h"
-#include "ImfTiledMisc.h"
-#include "ImfStdIO.h"
-#include "ImfCompressor.h"
-#include "ImfXdr.h"
-#include "ImfConvert.h"
-#include "ImfVersion.h"
-#include "ImfTileOffsets.h"
-#include "ImfThreading.h"
-#include "ImfPartType.h"
-#include "ImfMultiPartInputFile.h"
-#include "ImfInputStreamMutex.h"
+#include <ImfTiledInputFile.h>
+#include <ImfTileDescriptionAttribute.h>
+#include <ImfChannelList.h>
+#include <ImfMisc.h>
+#include <ImfTiledMisc.h>
+#include <ImfStdIO.h>
+#include <ImfCompressor.h>
+#include "ImathBox.h"
+#include <ImfXdr.h>
+#include <ImfConvert.h>
+#include <ImfVersion.h>
+#include <ImfTileOffsets.h>
+#include <ImfThreading.h>
 #include "IlmThreadPool.h"
 #include "IlmThreadSemaphore.h"
 #include "IlmThreadMutex.h"
@@ -62,23 +60,22 @@
 #include <vector>
 #include <algorithm>
 #include <assert.h>
-#include "ImfInputPartData.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
 
-using IMATH_NAMESPACE::Box2i;
-using IMATH_NAMESPACE::V2i;
+namespace Imf {
+
+using Imath::Box2i;
+using Imath::V2i;
 using std::string;
 using std::vector;
 using std::min;
 using std::max;
-using ILMTHREAD_NAMESPACE::Mutex;
-using ILMTHREAD_NAMESPACE::Lock;
-using ILMTHREAD_NAMESPACE::Semaphore;
-using ILMTHREAD_NAMESPACE::Task;
-using ILMTHREAD_NAMESPACE::TaskGroup;
-using ILMTHREAD_NAMESPACE::ThreadPool;
+using IlmThread::Mutex;
+using IlmThread::Lock;
+using IlmThread::Semaphore;
+using IlmThread::Task;
+using IlmThread::TaskGroup;
+using IlmThread::ThreadPool;
 
 namespace {
 
@@ -160,7 +157,6 @@ struct TileBuffer
 
 TileBuffer::TileBuffer (Compressor *comp):
     uncompressedData (0),
-    buffer (0),
     dataSize (0),
     compressor (comp),
     format (defaultFormat (compressor)),
@@ -184,9 +180,6 @@ TileBuffer::~TileBuffer ()
 } // namespace
 
 
-class MultiPartInputFile;
-
-
 //
 // struct TiledInputFile::Data stores things that will be
 // needed between calls to readTile()
@@ -194,53 +187,48 @@ class MultiPartInputFile;
 
 struct TiledInputFile::Data: public Mutex
 {
-    Header	    header;	        	    // the image header
-    TileDescription tileDesc;		            // describes the tile layout
-    int		    version;		            // file's version
-    FrameBuffer	    frameBuffer;	            // framebuffer to write into
-    LineOrder	    lineOrder;		            // the file's lineorder
-    int		    minX;		            // data window's min x coord
-    int		    maxX;		            // data window's max x coord
-    int		    minY;		            // data window's min y coord
-    int		    maxY;		            // data window's max x coord
+    Header	    header;		    // the image header
+    TileDescription tileDesc;		    // describes the tile layout
+    int		    version;		    // file's version
+    FrameBuffer	    frameBuffer;	    // framebuffer to write into
+    LineOrder	    lineOrder;		    // the file's lineorder
+    int		    minX;		    // data window's min x coord
+    int		    maxX;		    // data window's max x coord
+    int		    minY;		    // data window's min y coord
+    int		    maxY;		    // data window's max x coord
 
-    int		    numXLevels;		            // number of x levels
-    int		    numYLevels;		            // number of y levels
-    int *	    numXTiles;		            // number of x tiles at a level
-    int *	    numYTiles;		            // number of y tiles at a level
+    int		    numXLevels;		    // number of x levels
+    int		    numYLevels;		    // number of y levels
+    int *	    numXTiles;		    // number of x tiles at a level
+    int *	    numYTiles;		    // number of y tiles at a level
 
-    TileOffsets	    tileOffsets;	            // stores offsets in file for
-    // each tile
+    TileOffsets	    tileOffsets;	    // stores offsets in file for
+					    // each tile
 
-    bool	    fileIsComplete;	            // True if no tiles are missing
-                                                    // in the file
+    bool	    fileIsComplete;	    // True if no tiles are missing
+    					    // in the file
 
-    vector<TInSliceInfo> slices;        	    // info about channels in file
+    Int64	    currentPosition;        // file offset for current tile,
+					    // used to prevent unnecessary
+					    // seeking
 
-    size_t	    bytesPerPixel;                  // size of an uncompressed pixel
+    vector<TInSliceInfo> slices;	    // info about channels in file
+    IStream *	    is;			    // file stream to read from
 
-    size_t	    maxBytesPerTileLine;            // combined size of a line
-                                                    // over all channels
+    bool	    deleteStream;	    // should we delete the stream
+					    // ourselves? or does someone
+					    // else do it?
 
-    int             partNumber;                     // part number
+    size_t	    bytesPerPixel;          // size of an uncompressed pixel
 
-    bool            multiPartBackwardSupport;       // if we are reading a multipart file
-                                                    // using OpenEXR 1.7 API
+    size_t	    maxBytesPerTileLine;    // combined size of a line
+					    // over all channels
 
-    int             numThreads;                     // number of threads
-
-    MultiPartInputFile* multiPartFile;              // the MultiPartInputFile used to
-                                                    // support backward compatibility
     
-    vector<TileBuffer*> tileBuffers;                // each holds a single tile
-    size_t          tileBufferSize;	            // size of the tile buffers
+    vector<TileBuffer*> tileBuffers;        // each holds a single tile
+    size_t          tileBufferSize;	    // size of the tile buffers
 
-    bool            memoryMapped;                   // if the stream is memory mapped
-
-    InputStreamMutex * _streamData;
-    bool                _deleteStream;
-
-     Data (int numThreads);
+     Data (bool deleteStream, int numThreads);
     ~Data ();
 
     inline TileBuffer * getTileBuffer (int number);
@@ -249,15 +237,11 @@ struct TiledInputFile::Data: public Mutex
 };
 
 
-TiledInputFile::Data::Data (int numThreads):
+TiledInputFile::Data::Data (bool del, int numThreads):
     numXTiles (0),
     numYTiles (0),
-    partNumber (-1),
-    multiPartBackwardSupport(false),
-    numThreads(numThreads),
-    memoryMapped(false),
-    _streamData(NULL),
-    _deleteStream(false)
+    is (0),
+    deleteStream (del)
 {
     //
     // We need at least one tileBuffer, but if threading is used,
@@ -273,11 +257,11 @@ TiledInputFile::Data::~Data ()
     delete [] numXTiles;
     delete [] numYTiles;
 
+    if (deleteStream)
+	delete is;
+
     for (size_t i = 0; i < tileBuffers.size(); i++)
         delete tileBuffers[i];
-
-    if (multiPartBackwardSupport)
-        delete multiPartFile;
 }
 
 
@@ -291,8 +275,7 @@ TiledInputFile::Data::getTileBuffer (int number)
 namespace {
 
 void
-readTileData (InputStreamMutex *streamData,
-              TiledInputFile::Data *ifd,
+readTileData (TiledInputFile::Data *ifd,
 	      int dx, int dy,
 	      int lx, int ly,
               char *&buffer,
@@ -314,31 +297,12 @@ readTileData (InputStreamMutex *streamData,
 
     if (tileOffset == 0)
     {
-        THROW (IEX_NAMESPACE::InputExc, "Tile (" << dx << ", " << dy << ", " <<
+        THROW (Iex::InputExc, "Tile (" << dx << ", " << dy << ", " <<
 			      lx << ", " << ly << ") is missing.");
     }
 
-
-    //
-    // In a multi-part file, the next chunk does not need to
-    // belong to the same part, so we have to compare the
-    // offset here.
-    //
-
-    if (!isMultiPart(ifd->version))
-    {
-        if (streamData->currentPosition != tileOffset)
-            streamData->is->seekg (tileOffset);
-    }
-    else
-    {
-        //
-        // In a multi-part file, the file pointer may be moved by other
-        // parts, so we have to ask tellg() where we are.
-        //
-        if (streamData->is->tellg() != tileOffset)
-            streamData->is->seekg (tileOffset);
-    }
+    if (ifd->currentPosition != tileOffset)
+        ifd->is->seekg (tileOffset);
 
     //
     // Read the first few bytes of the tile (the header).
@@ -348,46 +312,35 @@ readTileData (InputStreamMutex *streamData,
     
     int tileXCoord, tileYCoord, levelX, levelY;
 
-    if (isMultiPart(ifd->version))
-    {
-        int partNumber;
-        Xdr::read <StreamIO> (*streamData->is, partNumber);
-        if (partNumber != ifd->partNumber)
-        {
-            THROW (IEX_NAMESPACE::ArgExc, "Unexpected part number " << partNumber
-                   << ", should be " << ifd->partNumber << ".");
-        }
-    }
-
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*streamData->is, tileXCoord);
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*streamData->is, tileYCoord);
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*streamData->is, levelX);
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*streamData->is, levelY);
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*streamData->is, dataSize);
+    Xdr::read <StreamIO> (*ifd->is, tileXCoord);
+    Xdr::read <StreamIO> (*ifd->is, tileYCoord);
+    Xdr::read <StreamIO> (*ifd->is, levelX);
+    Xdr::read <StreamIO> (*ifd->is, levelY);
+    Xdr::read <StreamIO> (*ifd->is, dataSize);
 
     if (tileXCoord != dx)
-        throw IEX_NAMESPACE::InputExc ("Unexpected tile x coordinate.");
+        throw Iex::InputExc ("Unexpected tile x coordinate.");
 
     if (tileYCoord != dy)
-        throw IEX_NAMESPACE::InputExc ("Unexpected tile y coordinate.");
+        throw Iex::InputExc ("Unexpected tile y coordinate.");
 
     if (levelX != lx)
-        throw IEX_NAMESPACE::InputExc ("Unexpected tile x level number coordinate.");
+        throw Iex::InputExc ("Unexpected tile x level number coordinate.");
 
     if (levelY != ly)
-        throw IEX_NAMESPACE::InputExc ("Unexpected tile y level number coordinate.");
+        throw Iex::InputExc ("Unexpected tile y level number coordinate.");
 
     if (dataSize > (int) ifd->tileBufferSize)
-        throw IEX_NAMESPACE::InputExc ("Unexpected tile block length.");
+        throw Iex::InputExc ("Unexpected tile block length.");
 
     //
     // Read the pixel data.
     //
 
-    if (streamData->is->isMemoryMapped ())
-        buffer = streamData->is->readMemoryMapped (dataSize);
+    if (ifd->is->isMemoryMapped ())
+        buffer = ifd->is->readMemoryMapped (dataSize);
     else
-        streamData->is->read (buffer, dataSize);
+        ifd->is->read (buffer, dataSize);
 
     //
     // Keep track of which tile is the next one in
@@ -395,13 +348,12 @@ readTileData (InputStreamMutex *streamData,
     // operations (seekg() can be fairly expensive).
     //
     
-    streamData->currentPosition = tileOffset + 5 * Xdr::size<int>() + dataSize;
+    ifd->currentPosition = tileOffset + 5 * Xdr::size<int>() + dataSize;
 }
 
 
 void
-readNextTileData (InputStreamMutex *streamData,
-                  TiledInputFile::Data *ifd,
+readNextTileData (TiledInputFile::Data *ifd,
 		  int &dx, int &dy,
 		  int &lx, int &ly,
                   char * & buffer,
@@ -411,34 +363,24 @@ readNextTileData (InputStreamMutex *streamData,
     // Read the next tile block from the file
     //
 
-    if(isMultiPart(ifd->version))
-    {
-        int part;
-        Xdr::read <StreamIO> (*streamData->is, part);
-        if(part!=ifd->partNumber)
-        {
-           throw IEX_NAMESPACE::InputExc("Unexpected part number in readNextTileData");
-        }
-    }
-
     //
     // Read the first few bytes of the tile (the header).
     //
 
-    Xdr::read <StreamIO> (*streamData->is, dx);
-    Xdr::read <StreamIO> (*streamData->is, dy);
-    Xdr::read <StreamIO> (*streamData->is, lx);
-    Xdr::read <StreamIO> (*streamData->is, ly);
-    Xdr::read <StreamIO> (*streamData->is, dataSize);
+    Xdr::read <StreamIO> (*ifd->is, dx);
+    Xdr::read <StreamIO> (*ifd->is, dy);
+    Xdr::read <StreamIO> (*ifd->is, lx);
+    Xdr::read <StreamIO> (*ifd->is, ly);
+    Xdr::read <StreamIO> (*ifd->is, dataSize);
 
     if (dataSize > (int) ifd->tileBufferSize)
-        throw IEX_NAMESPACE::InputExc ("Unexpected tile block length.");
+        throw Iex::InputExc ("Unexpected tile block length.");
     
     //
     // Read the pixel data.
     //
 
-    streamData->is->read (buffer, dataSize);
+    ifd->is->read (buffer, dataSize);
     
     //
     // Keep track of which tile is the next one in
@@ -446,7 +388,7 @@ readNextTileData (InputStreamMutex *streamData,
     // operations (seekg() can be fairly expensive).
     //
 
-    streamData->currentPosition += 5 * Xdr::size<int>() + dataSize;
+    ifd->currentPosition += 5 * Xdr::size<int>() + dataSize;
 }
 
 
@@ -506,15 +448,14 @@ TileBufferTask::execute ()
         // Calculate information about the tile
         //
     
-        Box2i tileRange =  OPENEXR_IMF_INTERNAL_NAMESPACE::dataWindowForTile (
-                _ifd->tileDesc,
-                _ifd->minX, _ifd->maxX,
-                _ifd->minY, _ifd->maxY,
-                _tileBuffer->dx,
-                _tileBuffer->dy,
-                _tileBuffer->lx,
-                _tileBuffer->ly);
-
+        Box2i tileRange = Imf::dataWindowForTile (_ifd->tileDesc,
+                                                  _ifd->minX, _ifd->maxX,
+                                                  _ifd->minY, _ifd->maxY,
+                                                  _tileBuffer->dx,
+                                                  _tileBuffer->dy,
+                                                  _tileBuffer->lx,
+                                                  _tileBuffer->ly);
+    
         int numPixelsPerScanLine = tileRange.max.x - tileRange.min.x + 1;
     
         int numPixelsInTile = numPixelsPerScanLine *
@@ -638,7 +579,6 @@ TileBufferTask::execute ()
 TileBufferTask *
 newTileBufferTask
     (TaskGroup *group,
-     InputStreamMutex *streamData,
      TiledInputFile::Data *ifd,
      int number,
      int dx, int dy,
@@ -665,7 +605,7 @@ newTileBufferTask
 
 	tileBuffer->uncompressedData = 0;
 
-	readTileData (streamData, ifd, dx, dy, lx, ly,
+	readTileData (ifd, dx, dy, lx, ly,
 		      tileBuffer->buffer,
 		      tileBuffer->dataSize);
     }
@@ -689,55 +629,22 @@ newTileBufferTask
 
 
 TiledInputFile::TiledInputFile (const char fileName[], int numThreads):
-    _data (new Data (numThreads))
+    _data (new Data (true, numThreads))
 {
-    _data->_streamData=NULL;
-    _data->_deleteStream=true;
-    
     //
     // This constructor is called when a user
     // explicitly wants to read a tiled file.
     //
 
-
-    IStream* is = 0;
     try
     {
-        is = new StdIFStream (fileName);
-	readMagicNumberAndVersionField(*is, _data->version);
-
-	//
-        // Backward compatibility to read multpart file.
-        //
-	if (isMultiPart(_data->version))
-	{
-	    compatibilityInitialize(*is);
-	    return;
-	}
-
-	_data->_streamData = new InputStreamMutex();
-	_data->_streamData->is = is;
-	_data->header.readFrom (*_data->_streamData->is, _data->version);
+	_data->is = new StdIFStream (fileName);
+	_data->header.readFrom (*_data->is, _data->version);
 	initialize();
-        //read tile offsets - we are not multipart or deep
-        _data->tileOffsets.readFrom (*(_data->_streamData->is), _data->fileIsComplete,false,false);
-	_data->_streamData->currentPosition = _data->_streamData->is->tellg();
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
-        if (_data->_streamData != 0)
-        {
-            if (_data->_streamData->is != 0)
-            {
-                delete _data->_streamData->is;
-                _data->_streamData->is = is = 0;
-            }
-
-            delete _data->_streamData;
-        }
-
-        if (is != 0)
-            delete is;
+	delete _data;
 
 	REPLACE_EXC (e, "Cannot open image file "
 			"\"" << fileName << "\". " << e);
@@ -745,61 +652,28 @@ TiledInputFile::TiledInputFile (const char fileName[], int numThreads):
     }
     catch (...)
     {
-        if ( _data->_streamData != 0)
-        {
-            if ( _data->_streamData->is != 0)
-            {
-                delete _data->_streamData->is;
-                _data->_streamData->is = is = 0;
-            }
-
-            delete _data->_streamData;
-        }
-
-        if (is != 0)
-            delete is;
+	delete _data;
         throw;
     }
 }
 
 
-TiledInputFile::TiledInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int numThreads):
-    _data (new Data (numThreads))
+TiledInputFile::TiledInputFile (IStream &is, int numThreads):
+    _data (new Data (false, numThreads))
 {
-    _data->_deleteStream=false;
     //
     // This constructor is called when a user
     // explicitly wants to read a tiled file.
     //
 
-    bool streamDataCreated = false;
-
     try
     {
-	readMagicNumberAndVersionField(is, _data->version);
-
-	//
-	// Backward compatibility to read multpart file.
-	//
-	if (isMultiPart(_data->version))
-        {
-	    compatibilityInitialize(is);
-            return;
-        }
-
-	streamDataCreated = true;
-	_data->_streamData = new InputStreamMutex();
-	_data->_streamData->is = &is;
-	_data->header.readFrom (*_data->_streamData->is, _data->version);
+	_data->is = &is;
+	_data->header.readFrom (*_data->is, _data->version);
 	initialize();
-        // file is guaranteed to be single part, regular image
-        _data->tileOffsets.readFrom (*(_data->_streamData->is), _data->fileIsComplete,false,false);
-	_data->memoryMapped = _data->_streamData->is->isMemoryMapped();
-	_data->_streamData->currentPosition = _data->_streamData->is->tellg();
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
-        if (streamDataCreated) delete _data->_streamData;
 	delete _data;
 
 	REPLACE_EXC (e, "Cannot open image file "
@@ -808,110 +682,39 @@ TiledInputFile::TiledInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int
     }
     catch (...)
     {
-        if (streamDataCreated) delete _data->_streamData;
 	delete _data;
         throw;
     }
 }
 
 
-TiledInputFile::TiledInputFile (const Header &header,
-                                OPENEXR_IMF_INTERNAL_NAMESPACE::IStream *is,
-                                int version,
-                                int numThreads) :
-    _data (new Data (numThreads))
+TiledInputFile::TiledInputFile
+    (const Header &header,
+     IStream *is,
+     int version,
+     int numThreads)
+:
+    _data (new Data (false, numThreads))
 {
-    _data->_deleteStream=false;
-    _data->_streamData = new InputStreamMutex();
     //
     // This constructor called by class Imf::InputFile
     // when a user wants to just read an image file, and
     // doesn't care or know if the file is tiled.
-    // No need to have backward compatibility here, because
-    // we have somehow got the header.
     //
 
-    _data->_streamData->is = is;
+    _data->is = is;
     _data->header = header;
     _data->version = version;
     initialize();
-    _data->tileOffsets.readFrom (*(_data->_streamData->is),_data->fileIsComplete,false,false);
-    _data->memoryMapped = is->isMemoryMapped();
-    _data->_streamData->currentPosition = _data->_streamData->is->tellg();
-}
-
-
-TiledInputFile::TiledInputFile (InputPartData* part) 
-{
-    _data = new Data (part->numThreads);
-    _data->_deleteStream=false;
-    multiPartInitialize(part);
-}
-
-
-void
-TiledInputFile::compatibilityInitialize(OPENEXR_IMF_INTERNAL_NAMESPACE::IStream& is)
-{
-    is.seekg(0);
-    //
-    // Construct a MultiPartInputFile, initialize TiledInputFile
-    // with the part 0 data.
-    // (TODO) maybe change the third parameter of the constructor of MultiPartInputFile later.
-    //
-    _data->multiPartBackwardSupport = true;
-    _data->multiPartFile = new MultiPartInputFile(is, _data->numThreads);
-    InputPartData* part = _data->multiPartFile->getPart(0);
-
-    multiPartInitialize(part);
-}
-
-
-void
-TiledInputFile::multiPartInitialize(InputPartData* part)
-{
-    if (part->header.type() != TILEDIMAGE)
-        throw IEX_NAMESPACE::ArgExc("Can't build a TiledInputFile from a type-mismatched part.");
-
-    _data->_streamData = part->mutex;
-    _data->header = part->header;
-    _data->version = part->version;
-    _data->partNumber = part->partNumber;
-    _data->memoryMapped = _data->_streamData->is->isMemoryMapped();
-    initialize();
-    _data->tileOffsets.readFrom(part->chunkOffsets,_data->fileIsComplete);
-    _data->_streamData->currentPosition = _data->_streamData->is->tellg();
 }
 
 
 void
 TiledInputFile::initialize ()
 {
-    // fix bad types in header (arises when a tool built against an older version of
-    // OpenEXR converts a scanline image to tiled)
-    // only applies when file is a single part, regular image, tiled file
-    //
-    if(!isMultiPart(_data->version) &&
-       !isNonImage(_data->version) && 
-       isTiled(_data->version) && 
-       _data->header.hasType() )
-    {
-        _data->header.setType(TILEDIMAGE);
-    }
-    
-    if (_data->partNumber == -1)
-    {
-        if (!isTiled (_data->version))
-            throw IEX_NAMESPACE::ArgExc ("Expected a tiled file but the file is not tiled.");
-        
-    }
-    else
-    {
-        if(_data->header.hasType() && _data->header.type()!=TILEDIMAGE)
-        {
-            throw IEX_NAMESPACE::ArgExc ("TiledInputFile used for non-tiledimage part.");
-        }
-    }
-    
+    if (!isTiled (_data->version))
+	throw Iex::ArgExc ("Expected a tiled file but the file is not tiled.");
+
     _data->header.sanityCheck (true);
 
     _data->tileDesc = _data->header.tileDescription();
@@ -955,7 +758,7 @@ TiledInputFile::initialize ()
 						   _data->tileDesc.ySize,
 						   _data->header));
 
-        if (!_data->_streamData->is->isMemoryMapped ())
+        if (!_data->is->isMemoryMapped ())
             _data->tileBuffers[i]->buffer = new char [_data->tileBufferSize];
     }
 
@@ -964,20 +767,18 @@ TiledInputFile::initialize ()
 				      _data->numYLevels,
 				      _data->numXTiles,
 				      _data->numYTiles);
+
+    _data->tileOffsets.readFrom (*(_data->is), _data->fileIsComplete);
+
+    _data->currentPosition = _data->is->tellg();
 }
 
 
 TiledInputFile::~TiledInputFile ()
 {
-    if (!_data->memoryMapped)
+    if (!_data->is->isMemoryMapped())
         for (size_t i = 0; i < _data->tileBuffers.size(); i++)
             delete [] _data->tileBuffers[i]->buffer;
-
-    if (_data->_deleteStream)
-        delete _data->_streamData->is;
-
-    if (_data->partNumber == -1)
-        delete _data->_streamData;
 
     delete _data;
 }
@@ -986,7 +787,7 @@ TiledInputFile::~TiledInputFile ()
 const char *
 TiledInputFile::fileName () const
 {
-    return _data->_streamData->is->fileName();
+    return _data->is->fileName();
 }
 
 
@@ -1007,7 +808,7 @@ TiledInputFile::version () const
 void	
 TiledInputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
 
     //
     // Set the frame buffer
@@ -1031,7 +832,7 @@ TiledInputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 
         if (i.channel().xSampling != j.slice().xSampling ||
             i.channel().ySampling != j.slice().ySampling)
-            THROW (IEX_NAMESPACE::ArgExc, "X and/or y subsampling factors "
+            THROW (Iex::ArgExc, "X and/or y subsampling factors "
 				"of \"" << i.name() << "\" channel "
 				"of input file \"" << fileName() << "\" are "
 				"not compatible with the frame buffer's "
@@ -1126,7 +927,7 @@ TiledInputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 const FrameBuffer &
 TiledInputFile::frameBuffer () const
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
     return _data->frameBuffer;
 }
 
@@ -1147,18 +948,12 @@ TiledInputFile::readTiles (int dx1, int dx2, int dy1, int dy2, int lx, int ly)
 
     try
     {
-        Lock lock (*_data->_streamData);
+        Lock lock (*_data);
 
         if (_data->slices.size() == 0)
-            throw IEX_NAMESPACE::ArgExc ("No frame buffer specified "
+            throw Iex::ArgExc ("No frame buffer specified "
 			       "as pixel data destination.");
         
-        if (!isValidLevel (lx, ly))
-            THROW (IEX_NAMESPACE::ArgExc,
-                   "Level coordinate "
-                   "(" << lx << ", " << ly << ") "
-                   "is invalid.");
-
         //
         // Determine the first and last tile coordinates in both dimensions.
         // We always attempt to read the range of tiles in the order that
@@ -1197,12 +992,11 @@ TiledInputFile::readTiles (int dx1, int dx2, int dy1, int dy2, int lx, int ly)
                 for (int dx = dx1; dx <= dx2; dx++)
                 {
                     if (!isValidTile (dx, dy, lx, ly))
-                        THROW (IEX_NAMESPACE::ArgExc,
+                        THROW (Iex::ArgExc,
 			       "Tile (" << dx << ", " << dy << ", " <<
 			       lx << "," << ly << ") is not a valid tile.");
                     
                     ThreadPool::addGlobalTask (newTileBufferTask (&taskGroup,
-                                                                  _data->_streamData,
                                                                   _data,
                                                                   tileNumber++,
                                                                   dx, dy,
@@ -1232,7 +1026,7 @@ TiledInputFile::readTiles (int dx1, int dx2, int dy1, int dy2, int lx, int ly)
 
 	const string *exception = 0;
 
-        for (size_t i = 0; i < _data->tileBuffers.size(); ++i)
+        for (int i = 0; i < _data->tileBuffers.size(); ++i)
 	{
             TileBuffer *tileBuffer = _data->tileBuffers[i];
 
@@ -1243,9 +1037,9 @@ TiledInputFile::readTiles (int dx1, int dx2, int dy1, int dy2, int lx, int ly)
 	}
 
 	if (exception)
-	    throw IEX_NAMESPACE::IoExc (*exception);
+	    throw Iex::IoExc (*exception);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
         REPLACE_EXC (e, "Error reading pixel data from image "
                         "file \"" << fileName() << "\". " << e);
@@ -1283,39 +1077,21 @@ TiledInputFile::rawTileData (int &dx, int &dy,
 {
     try
     {
-        Lock lock (*_data->_streamData);
+        Lock lock (*_data);
 
         if (!isValidTile (dx, dy, lx, ly))
-            throw IEX_NAMESPACE::ArgExc ("Tried to read a tile outside "
+            throw Iex::ArgExc ("Tried to read a tile outside "
 			       "the image file's data window.");
 
         TileBuffer *tileBuffer = _data->getTileBuffer (0);
-
-        //
-        // if file is a multipart file, we have to seek to the required tile
-        // since we don't know where the file pointer is
-        //
-        int old_dx=dx;
-        int old_dy=dy;
-        int old_lx=lx;
-        int old_ly=ly;
-        if(isMultiPart(version()))
-        {
-            _data->_streamData->is->seekg(_data->tileOffsets(dx,dy,lx,ly));
-        }
-        readNextTileData (_data->_streamData, _data, dx, dy, lx, ly,
+        
+        readNextTileData (_data, dx, dy, lx, ly,
 			  tileBuffer->buffer,
                           pixelDataSize);
-        if(isMultiPart(version()))
-        {
-            if (old_dx!=dx || old_dy !=dy || old_lx!=lx || old_ly!=ly)
-            {
-                throw IEX_NAMESPACE::ArgExc ("rawTileData read the wrong tile");
-            }
-        }
+
         pixelData = tileBuffer->buffer;
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
         REPLACE_EXC (e, "Error reading pixel data from image "
 			"file \"" << fileName() << "\". " << e);
@@ -1356,7 +1132,7 @@ int
 TiledInputFile::numLevels () const
 {
     if (levelMode() == RIPMAP_LEVELS)
-	THROW (IEX_NAMESPACE::LogicExc, "Error calling numLevels() on image "
+	THROW (Iex::LogicExc, "Error calling numLevels() on image "
 			      "file \"" << fileName() << "\" "
 			      "(numLevels() is not defined for files "
 			      "with RIPMAP level mode).");
@@ -1403,7 +1179,7 @@ TiledInputFile::levelWidth (int lx) const
         return levelSize (_data->minX, _data->maxX, lx,
 			  _data->tileDesc.roundingMode);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
 	REPLACE_EXC (e, "Error calling levelWidth() on image "
 			"file \"" << fileName() << "\". " << e);
@@ -1420,7 +1196,7 @@ TiledInputFile::levelHeight (int ly) const
         return levelSize (_data->minY, _data->maxY, ly,
                           _data->tileDesc.roundingMode);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
 	REPLACE_EXC (e, "Error calling levelHeight() on image "
 			"file \"" << fileName() << "\". " << e);
@@ -1434,8 +1210,8 @@ TiledInputFile::numXTiles (int lx) const
 {
     if (lx < 0 || lx >= _data->numXLevels)
     {
-        THROW (IEX_NAMESPACE::ArgExc, "Error calling numXTiles() on image "
-			    "file \"" << _data->_streamData->is->fileName() << "\" "
+        THROW (Iex::ArgExc, "Error calling numXTiles() on image "
+			    "file \"" << _data->is->fileName() << "\" "
 			    "(Argument is not in valid range).");
 
     }
@@ -1449,8 +1225,8 @@ TiledInputFile::numYTiles (int ly) const
 {
     if (ly < 0 || ly >= _data->numYLevels)
     {
-        THROW (IEX_NAMESPACE::ArgExc, "Error calling numYTiles() on image "
-			    "file \"" << _data->_streamData->is->fileName() << "\" "
+        THROW (Iex::ArgExc, "Error calling numYTiles() on image "
+			    "file \"" << _data->is->fileName() << "\" "
 			    "(Argument is not in valid range).");
     }
     
@@ -1470,13 +1246,12 @@ TiledInputFile::dataWindowForLevel (int lx, int ly) const
 {
     try
     {
-	return OPENEXR_IMF_INTERNAL_NAMESPACE::dataWindowForLevel (
-	        _data->tileDesc,
-	        _data->minX, _data->maxX,
-	        _data->minY, _data->maxY,
-	        lx, ly);
+	return Imf::dataWindowForLevel (_data->tileDesc,
+			        	_data->minX, _data->maxX,
+				        _data->minY, _data->maxY,
+				        lx, ly);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
 	REPLACE_EXC (e, "Error calling dataWindowForLevel() on image "
 			"file \"" << fileName() << "\". " << e);
@@ -1498,15 +1273,14 @@ TiledInputFile::dataWindowForTile (int dx, int dy, int lx, int ly) const
     try
     {
 	if (!isValidTile (dx, dy, lx, ly))
-	    throw IEX_NAMESPACE::ArgExc ("Arguments not in valid range.");
+	    throw Iex::ArgExc ("Arguments not in valid range.");
 
-        return OPENEXR_IMF_INTERNAL_NAMESPACE::dataWindowForTile (
-                _data->tileDesc,
-                _data->minX, _data->maxX,
-                _data->minY, _data->maxY,
-                dx, dy, lx, ly);
+        return Imf::dataWindowForTile (_data->tileDesc,
+				       _data->minX, _data->maxX,
+				       _data->minY, _data->maxY,
+				       dx, dy, lx, ly);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
 	REPLACE_EXC (e, "Error calling dataWindowForTile() on image "
 			"file \"" << fileName() << "\". " << e);
@@ -1524,10 +1298,5 @@ TiledInputFile::isValidTile (int dx, int dy, int lx, int ly) const
             (dy < _data->numYTiles[ly] && dy >= 0));
 }
 
-void TiledInputFile::tileOrder(int dx[], int dy[], int lx[], int ly[]) const
-{
-   return _data->tileOffsets.getTileOrder(dx,dy,lx,ly);
-}
 
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

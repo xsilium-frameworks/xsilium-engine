@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -44,9 +44,8 @@
 //----------------------------------------------------------
 
 #include "IexBaseExc.h"
-#include "IexExport.h"
 
-IEX_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Iex {
 
 
 //--------------------------------------------------------------------------
@@ -88,10 +87,10 @@ IEX_INTERNAL_NAMESPACE_HEADER_ENTER
 //
 //--------------------------------------------------------------------------
 
-IEX_EXPORT void throwErrnoExc(const std::string &txt, int errnum);
-IEX_EXPORT void throwErrnoExc(const std::string &txt);
-IEX_EXPORT void throwErrnoExc();
+void throwErrnoExc (const std::string &txt, int errnum);
+void throwErrnoExc (const std::string &txt = "%T." /*, int errnum = oserror() */);
 
-IEX_INTERNAL_NAMESPACE_HEADER_EXIT
 
-#endif // INCLUDED_IEXTHROWERRNOEXC_H
+} // namespace Iex
+
+#endif

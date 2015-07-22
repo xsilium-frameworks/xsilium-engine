@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -56,13 +56,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImathNamespace.h"
-#include "ImathExport.h"
-
 #include <stdlib.h>
 #include <math.h>
 
-IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imath {
 
 //-----------------------------------------------
 // Fast random-number generator that generates
@@ -70,7 +67,7 @@ IMATH_INTERNAL_NAMESPACE_HEADER_ENTER
 // length of 2^32.
 //-----------------------------------------------
 
-class IMATH_EXPORT Rand32
+class Rand32
 {
   public:
 
@@ -227,11 +224,11 @@ gaussSphereRand (Rand &rand);
 // erand48(), nrand48() and friends
 //---------------------------------
 
-IMATH_EXPORT double     erand48 (unsigned short state[3]);
-IMATH_EXPORT double     drand48 ();
-IMATH_EXPORT long int   nrand48 (unsigned short state[3]);
-IMATH_EXPORT long int   lrand48 ();
-IMATH_EXPORT void       srand48 (long int seed);
+double		erand48 (unsigned short state[3]);
+double		drand48 ();
+long int	nrand48 (unsigned short state[3]);
+long int	lrand48 ();
+void		srand48 (long int seed);
 
 
 //---------------
@@ -306,21 +303,21 @@ Rand48::Rand48 (unsigned long int seed)
 inline bool
 Rand48::nextb ()
 {
-    return nrand48 (_state) & 1;
+    return Imath::nrand48 (_state) & 1;
 }
 
 
 inline long int
 Rand48::nexti ()
 {
-    return nrand48 (_state);
+    return Imath::nrand48 (_state);
 }
 
 
 inline double
 Rand48::nextf ()
 {
-    return erand48 (_state);
+    return Imath::erand48 (_state);
 }
 
 
@@ -396,6 +393,6 @@ gaussSphereRand (Rand &rand)
     return hollowSphereRand <Vec> (rand) * gaussRand (rand);
 }
 
-IMATH_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imath
 
-#endif // INCLUDED_IMATHRANDOM_H
+#endif

@@ -1,5 +1,5 @@
 /* 
-  Copyright 2008-2013 LibRaw LLC (info@libraw.org)
+  Copyright 2008-2010 LibRaw LLC (info@libraw.org)
 
 LibRaw is free software; you can redistribute it and/or modify
 it under the terms of the one of three licenses as you choose:
@@ -21,15 +21,11 @@ it under the terms of the one of three licenses as you choose:
    for more information
 */
 
-#line 33 "dcraw/dcraw.c"
-#ifndef USE_JPEG
 #define NO_JPEG
-#endif
 #ifndef USE_JASPER
 #define NO_JASPER
 #endif
-#line 44 "dcraw/dcraw.c"
-#define DCRAW_VERSION "9.24"
+#define DCRAW_VERSION "9.12"
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -47,7 +43,33 @@ it under the terms of the one of three licenses as you choose:
 #include <string.h>
 #include <time.h>
 #include <sys/types.h>
-#line 71 "dcraw/dcraw.c"
+
+/*
+   NO_JPEG disables decoding of compressed Kodak DC120 files.
+   NO_LCMS disables the "-p" option.
+ */
+#ifdef NODEPS
+#define NO_JASPER
+#define NO_JPEG
+#define NO_LCMS
+#endif
+#ifndef NO_JASPER
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#include <jasper/jasper.h>	/* Decode RED camera movies */
+#endif
+#ifndef NO_JPEG
+#include <jpeglib.h>		/* Decode compressed Kodak DC120 photos */
+#endif
+#ifdef LOCALEDIR
+#include <libintl.h>
+#define _(String) gettext(String)
+#else
+#define _(String) (String)
+#endif
 #ifdef __CYGWIN__
 #include <io.h>
 #endif
@@ -56,41 +78,12 @@ it under the terms of the one of three licenses as you choose:
 #include <winsock2.h>
 #pragma comment(lib, "ws2_32.lib")
 #define snprintf _snprintf
-#define strcasecmp stricmp
+#define strcasecmp _stricmp
 #define strncasecmp strnicmp
-#line 85 "dcraw/dcraw.c"
 #else
 #include <unistd.h>
 #include <utime.h>
 #include <netinet/in.h>
-#include <stdint.h>
-typedef int64_t INT64;
-typedef uint64_t UINT64;
-#endif
-
-#ifdef NODEPS
-#define NO_JASPER
-#define NO_JPEG
-#define NO_LCMS
-#endif
-#ifndef NO_JASPER
-#include <jasper/jasper.h>	/* Decode Red camera movies */
-#endif
-#ifndef NO_JPEG
-#include <jpeglib.h>		/* Decode compressed Kodak DC120 photos */
-#endif				/* and Adobe Lossy DNGs */
-#ifndef NO_LCMS
-#ifdef USE_LCMS
-#include <lcms.h>		/* Support color profiles */
-#else
-#include <lcms2.h>		/* Support color profiles */
-#endif
-#endif
-#ifdef LOCALEDIR
-#include <libintl.h>
-#define _(String) gettext(String)
-#else
-#define _(String) (String)
 #endif
 
 #ifdef LJPEG_DECODE
@@ -101,7 +94,6 @@ typedef uint64_t UINT64;
 #ifndef LONG_BIT
 #define LONG_BIT (8 * sizeof (long))
 #endif
-#line 199 "dcraw/dcraw.c"
 #define FORC(cnt) for (c=0; c < cnt; c++)
 #define FORC3 FORC(3)
 #define FORC4 FORC(4)
@@ -115,8 +107,6 @@ typedef uint64_t UINT64;
 #define ULIM(x,y,z) ((y) < (z) ? LIM(x,y,z) : LIM(x,z,y))
 #define CLIP(x) LIM(x,0,65535)
 #define SWAP(a,b) { a=a+b; b=a-b; a=a-b; }
-
-#define my_swap(type, i, j) {type t = i; i = j; j = t;}
 
 /*
    In order to inline this calculation, I make the risky
@@ -157,11 +147,7 @@ typedef uint64_t UINT64;
 	3 G R G R G R	3 B G B G B G	3 R G R G R G	3 G B G B G B
  */
 
-#define RAW(row,col) \
-	raw_image[(row)*raw_width+(col)]
-#line 262 "dcraw/dcraw.c"
 #define BAYER(row,col) \
 	image[((row) >> shrink)*iwidth + ((col) >> shrink)][FC(row,col)]
-
 #define BAYER2(row,col) \
-	image[((row) >> shrink)*iwidth + ((col) >> shrink)][fcol(row,col)]
+	image[((row) >> shrink)*iwidth + ((col) >> shrink)][fc(row,col)]

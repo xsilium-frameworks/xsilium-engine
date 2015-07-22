@@ -42,27 +42,24 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfEnvmap.h"
-#include "ImfExport.h"
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+#include <ImfAttribute.h>
+#include <ImfEnvmap.h>
 
 
-typedef TypedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Envmap> EnvmapAttribute;
-
-template <> IMF_EXPORT const char *EnvmapAttribute::staticTypeName ();
-
-template <> IMF_EXPORT
-void EnvmapAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &,
-                                    int) const;
-
-template <> IMF_EXPORT
-void EnvmapAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &,
-                                     int,
-                                     int);
+namespace Imf {
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+typedef TypedAttribute<Envmap> EnvmapAttribute;
+template <> const char *EnvmapAttribute::staticTypeName ();
+template <> void EnvmapAttribute::writeValueTo (OStream &, int) const;
+template <> void EnvmapAttribute::readValueFrom (IStream &, int, int);
+
+
+} // namespace Imf
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfEnvmapAttribute.cpp>
+#endif
 
 #endif

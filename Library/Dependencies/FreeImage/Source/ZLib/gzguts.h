@@ -1,5 +1,5 @@
 /* gzguts.h -- zlib internal header definitions for gz* operations
- * Copyright (C) 2004, 2005, 2010, 2011, 2012, 2013 Mark Adler
+ * Copyright (C) 2004, 2005, 2010, 2011, 2012 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -12,7 +12,7 @@
 #  endif
 #endif
 
-#ifdef HAVE_HIDDEN
+#if ((__GNUC__-0) * 10 + __GNUC_MINOR__-0 >= 33) && !defined(NO_VIZ)
 #  define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
 #else
 #  define ZLIB_INTERNAL
@@ -27,19 +27,8 @@
 #endif
 #include <fcntl.h>
 
-#ifdef _WIN32
-#  include <stddef.h>
-#endif
-
-#if defined(__TURBOC__) || defined(_MSC_VER) || defined(_WIN32)
+#ifdef __TURBOC__
 #  include <io.h>
-#endif
-
-#ifdef WINAPI_FAMILY
-#  define open _open
-#  define read _read
-#  define write _write
-#  define close _close
 #endif
 
 #ifdef NO_DEFLATE       /* for compatibility with old definition */
@@ -67,7 +56,7 @@
 #ifndef HAVE_VSNPRINTF
 #  ifdef MSDOS
 /* vsnprintf may exist on some MS-DOS compilers (DJGPP?),
-   but for now we just assume it doesn't. */
+ but for now we just assume it doesn't. */
 #    define NO_vsnprintf
 #  endif
 #  ifdef __TURBOC__
@@ -77,6 +66,7 @@
 /* In Win32, vsnprintf is available as the "non-ANSI" _vsnprintf. */
 #    if !defined(vsnprintf) && !defined(NO_vsnprintf)
 #      if !defined(_MSC_VER) || ( defined(_MSC_VER) && _MSC_VER < 1500 )
+#         include <io.h>
 #         define vsnprintf _vsnprintf
 #      endif
 #    endif
@@ -95,14 +85,6 @@
 #  endif
 #endif
 
-/* unlike snprintf (which is required in C99, yet still not supported by
-   Microsoft more than a decade later!), _snprintf does not guarantee null
-   termination of the result -- however this is only used in gzlib.c where
-   the result is assured to fit in the space provided */
-#ifdef _MSC_VER
-#  define snprintf _snprintf
-#endif
-
 #ifndef local
 #  define local static
 #endif
@@ -119,7 +101,7 @@
 #  include <windows.h>
 #  define zstrerror() gz_strwinerror((DWORD)GetLastError())
 #else
-#  ifndef NO_STRERROR
+#  ifdef STDC
 #    include <errno.h>
 #    define zstrerror() strerror(errno)
 #  else
@@ -142,8 +124,7 @@
 #  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
 #endif
 
-/* default i/o buffer size -- double this for output when reading (this and
-   twice this must be able to fit in an unsigned type) */
+/* default i/o buffer size -- double this for output when reading */
 #define GZBUFSIZE 8192
 
 /* gzip modes, also provide a little integrity check on the passed structure */
