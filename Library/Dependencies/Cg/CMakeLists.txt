@@ -22,23 +22,6 @@ if (WIN32)
     file(COPY ${CG_DLL} DESTINATION ${XSILIUM_RUNTIME_OUTPUT}/Debug)
     file(COPY ${CG_DLL} DESTINATION ${XSILIUM_RUNTIME_OUTPUT}/Release)
   endif ()
-elseif (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-  add_custom_target(Cg COMMAND 
-    unzip lib/Cg.framework.zip -d ${XSILIUM_BINARY_DIR}/../${XSILIUM_LIB_DIRECTORY}
-    WORKING_DIRECTORY ${Cg_SOURCE_DIR}
-    COMMENT "Unzipping Cg framework" VERBATIM
-  )
-elseif (UNIX)
-  # manually install the correct .so
-  if (XSILIUM_PLATFORM_X64)
-    install(FILES lib64/libCg.so DESTINATION ${XSILIUM_LIB_DIRECTORY})
-    set(Cg_LIBRARY_REL "${Cg_SOURCE_DIR}/lib64/libCg.so" CACHE PATH "" FORCE)
-    set(Cg_LIBRARY_DBG "${Cg_SOURCE_DIR}/lib64/libCg.so" CACHE PATH "" FORCE)
-  else ()
-    install(FILES lib/libCg.so DESTINATION ${XSILIUM_LIB_DIRECTORY})
-    set(Cg_LIBRARY_REL "${Cg_SOURCE_DIR}/lib/libCg.so" CACHE PATH "" FORCE)
-    set(Cg_LIBRARY_DBG "${Cg_SOURCE_DIR}/lib/libCg.so" CACHE PATH "" FORCE)
-  endif ()
 endif ()
 
 mark_as_advanced(Cg_HOME)
