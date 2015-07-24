@@ -60,7 +60,7 @@ if(BUILD_FRAMEWORK)
 endif()
 
 include_directories(include
-		    ${OGG_INCLUDE_DIRS}
+		    ${OGG_INCLUDE_DIR}
 		    ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 add_library(ogg ${OGG_HEADERS} ${OGG_SOURCES})
@@ -92,7 +92,7 @@ endfunction()
 
 configure_pkg_config_file(ogg.pc.in)
 
-set(OGG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "" FORCE)
+set(OGG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/include" CACHE PATH "" FORCE)
 set(OGG_LIBRARY_DBG ogg CACHE STRING "" FORCE)
 set(OGG_LIBRARY_REL ogg CACHE STRING "" FORCE)
 mark_as_advanced(OGG_INCLUDE_DIR OGG_LIBRARY_DBG OGG_LIBRARY_REL)
