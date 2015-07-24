@@ -61,7 +61,7 @@ endif()
 
 include_directories(include
 		    ${OGG_INCLUDE_DIRS}
-		    ${CMAKE_CURRENT_BINARY_DIR}/ogg/include)
+		    ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 add_library(ogg ${OGG_HEADERS} ${OGG_SOURCES})
 set_target_properties(ogg PROPERTIES SOVERSION "0.${LIB_AGE}.${LIB_REVISION}")
