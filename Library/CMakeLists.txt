@@ -6,7 +6,7 @@ add_subdirectory(Cegui)
 add_subdirectory(Hydrax)
 add_subdirectory(SkyX)
 #add_subdirectory(OgreOggSound)
-#add_subdirectory(Bullet)
+add_subdirectory(Bullet)
 
 #Update
 #add_subdirectory(Curl)

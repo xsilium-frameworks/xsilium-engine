@@ -5,6 +5,7 @@
 // - Floris van den Berg (flvdberg@wxs.nl)
 // - Hervé Drolon <drolon@infonie.fr>
 // - Ryan Rubley (ryan@lostreality.org)
+// - Mihail Naydenov (mnaydenov@users.sourceforge.net)
 //
 // This file is part of FreeImage 3
 //
@@ -72,12 +73,13 @@ Allocate a FIBITMAP with possibly no pixel data
 (i.e. only header data and some or all metadata)
 @param header_only If TRUE, allocate a 'header only' FIBITMAP, otherwise allocate a full FIBITMAP
 @param type Image type
-@param width
-@param height
-@param bpp
-@param red_mask
-@param green_mask
-@param blue_mask
+@param width Image width
+@param height Image height
+@param bpp Number of bits per pixel
+@param red_mask Image red mask 
+@param green_mask Image green mask
+@param blue_mask Image blue mask
+@return Returns the allocated FIBITMAP
 @see FreeImage_AllocateT
 */
 DLL_API FIBITMAP * DLL_CALLCONV FreeImage_AllocateHeaderT(BOOL header_only, FREE_IMAGE_TYPE type, int width, int height, int bpp FI_DEFAULT(8), unsigned red_mask FI_DEFAULT(0), unsigned green_mask FI_DEFAULT(0), unsigned blue_mask FI_DEFAULT(0));
@@ -86,15 +88,38 @@ DLL_API FIBITMAP * DLL_CALLCONV FreeImage_AllocateHeaderT(BOOL header_only, FREE
 Allocate a FIBITMAP of type FIT_BITMAP, with possibly no pixel data 
 (i.e. only header data and some or all metadata)
 @param header_only If TRUE, allocate a 'header only' FIBITMAP, otherwise allocate a full FIBITMAP
-@param width
-@param height
-@param bpp
-@param red_mask
-@param green_mask
-@param blue_mask
+@param width Image width
+@param height Image height
+@param bpp Number of bits per pixel
+@param red_mask Image red mask 
+@param green_mask Image green mask
+@param blue_mask Image blue mask
+@return Returns the allocated FIBITMAP
 @see FreeImage_Allocate
 */
 DLL_API FIBITMAP * DLL_CALLCONV FreeImage_AllocateHeader(BOOL header_only, int width, int height, int bpp, unsigned red_mask FI_DEFAULT(0), unsigned green_mask FI_DEFAULT(0), unsigned blue_mask FI_DEFAULT(0));
+
+/**
+Allocate a FIBITMAP with no pixel data and wrap a user provided pixel buffer
+@param ext_bits Pointer to external user's pixel buffer
+@param ext_pitch Pointer to external user's pixel buffer pitch
+@param type Image type
+@param width Image width
+@param height Image height
+@param bpp Number of bits per pixel
+@param red_mask Image red mask 
+@param green_mask Image green mask
+@param blue_mask Image blue mask
+@return Returns the allocated FIBITMAP
+@see FreeImage_ConvertFromRawBitsEx
+*/
+DLL_API FIBITMAP * DLL_CALLCONV FreeImage_AllocateHeaderForBits(BYTE *ext_bits, unsigned ext_pitch, FREE_IMAGE_TYPE type, int width, int height, int bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask);
+
+/**
+Helper for 16-bit FIT_BITMAP
+@see FreeImage_GetRGBMasks
+*/
+DLL_API BOOL DLL_CALLCONV FreeImage_HasRGBMasks(FIBITMAP *dib);
 
 #if defined(__cplusplus)
 }
@@ -270,7 +295,7 @@ CalculateUsedPaletteEntries(unsigned bit_count) {
 
 inline unsigned char *
 CalculateScanLine(unsigned char *bits, unsigned pitch, int scanline) {
-	return (bits + (pitch * scanline));
+	return bits ? (bits + ((size_t)pitch * scanline)) : NULL;
 }
 
 // ----------------------------------------------------------
@@ -359,6 +384,13 @@ RGBA to RGB conversion
 */
 FIBITMAP* RemoveAlphaChannel(FIBITMAP* dib);
 
+/**
+Rotate a dib according to Exif info
+@param dib Input / Output dib to rotate
+@see Exif.cpp, PluginJPEG.cpp
+*/
+void RotateExif(FIBITMAP **dib);
+
 
 // ==========================================================
 //   Big Endian / Little Endian utility functions
@@ -445,7 +477,7 @@ A Standard Default Color Space for the Internet - sRGB.
 */
 #define LUMA_REC709(r, g, b)	(0.2126F * r + 0.7152F * g + 0.0722F * b)
 
-#define GREY(r, g, b) (BYTE)LUMA_REC709(r, g, b)
+#define GREY(r, g, b) (BYTE)(LUMA_REC709(r, g, b) + 0.5F)
 /*
 #define GREY(r, g, b) (BYTE)(((WORD)r * 77 + (WORD)g * 150 + (WORD)b * 29) >> 8)	// .299R + .587G + .114B
 */
@@ -456,8 +488,8 @@ A Standard Default Color Space for the Internet - sRGB.
 #define RGB565(b, g, r) ((((b) >> 3) << FI16_565_BLUE_SHIFT) | (((g) >> 2) << FI16_565_GREEN_SHIFT) | (((r) >> 3) << FI16_565_RED_SHIFT))
 #define RGB555(b, g, r) ((((b) >> 3) << FI16_555_BLUE_SHIFT) | (((g) >> 3) << FI16_555_GREEN_SHIFT) | (((r) >> 3) << FI16_555_RED_SHIFT))
 
-#define FORMAT_RGB565(dib) ((FreeImage_GetRedMask(dib) == FI16_565_RED_MASK) &&(FreeImage_GetGreenMask(dib) == FI16_565_GREEN_MASK) &&(FreeImage_GetBlueMask(dib) == FI16_565_BLUE_MASK))
-#define RGBQUAD_TO_WORD(dib, color) (FORMAT_RGB565(dib) ? RGB565((color)->rgbBlue, (color)->rgbGreen, (color)->rgbRed) : RGB555((color)->rgbBlue, (color)->rgbGreen, (color)->rgbRed))
+#define IS_FORMAT_RGB565(dib) ((FreeImage_GetRedMask(dib) == FI16_565_RED_MASK) && (FreeImage_GetGreenMask(dib) == FI16_565_GREEN_MASK) && (FreeImage_GetBlueMask(dib) == FI16_565_BLUE_MASK))
+#define RGBQUAD_TO_WORD(dib, color) (IS_FORMAT_RGB565(dib) ? RGB565((color)->rgbBlue, (color)->rgbGreen, (color)->rgbRed) : RGB555((color)->rgbBlue, (color)->rgbGreen, (color)->rgbRed))
 
 #define CREATE_GREYSCALE_PALETTE(palette, entries) \
 	for (unsigned i = 0, v = 0; i < entries; i++, v += 0x00FFFFFF / (entries - 1)) { \

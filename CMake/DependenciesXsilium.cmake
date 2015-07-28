@@ -14,14 +14,14 @@ set(ZZIP_H_PATH "${XSILIUM_DEP_DIR}/ZZipLib" )
 
 # Find FreeImage
 set(FREEIMAGE_H_PATH "${XSILIUM_DEP_DIR}/FreeImage/Source")
-set(FREEIMAGE_LIB "FreeImage" )
-set(FREEIMAGE_LIB_DBG "FreeImage" )
+set(FREEIMAGE_LIB_STATIC "FreeImage" )
+set(FREEIMAGE_LIB_STATIC_DBG "FreeImage" )
 
 # Find FreeType
 set(FREETYPE_H_PATH_ft2build "${XSILIUM_DEP_DIR}/Freetype/include")
 set(FREETYPE_H_PATH_ftconfig "${XSILIUM_DEP_DIR}/Freetype/include")
-set(FREETYPE_LIB "freetype")
-set(FREETYPE_LIB_DBG "freetype")
+set(FREETYPE_LIB_STATIC "freetype")
+set(FREETYPE_LIB_STATIC_DBG "freetype")
 
 # Find Rapidxml
 set(RAPIDXML_H_PATH "${XSILIUM_DEP_DIR}/Rapidxml")
@@ -119,5 +119,8 @@ if(Boost_FOUND AND NOT WIN32)
   list(REMOVE_DUPLICATES Boost_LIBRARIES)
 endif()
 
-
+#CEGUI
+set(CEGUI_FOUND 1)
+set(CEGUI_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include" "${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include")
+#set(CEGUI_LIBRARIES "RenderSystem_GL")
 
