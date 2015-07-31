@@ -79,7 +79,12 @@ ${ENET_LIBRARY}
 CEGUIOgreRenderer-0
 )
 
-link_directories(${Boost_LIBRARY_DIRS})
+link_directories(  
+${Cg_LIBRARY_DIRS}
+${X11_LIBRARY_DIRS}
+${DirectX_LIBRARY_DIRS}
+${Boost_LIBRARY_DIRS}
+)
 
 ogre_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
 

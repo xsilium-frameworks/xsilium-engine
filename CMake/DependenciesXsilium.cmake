@@ -105,9 +105,9 @@ endif()
 
 if(Boost_FOUND AND Boost_VERSION GREATER 104900)
     if(Boost_VERSION GREATER 105300)
-        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono serialization log log_setup)
+        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono serialization log)
     else()
-        set(OGRE_BOOST_COMPONENTS thread date_time system chrono serialization log log_setup)
+        set(OGRE_BOOST_COMPONENTS thread date_time system chrono serialization log)
     endif()
     find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 endif()
@@ -125,4 +125,17 @@ endif()
 set(CEGUI_FOUND 1)
 set(CEGUI_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include" "${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include")
 set(CEGUI_LIBRARIES "CEGUIBase-0")
+
+# Find DirectX
+if(WIN32)
+	find_package(DirectX)
+	macro_log_feature(DirectX9_FOUND "DirectX9" "Support for the DirectX render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+
+	find_package(DirectX11)
+	macro_log_feature(DirectX11_FOUND "DirectX11" "Support for the DirectX11 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+	
+	find_package(DirectXInput)
+ 	macro_log_feature(Direct_FOUND "DirectInput/XInput" "Support for the DirectInput/XInput" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+
+endif()
 
