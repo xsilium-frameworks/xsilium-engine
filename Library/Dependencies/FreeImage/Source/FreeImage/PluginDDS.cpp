@@ -378,10 +378,6 @@ template <class DECODER> void DecodeDXTBlock (BYTE *dstData, const BYTE *srcBloc
 		decoder.SetY (y);
 		for (int x = 0; x < bw; x++) {
 			decoder.GetColor (x, y, (Color8888 &)*dst);
-
-#if FREEIMAGE_COLORORDER == FREEIMAGE_COLORORDER_RGB 
-			INPLACESWAP(dst[FI_RGBA_RED], dst[FI_RGBA_BLUE]);
-#endif 
 			dst += 4;
 		}
 	}
@@ -551,7 +547,7 @@ RegExpr() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/x-dds";
+	return "image/freeimage-dds";
 }
 
 static BOOL DLL_CALLCONV

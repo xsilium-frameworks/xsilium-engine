@@ -41,10 +41,8 @@
 #include <ImfMultiView.h>
 
 using namespace std;
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
-
+namespace Imf {
 namespace {
 
 StringVector
@@ -103,7 +101,7 @@ viewNum (const string &view, const StringVector &multiView)
     // otherwise, it's some other (valid) view
     //
 
-    for (size_t i = 0; i < multiView.size(); ++i)
+    for (int i = 0; i < multiView.size(); ++i)
     {
 	if (multiView[i] == view)
 	    return i;
@@ -230,11 +228,11 @@ areCounterparts (const string &channel1,
     //
 
     StringVector chan1 = parseString (channel1);
-    size_t size1 = chan1.size();	// number of SECTIONS in string
+    unsigned int size1 = chan1.size();	// number of SECTIONS in string
     					// name (not string length)
 
     StringVector chan2 = parseString (channel2);
-    size_t size2 = chan2.size();
+    unsigned int size2 = chan2.size();
 
     if (size1 == 0 || size2 == 0)
 	return false;
@@ -290,7 +288,7 @@ areCounterparts (const string &channel1,
     if (size1 != size2)
 	return false;
 
-    for(size_t i = 0; i < size1; ++i)
+    for(int i = 0; i < size1; ++i)
     {
 	if (i != size1 - 2 && chan1[i] != chan2[i])
 	    return false;
@@ -383,7 +381,7 @@ insertViewName (const string &channel,
 
     string newName;
 
-    for (size_t j = 0; j < s.size(); ++j)
+    for (int j = 0; j < s.size(); ++j)
     {
 	if (j < s.size() - 1)
 	    newName += s[j] + ".";
@@ -395,41 +393,4 @@ insertViewName (const string &channel,
 }
 
 
-string
-removeViewName(const string & channel,const string & view)
-{
-    StringVector s = parseString (channel, '.');
-
-    if (s.size() == 0)
-	return ""; // nothing in, nothing out
-
-    if (s.size() == 1)
-    {
-	//
-	// Channel in the default view, since no periods in its name.
-	// No viewname to remove
-	//
-
-	return channel;
-    }
-
-    string newName;
-    for( size_t j = 0 ; j < s.size() ; ++j)
-    {
-	    // only add the penultimate string part
-	    // if it doesn't match the view name
-	    if(j+2!=s.size() || s[j]!=view)
-	    {
-                  newName += s[j];
-	          if(j+1!=s.size())
-	          {
-                      newName  += ".";
-	          }
-	    }
-    }
-
-    return newName;
-
-}
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

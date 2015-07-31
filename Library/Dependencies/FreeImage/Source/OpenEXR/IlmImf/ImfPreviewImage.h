@@ -36,9 +36,6 @@
 #ifndef INCLUDED_IMF_PREVIEW_IMAGE_H
 #define INCLUDED_IMF_PREVIEW_IMAGE_H
 
-#include "ImfNamespace.h"
-#include "ImfExport.h"
-
 //-----------------------------------------------------------------------------
 //
 //	class PreviewImage -- a usually small, low-dynamic range image,
@@ -48,11 +45,10 @@
 //
 //-----------------------------------------------------------------------------
 
+namespace Imf {
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
 
-
-struct IMF_EXPORT PreviewRgba
+struct PreviewRgba
 {
     unsigned char	r;	// Red, green and blue components of
     unsigned char	g;	// the pixel's color; intensity is
@@ -70,7 +66,7 @@ struct IMF_EXPORT PreviewRgba
 };
 
 
-class IMF_EXPORT PreviewImage
+class PreviewImage
 {
   public:
 
@@ -130,6 +126,6 @@ class IMF_EXPORT PreviewImage
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

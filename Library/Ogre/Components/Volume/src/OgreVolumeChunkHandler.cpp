@@ -27,10 +27,6 @@ THE SOFTWARE.
 #include "OgreRoot.h"
 
 #include "OgreVolumeChunkHandler.h"
-#include "OgreVolumeChunk.h"
-#include "OgreVolumeMeshBuilder.h"
-#include "OgreVolumeOctreeNode.h"
-#include "OgreVolumeDualGridGenerator.h"
 
 namespace Ogre {
 namespace Volume {

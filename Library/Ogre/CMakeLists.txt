@@ -56,6 +56,7 @@ set(CMAKE_MODULE_PATH
   "${OGRE_SOURCE_DIR}/CMake"
   "${OGRE_SOURCE_DIR}/CMake/Utils"
   "${OGRE_SOURCE_DIR}/CMake/Packages"
+  ${CMAKE_MODULE_PATH}
 )
 
 if(ANDROID)
@@ -458,7 +459,7 @@ cmake_dependent_option(OGRE_INSTALL_PDB "Install debug pdb files" TRUE "MSVC" FA
 cmake_dependent_option(OGRE_FULL_RPATH "Build executables with the full required RPATH to run from their install location." FALSE "NOT WIN32" FALSE)
 option(OGRE_PROFILING "Enable internal profiling support." FALSE)
 cmake_dependent_option(OGRE_CONFIG_STATIC_LINK_CRT "Statically link the MS CRT dlls (msvcrt)" FALSE "MSVC" FALSE)
-set(OGRE_LIB_DIRECTORY "lib${LIB_SUFFIX}" CACHE STRING "Install path for libraries, e.g. 'lib64' on some 64-bit Linux distros.")
+set(OGRE_LIB_DIRECTORY "${CMAKE_BINARY_DIR}/lib${LIB_SUFFIX}" CACHE STRING "Install path for libraries, e.g. 'lib64' on some 64-bit Linux distros.")
 if (WIN32)
 	option(OGRE_INSTALL_VSPROPS "Install Visual Studio Property Page." FALSE)
 	if (OGRE_INSTALL_VSPROPS)

@@ -51,14 +51,13 @@
 #include <string.h>
 #include <algorithm>
 
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 using namespace std;
-using namespace IMATH_NAMESPACE;
+using namespace Imath;
 using namespace RgbaYca;
-using namespace ILMTHREAD_NAMESPACE;
+using namespace IlmThread;
 
 namespace {
 
@@ -358,7 +357,7 @@ RgbaOutputFile::ToYca::writePixels (int numScanLines)
 {
     if (_fbBase == 0)
     {
-	THROW (IEX_NAMESPACE::ArgExc, "No frame buffer was specified as the "
+	THROW (Iex::ArgExc, "No frame buffer was specified as the "
 			    "pixel data source for image file "
 			    "\"" << _outputFile.fileName() << "\".");
     }
@@ -571,7 +570,7 @@ RgbaOutputFile::RgbaOutputFile (const char name[],
 }
 
 
-RgbaOutputFile::RgbaOutputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+RgbaOutputFile::RgbaOutputFile (OStream &os,
 				const Header &header,
 				RgbaChannels rgbaChannels,
                                 int numThreads):
@@ -588,11 +587,11 @@ RgbaOutputFile::RgbaOutputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
 
 
 RgbaOutputFile::RgbaOutputFile (const char name[],
-				const IMATH_NAMESPACE::Box2i &displayWindow,
-				const IMATH_NAMESPACE::Box2i &dataWindow,
+				const Imath::Box2i &displayWindow,
+				const Imath::Box2i &dataWindow,
 				RgbaChannels rgbaChannels,
 				float pixelAspectRatio,
-				const IMATH_NAMESPACE::V2f screenWindowCenter,
+				const Imath::V2f screenWindowCenter,
 				float screenWindowWidth,
 				LineOrder lineOrder,
 				Compression compression,
@@ -621,7 +620,7 @@ RgbaOutputFile::RgbaOutputFile (const char name[],
 				int height,
 				RgbaChannels rgbaChannels,
 				float pixelAspectRatio,
-				const IMATH_NAMESPACE::V2f screenWindowCenter,
+				const Imath::V2f screenWindowCenter,
 				float screenWindowWidth,
 				LineOrder lineOrder,
 				Compression compression,
@@ -723,14 +722,14 @@ RgbaOutputFile::frameBuffer () const
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 RgbaOutputFile::displayWindow () const
 {
     return _outputFile->header().displayWindow();
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 RgbaOutputFile::dataWindow () const
 {
     return _outputFile->header().dataWindow();
@@ -744,7 +743,7 @@ RgbaOutputFile::pixelAspectRatio () const
 }
 
 
-const IMATH_NAMESPACE::V2f
+const Imath::V2f
 RgbaOutputFile::screenWindowCenter () const
 {
     return _outputFile->header().screenWindowCenter();
@@ -971,7 +970,7 @@ RgbaInputFile::FromYca::readPixels (int scanLine)
 {
     if (_fbBase == 0)
     {
-	THROW (IEX_NAMESPACE::ArgExc, "No frame buffer was specified as the "
+	THROW (Iex::ArgExc, "No frame buffer was specified as the "
 			    "pixel data destination for image file "
 			    "\"" << _inputFile.fileName() << "\".");
     }
@@ -1174,7 +1173,7 @@ RgbaInputFile::RgbaInputFile (const char name[], int numThreads):
 }
 
 
-RgbaInputFile::RgbaInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int numThreads):
+RgbaInputFile::RgbaInputFile (IStream &is, int numThreads):
     _inputFile (new InputFile (is, numThreads)),
     _fromYca (0),
     _channelNamePrefix ("")
@@ -1201,7 +1200,7 @@ RgbaInputFile::RgbaInputFile (const char name[],
 }
 
 
-RgbaInputFile::RgbaInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+RgbaInputFile::RgbaInputFile (IStream &is,
 			      const string &layerName,
 			      int numThreads)
 :
@@ -1339,14 +1338,14 @@ RgbaInputFile::frameBuffer () const
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 RgbaInputFile::displayWindow () const
 {
     return _inputFile->header().displayWindow();
 }
 
 
-const IMATH_NAMESPACE::Box2i &
+const Imath::Box2i &
 RgbaInputFile::dataWindow () const
 {
     return _inputFile->header().dataWindow();
@@ -1360,7 +1359,7 @@ RgbaInputFile::pixelAspectRatio () const
 }
 
 
-const IMATH_NAMESPACE::V2f	
+const Imath::V2f	
 RgbaInputFile::screenWindowCenter () const
 {
     return _inputFile->header().screenWindowCenter();
@@ -1402,4 +1401,4 @@ RgbaInputFile::version () const
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

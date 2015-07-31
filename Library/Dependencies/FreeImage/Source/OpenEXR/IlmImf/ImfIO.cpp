@@ -41,9 +41,8 @@
 
 #include <ImfIO.h>
 #include "Iex.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 
 IStream::IStream (const char fileName[]): _fileName (fileName)
@@ -68,7 +67,7 @@ IStream::isMemoryMapped () const
 char *
 IStream::readMemoryMapped (int n)
 {
-    throw IEX_NAMESPACE::InputExc ("Attempt to perform a memory-mapped read "
+    throw Iex::InputExc ("Attempt to perform a memory-mapped read "
 			 "on a file that is not memory mapped.");
     return 0;
 }
@@ -107,4 +106,4 @@ OStream::fileName () const
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

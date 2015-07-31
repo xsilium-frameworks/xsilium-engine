@@ -31,7 +31,6 @@ THE SOFTWARE.
 #define __GLESRenderTexture_H__
 
 #include "OgreGLESTexture.h"
-#include "OgreSingleton.h"
 
 namespace Ogre {
     class GLESHardwarePixelBuffer;

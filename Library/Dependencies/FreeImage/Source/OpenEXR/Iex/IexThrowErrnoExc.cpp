@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -46,20 +46,11 @@
 #include <string.h>
 #include <errno.h>
 
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-#endif
-
-IEX_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Iex {
 
 
 void throwErrnoExc (const std::string &text, int errnum)
 {
-#ifdef PLATFORM_WINDOWS
-    if (0 != getenv("IEXDEBUGTHROW"))
-        DebugBreak();
-#endif
-
     const char *entext = strerror (errnum);
     std::string tmp (text);
     std::string::size_type pos;
@@ -864,10 +855,5 @@ void throwErrnoExc (const std::string &text)
     throwErrnoExc (text, errno);
 }
 
-void throwErrnoExc()
-{
-    std::string txt = "%T.";
-    throwErrnoExc (txt);
-}
 
-IEX_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Iex

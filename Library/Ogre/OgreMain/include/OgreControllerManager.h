@@ -32,6 +32,8 @@ THE SOFTWARE.
 
 #include "OgreCommon.h"
 #include "OgreSingleton.h"
+#include "OgreController.h"
+#include "OgrePredefinedControllers.h"
 #include "OgreTextureUnitState.h"
 #include "OgreSharedPtr.h"
 #include "OgreHeaderPrefix.h"

@@ -31,6 +31,10 @@ THE SOFTWARE.
 #include "OgreWorkQueue.h"
 
 #include "OgreVolumePrerequisites.h"
+#include "OgreVolumeChunk.h"
+#include "OgreVolumeMeshBuilder.h"
+#include "OgreVolumeDualGridGenerator.h"
+#include "OgreVolumeOctreeNode.h"
 
 namespace Ogre {
 namespace Volume {
@@ -38,9 +42,6 @@ namespace Volume {
     /** Forward declaration.
     */
     class Chunk;
-    class MeshBuilder;
-    class DualGridGenerator;
-    class OctreeNode;
 
     /** Data being passed around while loading.
     */

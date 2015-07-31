@@ -78,20 +78,20 @@ namespace Ogre {
             p = pi.getNext();
             if (mScope > Math::UnitRandom())
             {
-                if (!p->mDirection.isZeroLength())
+                if (!p->direction.isZeroLength())
                 {
                     if (mKeepVelocity)
                     {
-                        length = p->mDirection.length();
+                        length = p->direction.length();
                     }
 
-                    p->mDirection += Vector3(Math::RangeRandom(-mRandomness, mRandomness) * timeElapsed,
+                    p->direction += Vector3(Math::RangeRandom(-mRandomness, mRandomness) * timeElapsed,
                         Math::RangeRandom(-mRandomness, mRandomness) * timeElapsed,
                         Math::RangeRandom(-mRandomness, mRandomness) * timeElapsed);
 
                     if (mKeepVelocity)
                     {
-                        p->mDirection *= length / p->mDirection.length();
+                        p->direction *= length / p->direction.length();
                     }
                 }
             }

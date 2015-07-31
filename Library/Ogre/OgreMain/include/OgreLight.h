@@ -31,9 +31,12 @@ THE SOFTWARE.
 #include "OgrePrerequisites.h"
 
 #include "OgreColourValue.h"
+#include "OgreVector3.h"
 #include "OgreVector4.h"
+#include "OgreString.h"
 #include "OgreMovableObject.h"
 #include "OgrePlaneBoundedVolume.h"
+#include "OgreShadowCameraSetup.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre {
@@ -541,7 +544,7 @@ namespace Ogre {
         */
         bool isInLightRange(const Ogre::Sphere& sphere) const;
         
-        /** Check whether a bounding box is included in the lighted area of the light
+        /** Check whether a bounding box is included in the lighted	area of the light
         @note 
             The function trades accuracy for efficiency. As a result you may get
             false-positives (The function should not return any false-negatives).
@@ -551,6 +554,11 @@ namespace Ogre {
     protected:
         /// Internal method for synchronising with parent node (if any)
         virtual void update(void) const;
+
+        /// @copydoc AnimableObject::getAnimableDictionaryName
+        const String& getAnimableDictionaryName(void) const;
+        /// @copydoc AnimableObject::initialiseAnimableDictionary
+        void initialiseAnimableDictionary(StringVector& vec) const;
 
         LightTypes mLightType;
         Vector3 mPosition;
@@ -618,7 +626,8 @@ namespace Ogre {
     /** @} */
     /** @} */
 
-#include "OgreHeaderPrefix.h"
-
 } // namespace Ogre
+
+#include "OgreHeaderSuffix.h"
+
 #endif // _LIGHT_H__

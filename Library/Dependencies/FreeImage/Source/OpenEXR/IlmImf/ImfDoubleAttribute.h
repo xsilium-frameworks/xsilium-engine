@@ -43,17 +43,21 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfExport.h"
+#include <ImfAttribute.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+
+namespace Imf {
 
 
 typedef TypedAttribute<double> DoubleAttribute;
-template <> IMF_EXPORT const char *DoubleAttribute::staticTypeName ();
+template <> const char *DoubleAttribute::staticTypeName ();
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfDoubleAttribute.cpp>
+#endif
 
 #endif

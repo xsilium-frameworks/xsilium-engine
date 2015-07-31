@@ -49,17 +49,17 @@ endif()
 
 include_directories(
 ${XSILIUM_INCLUDE}
+${Boost_INCLUDE_DIRS}
+${CEGUI_INCLUDE_DIRS}
+${OGRE_INCLUDE_DIRS}
+${OIS_INCLUDE_DIR}
 ${ENET_INCLUDE_DIR} 
-${CEGUI_INCLUDE_DIR}
-${OGRE_INCLUDE_DIR}
+${BULLET_INCLUDE_DIRS}
+${OGRE_Terrain_INCLUDE_DIR}
+${PagedGeometry_INCLUDE_DIRS}
 ${RAPIDXML_INCLUDE_DIR}
-${OGRE_Overlay_INCLUDE_DIR}
 ${SKYX_H_PATH}
 ${HYDRAX_H_PATH}
-${OGRE_Terrain_INCLUDE_DIR}
-${OGRE_RenderSystems_INCLUDE_DIR}
-${OGREPAGED_INCLUDE_DIRS}
-${BULLET_INCLUDE_DIRS}
 Login
 Game
 Shared
@@ -67,9 +67,21 @@ Shared
 )
 
 link_libraries(
-	${XSILIUM_LIBRARY} ${DirectX_LIBRARY}
+${XSILIUM_LIBRARY}
+${BULLET_LIBRARIES}
+${OIS_LIB}
+${OGRE_Terrain_LIBRARIES}
+${SKYX_LIBRARY}
+${HYDRAX_LIBRARY}
+${CEGUI_LIBRARIES}
+${PagedGeometry_LIBRARY}
+${ENET_LIBRARY}
+CEGUIOgreRenderer-0
 )
-xsilium_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
+
+link_directories(${Boost_LIBRARY_DIRS})
+
+ogre_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
 
 if (APPLE)
 

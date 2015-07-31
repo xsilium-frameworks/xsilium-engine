@@ -278,9 +278,9 @@ namespace Ogre {
 
         static String msTypeName;
 
-        /// Internal method for setting up geometry, called by OverlayElement::update
+        /// internal method for setting up geometry, called by OverlayElement::update
         void updatePositionGeometry(void);
-        /// Internal method for setting up geometry, called by OverlayElement::update
+        /// internal method for setting up geometry, called by OverlayElement::update
         void updateTextureGeometry(void);
         /// Internal method for setting up parameters
         void addBaseParameters(void);

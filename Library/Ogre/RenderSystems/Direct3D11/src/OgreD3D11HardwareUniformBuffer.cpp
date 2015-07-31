@@ -31,25 +31,25 @@ THE SOFTWARE.
 
 namespace Ogre {
 
-    //---------------------------------------------------------------------
-    D3D11HardwareUniformBuffer::D3D11HardwareUniformBuffer(HardwareBufferManagerBase* mgr, size_t sizeBytes, HardwareBuffer::Usage usage, 
-                                                bool useShadowBuffer, const String& name, D3D11Device & device)
-        : HardwareUniformBuffer(mgr, sizeBytes, usage, useShadowBuffer, name)
-        , mBufferImpl(0)
-          
-    {
-        // everything is done via internal generalisation
-        mBufferImpl = new D3D11HardwareBuffer(D3D11HardwareBuffer::CONSTANT_BUFFER, 
-                                            mSizeInBytes, mUsage, device, false, useShadowBuffer, false);
+	//---------------------------------------------------------------------
+	D3D11HardwareUniformBuffer::D3D11HardwareUniformBuffer(HardwareBufferManagerBase* mgr, size_t sizeBytes, HardwareBuffer::Usage usage, 
+												bool useShadowBuffer, const String& name, D3D11Device & device)
+		: HardwareUniformBuffer(mgr, sizeBytes, usage, useShadowBuffer, name)
+		, mBufferImpl(0)
+		  
+	{
+		// everything is done via internal generalisation
+		mBufferImpl = new D3D11HardwareBuffer(D3D11HardwareBuffer::CONSTANT_BUFFER, 
+											mSizeInBytes, mUsage, device, false, useShadowBuffer, false);
 
-    }
-    //---------------------------------------------------------------------
-    D3D11HardwareUniformBuffer::~D3D11HardwareUniformBuffer()
-    {
-        SAFE_DELETE(mBufferImpl);
-    }
-    //---------------------------------------------------------------------
-    void* D3D11HardwareUniformBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
+	}
+	//---------------------------------------------------------------------
+	D3D11HardwareUniformBuffer::~D3D11HardwareUniformBuffer()
+	{
+		SAFE_DELETE(mBufferImpl);
+	}
+	//---------------------------------------------------------------------
+	void* D3D11HardwareUniformBuffer::lock(size_t offset, size_t length, LockOptions options)
 	{
 		return mBufferImpl->lock(offset, length, options);
 	}

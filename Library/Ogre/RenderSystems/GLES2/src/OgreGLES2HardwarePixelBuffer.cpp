@@ -77,7 +77,7 @@ namespace Ogre {
         }
     }
 
-    PixelBox GLES2HardwarePixelBuffer::lockImpl(const Image::Box &lockBox,  LockOptions options)
+    PixelBox GLES2HardwarePixelBuffer::lockImpl(const Image::Box lockBox,  LockOptions options)
     {
         allocateBuffer();
         if (options != HardwareBuffer::HBL_DISCARD)
@@ -317,7 +317,7 @@ namespace Ogre {
         }
     }
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID || OGRE_PLATFORM == OGRE_PLATFORM_EMSCRIPTEN
+#if OGRE_PLATFORM == OGRE_PLATFORM_ANDROID
     void GLES2TextureBuffer::updateTextureId(GLuint textureID)
     {
         mTextureID = textureID;
@@ -454,7 +454,7 @@ namespace Ogre {
                                     GLES2PixelUtil::getGLOriginFormat(data.format), GLES2PixelUtil::getGLOriginDataType(data.format),
                                     NULL));
                     break;
-            }   
+            }	
             if (mUsage & TU_AUTOMIPMAP && (mTarget == GL_TEXTURE_2D_ARRAY || mTarget == GL_TEXTURE_3D))
             {
                 OGRE_CHECK_GL_ERROR(glGenerateMipmap(mTarget));
@@ -661,7 +661,7 @@ namespace Ogre {
             switch(mTarget)
             {
                 case GL_TEXTURE_2D:
-                case GL_TEXTURE_CUBE_MAP:
+        		case GL_TEXTURE_CUBE_MAP:
                     OGRE_CHECK_GL_ERROR(glTexSubImage2D(mFaceTarget,
                                     mLevel,
                                     dest.left, dest.top,
@@ -777,7 +777,7 @@ namespace Ogre {
     // @author W.J. van der Laan
     void GLES2TextureBuffer::blitFromTexture(GLES2TextureBuffer *src, const Image::Box &srcBox, const Image::Box &dstBox)
     {
-        return; // todo - add a shader attach...
+		return; // todo - add a shader attach...
 //        std::cerr << "GLES2TextureBuffer::blitFromTexture " <<
 //        src->mTextureID << ":" << srcBox.left << "," << srcBox.top << "," << srcBox.right << "," << srcBox.bottom << " " << 
 //        mTextureID << ":" << dstBox.left << "," << dstBox.top << "," << dstBox.right << "," << dstBox.bottom << std::endl;
@@ -787,7 +787,7 @@ namespace Ogre {
         
         RenderSystem* rsys = Root::getSingleton().getRenderSystem();
         rsys->_disableTextureUnitsFrom(0);
-        glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);
 
         // Disable alpha, depth and scissor testing, disable blending, 
         // and disable culling
@@ -897,7 +897,7 @@ namespace Ogre {
             // Normalise to texture coordinate in 0.0 .. 1.0
             w = (w+0.5f) / (float)src->mDepth;
             
-            // Finally we're ready to rumble    
+            // Finally we're ready to rumble	
             getGLES2SupportRef()->getStateCacheManager()->bindGLTexture(src->mTarget, src->mTextureID);
             OGRE_CHECK_GL_ERROR(glEnable(src->mTarget));
 
@@ -1075,7 +1075,7 @@ namespace Ogre {
 #endif
 
         // GL texture buffer
-        GLES2TextureBuffer tex(BLANKSTRING, target, id, width, height, depth, format, src.format,
+        GLES2TextureBuffer tex(StringUtil::BLANK, target, id, width, height, depth, format, src.format,
                               0, 0, (Usage)(TU_AUTOMIPMAP|HBU_STATIC_WRITE_ONLY), false, false, 0);
         
         // Upload data to 0,0,0 in temporary texture
@@ -1101,122 +1101,54 @@ namespace Ogre {
         GLsizei width;
         GLsizei height;
         GLsizei depth;
-        PixelBox scaled;
-        scaled.format = data.format;
-        scaled.left = 0;
-        scaled.right = mWidth;
-        scaled.top = 0;
-        scaled.bottom = mHeight;
-        scaled.front = 0;
-        scaled.back = mDepth;
-        scaled.setConsecutive();
-       
-        if (scaled.format == PF_R8G8B8)
-        {
-            size_t srcSize = PixelUtil::getMemorySize(data.getWidth(), data.getHeight(), data.getDepth(), data.format);
-            scaled.format = PF_B8G8R8;
-            scaled.data = new uint8[srcSize];
-            memcpy(scaled.data, data.data, srcSize);
-            PixelUtil::bulkPixelConversion(data, scaled);
-        }
-        else
-        {
-            size_t srcSize = scaled.getConsecutiveSize();
-            scaled.data = new uint8[srcSize];
-            Image::scale(data, scaled);
-        }
-        GLint maxMips = GLES2PixelUtil::getMaxMipmaps(mWidth, mHeight, mDepth, mFormat);
+        PixelBox scaled = data;
+        scaled.data = data.data;
+        scaled.left = data.left;
+        scaled.right = data.right;
+        scaled.top = data.top;
+        scaled.bottom = data.bottom;
+        scaled.front = data.front;
+        scaled.back = data.back;
+
+        width = (GLsizei)data.getWidth();
+        height = (GLsizei)data.getHeight();
+        depth = (GLsizei)data.getDepth();
+
+        GLenum glFormat = GLES2PixelUtil::getGLOriginFormat(scaled.format);
         GLenum dataType = GLES2PixelUtil::getGLOriginDataType(scaled.format);
-        
-        for (GLint level = 0; level <= maxMips; ++level)
+        GLenum internalFormat = GLES2PixelUtil::getClosestGLInternalFormat(scaled.format);
+
+#if OGRE_NO_GLES3_SUPPORT == 0
+        // In GL ES 3, the internalformat and format parameters do not need to be identical
+        internalFormat = GLES2PixelUtil::getClosestGLInternalFormat(scaled.format);
+#endif
+        switch(mTarget)
         {
-            width = (GLsizei)scaled.getWidth();
-            height = (GLsizei)scaled.getHeight();
-            depth = (GLsizei)scaled.getDepth();
-            
-            switch(mTarget)
-            {
-                case GL_TEXTURE_2D:
-                case GL_TEXTURE_CUBE_MAP:
-                    OGRE_CHECK_GL_ERROR(glTexImage2D(mFaceTarget,
-                                                     level,
-                                                     mGLInternalFormat,
-                                                     width, height,
-                                                     0,
-                                                     mGLInternalFormat,
-                                                     dataType,
-                                                     scaled.data));
-                    break;
+            case GL_TEXTURE_2D:
+            case GL_TEXTURE_CUBE_MAP:
+                OGRE_CHECK_GL_ERROR(glTexImage2D(mFaceTarget,
+                                                 mLevel,
+                                                 internalFormat,
+                                                 width, height,
+                                                 0,
+                                                 glFormat,
+                                                 dataType,
+                                                 scaled.data));
+                break;
 #if OGRE_NO_GLES3_SUPPORT == 0
-                case GL_TEXTURE_3D:
-                case GL_TEXTURE_2D_ARRAY:
-                    OGRE_CHECK_GL_ERROR(glTexImage3D(mFaceTarget,
-                                                     level,
-                                                     mGLInternalFormat,
-                                                     width, height, depth,
-                                                     0,
-                                                     mGLInternalFormat,
-                                                     dataType,
-                                                     scaled.data));
-                    break;
+            case GL_TEXTURE_3D:
+            case GL_TEXTURE_2D_ARRAY:
+                OGRE_CHECK_GL_ERROR(glTexImage3D(mFaceTarget,
+                                                 mLevel,
+                                                 internalFormat,
+                                                 width, height, depth,
+                                                 0,
+                                                 glFormat,
+                                                 dataType,
+                                                 scaled.data));
+                break;
 #endif
-            }
-            
-            bool squashX = (width > 1);
-            bool squashY = (height > 1);
-#if OGRE_NO_GLES3_SUPPORT == 0
-            bool squashZ = (mTarget == GL_TEXTURE_3D && depth > 1);
-#else
-            bool squashZ = false;
-#endif
-            if (squashX || squashY || squashZ)
-            {
-                size_t xMax = squashX ? width >> 1 : width;
-                size_t yMax = squashY ? height >> 1 : height;
-                size_t zMax = squashZ ? depth >> 1 : depth;
-                PixelBox newBox(xMax, yMax, zMax, scaled.format, scaled.data);
-                size_t xMask, yMask, zMask;
-                size_t mask = 1;
-                if (squashX)
-                {
-                    xMask = mask;
-                    mask <<= 1;
-                }
-                if (squashY)
-                {
-                    yMask = mask;
-                    mask <<= 1;
-                }
-                if (squashZ)
-                {
-                    zMask = mask;
-                    mask <<= 1;
-                }
-                // Generate next mipmap level by averaging together consecutive pixels from this level
-                for (size_t z = 0; z < zMax; ++z)
-                {
-                    for (size_t y = 0; y < yMax; ++y)
-                    {
-                        for (size_t x = 0; x < xMax; ++x)
-                        {
-                            ColourValue sum = ColourValue::ZERO;
-                            for (size_t i = 0; i < mask; ++i)
-                            {
-                                sum += scaled.getColourAt(squashX ? (x << 1) | (i & xMask ? 1 : 0) : x,
-                                                          squashY ? (y << 1) | (i & yMask ? 1 : 0) : y,
-                                                          squashZ ? (z << 1) | (i & zMask ? 1 : 0) : z);
-                            }
-                            newBox.setColourAt(sum / mask, x, y, z);
-                        }
-                    }
-                }
-                
-                scaled = newBox;
-            }
         }
-        
-        delete[] (uint8*)scaled.data;
-        scaled.data = NULL;
     }
     
     //********* GLES2RenderBuffer

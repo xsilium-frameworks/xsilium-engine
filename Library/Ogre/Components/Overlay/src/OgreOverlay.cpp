@@ -27,12 +27,14 @@ THE SOFTWARE.
 */
 
 #include "OgreOverlay.h"
+#include "OgreRoot.h"
+#include "OgreSceneManager.h"
 #include "OgreOverlayContainer.h"
-#include "OgreOverlayManager.h"
-#include "OgreVector3.h"
-#include "OgreSceneNode.h"
-#include "OgreRenderQueue.h"
 #include "OgreCamera.h"
+#include "OgreOverlayManager.h"
+#include "OgreQuaternion.h"
+#include "OgreVector3.h"
+
 
 namespace Ogre {
 
@@ -41,8 +43,7 @@ namespace Ogre {
         mName(name),
         mRotate(0.0f), 
         mScrollX(0.0f), mScrollY(0.0f),
-        mScaleX(1.0f), mScaleY(1.0f),
-        mLastViewportWidth(0), mLastViewportHeight(0),
+        mScaleX(1.0f), mScaleY(1.0f), 
         mTransformOutOfDate(true), mTransformUpdated(true), 
         mZOrder(100), mVisible(false), mInitialised(false)
 
@@ -53,15 +54,15 @@ namespace Ogre {
     //---------------------------------------------------------------------
     Overlay::~Overlay()
     {
-        // remove children
+		// remove children
 
         OGRE_DELETE mRootNode;
-        
-        for (OverlayContainerList::iterator i = m2DElements.begin(); 
-             i != m2DElements.end(); ++i)
-        {
-            (*i)->_notifyParent(0, 0);
-        }
+		
+		for (OverlayContainerList::iterator i = m2DElements.begin(); 
+			 i != m2DElements.end(); ++i)
+		{
+			(*i)->_notifyParent(0, 0);
+		}
     }
     //---------------------------------------------------------------------
     const String& Overlay::getName(void) const
@@ -70,8 +71,8 @@ namespace Ogre {
     }
     //---------------------------------------------------------------------
     void Overlay::assignZOrders()
-    {
-        ushort zorder = static_cast<ushort>(mZOrder * 100.0f);
+	{
+		ushort zorder = static_cast<ushort>(mZOrder * 100.0f);
 
         // Notify attached 2D elements
         OverlayContainerList::iterator i, iend;
@@ -80,7 +81,7 @@ namespace Ogre {
         {
             zorder = (*i)->_notifyZOrder(zorder);
         }
-    }
+	}
     //---------------------------------------------------------------------
     void Overlay::setZOrder(ushort zorder)
     {
@@ -89,7 +90,7 @@ namespace Ogre {
 
         mZOrder = zorder;
 
-        assignZOrders();
+		assignZOrders();
     }
     //---------------------------------------------------------------------
     ushort Overlay::getZOrder(void) const
@@ -105,10 +106,10 @@ namespace Ogre {
     void Overlay::show(void)
     {
         mVisible = true;
-        if (!mInitialised)
-        {
-            initialise();
-        }
+		if (!mInitialised)
+		{
+			initialise();
+		}
     }
     //---------------------------------------------------------------------
     void Overlay::hide(void)
@@ -116,24 +117,24 @@ namespace Ogre {
         mVisible = false;
     }
     //---------------------------------------------------------------------
-    void Overlay::initialise(void)
-    {
-        OverlayContainerList::iterator i, iend;
-        iend = m2DElements.end();
-        for (i = m2DElements.begin(); i != m2DElements.end(); ++i)
-        {
-            (*i)->initialise();
-        }
-        mInitialised = true;
-    }
-    //---------------------------------------------------------------------
+	void Overlay::initialise(void)
+	{
+		OverlayContainerList::iterator i, iend;
+		iend = m2DElements.end();
+		for (i = m2DElements.begin(); i != m2DElements.end(); ++i)
+		{
+			(*i)->initialise();
+		}
+		mInitialised = true;
+	}
+	//---------------------------------------------------------------------
     void Overlay::add2D(OverlayContainer* cont)
     {
         m2DElements.push_back(cont);
         // Notify parent
         cont->_notifyParent(0, this);
 
-        assignZOrders();
+		assignZOrders();
 
         Matrix4 xform;
         _getWorldTransforms(&xform);
@@ -144,8 +145,8 @@ namespace Ogre {
     void Overlay::remove2D(OverlayContainer* cont)
     {
         m2DElements.remove(cont);
-        cont->_notifyParent(0, 0);
-        assignZOrders();
+		cont->_notifyParent(0, 0);
+		assignZOrders();
     }
     //---------------------------------------------------------------------
     void Overlay::add3D(SceneNode* node)
@@ -191,10 +192,10 @@ namespace Ogre {
         for (i = m2DElements.begin(); i != iend; ++i)
         {
             if ((*i)->getName() == name)
-            {
-                return *i;
+			{
+				return *i;
 
-            }
+			}
         }
         return NULL;
     }
@@ -247,46 +248,36 @@ namespace Ogre {
 
     }
     //---------------------------------------------------------------------
-    void Overlay::_findVisibleObjects(Camera* cam, RenderQueue* queue, Viewport* vp)
+    void Overlay::_findVisibleObjects(Camera* cam, RenderQueue* queue)
     {
+        OverlayContainerList::iterator i, iend;
+
+        if (OverlayManager::getSingleton().hasViewportChanged())
+        {
+            iend = m2DElements.end();
+            for (i = m2DElements.begin(); i != iend; ++i)
+            {
+                (*i)->_notifyViewport();
+            }
+        }
+
+        // update elements
+        if (mTransformUpdated)
+        {
+            Matrix4 xform;
+
+            _getWorldTransforms(&xform);
+            iend = m2DElements.end();
+            for (i = m2DElements.begin(); i != iend; ++i)
+            {
+                (*i)->_notifyWorldTransforms(xform);
+            }
+
+            mTransformUpdated = false;
+        }
+
         if (mVisible)
         {
-            // Flag for update pixel-based GUIElements if viewport has changed dimensions
-            bool tmpViewportDimensionsChanged = false;
-            if (mLastViewportWidth != vp->getActualWidth() ||
-                mLastViewportHeight != vp->getActualHeight())
-            {
-                tmpViewportDimensionsChanged = true;
-                mLastViewportWidth = vp->getActualWidth();
-                mLastViewportHeight = vp->getActualHeight();
-            }
-
-            OverlayContainerList::iterator i, iend;
-
-            if(tmpViewportDimensionsChanged)
-            {
-                iend = m2DElements.end();
-                for (i = m2DElements.begin(); i != iend; ++i)
-                {
-                    (*i)->_notifyViewport();
-                }
-            }
-
-            // update elements
-            if (mTransformUpdated)
-            {
-                Matrix4 xform;
-                _getWorldTransforms(&xform);
-
-                iend = m2DElements.end();
-                for (i = m2DElements.begin(); i != iend; ++i)
-                {
-                    (*i)->_notifyWorldTransforms(xform);
-                }
-
-                mTransformUpdated = false;
-            }
-
             // Add 3D elements
             mRootNode->setPosition(cam->getDerivedPosition());
             mRootNode->setOrientation(cam->getDerivedOrientation());
@@ -309,6 +300,10 @@ namespace Ogre {
                 (*i)->_updateRenderQueue(queue);
             }
         }
+
+
+
+       
     }
     //---------------------------------------------------------------------
     void Overlay::updateTransform(void) const
@@ -338,27 +333,27 @@ namespace Ogre {
         mTransformOutOfDate = false;
     }
     //---------------------------------------------------------------------
-    OverlayElement* Overlay::findElementAt(Real x, Real y)
-    {
-        OverlayElement* ret = NULL;
-        int currZ = -1;
+	OverlayElement* Overlay::findElementAt(Real x, Real y)
+	{
+		OverlayElement* ret = NULL;
+		int currZ = -1;
         OverlayContainerList::iterator i, iend;
         iend = m2DElements.end();
         for (i = m2DElements.begin(); i != iend; ++i)
         {
-            int z = (*i)->getZOrder();
-            if (z > currZ)
-            {
-                OverlayElement* elementFound = (*i)->findElementAt(x,y);
-                if(elementFound)
-                {
-                    currZ = elementFound->getZOrder();
-                    ret = elementFound;
-                }
-            }
+			int z = (*i)->getZOrder();
+			if (z > currZ)
+			{
+				OverlayElement* elementFound = (*i)->findElementAt(x,y);
+				if(elementFound)
+				{
+					currZ = elementFound->getZOrder();
+					ret = elementFound;
+				}
+			}
         }
-        return ret;
-    }
+		return ret;
+	}
 
 }
 

@@ -28,53 +28,52 @@ THE SOFTWARE.
 #include "OgreD3D11TextureManager.h"
 #include "OgreD3D11Texture.h"
 #include "OgreRoot.h"
-#include "OgreLogManager.h"
 #include "OgreD3D11RenderSystem.h"
 #include "OgreD3D11Device.h"
 
 namespace Ogre 
 {
-    //---------------------------------------------------------------------
-    D3D11TextureManager::D3D11TextureManager( D3D11Device & device ) : TextureManager(), mDevice (device)
-    {
-        if( mDevice.isNull())
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Invalid Direct3DDevice passed", "D3D11TextureManager::D3D11TextureManager" );
-        // register with group manager
-        ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
-    }
-    //---------------------------------------------------------------------
-    D3D11TextureManager::~D3D11TextureManager()
-    {
-        // unregister with group manager
-        ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
+	//---------------------------------------------------------------------
+	D3D11TextureManager::D3D11TextureManager( D3D11Device & device ) : TextureManager(), mDevice (device)
+	{
+		if( mDevice.isNull())
+			OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS, "Invalid Direct3DDevice passed", "D3D11TextureManager::D3D11TextureManager" );
+		// register with group manager
+		ResourceGroupManager::getSingleton()._registerResourceManager(mResourceType, this);
+	}
+	//---------------------------------------------------------------------
+	D3D11TextureManager::~D3D11TextureManager()
+	{
+		// unregister with group manager
+		ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 
-    }
-    //---------------------------------------------------------------------
-    Resource* D3D11TextureManager::createImpl(const String& name, 
-        ResourceHandle handle, const String& group, bool isManual, 
-        ManualResourceLoader* loader, const NameValuePairList* createParams)
-    {
-        return new D3D11Texture(this, name, handle, group, isManual, loader, mDevice); 
-    }
-    //---------------------------------------------------------------------
-    PixelFormat D3D11TextureManager::getNativeFormat(TextureType ttype, PixelFormat format, int usage)
-    {
-        // Basic filtering
-        DXGI_FORMAT d3dPF = D3D11Mappings::_getPF(D3D11Mappings::_getClosestSupportedPF(format));
+	}
+	//---------------------------------------------------------------------
+	Resource* D3D11TextureManager::createImpl(const String& name, 
+		ResourceHandle handle, const String& group, bool isManual, 
+		ManualResourceLoader* loader, const NameValuePairList* createParams)
+	{
+		return new D3D11Texture(this, name, handle, group, isManual, loader, mDevice); 
+	}
+	//---------------------------------------------------------------------
+	PixelFormat D3D11TextureManager::getNativeFormat(TextureType ttype, PixelFormat format, int usage)
+	{
+		// Basic filtering
+		DXGI_FORMAT d3dPF = D3D11Mappings::_getPF(D3D11Mappings::_getClosestSupportedPF(format));
 
-        return D3D11Mappings::_getPF(d3dPF);
-    }
-    //---------------------------------------------------------------------
-    bool D3D11TextureManager::isHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage,
-        bool preciseFormatOnly)
-    {
-        if (!preciseFormatOnly)
-            format = getNativeFormat(ttype, format, usage);
+		return D3D11Mappings::_getPF(d3dPF);
+	}
+	//---------------------------------------------------------------------
+	bool D3D11TextureManager::isHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage,
+		bool preciseFormatOnly)
+	{
+		if (!preciseFormatOnly)
+			format = getNativeFormat(ttype, format, usage);
 
-        D3D11RenderSystem* rs = static_cast<D3D11RenderSystem*>(
-            Root::getSingleton().getRenderSystem());
+		D3D11RenderSystem* rs = static_cast<D3D11RenderSystem*>(
+			Root::getSingleton().getRenderSystem());
 
-        return rs->_checkTextureFilteringSupported(ttype, format, usage);
-    }
-    //---------------------------------------------------------------------
+		return rs->_checkTextureFilteringSupported(ttype, format, usage);
+	}
+	//---------------------------------------------------------------------
 }

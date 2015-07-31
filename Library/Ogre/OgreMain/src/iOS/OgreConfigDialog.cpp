@@ -30,33 +30,33 @@ THE SOFTWARE.
 
 namespace Ogre {
 
-    ConfigDialog* dlg = NULL;
+	ConfigDialog* dlg = NULL;
 
-    ConfigDialog::ConfigDialog()
+	ConfigDialog::ConfigDialog()
+	{
+		dlg = this;
+	}
+	
+	ConfigDialog::~ConfigDialog()
+	{
+	}
+	
+	void ConfigDialog::initialise()
     {
-        dlg = this;
-    }
-    
-    ConfigDialog::~ConfigDialog()
-    {
-    }
-    
-    void ConfigDialog::initialise()
-    {
-    }
-    
-    void ConfigDialog::run()
-    {
+	}
+	
+	void ConfigDialog::run()
+	{
 
-    }
-    
-    void ConfigDialog::cancel()
-    {
-    }
+	}
+	
+	void ConfigDialog::cancel()
+	{
+	}
 
-    bool ConfigDialog::display()
-    {
-        return true;
-    }
+	bool ConfigDialog::display()
+	{
+		return true;
+	}
 
 }

@@ -41,9 +41,8 @@
 
 #include <ImfTimeCodeAttribute.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
-using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 
 template <>
 const char *
@@ -55,7 +54,7 @@ TimeCodeAttribute::staticTypeName ()
 
 template <>
 void
-TimeCodeAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int version) const
+TimeCodeAttribute::writeValueTo (OStream &os, int version) const
 {
     Xdr::write <StreamIO> (os, _value.timeAndFlags());
     Xdr::write <StreamIO> (os, _value.userData());
@@ -64,7 +63,7 @@ TimeCodeAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, in
 
 template <>
 void
-TimeCodeAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int size, int version)
+TimeCodeAttribute::readValueFrom (IStream &is, int size, int version)
 {
     unsigned int tmp;
 
@@ -76,4 +75,4 @@ TimeCodeAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, i
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT 
+} // namespace Imf

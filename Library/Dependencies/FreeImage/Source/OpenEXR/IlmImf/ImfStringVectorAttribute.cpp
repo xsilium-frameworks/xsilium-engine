@@ -32,19 +32,17 @@
 ///////////////////////////////////////////////////////////////////////////
 
 
+
 //-----------------------------------------------------------------------------
 //
-//	class StringVectorAttribute
+//	class StringAttribute
 //
 //-----------------------------------------------------------------------------
 
 #include <ImfStringVectorAttribute.h>
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
-
-
-using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
+namespace Imf {
 
 
 template <>
@@ -57,7 +55,7 @@ StringVectorAttribute::staticTypeName ()
 
 template <>
 void
-StringVectorAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int version) const
+StringVectorAttribute::writeValueTo (OStream &os, int version) const
 {
     int size = _value.size();
 
@@ -72,7 +70,7 @@ StringVectorAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os
 
 template <>
 void
-StringVectorAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int size, int version)
+StringVectorAttribute::readValueFrom (IStream &is, int size, int version)
 {
     int read = 0;
 
@@ -85,11 +83,7 @@ StringVectorAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &i
        std::string str;
        str.resize (strSize);
   
-       if( strSize>0 )
-       {
-           Xdr::read<StreamIO> (is, &str[0], strSize);
-       }
-       
+       Xdr::read<StreamIO> (is, &str[0], strSize);
        read += strSize;
 
        _value.push_back (str);
@@ -97,4 +91,4 @@ StringVectorAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &i
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT 
+} // namespace Imf

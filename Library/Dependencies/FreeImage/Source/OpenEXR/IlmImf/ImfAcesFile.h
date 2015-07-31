@@ -77,19 +77,20 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfHeader.h"
-#include "ImfRgba.h"
+#include <ImfHeader.h>
+#include <ImfRgba.h>
 #include "ImathVec.h"
 #include "ImathBox.h"
-#include "ImfThreading.h"
-#include "ImfNamespace.h"
-#include "ImfExport.h"
-#include "ImfForward.h"
-
+#include <ImfThreading.h>
 #include <string>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
+
+class RgbaOutputFile;
+class RgbaInputFile;
+struct PreviewRgba;
+class Chromaticities;
 
 //
 // ACES red, green, blue and white-point chromaticities.
@@ -102,7 +103,7 @@ const Chromaticities &	acesChromaticities ();
 // ACES output file.
 //
 
-class IMF_EXPORT AcesOutputFile
+class AcesOutputFile
 {
   public:
 
@@ -122,7 +123,7 @@ class IMF_EXPORT AcesOutputFile
     // automatically close the file.
     //----------------------------------------------------
 
-    AcesOutputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    AcesOutputFile (OStream &os,
 		    const Header &header,
 		    RgbaChannels rgbaChannels = WRITE_RGBA,
                     int numThreads = globalThreadCount());
@@ -134,11 +135,11 @@ class IMF_EXPORT AcesOutputFile
     //----------------------------------------------------------------
 
     AcesOutputFile (const std::string &name,
-		    const IMATH_NAMESPACE::Box2i &displayWindow,
-		    const IMATH_NAMESPACE::Box2i &dataWindow = IMATH_NAMESPACE::Box2i(),
+		    const Imath::Box2i &displayWindow,
+		    const Imath::Box2i &dataWindow = Imath::Box2i(),
 		    RgbaChannels rgbaChannels = WRITE_RGBA,
 		    float pixelAspectRatio = 1,
-		    const IMATH_NAMESPACE::V2f screenWindowCenter = IMATH_NAMESPACE::V2f (0, 0),
+		    const Imath::V2f screenWindowCenter = Imath::V2f (0, 0),
 		    float screenWindowWidth = 1,
 		    LineOrder lineOrder = INCREASING_Y,
 		    Compression compression = PIZ_COMPRESSION,
@@ -156,7 +157,7 @@ class IMF_EXPORT AcesOutputFile
 		    int height,
 		    RgbaChannels rgbaChannels = WRITE_RGBA,
 		    float pixelAspectRatio = 1,
-		    const IMATH_NAMESPACE::V2f screenWindowCenter = IMATH_NAMESPACE::V2f (0, 0),
+		    const Imath::V2f screenWindowCenter = Imath::V2f (0, 0),
 		    float screenWindowWidth = 1,
 		    LineOrder lineOrder = INCREASING_Y,
 		    Compression compression = PIZ_COMPRESSION,
@@ -197,10 +198,10 @@ class IMF_EXPORT AcesOutputFile
     //--------------------------
 
     const Header &		header () const;
-    const IMATH_NAMESPACE::Box2i &	displayWindow () const;
-    const IMATH_NAMESPACE::Box2i &	dataWindow () const;
+    const Imath::Box2i &	displayWindow () const;
+    const Imath::Box2i &	dataWindow () const;
     float			pixelAspectRatio () const;
-    const IMATH_NAMESPACE::V2f		screenWindowCenter () const;
+    const Imath::V2f		screenWindowCenter () const;
     float			screenWindowWidth () const;
     LineOrder			lineOrder () const;
     Compression			compression () const;
@@ -229,7 +230,7 @@ class IMF_EXPORT AcesOutputFile
 // ACES input file
 //
 
-class IMF_EXPORT AcesInputFile
+class AcesInputFile
 {
   public:
 
@@ -249,7 +250,7 @@ class IMF_EXPORT AcesInputFile
     // close the file.
     //-----------------------------------------------------------
 
-    AcesInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+    AcesInputFile (IStream &is,
 		   int numThreads = globalThreadCount());
 
 
@@ -287,10 +288,10 @@ class IMF_EXPORT AcesInputFile
     //--------------------------
 
     const Header &		header () const;
-    const IMATH_NAMESPACE::Box2i &	displayWindow () const;
-    const IMATH_NAMESPACE::Box2i &	dataWindow () const;
+    const Imath::Box2i &	displayWindow () const;
+    const Imath::Box2i &	dataWindow () const;
     float			pixelAspectRatio () const;
-    const IMATH_NAMESPACE::V2f		screenWindowCenter () const;
+    const Imath::V2f		screenWindowCenter () const;
     float			screenWindowWidth () const;
     LineOrder			lineOrder () const;
     Compression			compression () const;
@@ -316,9 +317,6 @@ class IMF_EXPORT AcesInputFile
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
-
-
+} // namespace Imf
 
 #endif

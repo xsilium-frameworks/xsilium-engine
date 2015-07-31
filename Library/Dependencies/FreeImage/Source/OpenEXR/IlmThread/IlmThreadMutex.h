@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2005, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -66,9 +66,7 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IlmThreadExport.h"
 #include "IlmBaseConfig.h"
-#include "IlmThreadNamespace.h"
 
 #if defined _WIN32 || defined _WIN64
     #ifdef NOMINMAX
@@ -80,12 +78,12 @@
     #include <pthread.h>
 #endif
 
-ILMTHREAD_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace IlmThread {
 
 class Lock;
 
 
-class ILMTHREAD_EXPORT Mutex
+class Mutex
 {
   public:
 
@@ -110,7 +108,7 @@ class ILMTHREAD_EXPORT Mutex
 };
 
 
-class ILMTHREAD_EXPORT Lock
+class Lock
 {
   public:
 
@@ -155,6 +153,6 @@ class ILMTHREAD_EXPORT Lock
 };
 
 
-ILMTHREAD_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace IlmThread
 
-#endif // INCLUDED_ILM_THREAD_MUTEX_H
+#endif

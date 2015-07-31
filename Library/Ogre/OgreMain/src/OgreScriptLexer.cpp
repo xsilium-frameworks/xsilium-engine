@@ -115,7 +115,7 @@ namespace Ogre{
                 {
                     lexeme = "";
                     state = COMMENT;
-                    break;  
+                    break;	
                 }
                 else if(c == star && lastc == slash)
                 {

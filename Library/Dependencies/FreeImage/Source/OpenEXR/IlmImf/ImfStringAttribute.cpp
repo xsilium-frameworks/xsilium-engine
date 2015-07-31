@@ -43,9 +43,8 @@
 #include <ImfStringAttribute.h>
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
-using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 
 template <>
 const char *
@@ -57,7 +56,7 @@ StringAttribute::staticTypeName ()
 
 template <>
 void
-StringAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int version) const
+StringAttribute::writeValueTo (OStream &os, int version) const
 {
     int size = _value.size();
 
@@ -68,7 +67,7 @@ StringAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int 
 
 template <>
 void
-StringAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int size, int version)
+StringAttribute::readValueFrom (IStream &is, int size, int version)
 {
     _value.resize (size);
 
@@ -77,4 +76,4 @@ StringAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT 
+} // namespace Imf

@@ -39,30 +39,29 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfPizCompressor.h"
-#include "ImfHeader.h"
-#include "ImfChannelList.h"
-#include "ImfHuf.h"
-#include "ImfWav.h"
-#include "ImfMisc.h"
-#include "ImfCheckedArithmetic.h"
+#include <ImfPizCompressor.h>
+#include <ImfHeader.h>
+#include <ImfChannelList.h>
+#include <ImfHuf.h>
+#include <ImfWav.h>
+#include <ImfMisc.h>
+#include <ImfCheckedArithmetic.h>
 #include <ImathFun.h>
 #include <ImathBox.h>
 #include <Iex.h>
-#include "ImfIO.h"
-#include "ImfXdr.h"
-#include "ImfAutoArray.h"
+#include <ImfIO.h>
+#include <ImfXdr.h>
+#include <ImfAutoArray.h>
 #include <string.h>
 #include <assert.h>
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
-using IMATH_NAMESPACE::divp;
-using IMATH_NAMESPACE::modp;
-using IMATH_NAMESPACE::Box2i;
-using IMATH_NAMESPACE::V2i;
-using IEX_NAMESPACE::InputExc;
+using Imath::divp;
+using Imath::modp;
+using Imath::Box2i;
+using Imath::V2i;
+using Iex::InputExc;
 
 namespace {
 
@@ -268,7 +267,7 @@ PizCompressor::compress (const char *inPtr,
 int
 PizCompressor::compressTile (const char *inPtr,
 			     int inSize,
-			     IMATH_NAMESPACE::Box2i range,
+			     Imath::Box2i range,
 			     const char *&outPtr)
 {
     return compress (inPtr, inSize, range, outPtr);
@@ -292,7 +291,7 @@ PizCompressor::uncompress (const char *inPtr,
 int
 PizCompressor::uncompressTile (const char *inPtr,
 			       int inSize,
-			       IMATH_NAMESPACE::Box2i range,
+			       Imath::Box2i range,
 			       const char *&outPtr)
 {
     return uncompress (inPtr, inSize, range, outPtr);
@@ -302,7 +301,7 @@ PizCompressor::uncompressTile (const char *inPtr,
 int
 PizCompressor::compress (const char *inPtr,
 			 int inSize,
-			 IMATH_NAMESPACE::Box2i range,
+			 Imath::Box2i range,
 			 const char *&outPtr)
 {
     //
@@ -311,7 +310,7 @@ PizCompressor::compress (const char *inPtr,
     //
 
     //
-    // Special case ï¿½- empty input buffer
+    // Special case ­- empty input buffer
     //
 
     if (inSize == 0)
@@ -484,7 +483,7 @@ PizCompressor::compress (const char *inPtr,
 int
 PizCompressor::uncompress (const char *inPtr,
 			   int inSize,
-			   IMATH_NAMESPACE::Box2i range,
+			   Imath::Box2i range,
 			   const char *&outPtr)
 {
     //
@@ -664,4 +663,4 @@ PizCompressor::uncompress (const char *inPtr,
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

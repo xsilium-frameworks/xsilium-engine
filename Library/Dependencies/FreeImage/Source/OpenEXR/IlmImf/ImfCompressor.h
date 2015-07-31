@@ -43,19 +43,16 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfCompression.h"
+#include <ImfCompression.h>
 #include "ImathBox.h"
-#include "ImfNamespace.h"
-#include "ImfExport.h"
-#include "ImfForward.h"
-
 #include <stdlib.h>
 
+namespace Imf {
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+class Header;
 
 
-class IMF_EXPORT Compressor
+class Compressor
 {
   public:
 
@@ -165,7 +162,7 @@ class IMF_EXPORT Compressor
 
     virtual int		compressTile (const char *inPtr,
 				      int inSize,
-				      IMATH_NAMESPACE::Box2i range,
+				      Imath::Box2i range,
 				      const char *&outPtr);
 
     //-------------------------------------------------------------------------
@@ -191,7 +188,7 @@ class IMF_EXPORT Compressor
 
     virtual int		uncompressTile (const char *inPtr,
 					int inSize,
-					IMATH_NAMESPACE::Box2i range,
+					Imath::Box2i range,
 					const char *&outPtr);
 
   private:
@@ -204,15 +201,7 @@ class IMF_EXPORT Compressor
 // Test if c is a valid compression type
 //--------------------------------------
 
-IMF_EXPORT 
-bool isValidCompression (Compression c);
-
-//--------------------------------------
-// Test if c is valid for deep data
-//--------------------------------------
-
-IMF_EXPORT
-bool            isValidDeepCompression (Compression c);
+bool		isValidCompression (Compression c);
 
 
 //-----------------------------------------------------------------
@@ -230,7 +219,6 @@ bool            isValidDeepCompression (Compression c);
 //
 //-----------------------------------------------------------------
 
-IMF_EXPORT 
 Compressor *	newCompressor (Compression c,
 			       size_t maxScanLineSize,
 			       const Header &hdr);
@@ -253,13 +241,12 @@ Compressor *	newCompressor (Compression c,
 //
 //-----------------------------------------------------------------
 
-IMF_EXPORT 
 Compressor *    newTileCompressor (Compression c,
 				   size_t tileLineSize,
 				   size_t numTileLines,
 				   const Header &hdr);
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

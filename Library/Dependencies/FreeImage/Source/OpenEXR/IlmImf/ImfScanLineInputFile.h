@@ -42,19 +42,14 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfHeader.h"
-#include "ImfFrameBuffer.h"
-#include "ImfThreading.h"
-#include "ImfInputStreamMutex.h"
-#include "ImfInputPartData.h"
-#include "ImfGenericInputFile.h"
-#include "ImfExport.h"
-#include "ImfNamespace.h"
+#include <ImfHeader.h>
+#include <ImfFrameBuffer.h>
+#include <ImfThreading.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
-class IMF_EXPORT ScanLineInputFile : public GenericInputFile
+class ScanLineInputFile
 {
   public:
 
@@ -62,7 +57,7 @@ class IMF_EXPORT ScanLineInputFile : public GenericInputFile
     // Constructor
     //------------
 
-    ScanLineInputFile (const Header &header, OPENEXR_IMF_INTERNAL_NAMESPACE::IStream *is,
+    ScanLineInputFile (const Header &header, IStream *is,
                        int numThreads = globalThreadCount());
 
 
@@ -127,26 +122,6 @@ class IMF_EXPORT ScanLineInputFile : public GenericInputFile
 
     bool		isComplete () const;
 
-    
-    
-    //---------------------------------------------------------------
-    // Check if SSE optimisation is enabled
-    //
-    // Call after setFrameBuffer() to query whether optimised file decoding
-    // is available - decode times will be faster if returns true
-    //
-    // Optimisation depends on the framebuffer channels and channel types
-    // as well as the file/part channels and channel types, as well as
-    // whether SSE2 instruction support was detected at compile time
-    //
-    // Calling before setFrameBuffer will throw an exception
-    //
-    //---------------------------------------------------------------
-    
-    bool                isOptimizationEnabled () const;
-    
-    
-    
 
     //---------------------------------------------------------------
     // Read pixel data:
@@ -189,22 +164,9 @@ class IMF_EXPORT ScanLineInputFile : public GenericInputFile
   private:
 
     Data *		_data;
-
-    InputStreamMutex*   _streamData;
-
-    ScanLineInputFile   (InputPartData* part);
-
-    void                initialize(const Header& header);
-
-    friend class MultiPartInputFile;
-    friend class InputFile;
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
-
-
-
+} // namespace Imf
 
 #endif

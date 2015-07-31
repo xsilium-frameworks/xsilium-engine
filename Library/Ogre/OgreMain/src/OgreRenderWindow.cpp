@@ -28,6 +28,11 @@ THE SOFTWARE.
 #include "OgreStableHeaders.h"
 #include "OgreRenderWindow.h"
 
+#include "OgreRoot.h"
+#include "OgreRenderSystem.h"
+#include "OgreViewport.h"
+#include "OgreSceneManager.h"
+
 namespace Ogre {
 
     RenderWindow::RenderWindow()
@@ -38,7 +43,7 @@ namespace Ogre {
 
     //-----------------------------------------------------------------------
     void RenderWindow::getMetrics(unsigned int& width, unsigned int& height, unsigned int& colourDepth,
-        int& left, int& top) const
+		int& left, int& top)
     {
         width = mWidth;
         height = mHeight;
@@ -51,7 +56,7 @@ namespace Ogre {
     {
         return mIsFullScreen;
     }
-    //-----------------------------------------------------------------------
+	//-----------------------------------------------------------------------
     bool RenderWindow::isPrimary(void) const
     {
         return mIsPrimary;

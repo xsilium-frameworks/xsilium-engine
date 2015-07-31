@@ -26,8 +26,6 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include "OgreBspResourceManager.h"
-#include "OgreHardwareIndexBuffer.h"
-#include "OgreHardwareVertexBuffer.h"
 #include "OgreBspLevel.h"
 #include "OgreQuake3ShaderManager.h"
 
@@ -74,15 +72,15 @@ namespace Ogre {
     }
     //-----------------------------------------------------------------------
     ResourcePtr BspResourceManager::load(DataStreamPtr& stream, 
-        const String& group)
+		const String& group)
     {
         // Only 1 BSP level allowed loaded at once
         removeAll();
 
-        ResourcePtr ret = createResource("bsplevel", group, true, 0);
-        BspLevelPtr bspLevel = ret.staticCast<BspLevel>();
-        bspLevel->load(stream);
-        
+		ResourcePtr ret = createResource("bsplevel", group, true, 0);
+		BspLevelPtr bspLevel = ret.staticCast<BspLevel>();
+		bspLevel->load(stream);
+		
         return ret;
 
     }

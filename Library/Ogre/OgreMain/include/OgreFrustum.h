@@ -33,6 +33,7 @@ THE SOFTWARE.
 #include "OgreRenderable.h"
 #include "OgreAxisAlignedBox.h"
 #include "OgreVertexIndexData.h"
+#include "OgreMovablePlane.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre
@@ -194,7 +195,7 @@ namespace Ogre
     public:
 
         /// Named constructor
-        Frustum(const String& name = BLANKSTRING);
+        Frustum(const String& name = StringUtil::BLANK);
 
         virtual ~Frustum();
         /** Sets the Y-dimension Field Of View (FOV) of the frustum.

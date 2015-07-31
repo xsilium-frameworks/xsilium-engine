@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2005, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -52,7 +52,7 @@ extern "C"
     typedef void * (* Start) (void *);
 }
 
-ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace IlmThread {
 
 
 bool
@@ -89,10 +89,10 @@ void
 Thread::start ()
 {
     if (int error = ::pthread_create (&_thread, 0, Start (threadLoop), this))
-	IEX_NAMESPACE::throwErrnoExc ("Cannot create new thread (%T).", error);
+	Iex::throwErrnoExc ("Cannot create new thread (%T).", error);
 }
 
 
-ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace IlmThread
 
 #endif

@@ -33,26 +33,26 @@ THE SOFTWARE.
 
 namespace Ogre 
 {
-    class D3D11TextureManager : public TextureManager
-    {
-    protected:
-        D3D11Device & mDevice;
-        /// @copydoc ResourceManager::createImpl
-        Resource* createImpl(const String& name, ResourceHandle handle, 
-            const String& group, bool isManual, ManualResourceLoader* loader, 
-            const NameValuePairList* createParams);
+	class D3D11TextureManager : public TextureManager
+	{
+	protected:
+		D3D11Device & mDevice;
+		/// @copydoc ResourceManager::createImpl
+		Resource* createImpl(const String& name, ResourceHandle handle, 
+			const String& group, bool isManual, ManualResourceLoader* loader, 
+			const NameValuePairList* createParams);
 
-    public:
-        D3D11TextureManager( D3D11Device & device );
-        ~D3D11TextureManager();
+	public:
+		D3D11TextureManager( D3D11Device & device );
+		~D3D11TextureManager();
 
-        /// @copydoc TextureManager::getNativeFormat
-        PixelFormat getNativeFormat(TextureType ttype, PixelFormat format, int usage);
+		/// @copydoc TextureManager::getNativeFormat
+		PixelFormat getNativeFormat(TextureType ttype, PixelFormat format, int usage);
 
-        /// @copydoc TextureManager::isHardwareFilteringSupported
-        bool isHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage,
-            bool preciseFormatOnly = false);
+		/// @copydoc TextureManager::isHardwareFilteringSupported
+		bool isHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage,
+			bool preciseFormatOnly = false);
 
-    };
+	};
 }
 #endif

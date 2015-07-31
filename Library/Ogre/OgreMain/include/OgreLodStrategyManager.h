@@ -30,18 +30,20 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
+#include "OgreLodStrategy.h"
 #include "OgreSingleton.h"
+#include "OgreIteratorWrappers.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
-    /** \addtogroup Core
-    *  @{
-    */
-    /** \addtogroup LOD
-    *  @{
-    */
-    /** Manager for LOD strategies. */
+	/** \addtogroup Core
+	*  @{
+	*/
+	/** \addtogroup LOD
+	*  @{
+	*/
+	/** Manager for LOD strategies. */
     class _OgreExport LodStrategyManager : public Singleton<LodStrategyManager>, public LodAlloc
     {
         /** Map of strategies. */
@@ -125,8 +127,8 @@ namespace Ogre {
         */
         static LodStrategyManager* getSingletonPtr(void);
     };
-    /** @} */
-    /** @} */
+	/** @} */
+	/** @} */
 }
 
 #include "OgreHeaderSuffix.h"

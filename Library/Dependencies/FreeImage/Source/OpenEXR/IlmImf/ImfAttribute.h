@@ -44,16 +44,14 @@
 //-----------------------------------------------------------------------------
 
 #include "IexBaseExc.h"
-#include "ImfIO.h"
-#include "ImfXdr.h"
-#include "ImfForward.h"
-#include "ImfExport.h"
-#include "ImfNamespace.h"
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+#include <ImfIO.h>
+#include <ImfXdr.h>
 
 
-class IMF_EXPORT Attribute
+namespace Imf {
+
+
+class Attribute
 {
   public:
 
@@ -83,10 +81,10 @@ class IMF_EXPORT Attribute
     // Type-specific attribute I/O and copying
     //----------------------------------------
 
-    virtual void		writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    virtual void		writeValueTo (OStream &os,
 					      int version) const = 0;
 
-    virtual void		readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+    virtual void		readValueFrom (IStream &is,
 					       int size,
 					       int version) = 0;
 
@@ -130,7 +128,7 @@ class IMF_EXPORT Attribute
 //-------------------------------------------------
 // Class template for attributes of a specific type
 //-------------------------------------------------
-    
+
 template <class T>
 class TypedAttribute: public Attribute
 {
@@ -188,10 +186,10 @@ class TypedAttribute: public Attribute
     // Depending on type T, these functions may have to be specialized.
     //-----------------------------------------------------------------
 
-    virtual void		writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    virtual void		writeValueTo (OStream &os,
 					      int version) const;
 
-    virtual void		readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+    virtual void		readValueFrom (IStream &is,
 					       int size,
 					       int version);
 
@@ -235,9 +233,11 @@ class TypedAttribute: public Attribute
     T					_value;
 };
 
+
 //------------------------------------
 // Implementation of TypedAttribute<T>
 //------------------------------------
+
 template <class T>
 TypedAttribute<T>::TypedAttribute ():
     Attribute (),
@@ -248,7 +248,7 @@ TypedAttribute<T>::TypedAttribute ():
 
 
 template <class T>
-TypedAttribute<T>::TypedAttribute (const T & value):
+TypedAttribute<T>::TypedAttribute (const T &value):
     Attribute (),
     _value (value)
 {
@@ -316,20 +316,17 @@ TypedAttribute<T>::copy () const
 
 template <class T>
 void		
-TypedAttribute<T>::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
-                                    int version) const
+TypedAttribute<T>::writeValueTo (OStream &os, int version) const
 {
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (os, _value);
+    Xdr::write <StreamIO> (os, _value);
 }
 
 
 template <class T>
 void		
-TypedAttribute<T>::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
-                                     int size,
-                                     int version)
+TypedAttribute<T>::readValueFrom (IStream &is, int size, int version)
 {
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::read <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (is, _value);
+    Xdr::read <StreamIO> (is, _value);
 }
 
 
@@ -349,7 +346,7 @@ TypedAttribute<T>::cast (Attribute *attribute)
 	dynamic_cast <TypedAttribute<T> *> (attribute);
 
     if (t == 0)
-	throw IEX_NAMESPACE::TypeExc ("Unexpected attribute type.");
+	throw Iex::TypeExc ("Unexpected attribute type.");
 
     return t;
 }
@@ -363,14 +360,14 @@ TypedAttribute<T>::cast (const Attribute *attribute)
 	dynamic_cast <const TypedAttribute<T> *> (attribute);
 
     if (t == 0)
-	throw IEX_NAMESPACE::TypeExc ("Unexpected attribute type.");
+	throw Iex::TypeExc ("Unexpected attribute type.");
 
     return t;
 }
 
 
 template <class T>
-inline TypedAttribute<T> &
+inline TypedAttribute<T> &	
 TypedAttribute<T>::cast (Attribute &attribute)
 {
     return *cast (&attribute);
@@ -401,7 +398,30 @@ TypedAttribute<T>::unRegisterAttributeType ()
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
+#if defined(OPENEXR_DLL) && defined(_MSC_VER)
+    // Tell MS VC++ to disable "non dll-interface class used as base
+    // for dll-interface class" and "no suitable definition provided
+    // for explicit template"
+    #pragma warning (disable : 4275 4661)
+
+    #if defined (ILMIMF_EXPORTS)
+ 	#define IMF_EXPIMP_TEMPLATE
+    #else
+ 	#define IMF_EXPIMP_TEMPLATE extern
+    #endif
+
+    IMF_EXPIMP_TEMPLATE template class Imf::TypedAttribute<float>;
+    IMF_EXPIMP_TEMPLATE template class Imf::TypedAttribute<double>;
+
+    #pragma warning(default : 4251)
+    #undef EXTERN_TEMPLATE
+#endif
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfAttribute.cpp>
+#endif
 
 #endif

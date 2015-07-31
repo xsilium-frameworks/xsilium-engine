@@ -47,20 +47,17 @@
 
 #include <ImfHuf.h>
 #include <ImfInt64.h>
-#include "ImfAutoArray.h"
-#include "ImfFastHuf.h"
+#include <ImfAutoArray.h>
 #include "Iex.h"
-#include <cstring>
-#include <cassert>
+#include <string.h>
+#include <assert.h>
 #include <algorithm>
 
 
 using namespace std;
-using namespace IEX_NAMESPACE;
-#include "ImfNamespace.h"
+using namespace Iex;
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
-
+namespace Imf {
 namespace {
 
 
@@ -571,7 +568,7 @@ hufUnpackEncTable
 	}
     }
 
-    *pcode = const_cast<char *>(p);
+    *pcode = (char *) p;
 
     hufCanonicalCodeTable (hcode);
 }
@@ -729,15 +726,9 @@ inline void
 sendCode (Int64 sCode, int runCount, Int64 runCode,
 	  Int64 &c, int &lc, char *&out)
 {
-    //
-    // Output a run of runCount instances of the symbol sCount.
-    // Output the symbols explicitly, or if that is shorter, output
-    // the sCode symbol once followed by a runCode symbol and runCount
-    // expressed as an 8-bit number.
-    //
-    
-    if (hufLength (sCode) + hufLength (runCode) + 8 <
-        hufLength (sCode) * runCount)
+    static const int RLMIN = 32; // min count to activate run-length coding
+
+    if (runCount > RLMIN)
     {
 	outputCode (sCode, c, lc, out);
 	outputCode (runCode, c, lc, out);
@@ -1021,8 +1012,7 @@ hufCompress (const unsigned short raw[],
 
     countFrequencies (freq, raw, nRaw);
 
-    int im = 0;
-    int iM = 0;
+    int im, iM;
     hufBuildEncTable (freq, &im, &iM);
 
     char *tableStart = compressed + 20;
@@ -1068,47 +1058,29 @@ hufUncompress (const char compressed[],
 
     const char *ptr = compressed + 20;
 
-    // 
-    // Fast decoder needs at least 2x64-bits of compressed data, and
-    // needs to be run-able on this platform. Otherwise, fall back
-    // to the original decoder
-    //
+    AutoArray <Int64, HUF_ENCSIZE> freq;
+    AutoArray <HufDec, HUF_DECSIZE> hdec;
 
-    if (FastHufDecoder::enabled() && nBits > 128)
+    hufClearDecTable (hdec);
+
+    hufUnpackEncTable (&ptr, nCompressed - (ptr - compressed), im, iM, freq);
+
+    try
     {
-        FastHufDecoder fhd (ptr, nCompressed - (ptr - compressed), im, iM, iM);
-        fhd.decode ((unsigned char*)ptr, nBits, raw, nRaw);
+	if (nBits > 8 * (nCompressed - (ptr - compressed)))
+	    invalidNBits();
+
+	hufBuildDecTable (freq, im, iM, hdec);
+	hufDecode (freq, hdec, ptr, nBits, iM, nRaw, raw);
     }
-    else
+    catch (...)
     {
-        AutoArray <Int64, HUF_ENCSIZE> freq;
-        AutoArray <HufDec, HUF_DECSIZE> hdec;
-
-        hufClearDecTable (hdec);
-
-        hufUnpackEncTable (&ptr,
-                           nCompressed - (ptr - compressed),
-                           im,
-                           iM,
-                           freq);
-
-        try
-        {
-            if (nBits > 8 * (nCompressed - (ptr - compressed)))
-                invalidNBits();
-
-            hufBuildDecTable (freq, im, iM, hdec);
-            hufDecode (freq, hdec, ptr, nBits, iM, nRaw, raw);
-        }
-        catch (...)
-        {
-            hufFreeDecTable (hdec);
-            throw;
-        }
-
-        hufFreeDecTable (hdec);
+	hufFreeDecTable (hdec);
+	throw;
     }
+
+    hufFreeDecTable (hdec);
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

@@ -33,6 +33,7 @@ THE SOFTWARE.
 #include "OgrePageStrategy.h"
 #include "OgreVector2.h"
 #include "OgreVector3.h"
+#include "OgreQuaternion.h"
 
 namespace Ogre
 {

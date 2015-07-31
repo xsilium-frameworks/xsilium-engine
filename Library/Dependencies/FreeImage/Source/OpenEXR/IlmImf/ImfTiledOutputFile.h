@@ -42,24 +42,20 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfHeader.h"
-#include "ImfFrameBuffer.h"
+#include <ImfHeader.h>
+#include <ImfFrameBuffer.h>
 #include "ImathBox.h"
-#include "ImfTileDescription.h"
-#include "ImfThreading.h"
-#include "ImfGenericOutputFile.h"
-#include "ImfForward.h"
-#include "ImfNamespace.h"
-#include "ImfExport.h"
+#include <ImfTileDescription.h>
+#include <ImfThreading.h>
 
+namespace Imf {
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
-
-
+class TiledInputFile;
+class InputFile;
 struct PreviewRgba;
 
 
-class IMF_EXPORT TiledOutputFile : public GenericOutputFile
+class TiledOutputFile
 {
   public:
 
@@ -97,7 +93,7 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     // close the corresponding files.
     // ----------------------------------------------------------------
 
-    TiledOutputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    TiledOutputFile (OStream &os,
 		     const Header &header,
                      int numThreads = globalThreadCount ());
 
@@ -199,7 +195,7 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     //      return value is the same as for numXLevels()
     //
     //	if levelMode() == RIPMAP_LEVELS:
-    //      an IEX_NAMESPACE::LogicExc exception is thrown
+    //      an Iex::LogicExc exception is thrown
     //
     // isValidLevel(lx, ly) returns true if the file contains 
     // a level with level number (lx, ly), false if not.
@@ -278,8 +274,8 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     //
     //---------------------------------------------------------
 
-    IMATH_NAMESPACE::Box2i	dataWindowForLevel (int l = 0) const;
-    IMATH_NAMESPACE::Box2i	dataWindowForLevel (int lx, int ly) const;
+    Imath::Box2i	dataWindowForLevel (int l = 0) const;
+    Imath::Box2i	dataWindowForLevel (int lx, int ly) const;
 
 
     //-------------------------------------------------------------------
@@ -303,10 +299,10 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     //
     //-------------------------------------------------------------------
 
-    IMATH_NAMESPACE::Box2i	dataWindowForTile (int dx, int dy,
+    Imath::Box2i	dataWindowForTile (int dx, int dy,
 					   int l = 0) const;
 
-    IMATH_NAMESPACE::Box2i	dataWindowForTile (int dx, int dy,
+    Imath::Box2i	dataWindowForTile (int dx, int dy,
 					   int lx, int ly) const;
 
     //------------------------------------------------------------------
@@ -400,9 +396,8 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     //------------------------------------------------------------------
     
     void		copyPixels (TiledInputFile &in);
-    void                copyPixels (TiledInputPart &in);
     
-    
+
     //------------------------------------------------------------------
     // Shortcut to copy all pixels from an InputFile into this file,
     // without uncompressing and then recompressing the pixel data.
@@ -414,9 +409,7 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     //------------------------------------------------------------------
     
     void		copyPixels (InputFile &in);
-    void                copyPixels (InputPart &in);
 
-    
 
     //--------------------------------------------------------------
     // Updating the preview image:
@@ -424,7 +417,7 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
     // updatePreviewImage() supplies a new set of pixels for the
     // preview image attribute in the file's header.  If the header
     // does not contain a preview image, updatePreviewImage() throws
-    // an IEX_NAMESPACE::LogicExc.
+    // an Iex::LogicExc.
     //
     // Note: updatePreviewImage() is necessary because images are
     // often stored in a file incrementally, a few tiles at a time,
@@ -462,14 +455,6 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
 
   private:
 
-    // ----------------------------------------------------------------
-    // A constructor attaches the OutputStreamMutex to the
-    // given one from MultiPartOutputFile. Set the previewPosition
-    // and lineOffsetsPosition which have been acquired from
-    // the constructor of MultiPartOutputFile as well.
-    // ----------------------------------------------------------------
-    TiledOutputFile (const OutputPartData* part);
-
     TiledOutputFile (const TiledOutputFile &);		    // not implemented
     TiledOutputFile & operator = (const TiledOutputFile &); // not implemented
 
@@ -482,14 +467,9 @@ class IMF_EXPORT TiledOutputFile : public GenericOutputFile
 					     int lx, int ly) const;
 
     Data *		_data;
-
-    OutputStreamMutex*  _streamData;
-    bool                _deleteStream;
-
-    friend class MultiPartOutputFile;
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

@@ -44,54 +44,20 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfForward.h"
-#include "ImfExport.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
-
-IMF_EXPORT bool isOpenExrFile (const char fileName[]);
-
-IMF_EXPORT bool isOpenExrFile (const char fileName[],
-                               bool &isTiled);
-
-IMF_EXPORT bool isOpenExrFile (const char fileName[],
-                               bool &isTiled,
-                               bool &isDeep);
-
-IMF_EXPORT bool isOpenExrFile (const char fileName[],
-                               bool &isTiled,
-                               bool &isDeep,
-                               bool &isMultiPart);
-
-IMF_EXPORT bool isTiledOpenExrFile (const char fileName[]);
-
-IMF_EXPORT bool isDeepOpenExrFile (const char fileName[]);
-
-IMF_EXPORT bool isMultiPartOpenExrFile (const char fileName[]);
-
-IMF_EXPORT bool isOpenExrFile (IStream &is);
-
-IMF_EXPORT bool isOpenExrFile (IStream &is,
-                               bool &isTiled);
-
-IMF_EXPORT bool isOpenExrFile (IStream &is,
-                               bool &isTiled,
-                               bool &isDeep);
-
-IMF_EXPORT bool isOpenExrFile (IStream &is,
-                               bool &isTiled,
-                               bool &isDeep,
-                               bool &isMultiPart);
-
-IMF_EXPORT bool isTiledOpenExrFile (IStream &is);
-
-IMF_EXPORT bool isDeepOpenExrFile (IStream &is);
-
-IMF_EXPORT bool isMultiPartOpenExrFile (IStream &is);
+class IStream;
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+bool isOpenExrFile (const char fileName[], bool &isTiled);
+bool isOpenExrFile (const char fileName[]);
+bool isTiledOpenExrFile (const char fileName[]);
+bool isOpenExrFile (IStream &is, bool &isTiled);
+bool isOpenExrFile (IStream &is);
+bool isTiledOpenExrFile (IStream &is);
+
+
+} // namespace Imf
 
 #endif

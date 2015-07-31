@@ -32,8 +32,7 @@ email                : ericc@xenopi.com
 -----------------------------------------------------------------------------
 */
 
-#include "OgreOctreeZonePrerequisites.h"
-#include "OgreRoot.h"
+#include <OgreRoot.h>
 #include "OgreOctreeZonePlugin.h"
 
 #ifndef OGRE_STATIC_LIB
@@ -53,8 +52,8 @@ namespace Ogre
     }
     extern "C" void _OgreOctreeZonePluginExport dllStopPlugin( void )
     {
-        Root::getSingleton().uninstallPlugin(OZPlugin);
-        OGRE_DELETE OZPlugin;
+	    Root::getSingleton().uninstallPlugin(OZPlugin);
+	    OGRE_DELETE OZPlugin;
     }
 }
 

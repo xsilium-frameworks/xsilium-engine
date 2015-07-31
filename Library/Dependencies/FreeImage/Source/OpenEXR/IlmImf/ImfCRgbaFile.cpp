@@ -53,20 +53,16 @@
 #include <ImfChannelList.h>
 #include <ImfLut.h>
 #include "half.h"
-#include "ImfNamespace.h"
-#include "ImathForward.h"
-
 #include <string.h>
 
-
-using IMATH_NAMESPACE::Box2i;
-using IMATH_NAMESPACE::Box2f;
-using IMATH_NAMESPACE::V2i;
-using IMATH_NAMESPACE::V2f;
-using IMATH_NAMESPACE::V3i;
-using IMATH_NAMESPACE::V3f;
-using IMATH_NAMESPACE::M33f;
-using IMATH_NAMESPACE::M44f;
+using Imath::Box2i;
+using Imath::Box2f;
+using Imath::V2i;
+using Imath::V2f;
+using Imath::V3i;
+using Imath::V3f;
+using Imath::M33f;
+using Imath::M44f;
 
 
 namespace {
@@ -84,73 +80,73 @@ setErrorMessage (const std::exception &e)
 }
 
 
-inline OPENEXR_IMF_INTERNAL_NAMESPACE::Header *
+inline Imf::Header *
 header (ImfHeader *hdr)
 {
-    return (OPENEXR_IMF_INTERNAL_NAMESPACE::Header *)(hdr);
+    return (Imf::Header *)(hdr);
 }
 
 
-inline const OPENEXR_IMF_INTERNAL_NAMESPACE::Header *
+inline const Imf::Header *
 header (const ImfHeader *hdr)
 {
-    return (const OPENEXR_IMF_INTERNAL_NAMESPACE::Header *)(hdr);
+    return (const Imf::Header *)(hdr);
 }
 
 
-inline OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaOutputFile *
+inline Imf::RgbaOutputFile *
 outfile (ImfOutputFile *out)
 {
-    return (OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaOutputFile *) out;
+    return (Imf::RgbaOutputFile *) out;
 }
 
 
-inline const OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaOutputFile *
+inline const Imf::RgbaOutputFile *
 outfile (const ImfOutputFile *out)
 {
-    return (const OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaOutputFile *) out;
+    return (const Imf::RgbaOutputFile *) out;
 }
 
 
-inline OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaOutputFile *
+inline Imf::TiledRgbaOutputFile *
 outfile (ImfTiledOutputFile *out)
 {
-    return (OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaOutputFile *) out;
+    return (Imf::TiledRgbaOutputFile *) out;
 }
 
 
-inline const OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaOutputFile *
+inline const Imf::TiledRgbaOutputFile *
 outfile (const ImfTiledOutputFile *out)
 {
-    return (const OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaOutputFile *) out;
+    return (const Imf::TiledRgbaOutputFile *) out;
 }
 
 
-inline OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaInputFile *
+inline Imf::RgbaInputFile *
 infile (ImfInputFile *in)
 {
-    return (OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaInputFile *) in;
+    return (Imf::RgbaInputFile *) in;
 }
 
 
-inline const OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaInputFile *
+inline const Imf::RgbaInputFile *
 infile (const ImfInputFile *in)
 {
-    return (const OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaInputFile *) in;
+    return (const Imf::RgbaInputFile *) in;
 }
 
 
-inline OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaInputFile *
+inline Imf::TiledRgbaInputFile *
 infile (ImfTiledInputFile *in)
 {
-    return (OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaInputFile *) in;
+    return (Imf::TiledRgbaInputFile *) in;
 }
 
 
-inline const OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaInputFile *
+inline const Imf::TiledRgbaInputFile *
 infile (const ImfTiledInputFile *in)
 {
-    return (const OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaInputFile *) in;
+    return (const Imf::TiledRgbaInputFile *) in;
 }
 
 
@@ -192,7 +188,7 @@ ImfNewHeader (void)
 {
     try
     {
-	return (ImfHeader *) new OPENEXR_IMF_INTERNAL_NAMESPACE::Header;
+	return (ImfHeader *) new Imf::Header;
     }
     catch (const std::exception &e)
     {
@@ -214,7 +210,7 @@ ImfCopyHeader (const ImfHeader *hdr)
 {
     try
     {
-	return (ImfHeader *) new OPENEXR_IMF_INTERNAL_NAMESPACE::Header (*header (hdr));
+	return (ImfHeader *) new Imf::Header (*header (hdr));
     }
     catch (const std::exception &e)
     {
@@ -293,8 +289,8 @@ void
 ImfHeaderScreenWindowCenter (const ImfHeader *hdr, float *x, float *y)
 {
     const V2i &swc = header(hdr)->screenWindowCenter();
-    *x = (float) swc.x;
-    *y = (float) swc.y;
+    *x = swc.x;
+    *y = swc.y;
 }
 
 
@@ -315,7 +311,7 @@ ImfHeaderScreenWindowWidth (const ImfHeader *hdr)
 void	
 ImfHeaderSetLineOrder (ImfHeader *hdr, int lineOrder)
 {
-    header(hdr)->lineOrder() = OPENEXR_IMF_INTERNAL_NAMESPACE::LineOrder (lineOrder);
+    header(hdr)->lineOrder() = Imf::LineOrder (lineOrder);
 }
 
 
@@ -329,7 +325,7 @@ ImfHeaderLineOrder (const ImfHeader *hdr)
 void	
 ImfHeaderSetCompression (ImfHeader *hdr, int compression)
 {
-    header(hdr)->compression() = OPENEXR_IMF_INTERNAL_NAMESPACE::Compression (compression);
+    header(hdr)->compression() = Imf::Compression (compression);
 }
 
 
@@ -347,11 +343,11 @@ ImfHeaderSetIntAttribute (ImfHeader *hdr, const char name[], int value)
     {
 	if (header(hdr)->find(name) == header(hdr)->end())
 	{
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::IntAttribute (value));
+	    header(hdr)->insert (name, Imf::IntAttribute (value));
 	}
 	else
 	{
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::IntAttribute>(name).value() =
+	    header(hdr)->typedAttribute<Imf::IntAttribute>(name).value() =
 		value;
 	}
 
@@ -370,7 +366,7 @@ ImfHeaderIntAttribute (const ImfHeader *hdr, const char name[], int *value)
 {
     try
     {
-	*value = header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::IntAttribute>(name).value();
+	*value = header(hdr)->typedAttribute<Imf::IntAttribute>(name).value();
 	return 1;
     }
     catch (const std::exception &e)
@@ -388,11 +384,11 @@ ImfHeaderSetFloatAttribute (ImfHeader *hdr, const char name[], float value)
     {
 	if (header(hdr)->find(name) == header(hdr)->end())
 	{
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::FloatAttribute (value));
+	    header(hdr)->insert (name, Imf::FloatAttribute (value));
 	}
 	else
 	{
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::FloatAttribute>(name).value() =
+	    header(hdr)->typedAttribute<Imf::FloatAttribute>(name).value() =
 		value;
 	}
 
@@ -413,11 +409,11 @@ ImfHeaderSetDoubleAttribute (ImfHeader *hdr, const char name[], double value)
     {
 	if (header(hdr)->find(name) == header(hdr)->end())
 	{
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::DoubleAttribute (value));
+	    header(hdr)->insert (name, Imf::DoubleAttribute (value));
 	}
 	else
 	{
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::DoubleAttribute>(name).value() =
+	    header(hdr)->typedAttribute<Imf::DoubleAttribute>(name).value() =
 		value;
 	}
 
@@ -436,7 +432,7 @@ ImfHeaderFloatAttribute (const ImfHeader *hdr, const char name[], float *value)
 {
     try
     {
-	*value = header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::FloatAttribute>(name).value();
+	*value = header(hdr)->typedAttribute<Imf::FloatAttribute>(name).value();
 	return 1;
     }
     catch (const std::exception &e)
@@ -455,7 +451,7 @@ ImfHeaderDoubleAttribute (const ImfHeader *hdr,
     try
     {
 	*value = header(hdr)->
-	    typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::DoubleAttribute>(name).value();
+	    typedAttribute<Imf::DoubleAttribute>(name).value();
 
 	return 1;
     }
@@ -476,11 +472,11 @@ ImfHeaderSetStringAttribute (ImfHeader *hdr,
     {
 	if (header(hdr)->find(name) == header(hdr)->end())
 	{
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::StringAttribute (value));
+	    header(hdr)->insert (name, Imf::StringAttribute (value));
 	}
 	else
 	{
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::StringAttribute>(name).value() =
+	    header(hdr)->typedAttribute<Imf::StringAttribute>(name).value() =
 		value;
 	}
 
@@ -502,7 +498,7 @@ ImfHeaderStringAttribute (const ImfHeader *hdr,
     try
     {
 	*value = header(hdr)->
-	    typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::StringAttribute>(name).value().c_str();
+	    typedAttribute<Imf::StringAttribute>(name).value().c_str();
 
 	return 1;
     }
@@ -526,11 +522,11 @@ ImfHeaderSetBox2iAttribute (ImfHeader *hdr,
 
 	if (header(hdr)->find(name) == header(hdr)->end())
 	{
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::Box2iAttribute (box));
+	    header(hdr)->insert (name, Imf::Box2iAttribute (box));
 	}
 	else
 	{
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Box2iAttribute>(name).value() =
+	    header(hdr)->typedAttribute<Imf::Box2iAttribute>(name).value() =
 		box;
 	}
 
@@ -553,7 +549,7 @@ ImfHeaderBox2iAttribute (const ImfHeader *hdr,
     try
     {
 	const Box2i &box =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Box2iAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::Box2iAttribute>(name).value();
 
 	*xMin = box.min.x;
 	*yMin = box.min.y;
@@ -582,11 +578,11 @@ ImfHeaderSetBox2fAttribute (ImfHeader *hdr,
 
 	if (header(hdr)->find(name) == header(hdr)->end())
 	{
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::Box2fAttribute (box));
+	    header(hdr)->insert (name, Imf::Box2fAttribute (box));
 	}
 	else
 	{
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Box2fAttribute>(name).value() =
+	    header(hdr)->typedAttribute<Imf::Box2fAttribute>(name).value() =
 		box;
 	}
 
@@ -609,7 +605,7 @@ ImfHeaderBox2fAttribute (const ImfHeader *hdr,
     try
     {
 	const Box2f &box =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Box2fAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::Box2fAttribute>(name).value();
 
 	*xMin = box.min.x;
 	*yMin = box.min.y;
@@ -636,9 +632,9 @@ ImfHeaderSetV2iAttribute (ImfHeader *hdr,
 	V2i v (x, y);
 
 	if (header(hdr)->find(name) == header(hdr)->end())
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::V2iAttribute (v));
+	    header(hdr)->insert (name, Imf::V2iAttribute (v));
 	else
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V2iAttribute>(name).value() = v;
+	    header(hdr)->typedAttribute<Imf::V2iAttribute>(name).value() = v;
 
 	return 1;
     }
@@ -658,7 +654,7 @@ ImfHeaderV2iAttribute (const ImfHeader *hdr,
     try
     {
 	const V2i &v =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V2iAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::V2iAttribute>(name).value();
 
 	*x = v.x;
 	*y = v.y;
@@ -683,9 +679,9 @@ ImfHeaderSetV2fAttribute (ImfHeader *hdr,
 	V2f v (x, y);
 
 	if (header(hdr)->find(name) == header(hdr)->end())
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::V2fAttribute (v));
+	    header(hdr)->insert (name, Imf::V2fAttribute (v));
 	else
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V2fAttribute>(name).value() = v;
+	    header(hdr)->typedAttribute<Imf::V2fAttribute>(name).value() = v;
 
 	return 1;
     }
@@ -705,7 +701,7 @@ ImfHeaderV2fAttribute (const ImfHeader *hdr,
     try
     {
 	const V2f &v =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V2fAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::V2fAttribute>(name).value();
 
 	*x = v.x;
 	*y = v.y;
@@ -730,9 +726,9 @@ ImfHeaderSetV3iAttribute (ImfHeader *hdr,
 	V3i v (x, y, z);
 
 	if (header(hdr)->find(name) == header(hdr)->end())
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::V3iAttribute (v));
+	    header(hdr)->insert (name, Imf::V3iAttribute (v));
 	else
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V3iAttribute>(name).value() = v;
+	    header(hdr)->typedAttribute<Imf::V3iAttribute>(name).value() = v;
 
 	return 1;
     }
@@ -752,7 +748,7 @@ ImfHeaderV3iAttribute (const ImfHeader *hdr,
     try
     {
 	const V3i &v =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V3iAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::V3iAttribute>(name).value();
 
 	*x = v.x;
 	*y = v.y;
@@ -778,9 +774,9 @@ ImfHeaderSetV3fAttribute (ImfHeader *hdr,
 	V3f v (x, y, z);
 
 	if (header(hdr)->find(name) == header(hdr)->end())
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::V3fAttribute (v));
+	    header(hdr)->insert (name, Imf::V3fAttribute (v));
 	else
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V3fAttribute>(name).value() = v;
+	    header(hdr)->typedAttribute<Imf::V3fAttribute>(name).value() = v;
 
 	return 1;
     }
@@ -800,7 +796,7 @@ ImfHeaderV3fAttribute (const ImfHeader *hdr,
     try
     {
 	const V3f &v =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::V3fAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::V3fAttribute>(name).value();
 
 	*x = v.x;
 	*y = v.y;
@@ -826,9 +822,9 @@ ImfHeaderSetM33fAttribute (ImfHeader *hdr,
 	M33f m3 (m);
 
 	if (header(hdr)->find(name) == header(hdr)->end())
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::M33fAttribute (m3));
+	    header(hdr)->insert (name, Imf::M33fAttribute (m3));
 	else
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::M33fAttribute>(name).value() = m3;
+	    header(hdr)->typedAttribute<Imf::M33fAttribute>(name).value() = m3;
 
 	return 1;
     }
@@ -848,7 +844,7 @@ ImfHeaderM33fAttribute (const ImfHeader *hdr,
     try
     {
 	const M33f &m3 =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::M33fAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::M33fAttribute>(name).value();
 
 	m[0][0] = m3[0][0];
 	m[0][1] = m3[0][1];
@@ -882,9 +878,9 @@ ImfHeaderSetM44fAttribute (ImfHeader *hdr,
 	M44f m4 (m);
 
 	if (header(hdr)->find(name) == header(hdr)->end())
-	    header(hdr)->insert (name, OPENEXR_IMF_INTERNAL_NAMESPACE::M44fAttribute (m4));
+	    header(hdr)->insert (name, Imf::M44fAttribute (m4));
 	else
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::M44fAttribute>(name).value() = m4;
+	    header(hdr)->typedAttribute<Imf::M44fAttribute>(name).value() = m4;
 
 	return 1;
     }
@@ -904,7 +900,7 @@ ImfHeaderM44fAttribute (const ImfHeader *hdr,
     try
     {
 	const M44f &m4 =
-	    header(hdr)->typedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::M44fAttribute>(name).value();
+	    header(hdr)->typedAttribute<Imf::M44fAttribute>(name).value();
 
 	m[0][0] = m4[0][0];
 	m[0][1] = m4[0][1];
@@ -941,8 +937,8 @@ ImfOpenOutputFile (const char name[], const ImfHeader *hdr, int channels)
 {
     try
     {
-	return (ImfOutputFile *) new OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaOutputFile
-	    (name, *header(hdr), OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaChannels (channels));
+	return (ImfOutputFile *) new Imf::RgbaOutputFile
+	    (name, *header(hdr), Imf::RgbaChannels (channels));
     }
     catch (const std::exception &e)
     {
@@ -976,7 +972,7 @@ ImfOutputSetFrameBuffer (ImfOutputFile *out,
 {
     try
     {
-	outfile(out)->setFrameBuffer ((OPENEXR_IMF_INTERNAL_NAMESPACE::Rgba *)base, xStride, yStride);
+	outfile(out)->setFrameBuffer ((Imf::Rgba *)base, xStride, yStride);
 	return 1;
     }
     catch (const std::exception &e)
@@ -1033,12 +1029,12 @@ ImfOpenTiledOutputFile (const char name[],
 {
     try
     {
-	return (ImfTiledOutputFile *) new OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaOutputFile
+	return (ImfTiledOutputFile *) new Imf::TiledRgbaOutputFile
 		    (name, *header(hdr),
-		     OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaChannels (channels),
+		     Imf::RgbaChannels (channels),
 		     xSize, ySize,
-		     OPENEXR_IMF_INTERNAL_NAMESPACE::LevelMode (mode),
-		     OPENEXR_IMF_INTERNAL_NAMESPACE::LevelRoundingMode (rmode));
+		     Imf::LevelMode (mode),
+		     Imf::LevelRoundingMode (rmode));
     }
     catch (const std::exception &e)
     {
@@ -1072,7 +1068,7 @@ ImfTiledOutputSetFrameBuffer (ImfTiledOutputFile *out,
 {
     try
     {
-	outfile(out)->setFrameBuffer ((OPENEXR_IMF_INTERNAL_NAMESPACE::Rgba *)base, xStride, yStride);
+	outfile(out)->setFrameBuffer ((Imf::Rgba *)base, xStride, yStride);
 	return 1;
     }
     catch (const std::exception &e)
@@ -1167,7 +1163,7 @@ ImfOpenInputFile (const char name[])
 {
     try
     {
-	return (ImfInputFile *) new OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaInputFile (name);
+	return (ImfInputFile *) new Imf::RgbaInputFile (name);
     }
     catch (const std::exception &e)
     {
@@ -1201,7 +1197,7 @@ ImfInputSetFrameBuffer (ImfInputFile *in,
 {
     try
     {
-	infile(in)->setFrameBuffer ((OPENEXR_IMF_INTERNAL_NAMESPACE::Rgba *) base, xStride, yStride);
+	infile(in)->setFrameBuffer ((Imf::Rgba *) base, xStride, yStride);
 	return 1;
     }
     catch (const std::exception &e)
@@ -1254,7 +1250,7 @@ ImfOpenTiledInputFile (const char name[])
 {
     try
     {
-	return (ImfTiledInputFile *) new OPENEXR_IMF_INTERNAL_NAMESPACE::TiledRgbaInputFile (name);
+	return (ImfTiledInputFile *) new Imf::TiledRgbaInputFile (name);
     }
     catch (const std::exception &e)
     {
@@ -1288,7 +1284,7 @@ ImfTiledInputSetFrameBuffer (ImfTiledInputFile *in,
 {
     try
     {
-	infile(in)->setFrameBuffer ((OPENEXR_IMF_INTERNAL_NAMESPACE::Rgba *) base, xStride, yStride);
+	infile(in)->setFrameBuffer ((Imf::Rgba *) base, xStride, yStride);
 	return 1;
     }
     catch (const std::exception &e)
@@ -1390,8 +1386,8 @@ ImfNewRound12logLut (int channels)
 {
     try
     {
-	return (ImfLut *) new OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaLut
-	    (OPENEXR_IMF_INTERNAL_NAMESPACE::round12log, OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaChannels (channels));
+	return (ImfLut *) new Imf::RgbaLut
+	    (Imf::round12log, Imf::RgbaChannels (channels));
     }
     catch (const std::exception &e)
     {
@@ -1406,8 +1402,8 @@ ImfNewRoundNBitLut (unsigned int n, int channels)
 {
     try
     {
-	return (ImfLut *) new OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaLut
-	    (OPENEXR_IMF_INTERNAL_NAMESPACE::roundNBit (n), OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaChannels (channels));
+	return (ImfLut *) new Imf::RgbaLut
+	    (Imf::roundNBit (n), Imf::RgbaChannels (channels));
     }
     catch (const std::exception &e)
     {
@@ -1420,14 +1416,14 @@ ImfNewRoundNBitLut (unsigned int n, int channels)
 void
 ImfDeleteLut (ImfLut *lut)
 {
-    delete (OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaLut *) lut;
+    delete (Imf::RgbaLut *) lut;
 }
 
 
 void
 ImfApplyLut (ImfLut *lut, ImfRgba *data, int nData, int stride)
 {
-    ((OPENEXR_IMF_INTERNAL_NAMESPACE::RgbaLut *)lut)->apply ((OPENEXR_IMF_INTERNAL_NAMESPACE::Rgba *)data, nData, stride);
+    ((Imf::RgbaLut *)lut)->apply ((Imf::Rgba *)data, nData, stride);
 }
 
 

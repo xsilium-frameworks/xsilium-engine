@@ -29,35 +29,36 @@ THE SOFTWARE.
 #define __Particle_H__
 
 #include "OgrePrerequisites.h"
+#include "OgreBillboard.h"
 #include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
-    /** \addtogroup Core
-    *  @{
-    */
-    /** \addtogroup Effects
-    *  @{
-    */
-    /** Abstract class containing any additional data required to be associated
-        with a particle to perform the required rendering. 
-    @remarks
-        Because you can specialise the way that particles are rendered by supplying
-        custom ParticleSystemRenderer classes, you might well need some additional 
-        data for your custom rendering routine which is not held on the default particle
-        class. If that's the case, then you should define a subclass of this class, 
-        and construct it when asked in your custom ParticleSystemRenderer class.
-    */
-    class _OgreExport ParticleVisualData : public FXAlloc
-    {
-    public:
-        ParticleVisualData() {}
-        virtual ~ParticleVisualData() {}
+	/** \addtogroup Core
+	*  @{
+	*/
+	/** \addtogroup Effects
+	*  @{
+	*/
+	/** Abstract class containing any additional data required to be associated
+		with a particle to perform the required rendering. 
+	@remarks
+		Because you can specialise the way that particles are rendered by supplying
+		custom ParticleSystemRenderer classes, you might well need some additional 
+		data for your custom rendering routine which is not held on the default particle
+		class. If that's the case, then you should define a subclass of this class, 
+		and construct it when asked in your custom ParticleSystemRenderer class.
+	*/
+	class _OgreExport ParticleVisualData : public FXAlloc
+	{
+	public:
+		ParticleVisualData() {}
+		virtual ~ParticleVisualData() {}
 
-    };
+	};
 
-    /** Class representing a single particle instance. */
-    class _OgreExport Particle : public FXAlloc
+	/** Class representing a single particle instance. */
+	class _OgreExport Particle : public FXAlloc
     {
     protected:
         /// Parent ParticleSystem
@@ -79,29 +80,29 @@ namespace Ogre {
         /// Personal height if mOwnDimensions == true
         Real mHeight;
         /// Current rotation value
-        Radian mRotation;
+        Radian rotation;
         // Note the intentional public access to internal variables
         // Accessing via get/set would be too costly for 000's of particles
         /// World position
-        Vector3 mPosition;
+        Vector3 position;
         /// Direction (and speed) 
-        Vector3 mDirection;
+        Vector3 direction;
         /// Current colour
-        ColourValue mColour;
+        ColourValue colour;
         /// Time to live, number of seconds left of particles natural life
-        Real mTimeToLive;
+        Real timeToLive;
         /// Total Time to live, number of seconds of particles natural life
-        Real mTotalTimeToLive;
+        Real totalTimeToLive;
         /// Speed of rotation in radians/sec
-        Radian mRotationSpeed;
+        Radian rotationSpeed;
         /// Determines the type of particle.
-        ParticleType mParticleType;
+        ParticleType particleType;
 
         Particle()
-            : mParentSystem(0), mVisual(0), mOwnDimensions(false), mWidth(0), mHeight(0),
-            mRotation(0), mPosition(Vector3::ZERO), mDirection(Vector3::ZERO),
-            mColour(ColourValue::White), mTimeToLive(10), mTotalTimeToLive(10),
-            mRotationSpeed(0), mParticleType(Visual)
+            : mParentSystem(0), mVisual(0), mOwnDimensions(false), rotation(0), 
+            position(Vector3::ZERO), direction(Vector3::ZERO), 
+            colour(ColourValue::White), timeToLive(10), totalTimeToLive(10), 
+            rotationSpeed(0), particleType(Visual)
         {
         }
 
@@ -130,7 +131,7 @@ namespace Ogre {
         /** Sets the current rotation */
         void setRotation(const Radian& rad);
 
-        const Radian& getRotation(void) const { return mRotation; }
+        const Radian& getRotation(void) const { return rotation; }
 
         /** Internal method for notifying the particle of it's owner.
         */
@@ -138,16 +139,16 @@ namespace Ogre {
 
         /** Internal method for notifying the particle of it's optional visual data.
         */
-        void _notifyVisualData(ParticleVisualData* vis) { mVisual = vis; }
+		void _notifyVisualData(ParticleVisualData* vis) { mVisual = vis; }
 
-        /// Get the optional visual data associated with the class
-        ParticleVisualData* getVisualData(void) const { return mVisual; }
+		/// Get the optional visual data associated with the class
+		ParticleVisualData* getVisualData(void) const { return mVisual; }
 
         /// Utility method to reset this particle
         void resetDimensions(void);
     };
-    /** @} */
-    /** @} */
+	/** @} */
+	/** @} */
 }
 
 #include "OgreHeaderSuffix.h"

@@ -35,8 +35,10 @@ THE SOFTWARE.
 // http://www.geometrictools.com/License/Boost/LICENSE_1_0.txt
 
 #include "OgreQuaternion.h"
-#include "OgreMatrix3.h"
 
+#include "OgreMath.h"
+#include "OgreMatrix3.h"
+#include "OgreVector3.h"
 
 namespace Ogre {
 

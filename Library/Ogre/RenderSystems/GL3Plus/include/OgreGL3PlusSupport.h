@@ -32,7 +32,6 @@ THE SOFTWARE.
 #include "OgreGL3PlusPrerequisites.h"
 #include "OgreRenderWindow.h"
 #include "OgreConfigOptionMap.h"
-#include "OgreRenderSystemCapabilities.h"
 
 namespace Ogre
 {
@@ -79,7 +78,7 @@ namespace Ogre
             /**
             * Get version information
             */
-            const DriverVersion& getGLVersion(void) const
+            const String& getGLVersion(void) const
             {
                 return mVersion;
             }
@@ -117,9 +116,9 @@ namespace Ogre
             }
 
             /**
-            * Check if GL Version is supported
+            * Compare GL version numbers
             */
-            bool hasMinGLVersion(int major, int minor) const;
+            bool checkMinGLVersion(const String& v) const;
 
             /**
             * Get the address of a function
@@ -152,8 +151,7 @@ namespace Ogre
             virtual void stop() = 0;
 
         private:
-            DriverVersion mVersion;
-
+            String mVersion;
             String mVendor;
             String mShaderCachePath;
             String mShaderLibraryPath;

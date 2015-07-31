@@ -36,9 +36,6 @@
 #ifndef INCLUDED_IMF_RATIONAL_H
 #define INCLUDED_IMF_RATIONAL_H
 
-#include "ImfExport.h"
-#include "ImfNamespace.h"
-
 //-----------------------------------------------------------------------------
 //
 //	Rational numbers
@@ -53,10 +50,9 @@
 //
 //-----------------------------------------------------------------------------
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
-
-class IMF_EXPORT Rational
+class Rational
 {
   public:
 
@@ -92,7 +88,6 @@ class IMF_EXPORT Rational
     operator double () const {return double (n) / double (d);}
 };
 
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

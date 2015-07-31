@@ -30,8 +30,14 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
+#include "OgreCommon.h"
+#include "OgreMatrix3.h"
 #include "OgreMatrix4.h"
+#include "OgreQuaternion.h"
+#include "OgreString.h"
 #include "OgreRenderable.h"
+#include "OgreIteratorWrappers.h"
+#include "OgreMesh.h"
 #include "OgreUserObjectBindings.h"
 #include "OgreHeaderPrefix.h"
 
@@ -69,7 +75,7 @@ namespace Ogre {
             /// Transform is relative to world space
             TS_WORLD
         };
-        typedef OGRE_HashMap<String, Node*> ChildNodeMap;
+        typedef HashMap<String, Node*> ChildNodeMap;
         typedef MapIterator<ChildNodeMap> ChildNodeIterator;
         typedef ConstMapIterator<ChildNodeMap> ConstChildNodeIterator;
 
@@ -692,13 +698,6 @@ namespace Ogre {
             useful for simple transforms that don't require a child node.*/
         virtual Vector3 convertLocalToWorldPosition( const Vector3 &localPos );
 
-        /** Gets the local direction, relative to this node, of the given world-space direction */
-        virtual Vector3 convertWorldToLocalDirection( const Vector3 &worldDir, bool useScale );
-
-        /** Gets the world direction of a point in the node local space
-            useful for simple transforms that don't require a child node.*/
-        virtual Vector3 convertLocalToWorldDirection( const Vector3 &localDir, bool useScale );
-
         /** Gets the local orientation, relative to this node, of the given world-space orientation */
         virtual Quaternion convertWorldToLocalOrientation( const Quaternion &worldOrientation );
 
@@ -764,7 +763,7 @@ namespace Ogre {
             You can use it to associate one or more custom objects with this class instance.
         @see UserObjectBindings::setUserAny.
         */
-        UserObjectBindings& getUserObjectBindings() { return mUserObjectBindings; }
+        UserObjectBindings&	getUserObjectBindings() { return mUserObjectBindings; }
 
         /** Return an instance of user objects binding associated with this class.
             You can use it to associate one or more custom objects with this class instance.

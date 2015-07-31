@@ -40,9 +40,14 @@ namespace Ogre {
 
     //-----------------------------------------------------------------------
     DeflectorPlaneAffector::DeflectorPlaneAffector(ParticleSystem* psys)
-        : ParticleAffector(psys), mPlanePoint(Vector3::ZERO), mPlaneNormal(Vector3::UNIT_Y), mBounce(1.0)
+        : ParticleAffector(psys)
     {
         mType = "DeflectorPlane";
+
+        // defaults
+        mPlanePoint = Vector3::ZERO;
+        mPlaneNormal = Vector3::UNIT_Y;
+        mBounce = 1.0;
 
         // Set up parameters
         if (createParamDictionary("DeflectorPlaneAffector"))
@@ -66,27 +71,28 @@ namespace Ogre {
     {
         // precalculate distance of plane from origin
         Real planeDistance = - mPlaneNormal.dotProduct(mPlanePoint) / Math::Sqrt(mPlaneNormal.dotProduct(mPlaneNormal));
-        Vector3 directionPart;
+		Vector3 directionPart;
 
         ParticleIterator pi = pSystem->_getIterator();
+        Particle *p;
 
         while (!pi.end())
         {
-            Particle *p = pi.getNext();
+            p = pi.getNext();
 
-            Vector3 direction(p->mDirection * timeElapsed);
-            if (mPlaneNormal.dotProduct(p->mPosition + direction) + planeDistance <= 0.0)
+            Vector3 direction(p->direction * timeElapsed);
+            if (mPlaneNormal.dotProduct(p->position + direction) + planeDistance <= 0.0)
             {
-                Real a = mPlaneNormal.dotProduct(p->mPosition) + planeDistance;
+                Real a = mPlaneNormal.dotProduct(p->position) + planeDistance;
                 if (a > 0.0)
                 {
                     // for intersection point
-                    directionPart = direction * (- a / direction.dotProduct( mPlaneNormal ));
+					directionPart = direction * (- a / direction.dotProduct( mPlaneNormal ));
                     // set new position
-                    p->mPosition = (p->mPosition + ( directionPart )) + (((directionPart) - direction) * mBounce);
+					p->position = (p->position + ( directionPart )) + (((directionPart) - direction) * mBounce);
 
                     // reflect direction vector
-                    p->mDirection = (p->mDirection - (2.0f * p->mDirection.dotProduct( mPlaneNormal ) * mPlaneNormal)) * mBounce;
+                    p->direction = (p->direction - (2.0f * p->direction.dotProduct( mPlaneNormal ) * mPlaneNormal)) * mBounce;
                 }
             }
         }

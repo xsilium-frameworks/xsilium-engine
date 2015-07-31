@@ -16,6 +16,8 @@ set(ZZIP_H_PATH "${XSILIUM_DEP_DIR}/ZZipLib" )
 set(FREEIMAGE_H_PATH "${XSILIUM_DEP_DIR}/FreeImage/Source")
 set(FREEIMAGE_LIB_STATIC "FreeImage" )
 set(FREEIMAGE_LIB_STATIC_DBG "FreeImage" )
+set(FREEIMAGE_LIB "FreeImage" )
+set(FREEIMAGE_LIB_DBG "FreeImage" )
 
 # Find FreeType
 set(FREETYPE_H_PATH_ft2build "${XSILIUM_DEP_DIR}/Freetype/include")
@@ -103,9 +105,9 @@ endif()
 
 if(Boost_FOUND AND Boost_VERSION GREATER 104900)
     if(Boost_VERSION GREATER 105300)
-        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono)
+        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono serialization log log_setup)
     else()
-        set(OGRE_BOOST_COMPONENTS thread date_time system chrono)
+        set(OGRE_BOOST_COMPONENTS thread date_time system chrono serialization log log_setup)
     endif()
     find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 endif()
@@ -122,5 +124,5 @@ endif()
 #CEGUI
 set(CEGUI_FOUND 1)
 set(CEGUI_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include" "${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include")
-#set(CEGUI_LIBRARIES "RenderSystem_GL")
+set(CEGUI_LIBRARIES "CEGUIBase-0")
 

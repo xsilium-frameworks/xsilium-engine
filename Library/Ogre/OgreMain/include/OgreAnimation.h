@@ -30,7 +30,9 @@ THE SOFTWARE.
 #define __Animation_H__
 
 #include "OgrePrerequisites.h"
+#include "OgreString.h"
 #include "OgreIteratorWrappers.h"
+#include "OgreAnimable.h"
 #include "OgreAnimationTrack.h"
 #include "OgreAnimationState.h"
 #include "OgreHeaderPrefix.h"
@@ -485,7 +487,7 @@ namespace Ogre {
         @param keyframeTime The time corresponding to the base keyframe, if any
         @param baseAnimName Optionally a different base animation (must contain the same tracks)
         */
-        void setUseBaseKeyFrame(bool useBaseKeyFrame, Real keyframeTime = 0.0f, const String& baseAnimName = BLANKSTRING);
+        void setUseBaseKeyFrame(bool useBaseKeyFrame, Real keyframeTime = 0.0f, const String& baseAnimName = StringUtil::BLANK);
         /** Whether a base keyframe is being used for this Animation. */
         bool getUseBaseKeyFrame() const;
         /** If a base keyframe is being used, the time of that keyframe. */

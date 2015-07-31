@@ -26,7 +26,6 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#include "OgreGLRenderSystem.h"
 #include "OgreException.h"
 #include "OgreLogManager.h"
 #include "OgreStringConverter.h"
@@ -45,20 +44,33 @@ THE SOFTWARE.
 #include <OpenGL/OpenGL.h>
 #include <AppKit/NSScreen.h>
 #include <Foundation/NSString.h>
-
 namespace Ogre {
 
-bool OSXGLSupport::OSVersionIsAtLeast(double minAppKitVersionNumber)
+    class OSXGLSupportImpl
+    {
+    public:
+        OSXGLSupportImpl(){}
+        NSString * mCurrentOSVersion;
+    };
+    
+bool OSXGLSupport::OSVersionIsAtLeast(String newVersion)
 {
-    return NSAppKitVersionNumber >= minAppKitVersionNumber;
+    return [mImpl->mCurrentOSVersion compare:[NSString stringWithCString:newVersion.c_str() encoding:NSASCIIStringEncoding]
+                              options:NSNumericSearch] >= NSOrderedSame;
 }
+
 
 OSXGLSupport::OSXGLSupport() : mAPI(""), mContextType("")
 {
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"];
+    mImpl = new OSXGLSupportImpl();
+    mImpl->mCurrentOSVersion = [dict objectForKey:@"ProductVersion"];
 }
 
 OSXGLSupport::~OSXGLSupport()
 {
+    delete mImpl;
 }
 
 void OSXGLSupport::addConfig( void )
@@ -74,9 +86,6 @@ void OSXGLSupport::addConfig( void )
 	ConfigOption optSRGB;
     ConfigOption optContentScalingFactor;
 	ConfigOption optEnableFixedPipeline;
-#if OGRE_NO_QUAD_BUFFER_STEREO == 0
-	ConfigOption optStereoMode;
-#endif
 
 	// FS setting possibilities
 	optFullScreen.name = "Full Screen";
@@ -124,7 +133,7 @@ void OSXGLSupport::addConfig( void )
     optContentScalingFactor.possibleValues.push_back( "1.33" );
     optContentScalingFactor.possibleValues.push_back( "1.5" );
     optContentScalingFactor.possibleValues.push_back( "2.0" );
-    if(OSVersionIsAtLeast(NSAppKitVersionNumber10_7))
+    if(OSVersionIsAtLeast("10.7"))
         optContentScalingFactor.currentValue = StringConverter::toString((float)[NSScreen mainScreen].backingScaleFactor);
     else
         optContentScalingFactor.currentValue = "1.0";
@@ -135,14 +144,6 @@ void OSXGLSupport::addConfig( void )
     optEnableFixedPipeline.possibleValues.push_back( "No" );
     optEnableFixedPipeline.currentValue = "Yes";
     optEnableFixedPipeline.immutable = false;
-
-#if OGRE_NO_QUAD_BUFFER_STEREO == 0
-	optStereoMode.name = "Stereo Mode";
-	optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_NONE));
-	optStereoMode.possibleValues.push_back(StringConverter::toString(SMT_FRAME_SEQUENTIAL));
-	optStereoMode.currentValue = optStereoMode.possibleValues[0];
-	optStereoMode.immutable = false;
-#endif
 
 	CGLRendererInfoObj rend;
 
@@ -310,9 +311,6 @@ void OSXGLSupport::addConfig( void )
     mOptions[optContentScalingFactor.name] = optContentScalingFactor;
 
     mOptions[optEnableFixedPipeline.name] = optEnableFixedPipeline;
-#if OGRE_NO_QUAD_BUFFER_STEREO == 0
-	mOptions[optStereoMode.name] = optStereoMode;
-#endif
 }
 
 String OSXGLSupport::validateConfig( void )
@@ -375,13 +373,6 @@ RenderWindow* OSXGLSupport::createWindow( bool autoCreateWindow, GLRenderSystem*
 				OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find Fixed Pipeline enabled options!", "Win32GLSupport::createWindow");
 			bool enableFixedPipeline = (opt->second.currentValue == "Yes");
 			renderSystem->setFixedPipelineEnabled(enableFixedPipeline);
-
-#if OGRE_NO_QUAD_BUFFER_STEREO == 0
-		opt = mOptions.find("Stereo Mode");
-		if (opt == mOptions.end())
-			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Can't find stereo enabled options!", "OSXGLSupport::createWindow");
-		winOptions["stereoMode"] = opt->second.currentValue;	
-#endif
 
         opt = mOptions.find( "macAPI" );
         if( opt != mOptions.end() )

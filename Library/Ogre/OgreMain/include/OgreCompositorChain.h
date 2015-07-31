@@ -32,6 +32,7 @@ THE SOFTWARE.
 #include "OgreRenderTargetListener.h"
 #include "OgreRenderQueueListener.h"
 #include "OgreCompositorInstance.h"
+#include "OgreCompositor.h"
 #include "OgreViewport.h"
 #include "OgreHeaderPrefix.h"
 
@@ -70,7 +71,7 @@ namespace Ogre {
         @param scheme
             Scheme to use (blank means default).
         */
-        CompositorInstance* addCompositor(CompositorPtr filter, size_t addPosition=LAST, const String& scheme = BLANKSTRING);
+        CompositorInstance* addCompositor(CompositorPtr filter, size_t addPosition=LAST, const String& scheme = StringUtil::BLANK);
 
         /** Remove a compositor.
         @param position
@@ -133,9 +134,6 @@ namespace Ogre {
         /** Get viewport that is the target of this chain
         */
         Viewport *getViewport();
-        /** Set viewport that is the target of this chain
-        */
-        void _notifyViewport(Viewport* vp);
 
         /** Remove a compositor by pointer. This is internally used by CompositionTechnique to
             "weak" remove any instanced of a deleted technique.

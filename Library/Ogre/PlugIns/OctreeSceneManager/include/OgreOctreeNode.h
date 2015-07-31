@@ -37,10 +37,10 @@ email                : janders@users.sf.net
 #ifndef OCTREENODE_H
 #define OCTREENODE_H
 
-#include "OgreSceneNode.h"
+#include <OgreSceneNode.h>
 
+#include "OgreOctreeSceneManager.h"
 #include "OgreOctreePrerequisites.h"
-#include "OgreOctree.h"
 
 namespace Ogre
 {
@@ -69,8 +69,8 @@ public:
     /** Overridden from Node to remove any reference to octants */
     Node * removeChild( Node* child);
 
-    /** Overridden from Node to remove any reference to octants */
-    void removeAllChildren(void);
+	/** Overridden from Node to remove any reference to octants */
+	void removeAllChildren(void);
 
     /** Returns the Octree in which this OctreeNode resides
     */
@@ -93,7 +93,7 @@ public:
     /** Adds all the attached scenenodes to the render queue
     */
     virtual void _addToRenderQueue( Camera* cam, RenderQueue * q, bool onlyShadowCasters, 
-        VisibleObjectsBoundsInfo* visibleBounds);
+		VisibleObjectsBoundsInfo* visibleBounds);
 
     /** Sets up the LegacyRenderOperation for rendering this scene node as geometry.
     @remarks
@@ -125,17 +125,17 @@ protected:
 
     void _removeNodeAndChildren( );
 
-    /// Local bounding box
+    ///local bounding box
     AxisAlignedBox mLocalAABB;
 
     ///Octree this node is attached to.
     Octree *mOctant;
 
-    /// Preallocated corners for rendering
+    ///preallocated corners for rendering
     Real mCorners[ 24 ];
-    /// Shared colors for rendering
+    ///shared colors for rendering
     static unsigned long mColors[ 8 ];
-    /// Shared indexes for rendering
+    ///shared indexes for rendering
     static unsigned short mIndexes[ 24 ];
 
 

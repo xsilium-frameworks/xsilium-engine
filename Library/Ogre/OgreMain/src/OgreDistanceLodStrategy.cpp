@@ -28,20 +28,19 @@ THE SOFTWARE.
 
 #include "OgreStableHeaders.h"
 #include "OgreDistanceLodStrategy.h"
-#include "OgreCamera.h"
-#include "OgreNode.h"
-#include "OgreViewport.h"
 
 #include <limits>
 
+#include "OgreViewport.h"
+
 namespace Ogre {
-    DistanceLodStrategyBase::DistanceLodStrategyBase(const String& name)
+    DistanceLodStrategy::DistanceLodStrategy(const String& name)
         : LodStrategy(name)
         , mReferenceViewEnabled(false)
         , mReferenceViewValue(-1)
     { }
     //-----------------------------------------------------------------------
-    Real DistanceLodStrategyBase::getValueImpl(const MovableObject *movableObject, const Ogre::Camera *camera) const
+    Real DistanceLodStrategy::getValueImpl(const MovableObject *movableObject, const Ogre::Camera *camera) const
     {
         Real squaredDepth = getSquaredDepth(movableObject, camera);
 
@@ -74,48 +73,48 @@ namespace Ogre {
         return squaredDepth * camera->_getLodBiasInverse();
     }
     //-----------------------------------------------------------------------
-    Real DistanceLodStrategyBase::getBaseValue() const
+    Real DistanceLodStrategy::getBaseValue() const
     {
         return Real(0);
     }
     //---------------------------------------------------------------------
-    Real DistanceLodStrategyBase::transformBias(Real factor) const
+    Real DistanceLodStrategy::transformBias(Real factor) const
     {
         assert(factor > 0.0f && "Bias factor must be > 0!");
         return 1.0f / factor;
     }
     //-----------------------------------------------------------------------
-    Real DistanceLodStrategyBase::transformUserValue(Real userValue) const
+    Real DistanceLodStrategy::transformUserValue(Real userValue) const
     {
         // Square user-supplied distance
         return Math::Sqr(userValue);
     }
     //-----------------------------------------------------------------------
-    ushort DistanceLodStrategyBase::getIndex(Real value, const Mesh::MeshLodUsageList& meshLodUsageList) const
+    ushort DistanceLodStrategy::getIndex(Real value, const Mesh::MeshLodUsageList& meshLodUsageList) const
     {
         // Get index assuming ascending values
         return getIndexAscending(value, meshLodUsageList);
     }
     //-----------------------------------------------------------------------
-    ushort DistanceLodStrategyBase::getIndex(Real value, const Material::LodValueList& materialLodValueList) const
+    ushort DistanceLodStrategy::getIndex(Real value, const Material::LodValueList& materialLodValueList) const
     {
         // Get index assuming ascending values
         return getIndexAscending(value, materialLodValueList);
     }
     //---------------------------------------------------------------------
-    bool DistanceLodStrategyBase::isSorted(const Mesh::LodValueList& values) const
+    bool DistanceLodStrategy::isSorted(const Mesh::LodValueList& values) const
     {
         // Determine if sorted ascending
         return isSortedAscending(values);
     }
         //---------------------------------------------------------------------
-    void DistanceLodStrategyBase::sort(Mesh::MeshLodUsageList& meshLodUsageList) const
+    void DistanceLodStrategy::sort(Mesh::MeshLodUsageList& meshLodUsageList) const
     {
         // Sort ascending
         return sortAscending(meshLodUsageList);
     }
     //---------------------------------------------------------------------
-    void DistanceLodStrategyBase::setReferenceView(Real viewportWidth, Real viewportHeight, Radian fovY)
+    void DistanceLodStrategy::setReferenceView(Real viewportWidth, Real viewportHeight, Radian fovY)
     {
         // Determine x FOV based on aspect ratio
         Radian fovX = fovY * (viewportWidth / viewportHeight);
@@ -130,7 +129,7 @@ namespace Ogre {
         mReferenceViewEnabled = true;
     }
     //---------------------------------------------------------------------
-    void DistanceLodStrategyBase::setReferenceViewEnabled(bool value)
+    void DistanceLodStrategy::setReferenceViewEnabled(bool value)
     {
         // Ensure reference value has been set before being enabled
         if (value)
@@ -139,7 +138,7 @@ namespace Ogre {
         mReferenceViewEnabled = value;
     }
     //---------------------------------------------------------------------
-    bool DistanceLodStrategyBase::isReferenceViewEnabled() const
+    bool DistanceLodStrategy::isReferenceViewEnabled() const
     {
         return mReferenceViewEnabled;
     }
@@ -160,7 +159,7 @@ namespace Ogre {
     }
     //-----------------------------------------------------------------------
     DistanceLodSphereStrategy::DistanceLodSphereStrategy()
-        : DistanceLodStrategyBase("distance_sphere")
+        : DistanceLodStrategy("distance_sphere")
     { }
     //-----------------------------------------------------------------------
     Real DistanceLodSphereStrategy::getSquaredDepth(const MovableObject *movableObject, const Ogre::Camera *camera) const
@@ -190,7 +189,7 @@ namespace Ogre {
     }
     //-----------------------------------------------------------------------
     DistanceLodBoxStrategy::DistanceLodBoxStrategy()
-        : DistanceLodStrategyBase("distance_box")
+        : DistanceLodStrategy("distance_box")
     { }
     //-----------------------------------------------------------------------
     Real DistanceLodBoxStrategy::getSquaredDepth(const MovableObject *movableObject, const Ogre::Camera *camera) const

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2002-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2002, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -43,7 +43,7 @@
 
 #include "ImathShear.h"
 
-IMATH_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imath {
 
 
 
@@ -51,4 +51,4 @@ IMATH_INTERNAL_NAMESPACE_SOURCE_ENTER
 
 
 
-IMATH_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imath

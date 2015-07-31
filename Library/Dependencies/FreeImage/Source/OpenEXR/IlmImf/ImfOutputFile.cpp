@@ -1,7 +1,3 @@
-//
-///\todo: version needs fixing!
-//
-
 ///////////////////////////////////////////////////////////////////////////
 //
 // Copyright (c) 2004, Industrial Light & Magic, a division of Lucas
@@ -52,41 +48,35 @@
 #include "ImathBox.h"
 #include "ImathFun.h"
 #include <ImfArray.h>
-#include "ImfXdr.h"
+#include <ImfXdr.h>
 #include <ImfPreviewImageAttribute.h>
-#include <ImfPartType.h>
 #include "IlmThreadPool.h"
-#include "ImfOutputStreamMutex.h"
 #include "IlmThreadSemaphore.h"
 #include "IlmThreadMutex.h"
 #include "Iex.h"
-#include "ImfInputPart.h"
-#include "ImfNamespace.h"
-#include "ImfOutputPartData.h"
-
 #include <string>
 #include <vector>
 #include <fstream>
 #include <assert.h>
 #include <algorithm>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
 
-using IMATH_NAMESPACE::Box2i;
-using IMATH_NAMESPACE::divp;
-using IMATH_NAMESPACE::modp;
+namespace Imf {
+
+using Imath::Box2i;
+using Imath::divp;
+using Imath::modp;
 using std::string;
 using std::vector;
 using std::ofstream;
 using std::min;
 using std::max;
-using ILMTHREAD_NAMESPACE::Mutex;
-using ILMTHREAD_NAMESPACE::Lock;
-using ILMTHREAD_NAMESPACE::Semaphore;
-using ILMTHREAD_NAMESPACE::Task;
-using ILMTHREAD_NAMESPACE::TaskGroup;
-using ILMTHREAD_NAMESPACE::ThreadPool;
-
+using IlmThread::Mutex;
+using IlmThread::Lock;
+using IlmThread::Semaphore;
+using IlmThread::Task;
+using IlmThread::TaskGroup;
+using IlmThread::ThreadPool;
 
 namespace {
 
@@ -108,7 +98,6 @@ struct OutSliceInfo
 	          int xSampling = 1,
 	          int ySampling = 1,
 	          bool zero = false);
-                  
 };
 
 
@@ -177,11 +166,11 @@ LineBuffer::~LineBuffer ()
 
 } // namespace
 
-struct OutputFile::Data
+
+struct OutputFile::Data: public Mutex
 {
     Header		 header;		// the image header
-    bool                 multiPart;		// is the file multipart?
-    int			 version;               // version attribute \todo NOT BEING WRITTEN PROPERLY
+    int			 version;		// file format version
     Int64		 previewPosition;       // file position for preview
     FrameBuffer		 frameBuffer;           // framebuffer to write into
     int			 currentScanLine;       // next scanline to be written
@@ -199,18 +188,18 @@ struct OutputFile::Data
                                                 // its linebuffer
     Compressor::Format	 format;                // compressor's data format
     vector<OutSliceInfo> slices;		// info about channels in file
+    OStream *		 os;			// file stream to write to
+    bool		 deleteStream;
     Int64		 lineOffsetsPosition;   // file position for line
                                                 // offset table
+    Int64		 currentPosition;       // current file position
 
     vector<LineBuffer*>  lineBuffers;           // each holds one line buffer
     int			 linesInBuffer;         // number of scanlines each
                                                 // buffer holds
     size_t		 lineBufferSize;        // size of the line buffer
 
-    int                  partNumber;            // the output part number
-    OutputStreamMutex *  _streamData;         
-    bool                 _deleteStream;
-     Data (int numThreads);
+     Data (bool deleteStream, int numThreads);
     ~Data ();
 
 
@@ -220,11 +209,10 @@ struct OutputFile::Data
 };
 
 
-OutputFile::Data::Data (int numThreads):
-    lineOffsetsPosition (0),
-    partNumber (-1),
-    _streamData(0),
-    _deleteStream(false)
+OutputFile::Data::Data (bool deleteStream, int numThreads):
+    os (0),
+    deleteStream (deleteStream),
+    lineOffsetsPosition (0)
 {
     //
     // We need at least one lineBuffer, but if threading is used,
@@ -237,6 +225,9 @@ OutputFile::Data::Data (int numThreads):
 
 OutputFile::Data::~Data ()
 {
+    if (deleteStream)
+	delete os;
+
     for (size_t i = 0; i < lineBuffers.size(); i++)
         delete lineBuffers[i];
 }
@@ -248,29 +239,30 @@ OutputFile::Data::getLineBuffer (int number)
     return lineBuffers[number % lineBuffers.size()];
 }
 
+
 namespace {
 
+
 Int64
-writeLineOffsets (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, const vector<Int64> &lineOffsets)
+writeLineOffsets (OStream &os, const vector<Int64> &lineOffsets)
 {
     Int64 pos = os.tellp();
 
     if (pos == -1)
-	IEX_NAMESPACE::throwErrnoExc ("Cannot determine current file position (%T).");
-    
+	Iex::throwErrnoExc ("Cannot determine current file position (%T).");
+
     for (unsigned int i = 0; i < lineOffsets.size(); i++)
-	Xdr::write<StreamIO> (os, lineOffsets[i]);
+	Xdr::write <StreamIO> (os, lineOffsets[i]);
 
     return pos;
 }
 
 
 void
-writePixelData (OutputStreamMutex *filedata,
-                OutputFile::Data *partdata,
+writePixelData (OutputFile::Data *ofd,
                 int lineBufferMinY,
-                const char pixelData[],
-                int pixelDataSize)
+		const char pixelData[],
+		int pixelDataSize)
 {
     //
     // Store a block of pixel data in the output file, and try
@@ -278,53 +270,39 @@ writePixelData (OutputStreamMutex *filedata,
     // without calling tellp() (tellp() can be fairly expensive).
     //
 
-    Int64 currentPosition = filedata->currentPosition;
-    filedata->currentPosition = 0;
+    Int64 currentPosition = ofd->currentPosition;
+    ofd->currentPosition = 0;
 
     if (currentPosition == 0)
-        currentPosition = filedata->os->tellp();
+	currentPosition = ofd->os->tellp();
 
-    partdata->lineOffsets[(partdata->currentScanLine - partdata->minY) / partdata->linesInBuffer] =
-        currentPosition;
+    ofd->lineOffsets[(ofd->currentScanLine - ofd->minY) / ofd->linesInBuffer] =
+	currentPosition;
 
     #ifdef DEBUG
 
-        assert (filedata->os->tellp() == currentPosition);
+	assert (ofd->os->tellp() == currentPosition);
 
     #endif
-    
-	
-	
-    if (partdata->multiPart)
-    {
-        OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*filedata->os, partdata->partNumber);
-    }
-    
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*filedata->os, lineBufferMinY);
-    OPENEXR_IMF_INTERNAL_NAMESPACE::Xdr::write <OPENEXR_IMF_INTERNAL_NAMESPACE::StreamIO> (*filedata->os, pixelDataSize);
-    filedata->os->write (pixelData, pixelDataSize);
 
-    filedata->currentPosition = currentPosition +
-                           Xdr::size<int>() +
-                           Xdr::size<int>() +
-                           pixelDataSize;
+    Xdr::write <StreamIO> (*ofd->os, lineBufferMinY);
+    Xdr::write <StreamIO> (*ofd->os, pixelDataSize);
+    ofd->os->write (pixelData, pixelDataSize);
 
-    if (partdata->multiPart)
-    {
-        filedata->currentPosition += Xdr::size<int>();
-    }
+    ofd->currentPosition = currentPosition +
+			   Xdr::size<int>() +
+			   Xdr::size<int>() +
+			   pixelDataSize;
 }
 
 
 inline void
-writePixelData (OutputStreamMutex* filedata,
-                OutputFile::Data *partdata,
-                const LineBuffer *lineBuffer)
+writePixelData (OutputFile::Data *ofd, const LineBuffer *lineBuffer)
 {
-    writePixelData (filedata, partdata,
-                    lineBuffer->minY,
+    writePixelData (ofd,
+		    lineBuffer->minY,
                     lineBuffer->dataPtr,
-                    lineBuffer->dataSize);
+		    lineBuffer->dataSize);
 }
 
 
@@ -349,18 +327,35 @@ convertToXdr (OutputFile::Data *ofd,
     // pixel data in place, without an intermediate temporary buffer.
     //
    
+    int startY, endY;		// The first and last scanlines in
+    				// the file that are in the lineBuffer.
+    int step;
+    
+    if (ofd->lineOrder == INCREASING_Y)
+    {
+	startY = max (lineBufferMinY, ofd->minY);
+	endY = min (lineBufferMaxY, ofd->maxY) + 1;
+        step = 1;
+    }
+    else
+    {
+	startY = min (lineBufferMaxY, ofd->maxY);
+	endY = max (lineBufferMinY, ofd->minY) - 1;
+        step = -1;
+    }
+
     //
     // Iterate over all scanlines in the lineBuffer to convert.
     //
 
-    char *writePtr = &lineBuffer[0];
-    for (int y = lineBufferMinY; y <= lineBufferMaxY; y++)
+    for (int y = startY; y != endY; y += step)
     {
 	//
         // Set these to point to the start of line y.
         // We will write to writePtr from readPtr.
 	//
-
+	
+        char *writePtr = lineBuffer + ofd->offsetInLineBuffer[y - ofd->minY];
         const char *readPtr = writePtr;
         
 	//
@@ -513,7 +508,7 @@ LineBufferTask::execute ()
             //
             // Iterate over all image channels.
             //
-
+        
             for (unsigned int i = 0; i < _ofd->slices.size(); ++i)
             {
                 //
@@ -656,30 +651,17 @@ OutputFile::OutputFile
      const Header &header,
      int numThreads)
 :
-    _data (new Data (numThreads))
-    
+    _data (new Data (true, numThreads))
 {
-    _data->_streamData=new OutputStreamMutex ();
-    _data->_deleteStream=true;
     try
     {
 	header.sanityCheck();
-	_data->_streamData->os = new StdOFStream (fileName);
-        _data->multiPart=false; // only one header, not multipart
+	_data->os = new StdOFStream (fileName);
 	initialize (header);
-	_data->_streamData->currentPosition = _data->_streamData->os->tellp();
-        
-	// Write header and empty offset table to the file.
-	writeMagicNumberAndVersionField(*_data->_streamData->os, _data->header);
-	_data->previewPosition =
-	        _data->header.writeTo (*_data->_streamData->os);
-        _data->lineOffsetsPosition =
-                writeLineOffsets (*_data->_streamData->os,_data->lineOffsets);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
-        if (_data && _data->_streamData) delete _data->_streamData;
-	if (_data)       delete _data;
+	delete _data;
 
 	REPLACE_EXC (e, "Cannot open image file "
 			"\"" << fileName << "\". " << e);
@@ -687,43 +669,28 @@ OutputFile::OutputFile
     }
     catch (...)
     {
-        if (_data && _data->_streamData) delete _data->_streamData;
-        if (_data)       delete _data;
-
+	delete _data;
         throw;
     }
 }
 
 
 OutputFile::OutputFile
-    (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os,
+    (OStream &os,
      const Header &header,
      int numThreads)
 :
-    _data (new Data (numThreads))
+    _data (new Data (false, numThreads))
 {
-    
-    _data->_streamData=new OutputStreamMutex ();
-    _data->_deleteStream=false;
     try
     {
 	header.sanityCheck();
-	_data->_streamData->os = &os;
-        _data->multiPart=false;
+	_data->os = &os;
 	initialize (header);
-	_data->_streamData->currentPosition = _data->_streamData->os->tellp();
-
-	// Write header and empty offset table to the file.
-	writeMagicNumberAndVersionField(*_data->_streamData->os, _data->header);
-	_data->previewPosition =
-	        _data->header.writeTo (*_data->_streamData->os);
-        _data->lineOffsetsPosition =
-                writeLineOffsets (*_data->_streamData->os, _data->lineOffsets);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
-        if (_data && _data->_streamData) delete _data->_streamData;
-	if (_data)       delete _data;
+	delete _data;
 
 	REPLACE_EXC (e, "Cannot open image file "
 			"\"" << os.fileName() << "\". " << e);
@@ -731,58 +698,17 @@ OutputFile::OutputFile
     }
     catch (...)
     {
-        if (_data && _data->_streamData) delete _data->_streamData;
-        if (_data)       delete _data;
-
+	delete _data;
         throw;
     }
 }
 
-OutputFile::OutputFile(const OutputPartData* part) : _data(NULL)
-{
-    try
-    {
-        if (part->header.type() != SCANLINEIMAGE)
-            throw IEX_NAMESPACE::ArgExc("Can't build a OutputFile from a type-mismatched part.");
-
-        _data = new Data (part->numThreads);
-        _data->_streamData = part->mutex;
-        _data->_deleteStream=false;
-        _data->multiPart=part->multipart;
-
-        initialize (part->header);
-        _data->partNumber = part->partNumber;
-        _data->lineOffsetsPosition = part->chunkOffsetTablePosition;
-        _data->previewPosition = part->previewPosition;
-    }
-    catch (IEX_NAMESPACE::BaseExc &e)
-    {
-        if (_data) delete _data;
-
-        REPLACE_EXC (e, "Cannot initialize output part "
-                        "\"" << part->partNumber << "\". " << e);
-        throw;
-    }
-    catch (...)
-    {
-        if (_data) delete _data;
-
-        throw;
-    }
-}
 
 void
 OutputFile::initialize (const Header &header)
 {
     _data->header = header;
 
-    // "fix" the type if it happens to be set incorrectly
-    // (attribute is optional, but ensure it is correct if it exists)
-    if(_data->header.hasType())
-    {
-        _data->header.setType(SCANLINEIMAGE);
-    }
-    
     const Box2i &dataWindow = header.dataWindow();
 
     _data->currentScanLine = (header.lineOrder() == INCREASING_Y)?
@@ -818,11 +744,18 @@ OutputFile::initialize (const Header &header)
 			  _data->linesInBuffer) / _data->linesInBuffer;
 
     _data->lineOffsets.resize (lineOffsetSize);
-    
-    
+
     offsetInLineBufferTable (_data->bytesPerLine,
 			     _data->linesInBuffer,
 			     _data->offsetInLineBuffer);
+
+    _data->previewPosition =
+	_data->header.writeTo (*_data->os);
+
+    _data->lineOffsetsPosition =
+	writeLineOffsets (*_data->os, _data->lineOffsets);
+
+    _data->currentPosition = _data->os->tellp();
 }
 
 
@@ -831,20 +764,12 @@ OutputFile::~OutputFile ()
     if (_data)
     {
         {
-            Lock lock(*_data->_streamData);
-            Int64 originalPosition = _data->_streamData->os->tellp();
-
             if (_data->lineOffsetsPosition > 0)
             {
                 try
                 {
-                    _data->_streamData->os->seekp (_data->lineOffsetsPosition);
-                    writeLineOffsets (*_data->_streamData->os, _data->lineOffsets);
-
-                    //
-                    // Restore the original position.
-                    //
-                    _data->_streamData->os->seekp (originalPosition);
+                    _data->os->seekp (_data->lineOffsetsPosition);
+                    writeLineOffsets (*_data->os, _data->lineOffsets);
                 }
                 catch (...)
                 {
@@ -858,22 +783,15 @@ OutputFile::~OutputFile ()
             }
         }
 
-        if (_data->_deleteStream && _data->_streamData)
-            delete _data->_streamData->os;
-
-        if (_data->partNumber == -1 && _data->_streamData)
-            delete _data->_streamData;
-
 	delete _data;
     }
-
 }
 
 
 const char *
 OutputFile::fileName () const
 {
-    return _data->_streamData->os->fileName();
+    return _data->os->fileName();
 }
 
 
@@ -887,7 +805,7 @@ OutputFile::header () const
 void	
 OutputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
     
     //
     // Check if the new frame buffer descriptor
@@ -907,7 +825,7 @@ OutputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 
 	if (i.channel().type != j.slice().type)
 	{
-	    THROW (IEX_NAMESPACE::ArgExc, "Pixel type of \"" << i.name() << "\" channel "
+	    THROW (Iex::ArgExc, "Pixel type of \"" << i.name() << "\" channel "
 			        "of output file \"" << fileName() << "\" is "
 			        "not compatible with the frame buffer's "
 			        "pixel type.");
@@ -916,7 +834,7 @@ OutputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 	if (i.channel().xSampling != j.slice().xSampling ||
 	    i.channel().ySampling != j.slice().ySampling)
 	{
-	    THROW (IEX_NAMESPACE::ArgExc, "X and/or y subsampling factors "
+	    THROW (Iex::ArgExc, "X and/or y subsampling factors "
 				"of \"" << i.name() << "\" channel "
 				"of output file \"" << fileName() << "\" are "
 				"not compatible with the frame buffer's "
@@ -979,7 +897,7 @@ OutputFile::setFrameBuffer (const FrameBuffer &frameBuffer)
 const FrameBuffer &
 OutputFile::frameBuffer () const
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
     return _data->frameBuffer;
 }
 
@@ -989,10 +907,10 @@ OutputFile::writePixels (int numScanLines)
 {
     try
     {
-        Lock lock (*_data->_streamData);
+        Lock lock (*_data);
 
 	if (_data->slices.size() == 0)
-	    throw IEX_NAMESPACE::ArgExc ("No frame buffer specified "
+	    throw Iex::ArgExc ("No frame buffer specified "
 			       "as pixel data source.");
 
         //
@@ -1078,7 +996,7 @@ OutputFile::writePixels (int numScanLines)
             {
                 if (_data->missingScanLines <= 0)
                 {
-                    throw IEX_NAMESPACE::ArgExc ("Tried to write more scan lines "
+                    throw Iex::ArgExc ("Tried to write more scan lines "
                                        "than specified by the data window.");
                 }
     
@@ -1114,7 +1032,7 @@ OutputFile::writePixels (int numScanLines)
                 // Write the line buffer
 		//
 
-                writePixelData (_data->_streamData, _data, writeBuffer);
+                writePixelData (_data, writeBuffer);
                 nextWriteBuffer += step;
 
                 _data->currentScanLine = _data->currentScanLine +
@@ -1187,7 +1105,7 @@ OutputFile::writePixels (int numScanLines)
 
 	const string *exception = 0;
 
-        for (size_t i = 0; i < _data->lineBuffers.size(); ++i)
+        for (int i = 0; i < _data->lineBuffers.size(); ++i)
 	{
             LineBuffer *lineBuffer = _data->lineBuffers[i];
 
@@ -1198,9 +1116,9 @@ OutputFile::writePixels (int numScanLines)
 	}
 
 	if (exception)
-	    throw IEX_NAMESPACE::IoExc (*exception);
+	    throw Iex::IoExc (*exception);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
 	REPLACE_EXC (e, "Failed to write pixel data to image "
 		        "file \"" << fileName() << "\". " << e);
@@ -1212,7 +1130,7 @@ OutputFile::writePixels (int numScanLines)
 int	
 OutputFile::currentScanLine () const
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
     return _data->currentScanLine;
 }
 
@@ -1220,7 +1138,7 @@ OutputFile::currentScanLine () const
 void	
 OutputFile::copyPixels (InputFile &in)
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
 
     //
     // Check if this file's and and the InputFile's
@@ -1231,7 +1149,7 @@ OutputFile::copyPixels (InputFile &in)
     const Header &inHdr = in.header();
 
     if (inHdr.find("tiles") != inHdr.end())
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot copy pixels from image "
+	THROW (Iex::ArgExc, "Cannot copy pixels from image "
 			    "file \"" << in.fileName() << "\" to image "
 			    "file \"" << fileName() << "\". "
                             "The input file is tiled, but the output file is "
@@ -1239,25 +1157,25 @@ OutputFile::copyPixels (InputFile &in)
                             "instead.");
 
     if (!(hdr.dataWindow() == inHdr.dataWindow()))
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot copy pixels from image "
+	THROW (Iex::ArgExc, "Cannot copy pixels from image "
 			    "file \"" << in.fileName() << "\" to image "
 			    "file \"" << fileName() << "\". "
                             "The files have different data windows.");
 
     if (!(hdr.lineOrder() == inHdr.lineOrder()))
-	THROW (IEX_NAMESPACE::ArgExc, "Quick pixel copy from image "
+	THROW (Iex::ArgExc, "Quick pixel copy from image "
 			    "file \"" << in.fileName() << "\" to image "
 			    "file \"" << fileName() << "\" failed. "
 			    "The files have different line orders.");
 
     if (!(hdr.compression() == inHdr.compression()))
-	THROW (IEX_NAMESPACE::ArgExc, "Quick pixel copy from image "
+	THROW (Iex::ArgExc, "Quick pixel copy from image "
 			    "file \"" << in.fileName() << "\" to image "
 			    "file \"" << fileName() << "\" failed. "
 			    "The files use different compression methods.");
 
     if (!(hdr.channels() == inHdr.channels()))
-	THROW (IEX_NAMESPACE::ArgExc, "Quick pixel copy from image "
+	THROW (Iex::ArgExc, "Quick pixel copy from image "
 			    "file \"" << in.fileName() << "\" to image "
 			    "file \"" << fileName() << "\" failed.  "
 			    "The files have different channel lists.");
@@ -1269,7 +1187,7 @@ OutputFile::copyPixels (InputFile &in)
     const Box2i &dataWindow = hdr.dataWindow();
 
     if (_data->missingScanLines != dataWindow.max.y - dataWindow.min.y + 1)
-	THROW (IEX_NAMESPACE::LogicExc, "Quick pixel copy from image "
+	THROW (Iex::LogicExc, "Quick pixel copy from image "
 			      "file \"" << in.fileName() << "\" to image "
 			      "file \"" << fileName() << "\" failed. "
 			      "\"" << fileName() << "\" already contains "
@@ -1286,9 +1204,9 @@ OutputFile::copyPixels (InputFile &in)
 
 	in.rawPixelData (_data->currentScanLine, pixelData, pixelDataSize);
 
-        writePixelData (_data->_streamData, _data, lineBufferMinY (_data->currentScanLine,
-                                               _data->minY,
-                                               _data->linesInBuffer),
+	writePixelData (_data, lineBufferMinY (_data->currentScanLine,
+				               _data->minY,
+				               _data->linesInBuffer),
                         pixelData, pixelDataSize);
 
 	_data->currentScanLine += (_data->lineOrder == INCREASING_Y)?
@@ -1300,20 +1218,12 @@ OutputFile::copyPixels (InputFile &in)
 
 
 void
-OutputFile::copyPixels( InputPart & in)
-{
-    copyPixels(*in.file);
-}
-
-
-
-void
 OutputFile::updatePreviewImage (const PreviewRgba newPixels[])
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
 
     if (_data->previewPosition <= 0)
-	THROW (IEX_NAMESPACE::LogicExc, "Cannot update preview image pixels. "
+	THROW (Iex::LogicExc, "Cannot update preview image pixels. "
 			      "File \"" << fileName() << "\" does not "
 			      "contain a preview image.");
 
@@ -1337,15 +1247,15 @@ OutputFile::updatePreviewImage (const PreviewRgba newPixels[])
     // preview image, and jump back to the saved file position.
     //
 
-    Int64 savedPosition = _data->_streamData->os->tellp();
+    Int64 savedPosition = _data->os->tellp();
 
     try
     {
-        _data->_streamData->os->seekp (_data->previewPosition);
-	pia.writeValueTo (*_data->_streamData->os, _data->version);
-	_data->_streamData->os->seekp (savedPosition);
+	_data->os->seekp (_data->previewPosition);
+	pia.writeValueTo (*_data->os, _data->version);
+	_data->os->seekp (savedPosition);
     }
-    catch (IEX_NAMESPACE::BaseExc &e)
+    catch (Iex::BaseExc &e)
     {
 	REPLACE_EXC (e, "Cannot update preview image pixels for "
 			"file \"" << fileName() << "\". " << e);
@@ -1357,22 +1267,22 @@ OutputFile::updatePreviewImage (const PreviewRgba newPixels[])
 void	
 OutputFile::breakScanLine  (int y, int offset, int length, char c)
 {
-    Lock lock (*_data->_streamData);
+    Lock lock (*_data);
 
     Int64 position = 
 	_data->lineOffsets[(y - _data->minY) / _data->linesInBuffer];
 
     if (!position)
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot overwrite scan line " << y << ". "
+	THROW (Iex::ArgExc, "Cannot overwrite scan line " << y << ". "
 			    "The scan line has not yet been stored in "
 			    "file \"" << fileName() << "\".");
 
-    _data->_streamData->currentPosition = 0;
-    _data->_streamData->os->seekp (position + offset);
+    _data->currentPosition = 0;
+    _data->os->seekp (position + offset);
 
     for (int i = 0; i < length; ++i)
-        _data->_streamData->os->write (&c, 1);
+	_data->os->write (&c, 1);
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

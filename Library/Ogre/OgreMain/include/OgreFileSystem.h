@@ -62,7 +62,7 @@ namespace Ogre {
             Populated if retrieving a detailed list.
         */
         void findFiles(const String& pattern, bool recursive, bool dirs,
-            StringVector* simpleList, FileInfoList* detailList);
+            StringVector* simpleList, FileInfoList* detailList) const;
 
         OGRE_AUTO_MUTEX;
     public:
@@ -78,13 +78,13 @@ namespace Ogre {
         void unload();
 
         /// @copydoc Archive::open
-        DataStreamPtr open(const String& filename, bool readOnly = true);
+        DataStreamPtr open(const String& filename, bool readOnly = true) const;
 
         /// @copydoc Archive::create
-        DataStreamPtr create(const String& filename);
+        DataStreamPtr create(const String& filename) const;
 
         /// @copydoc Archive::remove
-        void remove(const String& filename);
+        void remove(const String& filename) const;
 
         /// @copydoc Archive::list
         StringVectorPtr list(bool recursive = true, bool dirs = false);
@@ -98,7 +98,7 @@ namespace Ogre {
 
         /// @copydoc Archive::findFileInfo
         FileInfoListPtr findFileInfo(const String& pattern, bool recursive = true,
-            bool dirs = false);
+            bool dirs = false) const;
 
         /// @copydoc Archive::exists
         bool exists(const String& filename);

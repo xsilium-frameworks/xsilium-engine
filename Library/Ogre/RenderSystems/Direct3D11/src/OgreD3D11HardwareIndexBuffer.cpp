@@ -30,61 +30,61 @@ THE SOFTWARE.
 
 namespace Ogre {
 
-    //---------------------------------------------------------------------
-    D3D11HardwareIndexBuffer::D3D11HardwareIndexBuffer(HardwareBufferManagerBase* mgr, HardwareIndexBuffer::IndexType idxType, 
-        size_t numIndexes, HardwareBuffer::Usage usage, D3D11Device & device, 
-        bool useSystemMemory, bool useShadowBuffer)
-        : HardwareIndexBuffer(mgr, idxType, numIndexes, usage, useSystemMemory, useShadowBuffer)
-    {
-        // everything is done via internal generalisation
-        mBufferImpl = new D3D11HardwareBuffer(D3D11HardwareBuffer::INDEX_BUFFER, 
-            mSizeInBytes, mUsage, device, useSystemMemory, useShadowBuffer, false);
+	//---------------------------------------------------------------------
+	D3D11HardwareIndexBuffer::D3D11HardwareIndexBuffer(HardwareBufferManagerBase* mgr, HardwareIndexBuffer::IndexType idxType, 
+		size_t numIndexes, HardwareBuffer::Usage usage, D3D11Device & device, 
+		bool useSystemMemory, bool useShadowBuffer)
+		: HardwareIndexBuffer(mgr, idxType, numIndexes, usage, useSystemMemory, useShadowBuffer)
+	{
+		// everything is done via internal generalisation
+		mBufferImpl = new D3D11HardwareBuffer(D3D11HardwareBuffer::INDEX_BUFFER, 
+			mSizeInBytes, mUsage, device, useSystemMemory, useShadowBuffer, false);
 
-    }
-    //---------------------------------------------------------------------
-    D3D11HardwareIndexBuffer::~D3D11HardwareIndexBuffer()
-    {
-        delete mBufferImpl;
-    }
-    //---------------------------------------------------------------------
-    void* D3D11HardwareIndexBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
-    {
-        return mBufferImpl->lock(offset, length, options);
-    }
-    //---------------------------------------------------------------------
-    void D3D11HardwareIndexBuffer::unlock(void)
-    {
-        mBufferImpl->unlock();
-    }
-    //---------------------------------------------------------------------
-    void D3D11HardwareIndexBuffer::readData(size_t offset, size_t length, void* pDest)
-    {
-        mBufferImpl->readData(offset, length, pDest);
-    }
-    //---------------------------------------------------------------------
-    void D3D11HardwareIndexBuffer::writeData(size_t offset, size_t length, const void* pSource,
-        bool discardWholeBuffer)
-    {
-        mBufferImpl->writeData(offset, length, pSource, discardWholeBuffer);
-    }
-    //---------------------------------------------------------------------
-    void D3D11HardwareIndexBuffer::copyData(HardwareBuffer& srcBuffer, size_t srcOffset, 
-        size_t dstOffset, size_t length, bool discardWholeBuffer)
-    {
-        D3D11HardwareIndexBuffer& d3dBuf = static_cast<D3D11HardwareIndexBuffer&>(srcBuffer);
+	}
+	//---------------------------------------------------------------------
+	D3D11HardwareIndexBuffer::~D3D11HardwareIndexBuffer()
+	{
+		delete mBufferImpl;
+	}
+	//---------------------------------------------------------------------
+	void* D3D11HardwareIndexBuffer::lock(size_t offset, size_t length, LockOptions options)
+	{
+		return mBufferImpl->lock(offset, length, options);
+	}
+	//---------------------------------------------------------------------
+	void D3D11HardwareIndexBuffer::unlock(void)
+	{
+		mBufferImpl->unlock();
+	}
+	//---------------------------------------------------------------------
+	void D3D11HardwareIndexBuffer::readData(size_t offset, size_t length, void* pDest)
+	{
+		mBufferImpl->readData(offset, length, pDest);
+	}
+	//---------------------------------------------------------------------
+	void D3D11HardwareIndexBuffer::writeData(size_t offset, size_t length, const void* pSource,
+		bool discardWholeBuffer)
+	{
+		mBufferImpl->writeData(offset, length, pSource, discardWholeBuffer);
+	}
+	//---------------------------------------------------------------------
+	void D3D11HardwareIndexBuffer::copyData(HardwareBuffer& srcBuffer, size_t srcOffset, 
+		size_t dstOffset, size_t length, bool discardWholeBuffer)
+	{
+		D3D11HardwareIndexBuffer& d3dBuf = static_cast<D3D11HardwareIndexBuffer&>(srcBuffer);
 
-        mBufferImpl->copyData(*(d3dBuf.mBufferImpl), srcOffset, dstOffset, length, discardWholeBuffer);
-    }
-    //---------------------------------------------------------------------
-    bool D3D11HardwareIndexBuffer::isLocked(void) const
-    {
-        return mBufferImpl->isLocked();
-    }
-    //---------------------------------------------------------------------
-    ID3D11Buffer * D3D11HardwareIndexBuffer::getD3DIndexBuffer( void ) const
-    {
-        return mBufferImpl->getD3DBuffer();
-    }
-    //---------------------------------------------------------------------
+		mBufferImpl->copyData(*(d3dBuf.mBufferImpl), srcOffset, dstOffset, length, discardWholeBuffer);
+	}
+	//---------------------------------------------------------------------
+	bool D3D11HardwareIndexBuffer::isLocked(void) const
+	{
+		return mBufferImpl->isLocked();
+	}
+	//---------------------------------------------------------------------
+	ID3D11Buffer * D3D11HardwareIndexBuffer::getD3DIndexBuffer( void ) const
+	{
+		return mBufferImpl->getD3DBuffer();
+	}
+	//---------------------------------------------------------------------
 
 }

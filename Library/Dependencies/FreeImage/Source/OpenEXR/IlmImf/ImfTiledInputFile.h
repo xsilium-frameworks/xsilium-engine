@@ -42,26 +42,22 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfHeader.h"
-#include "ImfFrameBuffer.h"
+#include <ImfHeader.h>
+#include <ImfFrameBuffer.h>
 #include "ImathBox.h"
-#include "ImfTileDescription.h"
-#include "ImfThreading.h"
-#include "ImfGenericInputFile.h"
-#include "ImfTiledOutputFile.h"
-#include "ImfNamespace.h"
-#include "ImfExport.h"
+#include <ImfTileDescription.h>
+#include <ImfThreading.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 
-class IMF_EXPORT TiledInputFile : public GenericInputFile
+class TiledInputFile
 {
   public:
 
     //--------------------------------------------------------------------
     // A constructor that opens the file with the specified name, and
-    // reads the file header.  The constructor throws an IEX_NAMESPACE::ArgExc
+    // reads the file header.  The constructor throws an Iex::ArgExc
     // exception if the file is not tiled.
     // The numThreads parameter specifies how many worker threads this
     // file will try to keep busy when decompressing individual tiles.
@@ -81,7 +77,7 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
     // files.
     // ----------------------------------------------------------
 
-    TiledInputFile (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int numThreads = globalThreadCount ());
+    TiledInputFile (IStream &is, int numThreads = globalThreadCount ());
 
 
     //-----------
@@ -198,7 +194,7 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
     //      return value is the same as for numXLevels()
     //
     //	if levelMode() == RIPMAP_LEVELS:
-    //      an IEX_NAMESPACE::LogicExc exception is thrown
+    //      an Iex::LogicExc exception is thrown
     //
     // isValidLevel(lx, ly) returns true if the file contains 
     // a level with level number (lx, ly), false if not.
@@ -276,8 +272,8 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
     //
     //---------------------------------------------------------------
 
-    IMATH_NAMESPACE::Box2i	dataWindowForLevel (int l = 0) const;
-    IMATH_NAMESPACE::Box2i	dataWindowForLevel (int lx, int ly) const;
+    Imath::Box2i	dataWindowForLevel (int l = 0) const;
+    Imath::Box2i	dataWindowForLevel (int lx, int ly) const;
 
 
     //-------------------------------------------------------------------
@@ -301,9 +297,9 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
     //
     //-------------------------------------------------------------------
 
-    IMATH_NAMESPACE::Box2i	dataWindowForTile (int dx, int dy, int l = 0) const;
+    Imath::Box2i	dataWindowForTile (int dx, int dy, int l = 0) const;
 
-    IMATH_NAMESPACE::Box2i	dataWindowForTile (int dx, int dy,
+    Imath::Box2i	dataWindowForTile (int dx, int dy,
                                            int lx, int ly) const;
 
     //------------------------------------------------------------
@@ -349,10 +345,6 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
     // Read a tile of raw pixel data from the file,
     // without uncompressing it (this function is
     // used to implement TiledOutputFile::copyPixels()).
-    //
-    // for single part files, reads the next tile in the file
-    // for multipart files, reads the tile specified by dx,dy,lx,ly
-    //
     //--------------------------------------------------
 
     void		rawTileData (int &dx, int &dy,
@@ -365,19 +357,14 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
   private:
 
     friend class InputFile;
-    friend class MultiPartInputFile;
-
-    TiledInputFile (InputPartData* part);
 
     TiledInputFile (const TiledInputFile &);		  // not implemented
     TiledInputFile & operator = (const TiledInputFile &); // not implemented
 
-    TiledInputFile (const Header &header, OPENEXR_IMF_INTERNAL_NAMESPACE::IStream *is, int version,
+    TiledInputFile (const Header &header, IStream *is, int version,
                     int numThreads);
 
     void		initialize ();
-    void                multiPartInitialize(InputPartData* part);
-    void                compatibilityInitialize(OPENEXR_IMF_INTERNAL_NAMESPACE::IStream& is);
 
     bool		isValidTile (int dx, int dy,
 				     int lx, int ly) const;
@@ -385,17 +372,10 @@ class IMF_EXPORT TiledInputFile : public GenericInputFile
     size_t		bytesPerLineForTile (int dx, int dy,
 					     int lx, int ly) const;
 
-    void                tileOrder(int dx[],int dy[],int lx[],int ly[]) const;
     Data *		_data;
-
-    friend void TiledOutputFile::copyPixels(TiledInputFile &);
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
-
-
-
-
+} // namespace Imf
 
 #endif

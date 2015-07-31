@@ -43,32 +43,25 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfChannelList.h"
-#include "ImfExport.h"
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+#include <ImfAttribute.h>
+#include <ImfChannelList.h>
 
 
-typedef TypedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::ChannelList> ChannelListAttribute;
-
-template <>
-IMF_EXPORT
-const char *ChannelListAttribute::staticTypeName ();
-
-template <>
-IMF_EXPORT
-void ChannelListAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &,
-                                         int) const;
-
-template <>
-IMF_EXPORT
-void ChannelListAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &,
-                                          int, int);
+namespace Imf {
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+typedef TypedAttribute<ChannelList> ChannelListAttribute;
+template <> const char *ChannelListAttribute::staticTypeName ();
+template <> void ChannelListAttribute::writeValueTo (OStream &, int) const;
+template <> void ChannelListAttribute::readValueFrom (IStream &, int, int);
 
+
+} // namespace Imf
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfChannelListAttribute.cpp>
+#endif
 
 #endif
 

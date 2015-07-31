@@ -33,7 +33,6 @@ THE SOFTWARE.
 #include "OgreRoot.h"
 #include "OgreGLRenderSystem.h"
 #include "OgreWindowEventUtilities.h"
-#include "OgreViewport.h"
 
 namespace Ogre
 {
@@ -93,7 +92,7 @@ namespace Ogre
                 hidden = StringConverter::parseBool(opt->second);
 
             if((opt = miscParams->find("gamma")) != end) 
-                mHwGamma = StringConverter::parseBool(opt->second);
+				mHwGamma = StringConverter::parseBool(opt->second);
 
             if((opt = miscParams->find("depthBuffer")) != end) 
                 hasDepthBuffer = StringConverter::parseBool( opt->second );
@@ -103,11 +102,6 @@ namespace Ogre
 
             if((opt = miscParams->find("Full Screen")) != end) 
                 fullScreen = StringConverter::parseBool( opt->second );
-				
-#if OGRE_NO_QUAD_BUFFER_STEREO == 0
-			if ((opt = miscParams->find("stereoMode")) != end)
-				mStereoEnabled = StringConverter::parseStereoMode(opt->second);
-#endif
         }
 
         if(fullScreen)
@@ -147,7 +141,7 @@ namespace Ogre
         }
 
         // Apply vsync settings. call setVSyncInterval first to avoid 
-        // setting vsync more than once.
+		// setting vsync more than once.
         setVSyncEnabled(vsync);
         setHidden(hidden);
 
@@ -190,12 +184,7 @@ namespace Ogre
                 attribs[ i++ ] = AGL_SAMPLES_ARB;
                 attribs[ i++ ] = fsaa_samples;
             }
-        
-#if OGRE_NO_QUAD_BUFFER_STEREO == 0
-			if (mStereoEnabled)
-				attribs[i++] = AGL_STEREO;
-#endif
-
+            
             attribs[ i++ ] = AGL_NONE;
             
             mAGLPixelFormat = aglChoosePixelFormat( NULL, 0, attribs );
@@ -313,9 +302,9 @@ namespace Ogre
         GetControlBounds(mView, &ctrlBounds);
         GLint bufferRect[4];
         
-        bufferRect[0] = ctrlBounds.left;                    // left edge
-        bufferRect[1] = ctrlBounds.bottom;                  // bottom edge
-        bufferRect[2] = ctrlBounds.right - ctrlBounds.left; // width of buffer rect
+        bufferRect[0] = ctrlBounds.left;					// left edge
+        bufferRect[1] = ctrlBounds.bottom;					// bottom edge
+        bufferRect[2] =	ctrlBounds.right - ctrlBounds.left; // width of buffer rect
         bufferRect[3] = ctrlBounds.bottom - ctrlBounds.top; // height of buffer rect
         
         aglSetInteger(mAGLContext, AGL_BUFFER_RECT, bufferRect);
@@ -407,8 +396,8 @@ namespace Ogre
     }
 
     //-------------------------------------------------------------------------------------------------//
-    void OSXCarbonWindow::setVSyncEnabled(bool vsync)
-    {
+	void OSXCarbonWindow::setVSyncEnabled(bool vsync)
+	{
         mVSync = vsync;
         mContext->setCurrent();
 
@@ -430,13 +419,13 @@ namespace Ogre
             if(share != CGLGetCurrentContext())
                 CGLSetCurrentContext(share);
         }
-    }
+	}
 
     //-------------------------------------------------------------------------------------------------//
-    bool OSXCarbonWindow::isVSyncEnabled() const
-    {
+	bool OSXCarbonWindow::isVSyncEnabled() const
+	{
         return mVSync;
-    }
+	}
 
     //-------------------------------------------------------------------------------------------------//
     void OSXCarbonWindow::reposition(int left, int top)

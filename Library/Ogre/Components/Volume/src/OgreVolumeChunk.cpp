@@ -27,20 +27,14 @@ THE SOFTWARE.
 #include "OgreVolumeChunk.h"
 
 #include "OgreCamera.h"
+#include "OgreRoot.h"
 #include "OgreLogManager.h"
+#include "OgreTimer.h"
 #include "OgreConfigFile.h"
+
 #include "OgreVolumeIsoSurfaceMC.h"
 #include "OgreVolumeOctreeNodeSplitPolicy.h"
 #include "OgreVolumeTextureSource.h"
-#include "OgreVolumeChunkHandler.h"
-#include "OgreVolumeMeshBuilder.h"
-#include "OgreVolumeDualGridGenerator.h"
-#include "OgreSceneNode.h"
-#include "OgreViewport.h"
-#include "OgreRoot.h"
-#include "OgreVolumeChunk.h"
-#include "OgreVolumeMeshBuilder.h"
-#include "OgreVolumeOctreeNode.h"
 
 namespace Ogre {
 namespace Volume {
@@ -259,11 +253,11 @@ namespace Volume {
         OGRE_DELETE mRenderOp.indexData;
         OGRE_DELETE mRenderOp.vertexData;
 
-        // Root might already be shutdown.
-        if (Root::getSingletonPtr())
-        {
-            Root::getSingleton().removeFrameListener(this);
-        }
+		// Root might already be shutdown.
+		if (Root::getSingletonPtr())
+		{
+			Root::getSingleton().removeFrameListener(this);
+		}
 
         if (mChildren)
         {
@@ -398,10 +392,10 @@ namespace Volume {
 
         for (size_t i = 0; i < level; ++i)
         {
-            StringStream stream;
+            StringUtil::StrStreamType stream;
             stream << "materialOfLevel" << i;
             String materialOfLevel = config.getSetting(stream.str());
-            if (materialOfLevel != BLANKSTRING)
+            if (materialOfLevel != StringUtil::BLANK)
             {
                 setMaterialOfLevel(i, materialOfLevel);
             }

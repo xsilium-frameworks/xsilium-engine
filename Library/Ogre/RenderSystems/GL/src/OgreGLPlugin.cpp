@@ -28,43 +28,45 @@ THE SOFTWARE.
 
 #include "OgreGLPlugin.h"
 #include "OgreRoot.h"
-#include "OgreGLRenderSystem.h"
 
 namespace Ogre 
 {
-    const String sPluginName = "GL RenderSystem";
-    //---------------------------------------------------------------------
-    GLPlugin::GLPlugin()
-        : mRenderSystem(0)
-    {
+	const String sPluginName = "GL RenderSystem";
+	//---------------------------------------------------------------------
+	GLPlugin::GLPlugin()
+		: mRenderSystem(0)
+	{
 
-    }
-    //---------------------------------------------------------------------
-    const String& GLPlugin::getName() const
-    {
-        return sPluginName;
-    }
-    //---------------------------------------------------------------------
-    void GLPlugin::install()
-    {
-        mRenderSystem = OGRE_NEW GLRenderSystem();
+	}
+	//---------------------------------------------------------------------
+	const String& GLPlugin::getName() const
+	{
+		return sPluginName;
+	}
+	//---------------------------------------------------------------------
+	void GLPlugin::install()
+	{
+		mRenderSystem = new GLRenderSystem();
 
-        Root::getSingleton().addRenderSystem(mRenderSystem);
-    }
-    //---------------------------------------------------------------------
-    void GLPlugin::initialise()
-    {
-        // nothing to do
-    }
-    //---------------------------------------------------------------------
-    void GLPlugin::shutdown()
-    {
-        // nothing to do
-    }
-    //---------------------------------------------------------------------
-    void GLPlugin::uninstall()
-    {
-        OGRE_DELETE mRenderSystem;
-        mRenderSystem = 0;
-    }
+		Root::getSingleton().addRenderSystem(mRenderSystem);
+	}
+	//---------------------------------------------------------------------
+	void GLPlugin::initialise()
+	{
+		// nothing to do
+	}
+	//---------------------------------------------------------------------
+	void GLPlugin::shutdown()
+	{
+		// nothing to do
+	}
+	//---------------------------------------------------------------------
+	void GLPlugin::uninstall()
+	{
+		delete mRenderSystem;
+		mRenderSystem = 0;
+
+	}
+
+
 }

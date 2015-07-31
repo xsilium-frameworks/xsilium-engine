@@ -29,7 +29,9 @@ THE SOFTWARE.
 #define _Archive_H__
 
 #include "OgrePrerequisites.h"
+#include "OgreString.h"
 #include "OgreDataStream.h"
+#include "OgreSharedPtr.h"
 #include "OgreStringVector.h"
 #include "OgreException.h"
 #include <ctime>
@@ -38,11 +40,11 @@ THE SOFTWARE.
 namespace Ogre {
 
     /** \addtogroup Core
-    *  @{
-    */
+     *  @{
+     */
     /** \addtogroup Resources
-    *  @{
-    */
+     *  @{
+     */
     /** Information about a file/directory within the archive will be
     returned using a FileInfo struct.
     @see
@@ -51,7 +53,7 @@ namespace Ogre {
     struct FileInfo {
         /// The archive in which the file has been found (for info when performing
         /// multi-Archive searches, note you should still open through ResourceGroupManager)
-        Archive* archive;
+        const Archive* archive;
         /// The file's fully qualified name
         String filename;
         /// Path name; separated by '/' and ending with '/'
@@ -83,7 +85,7 @@ namespace Ogre {
         to benefit from OGRE's automatic searching of multiple file locations 
         for the resources you are looking for.
     */
-    class _OgreExport Archive : public ArchiveAlloc
+	class _OgreExport Archive : public ArchiveAlloc
     {
     protected:
         /// Archive name
@@ -136,27 +138,27 @@ namespace Ogre {
             There is no equivalent 'close' method; the returned stream
             controls the lifecycle of this file operation.
         @param filename The fully qualified name of the file
-        @param readOnly Whether to open the file in read-only mode or not (note, 
-            if the archive is read-only then this cannot be set to false)
+		@param readOnly Whether to open the file in read-only mode or not (note, 
+			if the archive is read-only then this cannot be set to false)
         @return A shared pointer to a DataStream which can be used to 
             read / write the file. If the file is not present, returns a null
-            shared pointer.
+			shared pointer.
         */
-        virtual DataStreamPtr open(const String& filename, bool readOnly = true) = 0;
+        virtual DataStreamPtr open(const String& filename, bool readOnly = true) const = 0;
 
         /** Create a new file (or overwrite one already there). 
-        @note If the archive is read-only then this method will fail.
-        @param filename The fully qualified name of the file
-        @return A shared pointer to a DataStream which can be used to 
-        read / write the file. 
+            @note If the archive is read-only then this method will fail.
+            @param filename The fully qualified name of the file
+            @return A shared pointer to a DataStream which can be used to 
+            read / write the file. 
         */
-        virtual DataStreamPtr create(const String& filename);
+        virtual DataStreamPtr create(const String& filename) const;
 
         /** Delete a named file.
-        @remarks Not possible on read-only archives
-        @param filename The fully qualified name of the file
+            @remarks Not possible on read-only archives
+            @param filename The fully qualified name of the file
         */
-        virtual void remove(const String& filename);
+        virtual void remove(const String& filename) const;
 
         /** List all file names in the archive.
         @note
@@ -213,7 +215,7 @@ namespace Ogre {
             the criteria.
         */
         virtual FileInfoListPtr findFileInfo(const String& pattern, 
-            bool recursive = true, bool dirs = false) = 0;
+            bool recursive = true, bool dirs = false) const = 0;
 
         /// Return the type code of this Archive
         const String& getType(void) const { return mType; }

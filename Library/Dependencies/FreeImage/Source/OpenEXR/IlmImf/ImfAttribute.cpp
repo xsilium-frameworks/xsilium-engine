@@ -46,13 +46,11 @@
 #include <string.h>
 #include <map>
 
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER 
+namespace Imf {
 
-
-using ILMTHREAD_NAMESPACE::Mutex;
-using ILMTHREAD_NAMESPACE::Lock;
+using IlmThread::Mutex;
+using IlmThread::Lock;
 
 
 Attribute::Attribute () {}
@@ -121,7 +119,7 @@ Attribute::registerAttributeType (const char typeName[],
     Lock lock (tMap.mutex);
 
     if (tMap.find (typeName) != tMap.end())
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot register image file attribute "
+	THROW (Iex::ArgExc, "Cannot register image file attribute "
 			    "type \"" << typeName << "\". "
 			    "The type has already been registered.");
 
@@ -148,11 +146,11 @@ Attribute::newAttribute (const char typeName[])
     TypeMap::const_iterator i = tMap.find (typeName);
 
     if (i == tMap.end())
-	THROW (IEX_NAMESPACE::ArgExc, "Cannot create image file attribute of "
+	THROW (Iex::ArgExc, "Cannot create image file attribute of "
 			    "unknown type \"" << typeName << "\".");
 
     return (i->second)();
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

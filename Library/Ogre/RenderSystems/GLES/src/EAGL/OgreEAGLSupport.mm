@@ -109,7 +109,7 @@ namespace Ogre {
     String EAGLSupport::validateConfig(void)
     {
         // TODO - DJR
-        return BLANKSTRING;
+        return StringUtil::BLANK;
     }
 
     String EAGLSupport::getDisplayName(void)

@@ -39,12 +39,11 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfPreviewImage.h"
-#include "ImfCheckedArithmetic.h"
+#include <ImfPreviewImage.h>
+#include <ImfCheckedArithmetic.h>
 #include "Iex.h"
-#include "ImfNamespace.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 
 PreviewImage::PreviewImage (unsigned int width,
@@ -101,4 +100,4 @@ PreviewImage::operator = (const PreviewImage &other)
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

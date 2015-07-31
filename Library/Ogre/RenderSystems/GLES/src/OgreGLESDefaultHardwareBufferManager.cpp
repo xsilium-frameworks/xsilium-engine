@@ -63,7 +63,9 @@ namespace Ogre {
         // Nothing to do
     }
 
-    void* GLESDefaultHardwareVertexBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
+    void* GLESDefaultHardwareVertexBuffer::lock(size_t offset,
+                                              size_t length,
+                                              LockOptions options)
     {
         mIsLocked = true;
         return mData + offset;
@@ -99,12 +101,12 @@ namespace Ogre {
         : HardwareIndexBuffer(0, idxType, numIndexes, usage, true, false)
           // always software, never shadowed
     {
-        if (idxType == HardwareIndexBuffer::IT_32BIT)
-        {
-            OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR,
-                "32 bit hardware buffers are not allowed in OpenGL ES.",
-                "GLESDefaultHardwareIndexBuffer");
-        }
+		if (idxType == HardwareIndexBuffer::IT_32BIT)
+		{
+			OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR,
+				"32 bit hardware buffers are not allowed in OpenGL ES.",
+				"GLESDefaultHardwareIndexBuffer");
+		}
         mData = new unsigned char[mSizeInBytes];
     }
 
@@ -124,7 +126,7 @@ namespace Ogre {
         // Nothing to do
     }
 
-    void* GLESDefaultHardwareIndexBuffer::lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt)
+    void* GLESDefaultHardwareIndexBuffer::lock(size_t offset, size_t length, LockOptions options)
     {
         mIsLocked = true;
         return mData + offset;
@@ -176,10 +178,10 @@ namespace Ogre {
             OGRE_NEW GLESDefaultHardwareIndexBuffer(itype, numIndexes, usage));
     }
 
-    Ogre::RenderToVertexBufferSharedPtr GLESDefaultHardwareBufferManagerBase::createRenderToVertexBuffer( void )
-    {
+	Ogre::RenderToVertexBufferSharedPtr GLESDefaultHardwareBufferManagerBase::createRenderToVertexBuffer( void )
+	{
         OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, 
                 "Cannot create RenderToVertexBuffer in GLESDefaultHardwareBufferManagerBase", 
                 "GLESDefaultHardwareBufferManagerBase::createRenderToVertexBuffer");
-    }
+	}
 }

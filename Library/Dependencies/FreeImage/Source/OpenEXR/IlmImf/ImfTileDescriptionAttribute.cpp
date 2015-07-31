@@ -42,9 +42,8 @@
 #include <ImfTileDescriptionAttribute.h>
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
-using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 
 template <>
 const char *
@@ -56,7 +55,7 @@ TileDescriptionAttribute::staticTypeName ()
 
 template <>
 void
-TileDescriptionAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int version) const
+TileDescriptionAttribute::writeValueTo (OStream &os, int version) const
 {
     Xdr::write <StreamIO> (os, _value.xSize);
     Xdr::write <StreamIO> (os, _value.ySize);
@@ -68,7 +67,7 @@ TileDescriptionAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream 
 
 template <>
 void
-TileDescriptionAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is,
+TileDescriptionAttribute::readValueFrom (IStream &is,
 					 int size,
 					 int version)
 {
@@ -83,4 +82,4 @@ TileDescriptionAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT 
+} // namespace Imf

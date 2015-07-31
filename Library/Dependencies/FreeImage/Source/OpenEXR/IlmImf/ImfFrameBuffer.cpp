@@ -36,8 +36,8 @@
 
 //-----------------------------------------------------------------------------
 //
-//      class Slice
-//      class FrameBuffer
+//	class Slice
+//	class FrameBuffer
 //
 //-----------------------------------------------------------------------------
 
@@ -47,17 +47,15 @@
 
 using namespace std;
 
-#include "ImfNamespace.h"
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
 Slice::Slice (PixelType t,
-              char *b,
-              size_t xst,
-              size_t yst,
-              int xsm,
-              int ysm,
-              double fv,
+	      char *b,
+	      size_t xst,
+	      size_t yst,
+	      int xsm,
+	      int ysm,
+	      double fv,
               bool xtc,
               bool ytc)
 :
@@ -75,20 +73,20 @@ Slice::Slice (PixelType t,
 }
 
 
-void
+void	
 FrameBuffer::insert (const char name[], const Slice &slice)
 {
     if (name[0] == 0)
     {
-        THROW (IEX_NAMESPACE::ArgExc,
-               "Frame buffer slice name cannot be an empty string.");
+	THROW (Iex::ArgExc,
+	       "Frame buffer slice name cannot be an empty string.");
     }
 
     _map[name] = slice;
 }
 
 
-void
+void	
 FrameBuffer::insert (const string &name, const Slice &slice)
 {
     insert (name.c_str(), slice);
@@ -102,8 +100,8 @@ FrameBuffer::operator [] (const char name[])
 
     if (i == _map.end())
     {
-        THROW (IEX_NAMESPACE::ArgExc,
-               "Cannot find frame buffer slice \"" << name << "\".");
+	THROW (Iex::ArgExc,
+	       "Cannot find frame buffer slice \"" << name << "\".");
     }
 
     return i->second;
@@ -117,8 +115,8 @@ FrameBuffer::operator [] (const char name[]) const
 
     if (i == _map.end())
     {
-        THROW (IEX_NAMESPACE::ArgExc,
-               "Cannot find frame buffer slice \"" << name << "\".");
+	THROW (Iex::ArgExc,
+	       "Cannot find frame buffer slice \"" << name << "\".");
     }
 
     return i->second;
@@ -169,14 +167,14 @@ FrameBuffer::findSlice (const string &name) const
 }
 
 
-FrameBuffer::Iterator
+FrameBuffer::Iterator		
 FrameBuffer::begin ()
 {
     return _map.begin();
 }
 
 
-FrameBuffer::ConstIterator
+FrameBuffer::ConstIterator	
 FrameBuffer::begin () const
 {
     return _map.begin();
@@ -190,7 +188,7 @@ FrameBuffer::end ()
 }
 
 
-FrameBuffer::ConstIterator
+FrameBuffer::ConstIterator	
 FrameBuffer::end () const
 {
     return _map.end();
@@ -225,4 +223,4 @@ FrameBuffer::find (const string &name) const
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT
+} // namespace Imf

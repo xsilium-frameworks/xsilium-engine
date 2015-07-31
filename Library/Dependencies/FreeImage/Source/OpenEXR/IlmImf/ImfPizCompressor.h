@@ -42,16 +42,14 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfCompressor.h"
-#include "ImfNamespace.h"
-#include "ImfExport.h"
-#include "ImfForward.h"
+#include <ImfCompressor.h>
+
+namespace Imf {
+
+class ChannelList;
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
-
-
-class IMF_EXPORT PizCompressor: public Compressor
+class PizCompressor: public Compressor
 {
   public:
 
@@ -72,7 +70,7 @@ class IMF_EXPORT PizCompressor: public Compressor
                   
     virtual int		compressTile (const char *inPtr,
 				      int inSize,
-				      IMATH_NAMESPACE::Box2i range,
+				      Imath::Box2i range,
 				      const char *&outPtr);
 
     virtual int		uncompress (const char *inPtr,
@@ -82,7 +80,7 @@ class IMF_EXPORT PizCompressor: public Compressor
                     
     virtual int		uncompressTile (const char *inPtr,
 					int inSize,
-					IMATH_NAMESPACE::Box2i range,
+					Imath::Box2i range,
 					const char *&outPtr);
   private:
 
@@ -90,12 +88,12 @@ class IMF_EXPORT PizCompressor: public Compressor
     
     int			compress (const char *inPtr,
 				  int inSize,
-				  IMATH_NAMESPACE::Box2i range,
+				  Imath::Box2i range,
 				  const char *&outPtr);
  
     int			uncompress (const char *inPtr,
 				    int inSize,
-				    IMATH_NAMESPACE::Box2i range,
+				    Imath::Box2i range,
 				    const char *&outPtr);
 
     int			_maxScanLineSize;
@@ -112,6 +110,6 @@ class IMF_EXPORT PizCompressor: public Compressor
 };
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

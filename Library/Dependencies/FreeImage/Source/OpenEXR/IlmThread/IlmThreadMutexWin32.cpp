@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2005, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -38,14 +38,10 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IlmBaseConfig.h"
-
-#if !defined(HAVE_PTHREAD) && defined(_WIN32)
-
 #include "IlmThreadMutex.h"
 #include "Iex.h"
 
-ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace IlmThread {
 
 
 Mutex::Mutex ()
@@ -74,6 +70,4 @@ Mutex::unlock () const
 }
 
 
-ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
-
-#endif
+} // namespace IlmThread

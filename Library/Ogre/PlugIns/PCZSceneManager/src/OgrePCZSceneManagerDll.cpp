@@ -32,8 +32,7 @@ email                : ericc@xenopi.com
 -----------------------------------------------------------------------------
 */
 
-#include "OgrePCZPrerequisites.h"
-#include "OgreRoot.h"
+#include <OgreRoot.h>
 #include "OgrePCZPlugin.h"
 
 #ifndef OGRE_STATIC_LIB
@@ -53,8 +52,8 @@ namespace Ogre
     }
     extern "C" void _OgrePCZPluginExport dllStopPlugin( void )
     {
-        Root::getSingleton().uninstallPlugin(pczPlugin);
-        OGRE_DELETE pczPlugin;
+	    Root::getSingleton().uninstallPlugin(pczPlugin);
+	    OGRE_DELETE pczPlugin;
     }
 }
 

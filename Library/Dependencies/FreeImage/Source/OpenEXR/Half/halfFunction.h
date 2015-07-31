@@ -83,15 +83,8 @@
 #ifndef _HALF_FUNCTION_H_
 #define _HALF_FUNCTION_H_
 
-#include "half.h"
-
-#include "IlmBaseConfig.h"
-#ifndef ILMBASE_HAVE_LARGE_STACK  
-#include <string.h>     // need this for memset
-#else 
-#endif
-
 #include <float.h>
+#include "half.h"
 
 
 template <class T>
@@ -112,10 +105,6 @@ class halfFunction
 		  T negInfValue  = 0,
 		  T nanValue     = 0);
 
-#ifndef ILMBASE_HAVE_LARGE_STACK
-    ~halfFunction () { delete [] _lut; }    
-#endif
-    
     //-----------
     // Evaluation
     //-----------
@@ -124,11 +113,7 @@ class halfFunction
 
   private:
 
-#ifdef ILMBASE_HAVE_LARGE_STACK
     T		_lut[1 << 16];
-#else
-    T *         _lut;
-#endif
 };
 
 
@@ -146,11 +131,6 @@ halfFunction<T>::halfFunction (Function f,
 			       T negInfValue,
 			       T nanValue)
 {
-#ifndef ILMBASE_HAVE_LARGE_STACK
-    _lut = new T[1<<16];
-    memset (_lut, 0 , (1<<16) * sizeof(T));
-#endif
-    
     for (int i = 0; i < (1 << 16); i++)
     {
 	half x;

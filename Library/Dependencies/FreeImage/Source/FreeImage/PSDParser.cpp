@@ -506,10 +506,6 @@ bool psdParser::ReadImageResources(FreeImageIO *io, fi_handle handle, LONG lengt
 		oResource.Reset();
 		
 		n = (int)io->read_proc(&oResource._OSType, sizeof(oResource._OSType), 1, handle);
-		if(n != 1) {
-			FreeImage_OutputMessageProc(_fi_format_id, "This file contains damaged data causing an unexpected end-of-file - stop reading resources");
-			return false;
-		}
 		nBytes += n * sizeof(oResource._OSType);
 
 		if( (nBytes % 2) != 0 ) {
@@ -1038,10 +1034,9 @@ FIBITMAP* psdParser::Load(FreeImageIO *io, fi_handle handle, int s_format_id, in
 		}
 
 		// set ICC profile
-		FreeImage_CreateICCProfile(Bitmap, _iccProfile._ProfileData, _iccProfile._ProfileSize);
-		if ((flags & PSD_CMYK) == PSD_CMYK) {
-			short mode = _headerInfo._ColourMode;
-			if((mode == PSDP_CMYK) || (mode == PSDP_MULTICHANNEL)) {
+		if(NULL != _iccProfile._ProfileData) {
+			FreeImage_CreateICCProfile(Bitmap, _iccProfile._ProfileData, _iccProfile._ProfileSize);
+			if ((flags & PSD_CMYK) == PSD_CMYK) {
 				FreeImage_GetICCProfile(Bitmap)->flags |= FIICC_COLOR_IS_CMYK;
 			}
 		}

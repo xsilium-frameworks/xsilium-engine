@@ -30,20 +30,20 @@ THE SOFTWARE.
 #define __Overlay_H__
 
 #include "OgreOverlayPrerequisites.h"
+#include "OgreSceneNode.h"
 #include "OgreIteratorWrappers.h"
 #include "OgreMatrix4.h"
-#include "OgreViewport.h"
 
 namespace Ogre {
 
 
-    /** \addtogroup Core
-    *  @{
-    */
-    /** \addtogroup Overlays
-    *  @{
-    */
-    /** Represents a layer which is rendered on top of the 'normal' scene contents.
+	/** \addtogroup Core
+	*  @{
+	*/
+	/** \addtogroup Overlays
+	*  @{
+	*/
+	/** Represents a layer which is rendered on top of the 'normal' scene contents.
     @remarks
         An overlay is a container for visual components (2D and 3D) which will be 
         rendered after the main scene in order to composite heads-up-displays, menus
@@ -67,7 +67,7 @@ namespace Ogre {
         don't want the overlay displayed in the smaller viewports. You turn this off for 
         a specific viewport by calling the Viewport::setDisplayOverlays method.
     */
-    class _OgreOverlayExport Overlay : public OverlayAlloc
+	class _OgreOverlayExport Overlay : public OverlayAlloc
     {
 
     public:
@@ -88,21 +88,19 @@ namespace Ogre {
         /// Scale values
         Real mScaleX, mScaleY;
 
-        int mLastViewportWidth, mLastViewportHeight;
-
         mutable Matrix4 mTransform;
         mutable bool mTransformOutOfDate;
         bool mTransformUpdated;
         ulong mZOrder;
         bool mVisible;
-        bool mInitialised;
-        String mOrigin;
+		bool mInitialised;
+		String mOrigin;
         /** Internal lazy update method. */
         void updateTransform(void) const;
-        /** Internal method for initialising an overlay */
-        void initialise(void);
-        /** Internal method for updating container elements' Z-ordering */
-        void assignZOrders(void);
+		/** Internal method for initialising an overlay */
+		void initialise(void);
+		/** Internal method for updating container elements' Z-ordering */
+		void assignZOrders(void);
 
     public:
         /// Constructor: do not call direct, use OverlayManager::create
@@ -110,7 +108,7 @@ namespace Ogre {
         virtual ~Overlay();
 
 
-        OverlayContainer* getChild(const String& name);
+	    OverlayContainer* getChild(const String& name);
 
         /** Gets the name of this overlay. */
         const String& getName(void) const;
@@ -126,10 +124,10 @@ namespace Ogre {
         /** Gets whether the overlay is displayed or not. */
         bool isVisible(void) const;
 
-        /** Gets whether the overlay is initialised or not. */
-        bool isInitialised(void) const { return mInitialised; }
+		/** Gets whether the overlay is initialised or not. */
+		bool isInitialised(void) const { return mInitialised; }
 
-        /** Shows the overlay if it was hidden. */
+		/** Shows the overlay if it was hidden. */
         void show(void);
 
         /** Hides the overlay if it was visible. */
@@ -165,10 +163,10 @@ namespace Ogre {
         @par    
             A SceneNode can have any number of 3D objects attached to it. SceneNodes
             are usually created using SceneManager::createSceneNode, but in this case
-            you should create a standard SceneNode instance <b>manually</b>; this is
-            because these scene nodes are not managed by the SceneManager and some custom
-            SceneManager plugins will rely on specialist behaviour the overlay does not
-            support. By attaching a SceneNode to an overlay, you indicate that:<OL>
+			you should create a standard SceneNode instance <b>manually</b>; this is
+			because these scene nodes are not managed by the SceneManager and some custom
+			SceneManager plugins will rely on specialist behaviour the overlay does not
+			support. By attaching a SceneNode to an overlay, you indicate that:<OL>
             <LI>You want the contents of this node to only appear when the overlay is active</LI>
             <LI>You want the node to inherit a coordinate space relative to the camera,
                 rather than relative to the root scene node</LI>
@@ -183,8 +181,8 @@ namespace Ogre {
             can get artefacts because of the lack of depth buffer checking. So you should 
             ensure that any 3D objects you us in the overlay are convex, and don't overlap
             each other. If they must overlap, split them up and put them in 2 overlays.
-            Alternatively, use a 2D element underneath them which will clear the depth buffer
-            values underneath ready for the 3D element to be rendered correctly.
+			Alternatively, use a 2D element underneath them which will clear the depth buffer
+			values underneath ready for the 3D element to be rendered correctly.
         */
         void add3D(SceneNode* node);
 
@@ -247,10 +245,10 @@ namespace Ogre {
         void _getWorldTransforms(Matrix4* xform) const;
 
         /** Internal method to put the overlay contents onto the render queue. */
-        void _findVisibleObjects(Camera* cam, RenderQueue* queue, Viewport* vp);
+        void _findVisibleObjects(Camera* cam, RenderQueue* queue);
 
         /** This returns a OverlayElement at position x,y. */
-        virtual OverlayElement* findElementAt(Real x, Real y);
+		virtual OverlayElement* findElementAt(Real x, Real y);
 
         /** Returns an iterator over all 2D elements in this manager.
         @remarks
@@ -261,20 +259,20 @@ namespace Ogre {
         {
             return Overlay2DElementsIterator (m2DElements.begin(), m2DElements.end());
         }
-        /** Get the origin of this overlay, e.g. a script file name.
-        @remarks
-            This property will only contain something if the creator of
-            this overlay chose to populate it. Script loaders are advised
-            to populate it.
-        */
-        const String& getOrigin(void) const { return mOrigin; }
-        /// Notify this overlay of it's origin
-        void _notifyOrigin(const String& origin) { mOrigin = origin; }
+		/** Get the origin of this overlay, e.g. a script file name.
+		@remarks
+			This property will only contain something if the creator of
+			this overlay chose to populate it. Script loaders are advised
+			to populate it.
+		*/
+		const String& getOrigin(void) const { return mOrigin; }
+		/// Notify this overlay of it's origin
+		void _notifyOrigin(const String& origin) { mOrigin = origin; }
 
 
     };
-    /** @} */
-    /** @} */
+	/** @} */
+	/** @} */
 
 }
 

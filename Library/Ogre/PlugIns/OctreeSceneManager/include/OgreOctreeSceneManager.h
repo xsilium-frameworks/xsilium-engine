@@ -39,6 +39,8 @@ THE SOFTWARE.
 
 #include "OgreOctreePrerequisites.h"
 #include "OgreSceneManager.h"
+#include "OgreRenderOperation.h"
+#include "OgreSphere.h"
 
 #include <list>
 #include <algorithm>
@@ -50,7 +52,13 @@ namespace Ogre
 {
 
 class OctreeNode;
+
 class OctreeCamera;
+class OctreeIntersectionSceneQuery;
+class OctreeRaySceneQuery;
+class OctreeSphereSceneQuery;
+class OctreeAxisAlignedBoxSceneQuery;
+class OctreePlaneBoundedVolumeListSceneQuery;
 
 typedef list< WireBoundingBox * >::type BoxList;
 typedef list< unsigned long >::type ColorList;
@@ -75,8 +83,8 @@ public:
     /** Standard destructor */
     ~OctreeSceneManager();
 
-    /// @copydoc SceneManager::getTypeName
-    const String& getTypeName(void) const;
+	/// @copydoc SceneManager::getTypeName
+	const String& getTypeName(void) const;
 
     /** Initializes the manager to the given box and depth.
     */
@@ -98,7 +106,7 @@ public:
     virtual void _updateSceneGraph( Camera * cam );
     /** Recurses through the octree determining which nodes are visible. */
     virtual void _findVisibleObjects ( Camera * cam, 
-        VisibleObjectsBoundsInfo* visibleBounds, bool onlyShadowCasters );
+		VisibleObjectsBoundsInfo* visibleBounds, bool onlyShadowCasters );
 
     /** Alerts each unculled object, notifying it that it will be drawn.
      * Useful for doing calculations only on nodes that will be drawn, prior
@@ -112,8 +120,8 @@ public:
     all subchildren are automatically added with no visibility tests.
     */
     void walkOctree( OctreeCamera *, RenderQueue *, Octree *, 
-        VisibleObjectsBoundsInfo* visibleBounds, bool foundvisible, 
-        bool onlyShadowCasters);
+		VisibleObjectsBoundsInfo* visibleBounds, bool foundvisible, 
+		bool onlyShadowCasters);
 
     /** Checks the given OctreeNode, and determines if it needs to be moved
     * to a different octant.
@@ -151,6 +159,12 @@ public:
         mShowBoxes = b;
     };
 
+    void setLooseOctree( bool b )
+    {
+        mLoose = b;
+    };
+
+
     /** Resizes the octree to the given size */
     void resize( const AxisAlignedBox &box );
 
@@ -183,7 +197,7 @@ public:
 protected:
 
 
-    Octree::NodeList mVisible;
+	Octree::NodeList mVisible;
 
     /// The root octree
     Octree *mOctree;
@@ -202,6 +216,9 @@ protected:
     /// Boxes visibility flag
     bool mShowBoxes;
 
+
+    bool mLoose;
+
     Real mCorners[ 24 ];
     static unsigned long mColors[ 8 ];
     static unsigned short mIndexes[ 24 ];
@@ -214,14 +231,14 @@ protected:
 class OctreeSceneManagerFactory : public SceneManagerFactory
 {
 protected:
-    void initMetaData(void) const;
+	void initMetaData(void) const;
 public:
-    OctreeSceneManagerFactory() {}
-    ~OctreeSceneManagerFactory() {}
-    /// Factory type name
-    static const String FACTORY_TYPE_NAME;
-    SceneManager* createInstance(const String& instanceName);
-    void destroyInstance(SceneManager* instance);
+	OctreeSceneManagerFactory() {}
+	~OctreeSceneManagerFactory() {}
+	/// Factory type name
+	static const String FACTORY_TYPE_NAME;
+	SceneManager* createInstance(const String& instanceName);
+	void destroyInstance(SceneManager* instance);
 };
 
 

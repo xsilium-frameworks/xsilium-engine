@@ -51,7 +51,7 @@ namespace Ogre {
         NSView *mView;
         NSOpenGLContext *mGLContext;
         NSOpenGLPixelFormat *mGLPixelFormat;
-        NSPoint mWindowOriginPt;
+        NSPoint mWindowOrigin;
         OSXCocoaWindowDelegate *mWindowDelegate;
         OSXCocoaContext* mContext;
 
@@ -59,31 +59,26 @@ namespace Ogre {
         bool mClosed;
         bool mHidden;
         bool mVSync;
-        bool mHasResized;
+		bool mHasResized;
         bool mIsExternal;
         String mWindowTitle;
         bool mUseNSView;
         float mContentScalingFactor;
         bool mContentScalingSupported;
 
-        int _getPixelFromPoint(int viewPt) const;
-        void _setWindowParameters(unsigned int widthPt, unsigned int heightPt);
-        
+        void _setWindowParameters(void);
     public:
         OSXCocoaWindow();
         ~OSXCocoaWindow();
-        
-        NSView* ogreView() const { return mView; };
-        NSWindow* ogreWindow() const { return mWindow; };
-        NSOpenGLContext* nsopenGLContext() const { return mGLContext; };
-        NSOpenGLPixelFormat* nsopenGLPixelFormat() const { return mGLPixelFormat; };
-        void createWithView(OgreView *view);
+		
+		NSView* ogreView() const { return mView; };
+		NSWindow* ogreWindow() const { return mWindow; };
+		NSOpenGLContext* nsopenGLContext() const { return mGLContext; };
+		NSOpenGLPixelFormat* nsopenGLPixelFormat() const { return mGLPixelFormat; };
+		void createWithView(OgreView *view);
 
-        /** @copydoc see RenderWindow::getViewPointToPixelScale */
-        float getViewPointToPixelScale();
-        /** Overridden - see RenderWindow */
-        void create(const String& name, unsigned int widthPt, unsigned int heightPt,
-                bool fullScreen, const NameValuePairList *miscParams);
+		void create(const String& name, unsigned int width, unsigned int height,
+	            bool fullScreen, const NameValuePairList *miscParams);
         /** Overridden - see RenderWindow */
         void destroy(void);
         /** Overridden - see RenderWindow */
@@ -99,28 +94,28 @@ namespace Ogre {
         /** @copydoc see RenderWindow::isVSyncEnabled */
         bool isVSyncEnabled() const;
         /** Overridden - see RenderWindow */
-        void reposition(int leftPt, int topPt);
+        void reposition(int left, int top);
         /** Overridden - see RenderWindow */
-        void resize(unsigned int widthPt, unsigned int heightPt);
+        void resize(unsigned int width, unsigned int height);
         /** Overridden - see RenderWindow */
         void swapBuffers();
         /** Overridden - see RenderTarget */
         virtual void copyContentsToMemory(const PixelBox &dst, FrameBuffer buffer);
         /** Overridden - see RenderWindow */
-        virtual void setFullscreen(bool fullScreen, unsigned int widthPt, unsigned int heightPt);
+        virtual void setFullscreen(bool fullScreen, unsigned int width, unsigned int height);
         /** Overridden - see RenderWindow */
         virtual unsigned int getWidth(void) const;
         /** Overridden - see RenderWindow */
         virtual unsigned int getHeight(void) const;
         /** Overridden - see RenderWindow */
-        void windowMovedOrResized(void);
-        void windowResized(void);
-        void windowHasResized(void);
-        void createNewWindow(unsigned int width, unsigned int height, String title);
+		void windowMovedOrResized(void);
+		void windowResized(void);
+		void windowHasResized(void);
+		void createNewWindow(unsigned int width, unsigned int height, String title);
         void createWindowFromExternal(NSView *viewRef);
 
-        bool requiresTextureFlipping() const { return false; }      
-        void getCustomAttribute( const String& name, void* pData );
+		bool requiresTextureFlipping() const { return false; }		
+		void getCustomAttribute( const String& name, void* pData );
     };
 }
 

@@ -26,9 +26,6 @@ THE SOFTWARE.
 */
 #include "OgreVolumeOctreeNodeSplitPolicy.h"
 
-#include "OgreVolumeSource.h"
-#include "OgreVolumeOctreeNode.h"
-#include <float.h>
 
 namespace Ogre {
 namespace Volume {
@@ -68,6 +65,9 @@ namespace Volume {
         Real f101 = mSrc->getValue(node->getCorner2());
         Real f110 = mSrc->getValue(node->getCorner5());
         Real f111 = mSrc->getValue(to);
+    
+        Vector3 gradients[19];
+        gradients[9] = Vector3(centerValue.x, centerValue.y, centerValue.z);
 
         Vector3 positions[19][2] = {
             {node->getCenterBackBottom(), Vector3((Real)0.5, (Real)0.0, (Real)0.0)},
@@ -95,6 +95,7 @@ namespace Volume {
 
     
         Real error = (Real)0.0;
+        Real interpolated, gradientMagnitude;
         Vector4 value;
         Vector3 gradient;
         for (size_t i = 0; i < 19; ++i)
@@ -103,8 +104,8 @@ namespace Volume {
             gradient.x = value.x;
             gradient.y = value.y;
             gradient.z = value.z;
-            Real interpolated = interpolate(f000, f001, f010, f011, f100, f101, f110, f111, positions[i][1]);
-            Real gradientMagnitude = gradient.length();
+            interpolated = interpolate(f000, f001, f010, f011, f100, f101, f110, f111, positions[i][1]);
+            gradientMagnitude = gradient.length();
             if (gradientMagnitude < FLT_EPSILON)
             {
                 gradientMagnitude = (Real)1.0;

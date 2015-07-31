@@ -43,22 +43,24 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfCompression.h"
-
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+#include <ImfAttribute.h>
+#include <ImfCompression.h>
 
 
-typedef TypedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::Compression> CompressionAttribute;
+namespace Imf {
+
+
+typedef TypedAttribute<Compression> CompressionAttribute;
 template <> const char *CompressionAttribute::staticTypeName ();
-template <> void CompressionAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &,
-                                                     int) const;
-template <> void CompressionAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &,
-                                                      int,
-                                                      int);
+template <> void CompressionAttribute::writeValueTo (OStream &, int) const;
+template <> void CompressionAttribute::readValueFrom (IStream &, int, int);
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfCompressionAttribute.cpp>
+#endif
 
 #endif

@@ -44,9 +44,8 @@
 #include <ImfBoxAttribute.h>
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace Imf {
 
-using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 
 template <>
 const char *
@@ -58,7 +57,7 @@ Box2iAttribute::staticTypeName ()
 
 template <>
 void
-Box2iAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int version) const
+Box2iAttribute::writeValueTo (OStream &os, int version) const
 {
     Xdr::write <StreamIO> (os, _value.min.x);
     Xdr::write <StreamIO> (os, _value.min.y);
@@ -69,7 +68,7 @@ Box2iAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int v
 
 template <>
 void
-Box2iAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int size, int version)
+Box2iAttribute::readValueFrom (IStream &is, int size, int version)
 {
     Xdr::read <StreamIO> (is, _value.min.x);
     Xdr::read <StreamIO> (is, _value.min.y);
@@ -88,7 +87,7 @@ Box2fAttribute::staticTypeName ()
 
 template <>
 void
-Box2fAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int version) const
+Box2fAttribute::writeValueTo (OStream &os, int version) const
 {
     Xdr::write <StreamIO> (os, _value.min.x);
     Xdr::write <StreamIO> (os, _value.min.y);
@@ -99,7 +98,7 @@ Box2fAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &os, int v
 
 template <>
 void
-Box2fAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int size, int version)
+Box2fAttribute::readValueFrom (IStream &is, int size, int version)
 {
     Xdr::read <StreamIO> (is, _value.min.x);
     Xdr::read <StreamIO> (is, _value.min.y);
@@ -108,4 +107,4 @@ Box2fAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &is, int 
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_EXIT 
+} // namespace Imf

@@ -53,7 +53,7 @@ Extension() {
 
 static const char * DLL_CALLCONV
 MimeType() {
-	return "image/vnd.adobe.photoshop";
+	return "image/psd";
 }
 
 static BOOL DLL_CALLCONV

@@ -34,8 +34,6 @@ THE SOFTWARE.
 #include "OgreWindowEventUtilities.h"
 #include "OgreGLES2RenderSystem.h"
 #include "OgreGLES2PixelFormat.h"
-#include "OgreViewport.h"
-#include <iomanip>
 
 #import <UIKit/UIWindow.h>
 #import <UIKit/UIGraphics.h>
@@ -480,9 +478,9 @@ namespace Ogre {
 
     void EAGL2Window::copyContentsToMemory(const PixelBox &dst, FrameBuffer buffer)
     {
-        if (dst.getWidth() > mWidth ||
-            dst.getHeight() > mHeight ||
-            dst.front != 0 || dst.back != 1)
+        if ((dst.right > mWidth) ||
+			(dst.bottom > mHeight) ||
+			(dst.front != 0) || (dst.back != 1))
 		{
 			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS,
                         "Invalid box.",

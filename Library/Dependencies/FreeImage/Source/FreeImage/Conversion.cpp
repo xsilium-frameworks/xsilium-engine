@@ -6,7 +6,6 @@
 // - Hervé Drolon (drolon@infonie.fr)
 // - Jani Kajala (janik@remedy.fi)
 // - Mihail Naydenov (mnaydenov@users.sourceforge.net)
-// - Carsten Klein (cklein05@users.sourceforge.net)
 //
 // This file is part of FreeImage 3
 //
@@ -153,7 +152,7 @@ ConvertCMYKtoRGBA(FIBITMAP* dib) {
 	const FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(dib);
 	const unsigned bytesperpixel = FreeImage_GetBPP(dib)/8;
 	
-	unsigned channelSize = 1;
+	size_t channelSize = 1;
 	if (image_type == FIT_RGBA16 || image_type == FIT_RGB16) {
 		channelSize = sizeof(WORD);
 	} else if (!(image_type == FIT_BITMAP && (bytesperpixel > 2))) {
@@ -302,7 +301,7 @@ ConvertLABtoRGB(FIBITMAP* dib) {
 	const FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(dib);
 	const unsigned bytesperpixel = FreeImage_GetBPP(dib) / 8;
 	
-	unsigned channelSize = 1;
+	size_t channelSize = 1;
 	if (image_type == FIT_RGBA16 || image_type == FIT_RGB16) {
 		channelSize = sizeof(WORD);
 	} else if (!(image_type == FIT_BITMAP && (bytesperpixel > 2))) {
@@ -330,6 +329,7 @@ ConvertLABtoRGB(FIBITMAP* dib) {
 
 FIBITMAP* 
 RemoveAlphaChannel(FIBITMAP* src) { 
+	FIBITMAP *dst = NULL;
 
 	if(!FreeImage_HasPixels(src)) {
 		return NULL;
@@ -337,6 +337,9 @@ RemoveAlphaChannel(FIBITMAP* src) {
 
 	const FREE_IMAGE_TYPE image_type = FreeImage_GetImageType(src);
 		
+	const unsigned width = FreeImage_GetWidth(src);
+	const unsigned height = FreeImage_GetHeight(src);
+	
 	switch(image_type) {
 		case FIT_BITMAP:
 			if(FreeImage_GetBPP(src) == 32) {
@@ -346,7 +349,8 @@ RemoveAlphaChannel(FIBITMAP* src) {
 			break;
 		case FIT_RGBA16:
 			// convert to RGB16
-			return FreeImage_ConvertToRGB16(src);
+			dst = FreeImage_AllocateT(FIT_RGB16, width, height);
+			break;
 		case FIT_RGBAF:
 			// convert to RGBF
 			return FreeImage_ConvertToRGBF(src);
@@ -355,7 +359,40 @@ RemoveAlphaChannel(FIBITMAP* src) {
 			return NULL;
 	}
 
-	return NULL;
+	if(!dst) {
+		return NULL;
+	}
+		
+	BYTE *src_line_start = FreeImage_GetScanLine(src, 0);
+	BYTE *dst_line_start = FreeImage_GetScanLine(dst, 0);
+
+	const unsigned src_pitch = FreeImage_GetPitch(src);
+	const unsigned src_bytesperpixel = FreeImage_GetBPP(src) / 8;
+
+	const unsigned dst_pitch = FreeImage_GetPitch(dst);
+	const unsigned dst_bytesperpixel = FreeImage_GetBPP(dst) / 8;
+
+	for(unsigned y = 0; y < height; y++) {
+		BYTE *src_line = src_line_start;
+		BYTE *dst_line = dst_line_start;
+		
+		for(unsigned x = 0; x < width; x++) {
+
+			for(unsigned b = 0; b < dst_bytesperpixel; b++) {
+				dst_line[b] = src_line[b];
+			}
+				
+			src_line += src_bytesperpixel;
+			dst_line += dst_bytesperpixel;
+		}
+		src_line_start += src_pitch;
+		dst_line_start += dst_pitch;
+	}
+	
+	// copy metadata from src to dst
+	FreeImage_CloneMetadata(dst, src);
+	
+	return dst;
 }
 
 
@@ -373,8 +410,7 @@ FreeImage_ColorQuantizeEx(FIBITMAP *dib, FREE_IMAGE_QUANTIZE quantize, int Palet
 	if( ReserveSize < 0 ) ReserveSize = 0;
 	if( ReserveSize > PaletteSize ) ReserveSize = PaletteSize;
 	if (FreeImage_HasPixels(dib)) {
-		const unsigned bpp = FreeImage_GetBPP(dib);
-		if((FreeImage_GetImageType(dib) == FIT_BITMAP) && (bpp == 24 || bpp == 32)) {
+		if (FreeImage_GetBPP(dib) == 24) {
 			switch(quantize) {
 				case FIQ_WUQUANT :
 				{
@@ -389,30 +425,15 @@ FreeImage_ColorQuantizeEx(FIBITMAP *dib, FREE_IMAGE_QUANTIZE quantize, int Palet
 					} catch (const char *) {
 						return NULL;
 					}
-					break;
 				}
 				case FIQ_NNQUANT :
 				{
-					if (bpp == 32) {
-						// 32-bit images not supported by NNQUANT
-						return NULL;
-					}
 					// sampling factor in range 1..30. 
 					// 1 => slower (but better), 30 => faster. Default value is 1
 					const int sampling = 1;
 
 					NNQuantizer Q(PaletteSize);
 					FIBITMAP *dst = Q.Quantize(dib, ReserveSize, ReservePalette, sampling);
-					if(dst) {
-						// copy metadata from src to dst
-						FreeImage_CloneMetadata(dst, dib);
-					}
-					return dst;
-				}
-				case FIQ_LFPQUANT :
-				{
-					LFPQuantizer Q(PaletteSize);
-					FIBITMAP *dst = Q.Quantize(dib, ReserveSize, ReservePalette);
 					if(dst) {
 						// copy metadata from src to dst
 						FreeImage_CloneMetadata(dst, dib);
@@ -429,45 +450,24 @@ FreeImage_ColorQuantizeEx(FIBITMAP *dib, FREE_IMAGE_QUANTIZE quantize, int Palet
 // ==========================================================
 
 FIBITMAP * DLL_CALLCONV
-FreeImage_ConvertFromRawBitsEx(BOOL copySource, BYTE *bits, FREE_IMAGE_TYPE type, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown) {
-	FIBITMAP *dib = NULL;
+FreeImage_ConvertFromRawBits(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown) {
+	FIBITMAP *dib = FreeImage_Allocate(width, height, bpp, red_mask, green_mask, blue_mask);
 
-	if(copySource) {
-		// allocate a FIBITMAP with internally managed pixel buffer
-		dib = FreeImage_AllocateT(type, width, height, bpp, red_mask, green_mask, blue_mask);
-		if(!dib) {
-			return NULL;
-		}
-		// copy user provided pixel buffer into the dib
-		const unsigned linesize = FreeImage_GetLine(dib);
-		for(int y = 0; y < height; y++) {
-			memcpy(FreeImage_GetScanLine(dib, y), bits, linesize);
-			// next line in user's buffer
-			bits += pitch;
-		}
-		// flip pixels vertically if needed
-		if(topdown) {
-			FreeImage_FlipVertical(dib);
-		}
-	}
-	else {
-		// allocate a FIBITMAP using a wrapper to user provided pixel buffer
-		dib = FreeImage_AllocateHeaderForBits(bits, pitch, type, width, height, bpp, red_mask, green_mask, blue_mask);
-		if(!dib) {
-			return NULL;
-		}
-		// flip pixels vertically if needed
-		if(topdown) {
-			FreeImage_FlipVertical(dib);
+	if (dib != NULL) {
+		if (topdown) {
+			for (int i = height - 1; i >= 0; --i) {
+				memcpy(FreeImage_GetScanLine(dib, i), bits, FreeImage_GetLine(dib));
+				bits += pitch;
+			}
+		} else {
+			for (int i = 0; i < height; ++i) {			
+				memcpy(FreeImage_GetScanLine(dib, i), bits, FreeImage_GetLine(dib));
+				bits += pitch;
+			}
 		}
 	}
 
 	return dib;
-}
-
-FIBITMAP * DLL_CALLCONV
-FreeImage_ConvertFromRawBits(BYTE *bits, int width, int height, int pitch, unsigned bpp, unsigned red_mask, unsigned green_mask, unsigned blue_mask, BOOL topdown) {
-	return FreeImage_ConvertFromRawBitsEx(TRUE /* copySource */, bits, FIT_BITMAP, width, height, pitch, bpp, red_mask, green_mask, blue_mask, topdown);
 }
 
 void DLL_CALLCONV

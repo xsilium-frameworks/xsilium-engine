@@ -32,7 +32,7 @@ configure_xsilium()
 subdirs(Library)
 subdirs(Engine)
 
-#subdirs(Client)
+subdirs(Client)
 #subdirs(SceneLoader)
 
 

@@ -166,23 +166,23 @@ namespace Ogre {
     
     void GLStateCacheManagerImp::bindGLBuffer(GLenum target, GLuint buffer, GLenum attach, bool force)
     {
-        bool update = false;
+		bool update = false;
         BindBufferMap::iterator i = mActiveBufferMap.find(target);
         if (i == mActiveBufferMap.end())
         {
             // Haven't cached this state yet.  Insert it into the map
             mActiveBufferMap.insert(BindBufferMap::value_type(target, buffer));
-            update = true;
+			update = true;
         }
         else if((*i).second != buffer || force) // Update the cached value if needed
         {
-            (*i).second = buffer;
-            update = true;
+			(*i).second = buffer;
+			update = true;
         }
 
-        // Update GL
-        if(update)
-        {
+		// Update GL
+		if(update)
+		{
             if(target == GL_FRAMEBUFFER)
             {
                 glBindFramebufferEXT(target, buffer);
@@ -195,7 +195,7 @@ namespace Ogre {
             {
                 glBindBuffer(target, buffer);
             }
-        }
+		}
 
     }
 
@@ -209,17 +209,17 @@ namespace Ogre {
         
         if (i != mActiveBufferMap.end() && ((*i).second == buffer || force))
         {
-            if(target == GL_FRAMEBUFFER)
+			if(target == GL_FRAMEBUFFER)
             {
-                glDeleteFramebuffers(1, &buffer);
+				glDeleteFramebuffers(1, &buffer);
             }
             else if(target == GL_RENDERBUFFER)
             {
-                glDeleteRenderbuffers(1, &buffer);
+				glDeleteRenderbuffers(1, &buffer);
             }
             else
             {
-                glDeleteBuffers(1, &buffer);
+				glDeleteBuffers(1, &buffer);
             }
 
             // Currently bound buffer is being deleted, update the cached value to 0,
@@ -282,30 +282,30 @@ namespace Ogre {
     }
     
     bool GLStateCacheManagerImp::activateGLTextureUnit(size_t unit)
-    {
-        if (mActiveTextureUnit != unit)
-        {
-            if (unit < dynamic_cast<GLRenderSystem*>(Root::getSingleton().getRenderSystem())->getCapabilities()->getNumTextureUnits())
-            {
-                glActiveTexture(GL_TEXTURE0 + unit);
-                mActiveTextureUnit = unit;
-                return true;
-            }
-            else if (!unit)
-            {
-                // always ok to use the first unit
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return true;
-        }
-    }
+	{
+		if (mActiveTextureUnit != unit)
+		{
+			if (unit < dynamic_cast<GLRenderSystem*>(Root::getSingleton().getRenderSystem())->getCapabilities()->getNumTextureUnits())
+			{
+				glActiveTexture(GL_TEXTURE0 + unit);
+				mActiveTextureUnit = unit;
+				return true;
+			}
+			else if (!unit)
+			{
+				// always ok to use the first unit
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
     
     // TODO: Store as high/low bits of a GLuint
     void GLStateCacheManagerImp::setBlendFunc(GLenum source, GLenum dest)
@@ -459,16 +459,16 @@ namespace Ogre {
             mBlendEquationRGB = eqRGB;
             mBlendEquationAlpha = eqAlpha;
 
-            if(GLEW_VERSION_2_0)
+			if(GLEW_VERSION_2_0)
             {
-                glBlendEquationSeparate(eqRGB, eqAlpha);
-            }
-            else if(GLEW_EXT_blend_equation_separate)
+				glBlendEquationSeparate(eqRGB, eqAlpha);
+			}
+			else if(GLEW_EXT_blend_equation_separate)
             {
-                glBlendEquationSeparateEXT(eqRGB, eqAlpha);
-            }
-        }
-    }
+				glBlendEquationSeparateEXT(eqRGB, eqAlpha);
+			}
+		}
+	}
 
     void GLStateCacheManagerImp::setMaterialDiffuse(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
     {
@@ -625,7 +625,7 @@ namespace Ogre {
 
     void GLStateCacheManagerImp::enableTextureCoordGen(GLenum type)
     {
-        OGRE_HashMap<GLenum, TexGenParams>::iterator it = mTextureCoordGen.find(mActiveTextureUnit);
+        HashMap<GLenum, TexGenParams>::iterator it = mTextureCoordGen.find(mActiveTextureUnit);
         if (it == mTextureCoordGen.end())
         {
             glEnable(type);
@@ -643,7 +643,7 @@ namespace Ogre {
 
     void GLStateCacheManagerImp::disableTextureCoordGen(GLenum type)
     {
-        OGRE_HashMap<GLenum, TexGenParams>::iterator it = mTextureCoordGen.find(mActiveTextureUnit);
+        HashMap<GLenum, TexGenParams>::iterator it = mTextureCoordGen.find(mActiveTextureUnit);
         if (it != mTextureCoordGen.end())
         {
             std::set<GLenum>::iterator found = it->second.mEnabled.find(type);

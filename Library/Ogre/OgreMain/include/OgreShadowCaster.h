@@ -30,7 +30,6 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreRenderable.h"
-#include "OgreRenderOperation.h"
 #include "OgreHeaderPrefix.h"
 
 

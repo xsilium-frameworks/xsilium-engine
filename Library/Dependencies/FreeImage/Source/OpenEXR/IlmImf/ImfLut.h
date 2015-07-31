@@ -45,20 +45,18 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfRgbaFile.h"
-#include "ImfFrameBuffer.h"
+#include <ImfRgbaFile.h>
+#include <ImfFrameBuffer.h>
 #include "ImathBox.h"
 #include "halfFunction.h"
-#include "ImfNamespace.h"
-#include "ImfExport.h"
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
 //
 // Lookup table for individual half channels.
 //
 
-class IMF_EXPORT HalfLut
+class HalfLut
 {
   public:
 
@@ -84,7 +82,7 @@ class IMF_EXPORT HalfLut
     //---------------------------------------------------------------
 
     void apply (const Slice &data,
-		const IMATH_NAMESPACE::Box2i &dataWindow) const;
+		const Imath::Box2i &dataWindow) const;
 
   private:
 
@@ -96,7 +94,7 @@ class IMF_EXPORT HalfLut
 // Lookup table for combined RGBA data.
 //
 
-class IMF_EXPORT RgbaLut
+class RgbaLut
 {
   public:
 
@@ -124,7 +122,7 @@ class IMF_EXPORT RgbaLut
     void apply (Rgba *base,
 		int xStride,
 		int yStride,
-		const IMATH_NAMESPACE::Box2i &dataWindow) const;
+		const Imath::Box2i &dataWindow) const;
 
   private:
 
@@ -141,7 +139,6 @@ class IMF_EXPORT RgbaLut
 // the center [2000] and that number is near 0.18.
 //
 
-IMF_EXPORT 
 half round12log (half x);
 
 
@@ -183,6 +180,6 @@ RgbaLut::RgbaLut (Function f, RgbaChannels chn):
 }
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
 
 #endif

@@ -25,10 +25,13 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include "OgreVolumeGridSource.h"
+#include "OgreTextureManager.h"
+#include "OgreHardwarePixelBuffer.h"
 #include "OgreVector3.h"
+#include "OgreColourValue.h"
+#include "OgreMemoryAllocatorConfig.h"
 #include "OgreLogManager.h"
-#include "OgreRay.h"
-#include "OgreVolumeCSGSource.h"
+#include "OgreTimer.h"
 
 namespace Ogre {
 namespace Volume {

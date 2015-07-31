@@ -42,31 +42,32 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "ImfAttribute.h"
-#include "ImfTileDescription.h"
+#include <ImfAttribute.h>
+#include <ImfTileDescription.h>
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_ENTER
+namespace Imf {
 
-typedef TypedAttribute<OPENEXR_IMF_INTERNAL_NAMESPACE::TileDescription> TileDescriptionAttribute;
+
+typedef TypedAttribute<TileDescription> TileDescriptionAttribute;
 
 template <>
-IMF_EXPORT 
 const char *
 TileDescriptionAttribute::staticTypeName ();
 
 template <>
-IMF_EXPORT 
 void
-TileDescriptionAttribute::writeValueTo (OPENEXR_IMF_INTERNAL_NAMESPACE::OStream &,
-                                        int) const;
+TileDescriptionAttribute::writeValueTo (OStream &, int) const;
 
 template <>
-IMF_EXPORT 
 void
-TileDescriptionAttribute::readValueFrom (OPENEXR_IMF_INTERNAL_NAMESPACE::IStream &,
-                                         int, int);
+TileDescriptionAttribute::readValueFrom (IStream &, int, int);
 
 
-OPENEXR_IMF_INTERNAL_NAMESPACE_HEADER_EXIT
+} // namespace Imf
+
+// Metrowerks compiler wants the .cpp file inlined, too
+#ifdef __MWERKS__
+#include <ImfTileDescriptionAttribute.cpp>
+#endif
 
 #endif

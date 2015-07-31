@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Copyright (c) 2005-2012, Industrial Light & Magic, a division of Lucas
+// Copyright (c) 2005, Industrial Light & Magic, a division of Lucas
 // Digital Ltd. LLC
 // 
 // All rights reserved.
@@ -38,19 +38,15 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "IlmBaseConfig.h"
-
-#if defined(_WIN32) && !defined(HAVE_PTHREAD) && !defined(HAVE_POSIX_SEMAPHORES)
-
 #include "IlmThreadSemaphore.h"
 #include "Iex.h"
 #include <string>
 #include <assert.h>
 #include <iostream>
 
-ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_ENTER
+namespace IlmThread {
 
-using namespace IEX_NAMESPACE;
+using namespace Iex;
 
 namespace {
 
@@ -147,7 +143,4 @@ Semaphore::value() const
     return v;
 }
 
-
-ILMTHREAD_INTERNAL_NAMESPACE_SOURCE_EXIT
-
-#endif
+} // namespace IlmThread
