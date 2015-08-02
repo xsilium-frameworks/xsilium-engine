@@ -97,6 +97,8 @@ ${ENET_INCLUDE_DIR}
 .
 )
 
+add_definitions(-DBOOST_LOG_DYN_LINK)
+
 add_library(XsiliumEngine ${CORE_SOURCE_FILES} ${CORE_HEADER_FILES})
 
 if (APPLE AND NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
