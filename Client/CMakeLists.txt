@@ -77,13 +77,10 @@ ${CEGUI_LIBRARIES}
 ${PagedGeometry_LIBRARY}
 ${ENET_LIBRARY}
 CEGUIOgreRenderer-0
-${Boost_LIBRARIES}
+${DirectX_LIBRARY}
 )
 
-add_definitions(-DBOOST_LOG_DYN_LINK)
-
-
-ogre_add_executable(${TargetName} WIN32 ${SRC} ${RESOURCE_FILES})
+ogre_add_executable(${TargetName} WIN32 ${SRC})
 
 if (APPLE)
 

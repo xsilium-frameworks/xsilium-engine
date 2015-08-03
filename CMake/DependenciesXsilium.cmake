@@ -105,9 +105,9 @@ endif()
 
 if(Boost_FOUND AND Boost_VERSION GREATER 104900)
     if(Boost_VERSION GREATER 105300)
-        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono serialization log)
+        set(OGRE_BOOST_COMPONENTS thread date_time system atomic chrono filesystem log log_setup serialization)
     else()
-        set(OGRE_BOOST_COMPONENTS thread date_time system chrono serialization log)
+        set(OGRE_BOOST_COMPONENTS thread date_time system chrono filesystem serialization)
     endif()
     find_package(Boost COMPONENTS ${OGRE_BOOST_COMPONENTS} QUIET)
 endif()
@@ -132,9 +132,4 @@ if(WIN32)
 	find_package(DirectX11)	
 	find_package(DirectXInput)
 endif()
-
-link_directories(
-${X11_LIBRARY_DIRS}
-${DirectX_LIBRARY_DIRS}
-)
 
