@@ -1,12 +1,4 @@
 macro (configure_xsilium)
-	# Use relative paths
-	# This is mostly to reduce path size for command-line limits on windows
-	if(WIN32)
-  	# This seems to break Xcode projects so definitely don't enable on Apple builds
-  		set(CMAKE_USE_RELATIVE_PATHS true)
-  		set(CMAKE_SUPPRESS_REGENERATION true)
-	endif()
-
 	if (NOT CMAKE_OSX_ARCHITECTURES)
 		set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD_64_BIT}")
 	endif()
@@ -29,9 +21,9 @@ macro (configure_xsilium)
 
 
 	# Specify build paths
-	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${XSILIUM_BINARY_DIR}/lib")
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${XSILIUM_BINARY_DIR}/lib")
-	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${XSILIUM_BINARY_DIR}/bin")
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 	if (CMAKE_BUILD_TYPE STREQUAL "")
 	  # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
@@ -41,8 +33,6 @@ macro (configure_xsilium)
 
 	set(XSILIUM_DEP_DIR ${XSILIUM_SOURCE_DIR}/Library/Dependencies)
 	set(XSILIUM_DEP_WIN_DIR ${XSILIUM_SOURCE_DIR}/Library/Dependencies/Win32)
-		
-	set(XSILIUM_ANDROID_DEP_DIR ${XSILIUM_SOURCE_DIR}/Dependencies/Android)
 
 	include(DependenciesXsilium)
 
