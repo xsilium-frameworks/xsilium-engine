@@ -10,7 +10,6 @@ if (POLICY CMP0045)
     cmake_policy(SET CMP0045 OLD)
 endif()
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CEGUIMacros)
 include(CMakeDependentOption)
 
@@ -70,60 +69,9 @@ if ((WIN32 OR APPLE) AND NOT CMAKE_PREFIX_PATH)
     set (CMAKE_FIND_FRAMEWORK LAST)
 endif()
 
-# Look for packages
-find_package(PCRE)
-find_package(Freetype)
-find_package(Minizip)
-find_package(Fribidi)
-if (NOT WIN32)
-    find_package(Iconv REQUIRED)
-endif()
-
-find_package(OpenGL)
-find_package(GLEW)
-find_package(GLM)
-find_package(GLFW)
-find_package(GLFW3)
-find_package(SDL2)
-find_package(DirectXSDK)
-find_package(D3DX11Effects)
-find_package(Irrlicht)
-find_package(Ogre)
-find_package(OIS)
-find_package(DirectFB)
-find_package(OpenGLES)
-
-find_package(EXPAT)
-find_package(XercesC)
-find_package(LibXml2)
-find_package(TinyXML)
-find_package(RapidXML)
-
-find_package(DevIL)
-find_package(FreeImage)
-find_package(SILLY)
-find_package(Corona)
-find_package(PVRTools)
-
 find_package(Lua51)
 find_package(TOLUAPP)
-find_package(PythonInterp)
 
-
-
-## ensure python3 not picked up as default
-find_package(PythonVersion)
-if (UNIX AND PYTHON_VERSION_FOUND)
-  find_package(PythonLibs ${PYTHON_VERSION_STRING} EXACT)
-else()
-  find_package(PythonLibs)
-endif()
-find_package(Boost 1.36.0 COMPONENTS python unit_test_framework system timer)
-
-find_package(Doxygen)
-#find_package(GTK2 COMPONENTS gtk)
-# set for consistency with other deps
-set (GTK2_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
 ################################################################################
 # Define the configurable options
 ################################################################################
@@ -170,7 +118,7 @@ option( CEGUI_BUILD_XMLPARSER_TINYXML "Specifies whether to build the TinyXML ba
 
 option( CEGUI_BUILD_IMAGECODEC_SILLY "Specifies whether to build the SILLY based ImageCodec module" ${SILLY_FOUND} )
 option( CEGUI_BUILD_IMAGECODEC_DEVIL "Specifies whether to build the DevIL based ImageCodec module" ${IL_FOUND} )
-option( CEGUI_BUILD_IMAGECODEC_FREEIMAGE "Specifies whether to build the FreeImage based ImageCodec module" ${FREEIMAGE_FOUND} )
+option( CEGUI_BUILD_IMAGECODEC_FREEIMAGE "Specifies whether to build the FreeImage based ImageCodec module" ${FreeImage_FOUND} )
 option( CEGUI_BUILD_IMAGECODEC_CORONA "Specifies whether to build the Corona based ImageCodec module" ${CORONA_FOUND} )
 option( CEGUI_BUILD_IMAGECODEC_STB "Specifies whether to build the STB based ImageCodec module" FALSE )
 option( CEGUI_BUILD_IMAGECODEC_TGA "Specifies whether to build the based TGA only ImageCodec module" FALSE )

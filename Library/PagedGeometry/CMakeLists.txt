@@ -4,21 +4,6 @@ cmake_policy(SET CMP0003 NEW)
 
 project(PagedGeometry)
 
-if(WIN32)
-   set(CMAKE_MODULE_PATH "$ENV{OGRE_HOME}/CMake/;${CMAKE_MODULE_PATH}")
-endif(WIN32)
- 
-if(UNIX)
-   if(EXISTS "${XSILIUM_SOURCE_DIR}/Library/Ogre/CMake")
-     set(CMAKE_MODULE_PATH "${XSILIUM_SOURCE_DIR}/Library/Ogre/CMake/Packages;${CMAKE_MODULE_PATH}")
-   else ()
-     message(SEND_ERROR "Failed to find module path.")
-   endif()
-endif(UNIX)
- 
-
-set(CMAKE_DEBUG_POSTFIX "_d")
-
 if(UNIX AND NOT APPLE)
     # Newer ld versions need this linked explicitly
     find_package(Threads REQUIRED)

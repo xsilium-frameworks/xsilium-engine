@@ -1,81 +1,42 @@
 #######################################################################
-# Additional features
+# Find all necessary for project Xsilium
 #######################################################################
+include(FindPkgMacros)
 
 #######################################################################
-# Core dependencies
+# Ogre Core dependencies
 #######################################################################
 
 # Find zlib
-set(ZLIB_H_PATH "${XSILIUM_DEP_DIR}/ZLib" )
+set(ZLIB_FOUND 1)
+set(ZLIB_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ZLib" )
+set(ZLIB_LIBRARIES "ZLib")
 
 # Find ZZIP
-set(ZZIP_H_PATH "${XSILIUM_DEP_DIR}/ZZipLib" )
+set(ZZip_FOUND 1)
+set(ZZip_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ZZipLib" )
+set(ZZip_LIBRARIES "ZZipLib")
+
 
 # Find FreeImage
-set(FREEIMAGE_H_PATH "${XSILIUM_DEP_DIR}/FreeImage/Source")
-set(FREEIMAGE_LIB_STATIC "FreeImage" )
-set(FREEIMAGE_LIB_STATIC_DBG "FreeImage" )
-set(FREEIMAGE_LIB "FreeImage" )
-set(FREEIMAGE_LIB_DBG "FreeImage" )
+set(FreeImage_FOUND 1)
+set(FreeImage_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/Source")
+set(FreeImage_LIBRARIES "FreeImage" )
 
 # Find FreeType
-set(FREETYPE_H_PATH_ft2build "${XSILIUM_DEP_DIR}/Freetype/include")
-set(FREETYPE_H_PATH_ftconfig "${XSILIUM_DEP_DIR}/Freetype/include")
-set(FREETYPE_LIB_STATIC "freetype")
-set(FREETYPE_LIB_STATIC_DBG "freetype")
+set(FREETYPE_FOUND 1)
+set(FREETYPE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/Freetype/include")
+set(FREETYPE_LIBRARIES "freetype")
 
-# Find Rapidxml
-set(RAPIDXML_H_PATH "${XSILIUM_DEP_DIR}/Rapidxml")
-
-# Find OIS
-set(OIS_H_PATH "${XSILIUM_DEP_DIR}/ois/includes")
-set(OIS_LIB "OIS")
-
-
-#Ogre
-set(OGRE_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Ogre/OgreMain/include" "${XSILIUM_BINARY_DIR}/Library/Ogre/include" )
-set(OGRE_LIBRARIES OgreMain)
-
-set(OGRE_H_PATH "${XSILIUM_SOURCE_DIR}/Library/Ogre/OgreMain/include")
-set(OGRE_LIB "OgreMain")
-set(OGRE_H_BUILD_SETTINGS_PATH "${XSILIUM_BINARY_DIR}/Library/Ogre/include" )
-
-#Component
-#OGRE_Paging
-set(OGRE_Paging_FOUND 1)
-set(OGRE_Paging_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Paging/include")
-set(OGRE_Paging_LIBRARIES "OgrePaging")
-
-#OGRE_Terrain
-set(OGRE_Terrain_FOUND 1)
-set(OGRE_Terrain_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Terrain/include")
-set(OGRE_Terrain_LIBRARIES "OgreTerrain")
-
-#OGRE_Overlay
-set(OGRE_Overlay_FOUND 1)
-set(OGRE_Overlay_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Overlay/include")
-set(OGRE_Overlay_LIBRARIES "OgreOverlay")
-
-#OGRE_Volume
-set(OGRE_Volume_FOUND 1)
-set(OGRE_Volume_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Volume/include")
-set(OGRE_Volume_LIBRARIES "OgreVolume")
-
-#OGRE_Property
-set(OGRE_Property_FOUND 1)
-set(OGRE_Property_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Property/include")
-set(OGRE_Property_LIBRARIES "OgreProperty")
-
-#OGRE_RTShaderSystem
-set(OGRE_RTShaderSystem_FOUND 1)
-set(OGRE_RTShaderSystem_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/RTShaderSystem/include")
-set(OGRE_RTShaderSystem_LIBRARIES "OgreRTShaderSystem")
-
-#OGRE_RenderSystems
-set(OGRE_RenderSystems_FOUND 1)
-set(OGRE_RenderSystems_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/RenderSystems/GL/include")
-set(OGRE_RenderSystems_LIBRARIES "RenderSystem_GL")
+# Find X11
+if (UNIX AND NOT APPLE AND NOT ANDROID AND NOT FLASHCC)
+  find_package(X11)
+  macro_log_feature(X11_FOUND "X11" "X Window system" "http://www.x.org" TRUE "" "")
+  macro_log_feature(X11_Xt_FOUND "Xt" "X Toolkit" "http://www.x.org" TRUE "" "")
+  find_library(XAW_LIBRARY NAMES Xaw Xaw7 PATHS ${OGRE_DEP_SEARCH_PATH} ${DEP_LIB_SEARCH_DIR} ${X11_LIB_SEARCH_PATH})
+  macro_log_feature(XAW_LIBRARY "Xaw" "X11 Athena widget set" "http://www.x.org" TRUE "" "")
+  mark_as_advanced(XAW_LIBRARY)
+endif ()
 
 # Find Boost
 # Prefer static linking in all cases
@@ -121,15 +82,118 @@ if(Boost_FOUND AND NOT WIN32)
   list(REMOVE_DUPLICATES Boost_LIBRARIES)
 endif()
 
-#CEGUI
-set(CEGUI_FOUND 1)
-set(CEGUI_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include" "${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include")
-set(CEGUI_LIBRARIES "CEGUIBase-0")
+#######################################################################
+# RenderSystem dependencies
+#######################################################################
+
+# Find OpenGL
+if(NOT ANDROID AND NOT FLASHCC)
+  find_package(OpenGL)
+  macro_log_feature(OPENGL_FOUND "OpenGL" "Support for the OpenGL render system" "http://www.opengl.org/" FALSE "" "")
+endif()
+
+# Find OpenGL 3+
+find_package(OpenGL)
+macro_log_feature(OPENGL_FOUND "OpenGL 3+" "Support for the OpenGL 3+ render system" "http://www.opengl.org/" FALSE "" "")
+
+# Find OpenGL ES 1.x
+find_package(OpenGLES)
+macro_log_feature(OPENGLES_FOUND "OpenGL ES 1.x" "Support for the OpenGL ES 1.x render system (DEPRECATED)" "http://www.khronos.org/opengles/" FALSE "" "")
+
+# Find OpenGL ES 2.x
+find_package(OpenGLES2)
+macro_log_feature(OPENGLES2_FOUND "OpenGL ES 2.x" "Support for the OpenGL ES 2.x render system" "http://www.khronos.org/opengles/" FALSE "" "")
+
+# Find OpenGL ES 3.x
+find_package(OpenGLES3)
+macro_log_feature(OPENGLES3_FOUND "OpenGL ES 3.x" "Support for the OpenGL ES 2.x render system with OpenGL ES 3 support" "http://www.khronos.org/opengles/" FALSE "" "")
 
 # Find DirectX
 if(WIN32)
 	find_package(DirectX)
-	find_package(DirectX11)	
+	macro_log_feature(DirectX9_FOUND "DirectX9" "Support for the DirectX render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+	
+	find_package(DirectX11)
+	macro_log_feature(DirectX11_FOUND "DirectX11" "Support for the DirectX11 render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
+
 	find_package(DirectXInput)
+	macro_log_feature(DirectX_FOUND "DirectX" "Support for the DirectXInput render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
 endif()
+
+#######################################################################
+# Additional features
+#######################################################################
+# Find Cg
+if (NOT (OGRE_BUILD_PLATFORM_APPLE_IOS OR OGRE_BUILD_PLATFORM_WINRT OR ANDROID OR FLASHCC))
+  find_package(Cg)
+  macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
+endif ()
+
+
+# Find OIS
+set(OIS_FOUND 1)
+set(OIS_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/ois/includes")
+set(OIS_LIBRARIES "OIS")
+
+
+#######################################################################
+# Cegui Core dependencies
+#######################################################################
+
+# Find Iconv
+set(ICONV_FOUND 1)
+set (ICONV_INCLUDE_DIR "${XSILIUM_DEP_DIR}/Iconv/include")
+set (ICONV_LIBRARIES "iconv")
+
+# Find Rapidxml
+set(RAPIDXML_FOUND 1)
+set(RAPIDXML_INCLUDE_DIR "${XSILIUM_DEP_DIR}/Rapidxml")
+
+#Ogre
+set(OGRE_FOUND 1)
+set(OGRE_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Ogre/OgreMain/include" "${XSILIUM_BINARY_DIR}/Library/Ogre/include" )
+set(OGRE_LIBRARIES OgreMain)
+
+#Component
+#OGRE_Paging
+set(OGRE_Paging_FOUND 1)
+set(OGRE_Paging_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Paging/include")
+set(OGRE_Paging_LIBRARIES "OgrePaging")
+
+#OGRE_Terrain
+set(OGRE_Terrain_FOUND 1)
+set(OGRE_Terrain_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Terrain/include")
+set(OGRE_Terrain_LIBRARIES "OgreTerrain")
+
+#OGRE_Overlay
+set(OGRE_Overlay_FOUND 1)
+set(OGRE_Overlay_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Overlay/include")
+set(OGRE_Overlay_LIBRARIES "OgreOverlay")
+
+#OGRE_Volume
+set(OGRE_Volume_FOUND 1)
+set(OGRE_Volume_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Volume/include")
+set(OGRE_Volume_LIBRARIES "OgreVolume")
+
+#OGRE_Property
+set(OGRE_Property_FOUND 1)
+set(OGRE_Property_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/Property/include")
+set(OGRE_Property_LIBRARIES "OgreProperty")
+
+#OGRE_RTShaderSystem
+set(OGRE_RTShaderSystem_FOUND 1)
+set(OGRE_RTShaderSystem_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/Components/RTShaderSystem/include")
+set(OGRE_RTShaderSystem_LIBRARIES "OgreRTShaderSystem")
+
+#OGRE_RenderSystems
+set(OGRE_RenderSystems_FOUND 1)
+set(OGRE_RenderSystems_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/RenderSystems/GL/include")
+set(OGRE_RenderSystems_LIBRARIES "RenderSystem_GL")
+
+
+
+#CEGUI
+set(CEGUI_FOUND 1)
+set(CEGUI_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include" "${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include")
+set(CEGUI_LIBRARIES "CEGUIBase-0")
 
