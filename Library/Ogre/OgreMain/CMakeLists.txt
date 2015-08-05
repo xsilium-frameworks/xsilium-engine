@@ -230,7 +230,7 @@ endif ()
 if (OGRE_CONFIG_ENABLE_FREEIMAGE)
   list(APPEND HEADER_FILES include/OgreFreeImageCodec.h)
   list(APPEND SOURCE_FILES src/OgreFreeImageCodec.cpp)
-  list(APPEND LIBRARIES    "${FreeImage_LIBRARIES}")
+  list(APPEND LIBRARIES    "${FREEIMAGE_LIBRARIES}")
 endif()
 
 if (OGRE_CONFIG_ENABLE_DDS)

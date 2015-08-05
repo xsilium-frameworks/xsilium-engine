@@ -1,87 +1,22 @@
-#-------------------------------------------------------------------
-# This file is part of the CMake build system for OGRE
-#     (Object-oriented Graphics Rendering Engine)
-# For the latest info, see http://www.ogre3d.org/
+################################################################################
+# Custom cmake module for CEGUI to find OpenGL ES (1.1) 
 #
-# The contents of this file are placed in the public domain. Feel
-# free to make use of it in any way you like.
-#-------------------------------------------------------------------
+# Placeholder module to create some vars we can manually set.
+# Later will create a proper tests (or steal them, anyway)
+################################################################################
+include(FindPackageHandleStandardArgs)
 
-# - Try to find OpenGLES
-# Once done this will define
-#  
-#  OPENGLES_FOUND        - system has OpenGLES
-#  OPENGLES_INCLUDE_DIR  - the GL include directory
-#  OPENGLES_LIBRARIES    - Link these to use OpenGLES
+find_path(OPENGLES_H_PATH NAMES GLES/gl.h)
+find_library(OPENGLES_LIB NAMES GLES_CM)
+mark_as_advanced(OPENGLES_H_PATH OPENGLES_LIB OPENGLES_LIB_DBG)
 
-IF (WIN32)
-  IF (CYGWIN)
+find_package_handle_standard_args(OPENGLES DEFAULT_MSG OPENGLES_LIB OPENGLES_H_PATH)
 
-    FIND_PATH(OPENGLES_INCLUDE_DIR GLES/gl.h )
-
-    FIND_LIBRARY(OPENGLES_gl_LIBRARY libgles_cm )
-
-  ELSE (CYGWIN)
-
-    IF(BORLAND)
-      SET (OPENGLES_gl_LIBRARY import32 CACHE STRING "OpenGL ES 1.x library for win32")
-    ELSE(BORLAND)
-	  #MS compiler - todo - fix the following line:
-      SET (OPENGLES_gl_LIBRARY ${OGRE_SOURCE_DIR}/Dependencies/lib/release/libgles_cm.lib CACHE STRING "OpenGL ES 1.x library for win32")
-    ENDIF(BORLAND)
-
-  ENDIF (CYGWIN)
-
-ELSE (WIN32)
-
-  IF (APPLE)
-
-	create_search_paths(/Developer/Platforms)
-	findpkg_framework(OpenGLES)
-    set(OPENGLES_gl_LIBRARY "-framework OpenGLES")
-
-  ELSE(APPLE)
-
-    FIND_PATH(OPENGLES_INCLUDE_DIR GLES/gl.h
-      /usr/openwin/share/include
-      /opt/graphics/OpenGL/include /usr/X11R6/include
-      /usr/include
-    )
-
-    FIND_LIBRARY(OPENGLES_gl_LIBRARY
-      NAMES GLES_CM GLESv1_CM
-      PATHS /opt/graphics/OpenGL/lib
-            /usr/openwin/lib
-            /usr/shlib /usr/X11R6/lib
-            /usr/lib
-    )
-
-    # On Unix OpenGL most certainly always requires X11.
-    # Feel free to tighten up these conditions if you don't 
-    # think this is always true.
-
-    IF (OPENGLES_gl_LIBRARY)
-      IF(NOT X11_FOUND)
-        INCLUDE(FindX11)
-      ENDIF(NOT X11_FOUND)
-      IF (X11_FOUND)
-        SET (OPENGLES_LIBRARIES ${X11_LIBRARIES})
-      ENDIF (X11_FOUND)
-    ENDIF (OPENGLES_gl_LIBRARY)
-
-  ENDIF(APPLE)
-ENDIF (WIN32)
-
-SET( OPENGLES_FOUND "NO" )
-IF(OPENGLES_gl_LIBRARY)
-
-    SET( OPENGLES_LIBRARIES ${OPENGLES_gl_LIBRARY} ${OPENGLES_LIBRARIES})
-
-    SET( OPENGLES_FOUND "YES" )
-
-ENDIF(OPENGLES_gl_LIBRARY)
-
-MARK_AS_ADVANCED(
-  OPENGLES_INCLUDE_DIR
-  OPENGLES_gl_LIBRARY
-)
+# set up output vars
+if (OPENGLES_FOUND)
+    set (OPENGLES_INCLUDE_DIRS ${OPENGLES_H_PATH})
+    set (OPENGLES_LIBRARIES ${OPENGLES_LIB})
+else()
+    set (OPENGLES_INCLUDE_DIRS)
+    set (OPENGLES_LIBRARIES)
+endif()

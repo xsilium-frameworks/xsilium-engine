@@ -300,7 +300,7 @@ cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_D3D9 "Build Direct3D9 RenderSyste
 cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_D3D11 "Build Direct3D11 RenderSystem [EXPERIMENTAL]" TRUE "WIN32;DirectX11_FOUND OR WINDOWS_STORE OR WINDOWS_PHONE" FALSE)
 cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GL3PLUS "Build OpenGL 3+ RenderSystem [EXPERIMENTAL]" FALSE "OPENGL_FOUND; NOT OGRE_BUILD_RENDERSYSTEM_GLES; NOT OGRE_BUILD_RENDERSYSTEM_GLES2;NOT WINDOWS_STORE;NOT WINDOWS_PHONE" FALSE)
 cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GL "Build OpenGL RenderSystem" TRUE "OPENGL_FOUND;NOT OGRE_BUILD_PLATFORM_APPLE_IOS;NOT WINDOWS_STORE;NOT WINDOWS_PHONE" FALSE)
-cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GLES "Build OpenGL ES 1.x RenderSystem" FALSE "OPENGLES_FOUND;NOT WINDOWS_STORE;NOT WINDOWS_PHONE" FALSE)
+cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GLES "Build OpenGL ES 1.x RenderSystem" TRUE "OPENGLES_FOUND;NOT WINDOWS_STORE;NOT WINDOWS_PHONE" FALSE)
 cmake_dependent_option(OGRE_BUILD_RENDERSYSTEM_GLES2 "Build OpenGL ES 2.x RenderSystem" FALSE "OPENGLES2_FOUND;NOT WINDOWS_STORE;NOT WINDOWS_PHONE" FALSE)
 cmake_dependent_option(OGRE_BUILD_PLATFORM_NACL "Build Ogre for Google's Native Client (NaCl)" FALSE "OPENGLES2_FOUND;NOT WINDOWS_STORE;NOT WINDOWS_PHONE" FALSE)
 option(OGRE_BUILD_PLUGIN_BSP "Build BSP SceneManager plugin" TRUE)
@@ -433,6 +433,21 @@ endif()
 ##################################################################
 # Now setup targets
 ##################################################################
+
+include_directories(
+  ${ZLIB_INCLUDE_DIRS}
+  ${ZZip_INCLUDE_DIRS}
+  ${FREEIMAGE_INCLUDE_DIRS}
+  ${FREETYPE_INCLUDE_DIRS}
+  ${OPENGL_INCLUDE_DIRS}
+  ${OPENGLES_INCLUDE_DIRS}
+  ${OPENGLES2_INCLUDE_DIRS}
+  ${OPENGLES3_INCLUDE_DIRS}
+  ${OIS_INCLUDE_DIRS}
+  ${Cg_INCLUDE_DIRS}
+  ${X11_INCLUDE_DIR}
+  ${DirectX_INCLUDE_DIRS}
+)
 
 # install resource files
 include(InstallResources)

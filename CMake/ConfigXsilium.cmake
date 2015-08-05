@@ -40,6 +40,10 @@ macro (configure_xsilium)
 	set(XSILIUM_DEP_DIR ${XSILIUM_SOURCE_DIR}/Library/Dependencies)
 	set(XSILIUM_DEP_WIN_DIR ${XSILIUM_SOURCE_DIR}/Library/Dependencies/Win32)
 
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
 	include(DependenciesXsilium)
 
 

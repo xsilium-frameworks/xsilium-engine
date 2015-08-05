@@ -1,18 +1,13 @@
 project(Cg)
 
 if (WIN32)
-  set(Cg_INCLUDE_DIR "${Cg_SOURCE_DIR}/include" CACHE PATH "" FORCE)
   set(Cg_HOME ${Cg_SOURCE_DIR} CACHE PATH "")
 
   # manually copy to build and install the correct DLL
-  if (XSILIUM_PLATFORM_X64)
+  if (OGRE_PLATFORM_X64)
     set(CG_DLL bin64/cg.dll)
-    set(Cg_LIBRARY_REL "${Cg_SOURCE_DIR}/lib64/cg.lib" CACHE PATH "" FORCE)
-    set(Cg_LIBRARY_DBG "${Cg_SOURCE_DIR}/lib64/cg.lib" CACHE PATH "" FORCE)
   else ()
     set(CG_DLL bin/cg.dll)
-    set(Cg_LIBRARY_REL "${Cg_SOURCE_DIR}/lib/cg.lib" CACHE PATH "" FORCE)
-    set(Cg_LIBRARY_DBG "${Cg_SOURCE_DIR}/lib/cg.lib" CACHE PATH "" FORCE)
   endif ()
   install(FILES ${CG_DLL} DESTINATION bin/Release)
   install(FILES ${CG_DLL} DESTINATION bin/Debug)

@@ -19,13 +19,14 @@ set(ZZip_LIBRARIES "ZZipLib")
 
 
 # Find FreeImage
-set(FreeImage_FOUND 1)
-set(FreeImage_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/Source")
-set(FreeImage_LIBRARIES "FreeImage" )
+set(FREEIMAGE_FOUND 1)
+set(FREEIMAGE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/Source")
+set(FREEIMAGE_LIBRARIES "FreeImage" )
+set( FREEIMAGE_DEFINITIONS_STATIC "FREEIMAGE_LIB" CACHE STRING "preprocessor definitions" )
 
 # Find FreeType
 set(FREETYPE_FOUND 1)
-set(FREETYPE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/Freetype/include")
+set(FREETYPE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/Freetype/include" "${XSILIUM_DEP_DIR}/Freetype/include/freetype")
 set(FREETYPE_LIBRARIES "freetype")
 
 # Find X11
@@ -86,15 +87,18 @@ endif()
 # RenderSystem dependencies
 #######################################################################
 
+
 # Find OpenGL
 if(NOT ANDROID AND NOT FLASHCC)
   find_package(OpenGL)
   macro_log_feature(OPENGL_FOUND "OpenGL" "Support for the OpenGL render system" "http://www.opengl.org/" FALSE "" "")
 endif()
 
+
 # Find OpenGL 3+
 find_package(OpenGL)
 macro_log_feature(OPENGL_FOUND "OpenGL 3+" "Support for the OpenGL 3+ render system" "http://www.opengl.org/" FALSE "" "")
+
 
 # Find OpenGL ES 1.x
 find_package(OpenGLES)
@@ -125,8 +129,19 @@ endif()
 #######################################################################
 # Find Cg
 if (NOT (OGRE_BUILD_PLATFORM_APPLE_IOS OR OGRE_BUILD_PLATFORM_WINRT OR ANDROID OR FLASHCC))
-  find_package(Cg)
-  macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
+	if (WIN32)
+		set(Cg_FOUND 1)
+		set(Cg_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/Cg/include" )
+		if (OGRE_PLATFORM_X64)
+			set(Cg_LIBRARIES "${XSILIUM_DEP_DIR}/Cg/lib64/cg.lib")
+		else ()
+			set(Cg_LIBRARIES "${XSILIUM_DEP_DIR}/Cg/lib/cg.lib")
+		endif()
+	else ()
+  		find_package(Cg)
+  		macro_log_feature(Cg_FOUND "cg" "C for graphics shader language" "http://developer.nvidia.com/object/cg_toolkit.html" FALSE "" "")
+
+	endif()
 endif ()
 
 
@@ -153,6 +168,15 @@ set(RAPIDXML_INCLUDE_DIR "${XSILIUM_DEP_DIR}/Rapidxml")
 set(OGRE_FOUND 1)
 set(OGRE_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Ogre/OgreMain/include" "${XSILIUM_BINARY_DIR}/Library/Ogre/include" )
 set(OGRE_LIBRARIES OgreMain)
+
+file (STRINGS "${XSILIUM_SOURCE_DIR}/Library/Ogre/OgreMain/include/OgrePrerequisites.h" _CEGUIOGREVERSIONDEFINES REGEX ".*#define OGRE_VERSION_.*[0-9]+")
+foreach (ver MAJOR MINOR PATCH)
+	set (CEGUI_FOUND_OGRE_VERSION_${ver} 0)
+        if ("${_CEGUIOGREVERSIONDEFINES}" MATCHES ".*#define OGRE_VERSION_${ver} ([0-9]+).*")
+            set (CEGUI_FOUND_OGRE_VERSION_${ver} "${CMAKE_MATCH_1}")
+        endif()
+endforeach()
+
 
 #Component
 #OGRE_Paging
@@ -189,8 +213,6 @@ set(OGRE_RTShaderSystem_LIBRARIES "OgreRTShaderSystem")
 set(OGRE_RenderSystems_FOUND 1)
 set(OGRE_RenderSystems_INCLUDE_DIR "${XSILIUM_SOURCE_DIR}/Library/Ogre/RenderSystems/GL/include")
 set(OGRE_RenderSystems_LIBRARIES "RenderSystem_GL")
-
-
 
 #CEGUI
 set(CEGUI_FOUND 1)
