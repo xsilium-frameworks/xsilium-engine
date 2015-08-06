@@ -214,7 +214,7 @@ endif()
 # Option wether to build application templates; default off
 option(CEGUI_BUILD_APPLICATION_TEMPLATES "Specifies whether to build the application templates." TRUE)
 
-if (WIN32 OR APPLE)
+if (WIN32)
     set (CEGUI_BUILD_SUFFIX "_d" CACHE STRING "String holding a suffix appended to the name of output binaries (under CMake build, only used for debug).")
 else()
     set (CEGUI_BUILD_SUFFIX "" CACHE STRING "String holding a suffix appended to the name of output binaries (under CMake build, only used for debug).")

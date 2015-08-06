@@ -89,7 +89,7 @@ if (APPLE)
 	set_property(TARGET ${TargetName} PROPERTY MACOSX_BUNDLE_ICON_FILE SampleBrowser_OSX.icns)
 	set_property(TARGET ${TargetName} PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/Info.plist)
 	set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.ogre3d.\${PRODUCT_NAME:rfc1034identifier}")
-    	set_target_properties(${TargetName} PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
+    set_target_properties(${TargetName} PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
 
 
 	target_link_libraries(${TargetName} ${CoreVideo_LIBRARIES})
@@ -98,7 +98,7 @@ if (APPLE)
         LINK_FLAGS "-framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo -framework ApplicationServices ")
     # Add the path where the Ogre framework was found, if it has been found somewhere
     if(NOT ${OGRE_FRAMEWORK_PATH} STREQUAL "" AND OGRE_SDK_BUILD)
-      set_target_properties(SampleBrowser PROPERTIES
+      set_target_properties(${TargetName} PROPERTIES
         COMPILE_FLAGS "-F${OGRE_FRAMEWORK_PATH}"
         LINK_FLAGS "-F${OGRE_FRAMEWORK_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
       )
@@ -107,13 +107,13 @@ if (APPLE)
 	# NOTE: $(CONFIGURATION) is not resolvable at CMake run time, it's only 
 	# valid at build time (hence parenthesis rather than braces)
 	
-    set(OGRE_OSX_BUILD_CONFIGURATION "$(PLATFORM_NAME)/$(CONFIGURATION)")
-    set(OGRE_BUILT_FRAMEWORK "$(PLATFORM_NAME)/$(CONFIGURATION)")
+    set(OGRE_OSX_BUILD_CONFIGURATION "$(CONFIGURATION)")
+    set(OGRE_BUILT_FRAMEWORK "$(CONFIGURATION)")
 	set (OGRE_SAMPLE_CONTENTS_PATH 
-		${OGRE_BINARY_DIR}/bin/$(CONFIGURATION)/${TargetName}.app/Contents)
+		${CMAKE_BINARY_DIR}/bin/$(CONFIGURATION)/${TargetName}.app/Contents)
 	add_custom_command(TARGET ${TargetName} POST_BUILD
 		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/${OGRE_BUILT_FRAMEWORK}/Ogre.framework 
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_BUILT_FRAMEWORK}/Ogre.framework 
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
 		COMMAND ln ARGS -s -f ${Cg_LIBRARY_REL}
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
@@ -121,9 +121,9 @@ if (APPLE)
 	# now cfg files
 	add_custom_command(TARGET ${TargetName} POST_BUILD
 		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/plugins.cfg 
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/bin/plugins.cfg 
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/bin/resources.cfg 
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/bin/resources.cfg 
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
 		COMMAND ln ARGS -s -f ${CMAKE_SOURCE_DIR}/xsilium-assets/Media
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
@@ -137,7 +137,6 @@ if (APPLE)
 
 	# now plugins
 	add_custom_command(TARGET ${TargetName} POST_BUILD
-		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks
 		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Plugins)
 
     set(FRAMEWORKS 
@@ -147,6 +146,15 @@ if (APPLE)
         OgreRTShaderSystem
         OgreTerrain
         OgreVolume
+    )
+
+    foreach(FWK ${FRAMEWORKS})
+	add_custom_command(TARGET ${TargetName} POST_BUILD
+        COMMAND ARGS if [ -d ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ]\; then ln -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/${FWK}.framework\; fi
+		)
+    endforeach(FWK)
+    
+    set(PLUGINS 
         Plugin_BSPSceneManager
         Plugin_CgProgramManager
         Plugin_OctreeSceneManager
@@ -157,20 +165,20 @@ if (APPLE)
         RenderSystem_GL3Plus
     )
 
-    foreach(FWK ${FRAMEWORKS})
+    foreach(PGS ${PLUGINS})
 	add_custom_command(TARGET ${TargetName} POST_BUILD
-        COMMAND ARGS if [ -d ${OGRE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ]\; then ln -s -f ${OGRE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/${FWK}.framework\; fi
+        COMMAND ARGS if [ -d ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${PGS}.framework ]\; then ln -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${PGS}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Plugins/${PGS}.framework\; fi
 		)
-    endforeach(FWK)
+    endforeach(PGS)
 
     add_custom_command(TARGET ${TargetName} POST_BUILD
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIRapidXMLParser.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIRapidXMLParser.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIBase-0.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIBase-0.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${OGRE_BINARY_DIR}/lib/libCEGUIOgreRenderer-0.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIOgreRenderer-0.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
 		)
 

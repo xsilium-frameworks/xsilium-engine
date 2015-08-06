@@ -23,7 +23,7 @@ if (WIN32)
   set(OGRE_SAMPLES_DIR_DBG ".")
   set(OGRE_CFG_INSTALL_PATH "bin")
 elseif (APPLE)
-  set(OGRE_MEDIA_PATH "Media")
+  set(OGRE_MEDIA_PATH "Contents/Resources")
   if(OGRE_BUILD_PLATFORM_APPLE_IOS)
     set(OGRE_MEDIA_DIR_REL "${OGRE_MEDIA_PATH}")
     set(OGRE_MEDIA_DIR_DBG "${OGRE_MEDIA_PATH}")
@@ -34,8 +34,8 @@ elseif (APPLE)
       set(OGRE_MEDIA_DIR_REL "../../../${OGRE_MEDIA_PATH}")
       set(OGRE_MEDIA_DIR_DBG "../../../${OGRE_MEDIA_PATH}")
     else()
-      set(OGRE_MEDIA_DIR_REL "../../../../Samples/${OGRE_MEDIA_PATH}")
-      set(OGRE_MEDIA_DIR_DBG "../../../../Samples/${OGRE_MEDIA_PATH}")
+      set(OGRE_MEDIA_DIR_REL "${OGRE_MEDIA_PATH}")
+      set(OGRE_MEDIA_DIR_DBG "${OGRE_MEDIA_PATH}")
       set(OGRE_TEST_MEDIA_DIR_REL "../../../../Tests/${OGRE_MEDIA_PATH}")
       set(OGRE_TEST_MEDIA_DIR_DBG "../../../../Tests/${OGRE_MEDIA_PATH}")
     endif()
@@ -106,106 +106,6 @@ if (NOT OGRE_BUILD_COMPONENT_VOLUME)
 endif ()
 if (NOT OGRE_BUILD_COMPONENT_TERRAIN OR NOT OGRE_BUILD_COMPONENT_PAGING)
   set(OGRE_COMMENT_SAMPLE_ENDLESSWORLD "#")
-endif ()
-
-
-# CREATE CONFIG FILES - INSTALL VERSIONS
-# create resources.cfg
-configure_file(${OGRE_TEMPLATES_DIR}/resources_d.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/debug/resources_d.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/resources.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/release/resources.cfg)
-# create plugins.cfg
-configure_file(${OGRE_TEMPLATES_DIR}/plugins_d.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/debug/plugins_d.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/plugins.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/release/plugins.cfg)
-# create quakemap.cfg
-configure_file(${OGRE_TEMPLATES_DIR}/quakemap_d.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/debug/quakemap_d.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/quakemap.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/release/quakemap.cfg)
-# create samples.cfg
-configure_file(${OGRE_TEMPLATES_DIR}/samples_d.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/debug/samples_d.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/release/samples.cfg)
-# create samples.cfg
-configure_file(${OGRE_TEMPLATES_DIR}/tests.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/release/tests.cfg)
-configure_file(${OGRE_TEMPLATES_DIR}/tests_d.cfg.in ${CMAKE_BINARY_DIR}/inst/bin/debug/tests_d.cfg)
-
-# install resource files
-if (OGRE_INSTALL_SAMPLES OR OGRE_INSTALL_SAMPLES_SOURCE)
-  install(FILES 
-    ${CMAKE_BINARY_DIR}/inst/bin/debug/resources_d.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/debug/plugins_d.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/debug/samples_d.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/debug/tests_d.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/debug/quakemap_d.cfg
-    DESTINATION "${OGRE_CFG_INSTALL_PATH}${OGRE_DEBUG_PATH}" CONFIGURATIONS Debug
-  )
-  install(FILES 
-    ${CMAKE_BINARY_DIR}/inst/bin/release/resources.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/release/plugins.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/release/samples.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/release/tests.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/release/quakemap.cfg
-    DESTINATION "${OGRE_CFG_INSTALL_PATH}${OGRE_RELEASE_PATH}" CONFIGURATIONS Release None ""
-  )
-  install(FILES 
-    ${CMAKE_BINARY_DIR}/inst/bin/release/resources.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/release/plugins.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/release/samples.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/release/tests.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/release/quakemap.cfg
-	DESTINATION "${OGRE_CFG_INSTALL_PATH}${OGRE_RELWDBG_PATH}" CONFIGURATIONS RelWithDebInfo
-  )
-  install(FILES 
-    ${CMAKE_BINARY_DIR}/inst/bin/release/resources.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/release/plugins.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/release/samples.cfg
-	${CMAKE_BINARY_DIR}/inst/bin/release/tests.cfg
-    ${CMAKE_BINARY_DIR}/inst/bin/release/quakemap.cfg
-	DESTINATION "${OGRE_CFG_INSTALL_PATH}${OGRE_MINSIZE_PATH}" CONFIGURATIONS MinSizeRel
-  )
-
-  # Need a special case here for the iOS SDK, configuration is not being matched, could be a CMake bug.
-  if (OGRE_BUILD_PLATFORM_APPLE_IOS)
-    install(FILES 
-      ${CMAKE_BINARY_DIR}/inst/bin/release/resources.cfg
-      ${CMAKE_BINARY_DIR}/inst/bin/release/plugins.cfg
-      ${CMAKE_BINARY_DIR}/inst/bin/release/samples.cfg
-      ${CMAKE_BINARY_DIR}/inst/bin/release/tests.cfg
-      ${CMAKE_BINARY_DIR}/inst/bin/release/quakemap.cfg
-      DESTINATION "${OGRE_CFG_INSTALL_PATH}${OGRE_RELEASE_PATH}"
-    )
-  endif()
-
-endif (OGRE_INSTALL_SAMPLES OR OGRE_INSTALL_SAMPLES_SOURCE)
-
-
-# CREATE CONFIG FILES - BUILD DIR VERSIONS
-if (NOT OGRE_BUILD_PLATFORM_APPLE_IOS)
-  set(OGRE_MEDIA_DIR_REL "${OGRE_SOURCE_DIR}/Samples/Media")
-  set(OGRE_MEDIA_DIR_DBG "${OGRE_SOURCE_DIR}/Samples/Media")
-  set(OGRE_TEST_MEDIA_DIR_REL "${OGRE_SOURCE_DIR}/Tests/Media")
-  set(OGRE_TEST_MEDIA_DIR_DBG "${OGRE_SOURCE_DIR}/Tests/Media")
-else ()
-  # iOS needs to use relative paths in the config files
-  set(OGRE_MEDIA_DIR_REL "${OGRE_MEDIA_PATH}")
-  set(OGRE_MEDIA_DIR_DBG "${OGRE_MEDIA_PATH}")
-  set(OGRE_TEST_MEDIA_DIR_REL "${OGRE_MEDIA_PATH}")
-  set(OGRE_TEST_MEDIA_DIR_DBG "${OGRE_MEDIA_PATH}")
-endif ()
-
-if (WIN32)
-  set(OGRE_PLUGIN_DIR_REL ".")
-  set(OGRE_PLUGIN_DIR_DBG ".")
-  set(OGRE_SAMPLES_DIR_REL ".")
-  set(OGRE_SAMPLES_DIR_DBG ".")
-elseif (APPLE)
-  # not used on OS X, uses Resources
-  set(OGRE_PLUGIN_DIR_REL "")
-  set(OGRE_PLUGIN_DIR_DBG "")
-  set(OGRE_SAMPLES_DIR_REL "")
-  set(OGRE_SAMPLES_DIR_DBG "")
-elseif (UNIX)
-  set(OGRE_PLUGIN_DIR_REL "${CMAKE_BINARY_DIR}/lib")
-  set(OGRE_PLUGIN_DIR_DBG "${CMAKE_BINARY_DIR}/lib")
-  set(OGRE_SAMPLES_DIR_REL "${CMAKE_BINARY_DIR}/lib")
-  set(OGRE_SAMPLES_DIR_DBG "${CMAKE_BINARY_DIR}/lib")
 endif ()
 
 if (MSVC AND NOT NMAKE)

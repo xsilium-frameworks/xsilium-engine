@@ -161,7 +161,7 @@ if (WIN32 OR APPLE)
   if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     # We don't want to install in default system location, install is really for the SDK, so call it that
     set(CMAKE_INSTALL_PREFIX
-	  "${OGRE_BINARY_DIR}/sdk" CACHE PATH "OGRE install prefix" FORCE
+	  "${CMAKE_BINARY_DIR}/sdk" CACHE PATH "OGRE install prefix" FORCE
     )
   endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif(WIN32 OR APPLE)
