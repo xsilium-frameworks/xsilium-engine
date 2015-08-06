@@ -25,6 +25,12 @@ macro (configure_xsilium)
   		set(CMAKE_DEBUG_POSTFIX "_d")
 	endif ()
 
+	if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
+	# Fix x64 issues on Linux
+	if(OGRE_PLATFORM_X64 AND NOT APPLE)
+	add_definitions(-fPIC)
+	endif()
+	endif ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
 
 	# determine system endianess
 	if (MSVC OR ANDROID OR EMSCRIPTEN)
