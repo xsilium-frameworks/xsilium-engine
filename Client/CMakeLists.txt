@@ -80,6 +80,8 @@ CEGUIOgreRenderer-0
 ${DirectX_LIBRARY}
 )
 
+ADD_DEFINITIONS(-DBOOST_ALL_DYN_LINK)
+
 ogre_add_executable(${TargetName} WIN32 ${SRC})
 
 if (APPLE)
