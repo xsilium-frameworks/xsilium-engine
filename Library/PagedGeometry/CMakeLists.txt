@@ -83,6 +83,6 @@ set_target_properties(PagedGeometry PROPERTIES SOLUTION_FOLDER Dependencies)
 target_link_libraries(PagedGeometry ${OGRE_LIBRARIES} ${Boost_SYSTEM_LIBRARY})
 
 
-set(PagedGeometry_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/Include" CACHE PATH "" FORCE)
+set(PagedGeometry_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE PATH "" FORCE)
 
 set(PagedGeometry_LIBRARY "PagedGeometry" CACHE STRING "" FORCE)
