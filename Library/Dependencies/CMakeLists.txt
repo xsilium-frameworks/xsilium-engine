@@ -1,25 +1,19 @@
-# ---------------------------------------------------------
-cmake_minimum_required(VERSION 2.6)
-
-project(Dependencies)
-SET(Dependencies 1.0)
-
 include(NoWarn)
-subdirs(Source/ois)
-subdirs(Source/freetype)
-subdirs(Source/libiconv)
-subdirs(Source/ogg)
-subdirs(Source/openal-soft)
-subdirs(Source/rapidxml-1.13)
-subdirs(Source/vorbis)
-subdirs(Source/ZLib)
-
-if (XSILIUM_USE_STATIC_FREEIMAGE)
-	subdirs(Source/FreeImage) 
+add_subdirectory(Ois)
+add_subdirectory(Freetype)
+add_subdirectory(Ogg)
+add_subdirectory(Rapidxml)
+add_subdirectory(Vorbis)
+add_subdirectory(ZLib)
+add_subdirectory(FreeImage) 
+add_subdirectory(ZZipLib)
+#Windows
+if (WIN32)
+	add_subdirectory(Cg)
+	add_subdirectory(AMD_Quad_Buffer_SDK_v11)
+	add_subdirectory(NVAPI-R313-developer)
+else()
+	add_subdirectory(Iconv)
 endif()
 
-
-
-if (NOT XSILIUM_DISABLE_ZIP)
-	subdirs(Source/ZZipLib)
-endif()
+#add_subdirectory(Openal)

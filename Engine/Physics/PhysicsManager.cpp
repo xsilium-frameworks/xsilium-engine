@@ -107,14 +107,14 @@ btRigidBody * PhysicsManager::addDynamicBox(Ogre::SceneNode * node, float m)
 	return body;
 }
 
-btRigidBody * PhysicsManager::addRigidBody(btTransform transform, btCollisionShape * shape, btScalar mass, Ogre::SceneNode * node )
+btRigidBody * PhysicsManager::addRigidBody(btTransform * transform, btCollisionShape * shape, btScalar * mass, Ogre::SceneNode * node )
 {
 	mCollisionShapes.push_back(shape);
 	btVector3 localInertia(0, 0, 0);
 
-	shape->calculateLocalInertia(mass, localInertia);
-	PhysicsMotionState * motionState = new PhysicsMotionState(transform, node);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
+	shape->calculateLocalInertia(*mass, localInertia);
+	PhysicsMotionState * motionState = new PhysicsMotionState(*transform, node);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(*mass, motionState, shape, localInertia);
 	btRigidBody * body = new btRigidBody(rbInfo);
 
 	mWorld->addRigidBody(body);

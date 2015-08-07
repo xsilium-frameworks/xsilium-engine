@@ -102,6 +102,15 @@ namespace Ogre {
 #   define FORCEINLINE __inline
 #endif
 
+/* define OGRE_NORETURN macro */
+#if OGRE_COMPILER == OGRE_COMPILER_MSVC
+#	define OGRE_NORETURN __declspec(noreturn)
+#elif OGRE_COMPILER == OGRE_COMPILER_GNUC || OGRE_COMPILER == OGRE_COMPILER_CLANG
+#	define OGRE_NORETURN __attribute__((noreturn))
+#else
+#	define OGRE_NORETURN
+#endif
+
 /* Finds the current platform */
 #if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined(__ANDROID__)
 #	if defined(WINAPI_FAMILY)
@@ -160,7 +169,7 @@ namespace Ogre {
 #endif
 
     /* Find the arch type */
-#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__) || defined(__arm64__) || defined(_aarch64_) || defined(__mips64) || defined(__mips64_)
+#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__) || defined(__arm64__) || defined(__aarch64__) || defined(__mips64) || defined(__mips64_)
 #   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_64
 #else
 #   define OGRE_ARCH_TYPE OGRE_ARCHITECTURE_32

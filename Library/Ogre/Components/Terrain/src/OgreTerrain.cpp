@@ -77,7 +77,7 @@ namespace Ogre
 	// since 129^2 is the greatest power we can address in 16-bit index
 	const uint16 Terrain::TERRAIN_MAX_BATCH_SIZE = 129; 
 	const uint16 Terrain::WORKQUEUE_DERIVED_DATA_REQUEST = 1;
-	const uint64 Terrain::TERRAIN_GENERATE_MATERIAL_INTERVAL_MS = 400;
+	const uint64 Terrain::TERRAIN_GENERATE_MATERIAL_INTERVAL_MS = 100;
 	const uint16 Terrain::WORKQUEUE_GENERATE_MATERIAL_REQUEST = 2;
 	const size_t Terrain::LOD_MORPH_CUSTOM_PARAM = 1001;
 	const uint8 Terrain::DERIVED_DATA_DELTAS = 1;
@@ -287,7 +287,7 @@ namespace Ogre
 		load(0,true);
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE_IOS
-		DataStreamPtr stream = Root::getSingleton().createFileStream(macBundlePath() + "/../Documents/" + filename,
+        DataStreamPtr stream = Root::getSingleton().createFileStream(iOSDocumentsDirectory() + "/" + filename,
                                                                    _getDerivedResourceGroup(), true);
 #else
 		DataStreamPtr stream = Root::getSingleton().createFileStream(filename,
@@ -383,25 +383,27 @@ namespace Ogre
 
 		// other data
 		// normals
-		stream.writeChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
-		String normalDataType("normalmap");
-		stream.write(&normalDataType);
-		stream.write(&mSize);
-		if (mCpuTerrainNormalMap)
+		if (mNormalMapRequired)
 		{
-			// save from CPU data if it's there, it means GPU data was never created
-			stream.write((uint8*)mCpuTerrainNormalMap->data, mSize * mSize * 3);
+			stream.writeChunkBegin(TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION);
+			String normalDataType("normalmap");
+			stream.write(&normalDataType);
+			stream.write(&mSize);
+			if (mCpuTerrainNormalMap)
+			{
+				// save from CPU data if it's there, it means GPU data was never created
+				stream.write((uint8*)mCpuTerrainNormalMap->data, mSize * mSize * 3);
+			}
+			else
+			{
+				uint8* tmpData = (uint8*)OGRE_MALLOC(mSize * mSize * 3, MEMCATEGORY_GENERAL);
+				PixelBox dst(mSize, mSize, 1, PF_BYTE_RGB, tmpData);
+				mTerrainNormalMap->getBuffer()->blitToMemory(dst);
+				stream.write(tmpData, mSize * mSize * 3);
+				OGRE_FREE(tmpData, MEMCATEGORY_GENERAL);
+			}
+			stream.writeChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
 		}
-		else
-		{
-			uint8* tmpData = (uint8*)OGRE_MALLOC(mSize * mSize * 3, MEMCATEGORY_GENERAL);
-			PixelBox dst(mSize, mSize, 1, PF_BYTE_RGB, tmpData);
-			mTerrainNormalMap->getBuffer()->blitToMemory(dst);
-			stream.write(tmpData, mSize * mSize * 3);
-			OGRE_FREE(tmpData, MEMCATEGORY_GENERAL);
-		}
-		stream.writeChunkEnd(TERRAINDERIVEDDATA_CHUNK_ID);
-
 
 		// colourmap
 		if (mGlobalColourMapEnabled)

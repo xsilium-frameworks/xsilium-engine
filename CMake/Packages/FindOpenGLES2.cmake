@@ -23,8 +23,6 @@
 #  EGL_INCLUDE_DIR  - the EGL include directory
 #  EGL_LIBRARIES    - Link these to use EGL
 
-include(FindPkgMacros)
-
 IF (WIN32)
   IF (CYGWIN)
 

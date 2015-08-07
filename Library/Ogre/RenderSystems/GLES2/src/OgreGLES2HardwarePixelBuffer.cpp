@@ -109,6 +109,7 @@ namespace Ogre {
                         "GLES2HardwarePixelBuffer::blitFromMemory");
         }
 
+        bool freeScaledBuffer = false;
         PixelBox scaled;
 
         if (src.getWidth() != dstBox.getWidth() ||
@@ -121,12 +122,7 @@ namespace Ogre {
             scaled = mBuffer.getSubVolume(dstBox);
             Image::scale(src, scaled, Image::FILTER_BILINEAR);
         }
-#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE_IOS
-        else if ((src.format != mFormat) ||
-                 ((GLES2PixelUtil::getGLOriginFormat(src.format) == 0) && (src.format != PF_R8G8B8)))
-#else
         else if (GLES2PixelUtil::getGLOriginFormat(src.format) == 0)
-#endif
         {
             // Extents match, but format is not accepted as valid source format for GL
             // do conversion in temporary buffer
@@ -143,13 +139,14 @@ namespace Ogre {
 
             if (src.format == PF_R8G8B8)
             {
+                freeScaledBuffer = true;
                 size_t srcSize = PixelUtil::getMemorySize(src.getWidth(), src.getHeight(), src.getDepth(), src.format);
                 scaled.format = PF_B8G8R8;
                 scaled.data = new uint8[srcSize];
                 memcpy(scaled.data, src.data, srcSize);
                 PixelUtil::bulkPixelConversion(src, scaled);
             }
-#if OGRE_PLATFORM == OGRE_PLATFORM_NACL
+#if OGRE_PLATFORM != OGRE_PLATFORM_APPLE_IOS
             if (src.format == PF_A8R8G8B8)
             {
                 scaled.format = PF_A8B8G8R8;
@@ -160,6 +157,11 @@ namespace Ogre {
 
         upload(scaled, dstBox);
         freeBuffer();
+        
+        if (freeScaledBuffer)
+        {
+            delete[] (uint8*)scaled.data;
+        }
     }
 
     void GLES2HardwarePixelBuffer::blitToMemory(const Image::Box &srcBox, const PixelBox &dst)

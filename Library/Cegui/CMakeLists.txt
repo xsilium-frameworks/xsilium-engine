@@ -13,10 +13,21 @@ endif()
 include(CEGUIMacros)
 include(CMakeDependentOption)
 
+if (APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
+    set( CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "Build architectures for Mac OS X")
+endif()
+
+# default to Release build (it's what most people will use, except cegui devs)
+if (NOT CMAKE_BUILD_TYPE)
+    set( CMAKE_BUILD_TYPE Release CACHE STRING "Sets the configuration to build (Release, Debug, etc...)")
+endif()
+
 ################################################################################
 # Start of main Project definitions
 ################################################################################
 project(cegui)
+
+include_directories(${Boost_INCLUDE_DIRS})
 
 ################################################################################
 # Set up version information
@@ -32,7 +43,7 @@ set( CEGUI_VERSION ${CEGUI_VERSION_MAJOR}.${CEGUI_VERSION_MINOR}.${CEGUI_VERSION
 #
 # The following describes what these components are and how they are intended to
 # be managed.
-# 
+#
 #   - CURRENT: The binary interface version provided by the library.
 #   - REVISION: Revision of binary interface specified in CURRENT
 #   - AGE: Number of previous binary interfaces this library is compatible with.
@@ -55,22 +66,13 @@ set( CEGUI_ABI_VERSION ${CEGUI_SOVERSION}.${CEGUI_ABI_AGE}.${CEGUI_ABI_REVISION}
 ################################################################################
 # be sure to search the provided dependencies on Win32 and Mac OS X platforms
 if ((WIN32 OR APPLE) AND NOT CMAKE_PREFIX_PATH)
-    set (CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/dependencies" CACHE PATH "Path to dependencies")
+    set (CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/dependencies" CACHE PATH "Path to dependencies")
     # prefer the dylib deps in the dependencies over some other framework
     set (CMAKE_FIND_FRAMEWORK LAST)
 endif()
 
-
-file (STRINGS "${OGRE_SOURCE_DIR}/OgreMain/include/OgrePrerequisites.h" _CEGUIOGREVERSIONDEFINES REGEX ".*#define OGRE_VERSION_.*[0-9]+")
-
-    foreach (ver MAJOR MINOR PATCH)
-        set (CEGUI_FOUND_OGRE_VERSION_${ver} 0)
-        if ("${_CEGUIOGREVERSIONDEFINES}" MATCHES ".*#define OGRE_VERSION_${ver} ([0-9]+).*")
-            set (CEGUI_FOUND_OGRE_VERSION_${ver} "${CMAKE_MATCH_1}")
-        endif()
-    endforeach()
-
-
+find_package(Lua51)
+find_package(TOLUAPP)
 
 ################################################################################
 # Define the configurable options
@@ -110,18 +112,18 @@ option( CEGUI_HAS_PCRE_REGEX "Specifies whether to include PCRE regexp matching 
 option( CEGUI_HAS_MINIZIP_RESOURCE_PROVIDER "Specifies whether to build the minizip based resource provider" ${MINIZIP_FOUND} )
 option( CEGUI_HAS_DEFAULT_LOGGER "Specifies whether to build the DefaultLogger implementation" TRUE)
 
+option( CEGUI_BUILD_XMLPARSER_RAPIDXML "Specifies whether to build the RapidXML based XMLParser module" ${RAPIDXML_FOUND} )
 option( CEGUI_BUILD_XMLPARSER_EXPAT "Specifies whether to build the Expat based XMLParser module" ${EXPAT_FOUND} )
 option( CEGUI_BUILD_XMLPARSER_XERCES "Specifies whether to build the Xerces-C++ based XMLParser module" ${XERCESC_FOUND} )
 option( CEGUI_BUILD_XMLPARSER_LIBXML2 "Specifies whether to build the libxml2 based XMLParser module" ${LIBXML2_FOUND} )
-option( CEGUI_BUILD_XMLPARSER_RAPIDXML "Specifies whether to build the RapidXML based XMLParser module" ${RAPIDXML_FOUND} )
 option( CEGUI_BUILD_XMLPARSER_TINYXML "Specifies whether to build the TinyXML based XMLParser module" ${TINYXML_FOUND} )
 
 option( CEGUI_BUILD_IMAGECODEC_SILLY "Specifies whether to build the SILLY based ImageCodec module" ${SILLY_FOUND} )
 option( CEGUI_BUILD_IMAGECODEC_DEVIL "Specifies whether to build the DevIL based ImageCodec module" ${IL_FOUND} )
 option( CEGUI_BUILD_IMAGECODEC_FREEIMAGE "Specifies whether to build the FreeImage based ImageCodec module" ${FREEIMAGE_FOUND} )
 option( CEGUI_BUILD_IMAGECODEC_CORONA "Specifies whether to build the Corona based ImageCodec module" ${CORONA_FOUND} )
-option( CEGUI_BUILD_IMAGECODEC_STB "Specifies whether to build the STB based ImageCodec module" TRUE )
-option( CEGUI_BUILD_IMAGECODEC_TGA "Specifies whether to build the based TGA only ImageCodec module" TRUE )
+option( CEGUI_BUILD_IMAGECODEC_STB "Specifies whether to build the STB based ImageCodec module" FALSE )
+option( CEGUI_BUILD_IMAGECODEC_TGA "Specifies whether to build the based TGA only ImageCodec module" FALSE )
 option( CEGUI_BUILD_IMAGECODEC_PVR "Specifies whether to build the PVR only ImageCodec module" ${PVRTOOLS_FOUND} )
 
 cegui_dependent_option( CEGUI_BUILD_RENDERER_OPENGL "Specifies whether to build the OpenGL renderer module" "OPENGL_FOUND;GLM_FOUND;GLEW_FOUND" )
@@ -133,7 +135,7 @@ cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D9 "Specifies whether to bui
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D10 "Specifies whether to build the Direct3D 10 renderer module" "DIRECTXSDK_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 10" )
 cegui_dependent_option( CEGUI_BUILD_RENDERER_DIRECT3D11 "Specifies whether to build the Direct3D 11 renderer module" "DIRECTXSDK_FOUND;D3DX11EFFECTS_FOUND;NOT DIRECTXSDK_MAX_D3D LESS 11" )
 option( CEGUI_BUILD_RENDERER_NULL "Specifies whether to build the null renderer module" FALSE )
-option( CEGUI_BUILD_RENDERER_OPENGLES "Specifies whether to build the OpenGLES renderer module" FALSE )
+option( CEGUI_BUILD_RENDERER_OPENGLES "Specifies whether to build the OpenGLES renderer module" ${OPENGLES_FOUND} )
 
 cegui_dependent_option( CEGUI_BUILD_LUA_MODULE "Specifies whether to build the Lua based script module" "LUA51_FOUND;TOLUAPP_FOUND" )
 cegui_dependent_option( CEGUI_BUILD_LUA_GENERATOR "Specifies whether to build the custom tolua binding generator 'toluappcegui'" "LUA51_FOUND;TOLUAPP_FOUND" )
@@ -150,7 +152,69 @@ if (CEGUI_USE_MINIBIDI AND CEGUI_USE_FRIBIDI)
     message(SEND_ERROR "You may not enable both CEGUI_USE_FRIBIDI and CEGUI_USE_MINIBIDI. Please choose only one of these options.")
 endif()
 
-if (WIN32 OR APPLE)
+# Here we check if Ogre is built to use boost, and if yes, if the necessary dependencies are available and found by CEGUI
+set (CEGUI_OGRE_DEPS_AVAILABLE FALSE)
+set (CEGUI_OGRE_SAMPLES_EXTRALIBS)
+
+if (CEGUI_BUILD_RENDERER_OGRE AND OIS_FOUND)
+    if (NOT Boost_VERSION LESS 105000 AND "${OGRE_THREAD_PROVIDER}" STREQUAL "1") #Check additionally if we use boost as thread provider at all
+        if (Boost_SYSTEM_FOUND)
+            set (CEGUI_OGRE_SAMPLES_EXTRALIBS ${Boost_SYSTEM_LIBRARY})
+            set (CEGUI_OGRE_DEPS_AVAILABLE TRUE)
+        endif()
+    else()
+        set (CEGUI_OGRE_DEPS_AVAILABLE TRUE)
+    endif()
+endif()
+
+# Activates Renderers in the SampleBrowser. By default all the Renderers that are built are activated. Some of them might require extra dependencies to run in the SampleBrowser and thus will be disabled if the deps are not given
+if(CEGUI_BUILD_RENDERER_OPENGL OR CEGUI_BUILD_RENDERER_OPENGL3)
+    set (CEGUI_SAMPLES_RENDERER_OPENGL_ACTIVE TRUE)
+else()
+    set (CEGUI_SAMPLES_RENDERER_OPENGL_ACTIVE FALSE)
+endif()
+set (CEGUI_SAMPLES_RENDERER_OGRE_ACTIVE ${CEGUI_BUILD_RENDERER_OGRE})
+set (CEGUI_SAMPLES_RENDERER_IRRLICHT_ACTIVE ${CEGUI_BUILD_RENDERER_IRRLICHT})
+set (CEGUI_SAMPLES_RENDERER_DIRECT3D9_ACTIVE ${CEGUI_BUILD_RENDERER_DIRECT3D9})
+set (CEGUI_SAMPLES_RENDERER_DIRECT3D10_ACTIVE ${CEGUI_BUILD_RENDERER_DIRECT3D10})
+set (CEGUI_SAMPLES_RENDERER_DIRECT3D11_ACTIVE ${CEGUI_BUILD_RENDERER_DIRECT3D11})
+set (CEGUI_SAMPLES_RENDERER_DIRECTFB_ACTIVE ${CEGUI_BUILD_RENDERER_DIRECTFB})
+
+# Ogre and OpenGL have dependencies for the sample browser, if these are not available then the SampleBrowser won't support the respective Renderers and the option to choose them won't show up
+if (CEGUI_BUILD_RENDERER_OGRE AND NOT CEGUI_OGRE_DEPS_AVAILABLE)
+    if (NOT OIS_FOUND)
+        message(STATUS "Info: The OgreRenderer is disabled in the SampleBrowser because of missing dependencies (OIS not found). Please add the dependencies and run 'Configure' in CMake again, in case you want to run the SampleBrowser using OgreRenderer.")
+    else()
+        message(STATUS "Info: The OgreRenderer is disabled in the SampleBrowser because of missing dependencies (boost libraries). Please add the dependencies and run 'Configure' in CMake again, in case you want to run the SampleBrowser using OgreRenderer.")
+    endif()
+    set (CEGUI_SAMPLES_RENDERER_OGRE_ACTIVE FALSE)
+endif()
+
+if (CEGUI_SAMPLES_RENDERER_OPENGL_ACTIVE)
+    if(NOT GLFW_FOUND)
+        set (CEGUI_SAMPLES_RENDERER_OPENGL_ACTIVE FALSE)
+        message(STATUS "Info: The OpenGL- and/or OpenGL3 Renderers are disabled in the SampleBrowser because of missing dependencies (GLFW library).  Please add the GFLW dependency and run 'Configure' in CMake again, in case you want to run the SampleBrowser using the OpenGL or OpenGL3 Renderers.")
+    endif()
+endif()
+
+# If we use a Renderer then our samples should be ON by default
+if (CEGUI_SAMPLES_RENDERER_OPENGL_ACTIVE OR CEGUI_SAMPLES_RENDERER_OGRE_ACTIVE OR CEGUI_SAMPLES_RENDERER_IRRLICHT_ACTIVE OR CEGUI_SAMPLES_RENDERER_DIRECT3D9_ACTIVE OR CEGUI_SAMPLES_RENDERER_DIRECT3D10_ACTIVE OR CEGUI_SAMPLES_RENDERER_DIRECT3D11_ACTIVE OR CEGUI_SAMPLES_RENDERER_DIRECTFB_ACTIVE)
+    set (_CEGUI_SAMPLES_ENABLED_DEFAULT TRUE)
+else()
+    set (_CEGUI_SAMPLES_ENABLED_DEFAULT FALSE)
+endif()
+
+# We set the Samples to the default value
+option( CEGUI_SAMPLES_ENABLED "Specifies whether to build the CEGUI sample applications" ${_CEGUI_SAMPLES_ENABLED_DEFAULT} )
+
+if (UNIX AND NOT APPLE AND NOT WIN32)
+    option( CEGUI_SAMPLES_USE_GTK2 "Specifies whether the sample applications will make use of the GTK2 UI for renderer selection." FALSE )
+endif()
+
+# Option wether to build application templates; default off
+option(CEGUI_BUILD_APPLICATION_TEMPLATES "Specifies whether to build the application templates." TRUE)
+
+if (WIN32)
     set (CEGUI_BUILD_SUFFIX "_d" CACHE STRING "String holding a suffix appended to the name of output binaries (under CMake build, only used for debug).")
 else()
     set (CEGUI_BUILD_SUFFIX "" CACHE STRING "String holding a suffix appended to the name of output binaries (under CMake build, only used for debug).")
@@ -170,8 +234,18 @@ if (APPLE)
     option( CEGUI_APPLE_DYLIB_SET_VERSION_INFO "Specifies whether to set VERSION and SOVERSION for libraries." FALSE )
 endif()
 
-# regression and performance tests
-cmake_dependent_option( CEGUI_BUILD_TESTS "Specifies whether to build the regression and performance tests." FALSE "Boost_UNIT_TEST_FRAMEWORK_FOUND" FALSE )
+# unit tests
+cmake_dependent_option( CEGUI_BUILD_TESTS "Specifies whether to build the unit tests." FALSE "Boost_UNIT_TEST_FRAMEWORK_FOUND" FALSE )
+
+cmake_dependent_option( CEGUI_BUILD_PERFORMANCE_TESTS "Specifies whether to build the performance tests." FALSE "Boost_UNIT_TEST_FRAMEWORK_FOUND;Boost_TIMER_FOUND" FALSE )
+
+# sanity check on unit tests
+if ((CEGUI_BUILD_TESTS OR CEGUI_BUILD_PERFORMANCE_TESTS) AND NOT CEGUI_BUILD_RENDERER_NULL)
+    message(SEND_ERROR "The CEGUI tests (option CEGUI_BUILD_TESTS or CEGUI_BUILD_PERFORMANCE_TESTS) require the null renderer (CEGUI_BUILD_RENDERER_NULL). Please enable it.")
+endif()
+
+# datafiles tests
+cmake_dependent_option( CEGUI_BUILD_DATAFILES_TEST "Specifies whether to build the datafiles test." FALSE "PYTHONINTERP_FOUND" FALSE )
 
 option( CEGUI_INSTALL_WITH_RPATH "Specifies whether to install with RPATH set to the install location (TRUE) or with no RPATH set (FALSE)." FALSE )
 
@@ -221,6 +295,8 @@ set( CEGUI_PYCEGUI_OPENGL_RENDERER_LIBNAME PyCEGUIOpenGLRenderer )
 set( CEGUI_PYCEGUI_OGRE_RENDERER_LIBNAME PyCEGUIOgreRenderer )
 set( CEGUI_PYCEGUI_NULL_RENDERER_LIBNAME PyCEGUINullRenderer )
 
+# SampleFramework executable related names
+cegui_set_executable_name( CEGUI_SAMPLEFRAMEWORK_EXENAME CEGUISampleFramework )
 
 # Additional lib names
 cegui_set_library_name( CEGUI_COMMON_DIALOGS_LIBNAME CEGUICommonDialogs )
@@ -329,39 +405,6 @@ if (WIN32)
     endif()
 endif()
 
-# set build output locations
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-
-if (WIN32)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/RelWithDebInfo")
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Debug")
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Release")
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/MinSizeRel")
-	
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug")
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release")
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MinSizeRel")
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/RelWithDebInfo")
-	
-else()
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-	set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-	
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-	set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-endif()
-
 # set up install sub-directories
 if (CMAKE_SIZEOF_VOID_P EQUAL 8 AND EXISTS "${CMAKE_INSTALL_PREFIX}/lib64")
     set( CEGUI_LIB_INSTALL_DIR lib64 )
@@ -389,32 +432,38 @@ configure_file( cegui/include/CEGUI/ModuleConfig.h.in cegui/include/CEGUI/Module
 
 if (UNIX AND NOT APPLE)
     configure_file( cegui/CEGUI.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc @ONLY )
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+    install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
 
     if (CEGUI_BUILD_RENDERER_NULL)
         configure_file( cegui/CEGUI-NULL.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-NULL.pc @ONLY )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-NULL.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+        install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-NULL.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
     endif()
     if (CEGUI_BUILD_RENDERER_IRRLICHT)
         configure_file( cegui/CEGUI-IRRLICHT.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-IRRLICHT.pc @ONLY )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-IRRLICHT.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+        install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-IRRLICHT.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
     endif()
     if (CEGUI_BUILD_RENDERER_OGRE)
         configure_file( cegui/CEGUI-OGRE.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OGRE.pc @ONLY )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OGRE.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+        install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OGRE.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
     endif()
     if (CEGUI_BUILD_RENDERER_OPENGL)
         configure_file( cegui/CEGUI-OPENGL.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OPENGL.pc @ONLY )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OPENGL.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+        install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OPENGL.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
     endif()
     if (CEGUI_BUILD_RENDERER_OPENGL3)
         configure_file( cegui/CEGUI-OPENGL3.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OPENGL3.pc @ONLY )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OPENGL3.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+        install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-OPENGL3.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
     endif()
     if (CEGUI_BUILD_LUA_MODULE)
         configure_file( cegui/CEGUI-LUA.pc.in cegui/CEGUI-${CEGUI_VERSION_MAJOR}-LUA.pc @ONLY )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-LUA.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
+        install(FILES ${CMAKE_BINARY_DIR}/cegui/CEGUI-${CEGUI_VERSION_MAJOR}-LUA.pc DESTINATION ${CEGUI_PKGCONFIG_INSTALL_DIR})
     endif()
+endif()
+
+
+# Activating the default multi-processor build setting for all Visual Studio versions
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
 ################################################################################
@@ -429,3 +478,42 @@ add_subdirectory(cegui/src/ScriptModules)
 
 add_subdirectory(cegui/src/CommonDialogs)
 
+################################################################################
+# CPack (mostly for source tarballs)
+################################################################################
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Crazy Eddie's Gui System")
+set(CPACK_PACKAGE_VENDOR "CEGUI team")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+set(CPACK_PACKAGE_VERSION_MAJOR "${CEGUI_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${CEGUI_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${CEGUI_VERSION_PATCH}")
+
+set(CPACK_SOURCE_GENERATOR TBZ2 ZIP)
+
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "cegui-${CEGUI_VERSION}" CACHE INTERNAL "tarball basename")
+
+set(CPACK_SOURCE_IGNORE_FILES
+# repository history should not be in source tarballs
+"\\\\.hg.*"
+# most likely not needed in the tarball
+"cppcheck-output"
+"perform-cppcheck"
+
+# the rest is modelled after .hgignore
+"build/"
+"~$"
+"\\\\.orig$"
+
+"Thumbs.db"
+"\\\\.directory"
+
+"\\\\.kdev4"
+"\\\\.settings"
+"\\\\.project"
+"\\\\.cproject"
+"\\\\.pydevproject"
+"\\\\.ropeproject"
+)
+
+include(CPack)

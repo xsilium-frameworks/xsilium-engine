@@ -43,7 +43,7 @@ public:
 
 	btRigidBody * addDynamicBox(Ogre::SceneNode * node, float m = 1.0f);
 
-	btRigidBody * addRigidBody(btTransform transform, btCollisionShape * shape, btScalar mass, Ogre::SceneNode * node = NULL);
+	btRigidBody * addRigidBody(btTransform  * transform, btCollisionShape * shape, btScalar * mass, Ogre::SceneNode * node = NULL);
 
 	void addCollisionShape(btCollisionShape * colShape);
 

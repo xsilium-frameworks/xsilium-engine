@@ -26,7 +26,7 @@ namespace Engine {
  */
 class NetworkManager : public Singleton<NetworkManager> {
 
-	friend class Engine::Singleton<NetworkManager> ;
+	friend class Singleton<NetworkManager> ;
 
 
 public:

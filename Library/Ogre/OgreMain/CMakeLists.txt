@@ -82,12 +82,10 @@ elseif (WIN32)
       src/WIN32/OgreFileSystemLayer.cpp
       src/WIN32/OgreTimer.cpp
       src/WIN32/resource.h
-      src/WIN32/winres.h
     )  
     set(RESOURCE_FILES
       src/WIN32/resource.h
       src/WIN32/OgreWin32Resources.rc
-      src/WIN32/winres.h
     )
     source_group(Resources FILES ${RESOURCE_FILES})
     set(PLATFORM_HEADER_INSTALL "WIN32")
@@ -220,7 +218,7 @@ endif ()
 list(APPEND HEADER_FILES ${THREAD_HEADER_FILES})
 
 # Add needed definitions and nedmalloc include dir
-add_definitions(-DOGRE_NONCLIENT_BUILD -D_MT -D_USRDLL)
+add_definitions(-DOGRE_NONCLIENT_BUILD -DFREEIMAGE_EXPORTS -D_MT -D_USRDLL)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/nedmalloc)
 
 set(LIBRARIES ${PLATFORM_LIBS})
@@ -232,7 +230,7 @@ endif ()
 if (OGRE_CONFIG_ENABLE_FREEIMAGE)
   list(APPEND HEADER_FILES include/OgreFreeImageCodec.h)
   list(APPEND SOURCE_FILES src/OgreFreeImageCodec.cpp)
-  list(APPEND LIBRARIES    "${FreeImage_LIBRARIES}")
+  list(APPEND LIBRARIES    "${FREEIMAGE_LIBRARIES}")
 endif()
 
 if (OGRE_CONFIG_ENABLE_DDS)
@@ -272,13 +270,15 @@ endif ()
 
 set (TARGET_LINK_FLAGS "")
 
+
 # setup OgreMain target
+# OgreController.cpp always causes problems with Unity builds
 if (OGRE_BUILD_PLATFORM_WINRT OR OGRE_BUILD_PLATFORM_WINDOWS_PHONE)
 	# exclude OgreTimer.cpp from unity builds; causes problem
-	ogre_add_library(OgreMain ${OGRE_LIB_TYPE} ${PREC_HEADER} ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES} ${THREAD_HEADER_FILES} ${THREAD_SOURCE_FILES} SEPARATE "src/WIN32/OgreTimer.cpp")
+	ogre_add_library(OgreMain ${OGRE_LIB_TYPE} ${PREC_HEADER} ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES} ${THREAD_HEADER_FILES} ${THREAD_SOURCE_FILES} SEPARATE "${CMAKE_CURRENT_SOURCE_DIR}/src/WIN32/OgreTimer.cpp" SEPARATE "${CMAKE_CURRENT_SOURCE_DIR}/src/OgreController.cpp" )
 else ()
 	# exclude OgreAlignedAllocator.cpp from unity builds; causes problems on Linux
-	ogre_add_library(OgreMain ${OGRE_LIB_TYPE} ${PREC_HEADER} ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES} ${THREAD_HEADER_FILES} ${THREAD_SOURCE_FILES} SEPARATE "src/OgreAlignedAllocator.cpp")
+	ogre_add_library(OgreMain ${OGRE_LIB_TYPE} ${PREC_HEADER} ${HEADER_FILES} ${SOURCE_FILES} ${PLATFORM_HEADERS} ${PLATFORM_SOURCE_FILES} ${THREAD_HEADER_FILES} ${THREAD_SOURCE_FILES} SEPARATE "${CMAKE_CURRENT_SOURCE_DIR}/src/OgreAlignedAllocator.cpp" SEPARATE "${CMAKE_CURRENT_SOURCE_DIR}/src/OgreController.cpp")
 endif ()
 # In visual studio 2010 - 64 bit we get this error: "LINK : fatal error LNK1210: exceeded internal ILK size limit; link with /INCREMENTAL:NO"
 if(WIN32 AND MSVC10 AND CMAKE_CL_64)

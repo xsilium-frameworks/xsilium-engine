@@ -44,7 +44,6 @@ use_pkgconfig(Cg_PKGC Cg)
 
 findpkg_framework(Cg)
 
-
 find_path(Cg_INCLUDE_DIR NAMES cg.h HINTS ${Cg_FRAMEWORK_INCLUDES} ${Cg_INC_SEARCH_PATH} ${Cg_PKGC_INCLUDE_DIRS} PATH_SUFFIXES Cg)
 
 if (CMAKE_CL_64)
@@ -78,7 +77,6 @@ if (WIN32)
 	find_file(Cg_BINARY_DBG NAMES "cg.dll" HINTS ${Cg_BIN_SEARCH_PATH}
 	  PATH_SUFFIXES "" debug )
 endif()
-
 mark_as_advanced(Cg_BINARY_REL Cg_BINARY_DBG)
 
 findpkg_finish(Cg)

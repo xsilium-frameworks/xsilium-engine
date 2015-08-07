@@ -107,7 +107,8 @@ namespace Ogre {
 		mGpuProgramManager(0),
 		mGLSLProgramFactory(0),
 		mRTTManager(0),
-		mActiveTextureUnit(0)
+		mActiveTextureUnit(0),
+		mMaxBuiltInTextureAttribIndex(0)
 	{
 		size_t i;
 
@@ -2275,8 +2276,8 @@ namespace Ogre {
 		Real tanThetaX = tanThetaY * aspect; //Math::Tan(thetaX);
 		Real half_w = tanThetaX * nearPlane;
 		Real half_h = tanThetaY * nearPlane;
-		Real iw = 1.0 / half_w;
-		Real ih = 1.0 / half_h;
+		Real iw = 1.0f / half_w;
+		Real ih = 1.0f / half_h;
 		Real q;
 		if (farPlane == 0)
 		{
@@ -2284,7 +2285,7 @@ namespace Ogre {
 		}
 		else
 		{
-			q = 2.0 / (farPlane - nearPlane);
+			q = 2.0f / (farPlane - nearPlane);
 		}
 		dest = Matrix4::ZERO;
 		dest[0][0] = iw;
@@ -2830,6 +2831,7 @@ GL_RGB_SCALE : GL_ALPHA_SCALE, 1);
 		// Call super class
 		RenderSystem::_render(op);
 
+	 	mMaxBuiltInTextureAttribIndex = 0;
 	 	if ( ! mEnableFixedPipeline && !mRealCapabilities->hasCapability(RSC_FIXED_FUNCTION)
 			 && 
 			 (
@@ -2993,7 +2995,8 @@ GL_RGB_SCALE : GL_ALPHA_SCALE, 1);
 		// only valid up to GL_MAX_TEXTURE_UNITS, which is recorded in mFixedFunctionTextureUnits
 		if (multitexturing)
         {
-            for (unsigned short i = 0; i < std::min((unsigned short)mDisabledTexUnitsFrom, mFixedFunctionTextureUnits); i++)
+            unsigned short mNumEnabledTextures = std::max(std::min((unsigned short)mDisabledTexUnitsFrom, mFixedFunctionTextureUnits), (unsigned short)(mMaxBuiltInTextureAttribIndex + 1));		
+            for (unsigned short i = 0; i < mNumEnabledTextures; i++)
             {
                 // No need to disable for texture units that weren't used
                 glClientActiveTextureARB(GL_TEXTURE0 + i);
@@ -3279,6 +3282,9 @@ GL_RGB_SCALE : GL_ALPHA_SCALE, 1);
 	{
 		bool colourMask = !mColourWrite[0] || !mColourWrite[1] 
 		|| !mColourWrite[2] || !mColourWrite[3]; 
+
+        if(mCurrentContext)
+			mCurrentContext->setCurrent();
 
 		GLbitfield flags = 0;
 		if (buffers & FBT_COLOUR)
@@ -3787,6 +3793,8 @@ GL_RGB_SCALE : GL_ALPHA_SCALE, 1);
                         static_cast<GLsizei>(vertexBuffer->getVertexSize()), 
                         pBufferData);
                     glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+                    if (elem.getIndex() > mMaxBuiltInTextureAttribIndex)
+                        mMaxBuiltInTextureAttribIndex = elem.getIndex();
                 }
                 else
                 {

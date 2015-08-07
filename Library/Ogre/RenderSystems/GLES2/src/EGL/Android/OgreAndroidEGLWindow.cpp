@@ -236,6 +236,8 @@ namespace Ogre {
 
     void AndroidEGLWindow::_destroyInternalResources()
     {
+        mContext->setCurrent();
+        
         GLES2RenderSystem::getResourceManager()->notifyOnContextLost();
         mContext->_destroyInternalResources();
         
@@ -265,7 +267,6 @@ namespace Ogre {
         };
         
         int maxAttribs[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
 			EGL_BUFFER_SIZE, mMaxBufferSize,
             EGL_DEPTH_SIZE, mMaxDepthSize,
             EGL_STENCIL_SIZE, mMaxStencilSize,
@@ -286,7 +287,6 @@ namespace Ogre {
 					EGL_NONE
 				};
 				int CSAAmaxAttribs[] = {
-					EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
 					EGL_BUFFER_SIZE, mMaxBufferSize,
 					EGL_DEPTH_SIZE, mMaxDepthSize,
 					EGL_STENCIL_SIZE, mMaxStencilSize,
@@ -316,7 +316,6 @@ namespace Ogre {
 					EGL_NONE
 				};
 				int MSAAmaxAttribs[] = {
-					EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
 					EGL_BUFFER_SIZE, mMaxBufferSize,
 					EGL_DEPTH_SIZE, mMaxDepthSize,
 					EGL_STENCIL_SIZE, mMaxStencilSize,
@@ -357,9 +356,7 @@ namespace Ogre {
             mClosed = false;
             
             mContext->_createInternalResources(mEglDisplay, mEglConfig, mEglSurface, NULL);
-            mContext->setCurrent();
-            
-            windowMovedOrResized();
+
             static_cast<GLES2RenderSystem*>(Ogre::Root::getSingletonPtr()->getRenderSystem())->resetRenderer(this);
         }
     }

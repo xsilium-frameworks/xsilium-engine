@@ -7,37 +7,36 @@
 [Popular]
 
 [General]
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/particle
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Models
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Materials
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Scripts
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/plants
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/terrain
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/textures
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/textures/diffusespecular
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Terrain/textures/normalheight
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/particle
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Models
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Materials
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Terrain
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Scripts
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Terrain/plants
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Terrain/terrain
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Terrain/textures
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Terrain/textures/diffusespecular
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Terrain/textures/normalheight
 
 [SkyX]
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/SkyX
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/SkyX
 
 [Hydrax]
-FileSystem=@OGRE_MEDIA_DIR_DBG@/Media/Hydrax
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Hydrax
 
 [Perso]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../Media/Perso
+FileSystem=@OGRE_MEDIA_DIR_REL@/Media/Perso
 
 [Imagesets]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/imagesets
+FileSystem=@OGRE_MEDIA_DIR_REL@/datafiles/imagesets
 [Fonts]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/fonts
+FileSystem=@OGRE_MEDIA_DIR_REL@/datafiles/fonts
 [Schemes]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/schemes
+FileSystem=@OGRE_MEDIA_DIR_REL@/datafiles/schemes
 [LookNFeels]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/looknfeel
+FileSystem=@OGRE_MEDIA_DIR_REL@/datafiles/looknfeel
 [Layouts]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/layouts
+FileSystem=@OGRE_MEDIA_DIR_REL@/datafiles/layouts
 [schemas]
-FileSystem=@OGRE_MEDIA_DIR_DBG@../datafiles/xml_schemas
-
+FileSystem=@OGRE_MEDIA_DIR_REL@/datafiles/xml_schemas

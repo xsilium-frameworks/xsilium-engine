@@ -2491,6 +2491,8 @@ void SceneManager::renderModulativeStencilShadowedQueueGroupObjects(
         renderObjects(pPriorityGrp->getSolidsBasic(), om, true, true);
     }
 
+    // Override auto param ambient to force vertex programs to use shadow colour
+    mAutoParamDataSource->setAmbientLightColour(mShadowColour);
 
     // Iterate over lights, render all volumes to stencil
     LightList::const_iterator li, liend;
@@ -2518,6 +2520,9 @@ void SceneManager::renderModulativeStencilShadowedQueueGroupObjects(
         }
 
     }// for each light
+
+    // Restore ambient light
+    mAutoParamDataSource->setAmbientLightColour(mAmbientLight);
 
     // Iterate again - variable name changed to appease gcc.
     RenderQueueGroup::PriorityMapIterator groupIt2 = pGroup->getIterator();
@@ -4437,6 +4442,7 @@ void SceneManager::findLightsAffectingFrustum(const Camera* camera)
 				lightInfo.light = l;
 				lightInfo.type = l->getType();
 				lightInfo.lightMask = l->getLightMask();
+				lightInfo.castsShadows = l->getCastShadows();
 				if (lightInfo.type == Light::LT_DIRECTIONAL)
 				{
 					// Always visible
@@ -4778,6 +4784,26 @@ void SceneManager::initShadowVolumeMaterials(void)
             t->setColourOperationEx(LBX_MODULATE, LBS_MANUAL, LBS_CURRENT, 
                 mShadowColour);
             mShadowModulativePass->setCullingMode(CULL_NONE);
+
+            if(!mDestRenderSystem->getCapabilities()->hasCapability(RSC_FIXED_FUNCTION))
+            {
+                try
+                {
+                    mShadowModulativePass->setVertexProgram("Ogre/StencilShadowModulationPassVs");
+                    GpuProgramParametersSharedPtr vParams = mShadowModulativePass->getVertexProgramParameters();
+                    vParams->setAutoConstant(0, GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+
+                    mShadowModulativePass->setFragmentProgram("Ogre/StencilShadowModulationPassPs");
+                    GpuProgramParametersSharedPtr fParams = mShadowModulativePass->getFragmentProgramParameters();
+                    fParams->setAutoConstant(0, GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
+
+                    matModStencil->compile();
+                }
+                catch(Exception&)
+                {
+                    // TODO: implement programs for GLES2 and remove this try/catch block
+                }
+            }
         }
         else
         {
