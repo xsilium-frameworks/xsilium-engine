@@ -136,8 +136,6 @@ if (APPLE)
 		)
 
 	# now plugins
-	add_custom_command(TARGET ${TargetName} POST_BUILD
-		COMMAND mkdir ARGS -p ${OGRE_SAMPLE_CONTENTS_PATH}/Plugins)
 
     set(FRAMEWORKS 
     	OgreOverlay
@@ -146,15 +144,6 @@ if (APPLE)
         OgreRTShaderSystem
         OgreTerrain
         OgreVolume
-    )
-
-    foreach(FWK ${FRAMEWORKS})
-	add_custom_command(TARGET ${TargetName} POST_BUILD
-        COMMAND ARGS if [ -d ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ]\; then ln -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/${FWK}.framework\; fi
-		)
-    endforeach(FWK)
-    
-    set(PLUGINS 
         Plugin_BSPSceneManager
         Plugin_CgProgramManager
         Plugin_OctreeSceneManager
@@ -165,11 +154,11 @@ if (APPLE)
         RenderSystem_GL3Plus
     )
 
-    foreach(PGS ${PLUGINS})
+    foreach(FWK ${FRAMEWORKS})
 	add_custom_command(TARGET ${TargetName} POST_BUILD
-        COMMAND ARGS if [ -d ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${PGS}.framework ]\; then ln -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${PGS}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Plugins/${PGS}.framework\; fi
+        COMMAND ARGS if [ -d ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ]\; then ln -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/${FWK}.framework ${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/${FWK}.framework\; fi
 		)
-    endforeach(PGS)
+    endforeach(FWK)
 
     add_custom_command(TARGET ${TargetName} POST_BUILD
 		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIRapidXMLParser.dylib
