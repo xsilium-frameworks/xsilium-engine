@@ -1,7 +1,7 @@
 /*
  * \file KeyboardMap.cpp
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -21,35 +21,27 @@ KeyboardMap::~KeyboardMap() {
 void KeyboardMap::load(const std::string& file)
 {
 	fileName = file ;
+
 	std::ifstream fichierConfKey(file.c_str());
 	if (fichierConfKey.fail())
 	{
-		printf("Fichier %s non trouve chargement de la configuration par defaut  \n",fileName.c_str());
+		LogManager::getInstance()->setLogMessage("Fichier " + fileName + "non trouve chargement de la configuration par defaut" , AVERTISSEMENT);
 		loadDefault();
 		saveKeyboardMap();
 		return;
 	}
 
-
-
-	fichierConfKey.seekg(0, std::ios::end);
-	size_t length = fichierConfKey.tellg();
-	fichierConfKey.seekg(0, std::ios::beg);
-	char* buffer = new char[length + 1];
-	fichierConfKey.read(buffer, length);
-	buffer[length] = '\0';
-
-	fichierConfKey.close();
+	rapidxml::file<> xmlFile(fichierConfKey); // Default template is char
 
 	rapidxml::xml_document<> doc;
-	doc.parse<0>(buffer);
-
-	delete [] buffer;
+	doc.parse<0>(xmlFile.data());
 
 	for (rapidxml::xml_node<>* n = doc.first_node("KEYBOARD")->first_node(); n; n = n->next_sibling())
 	{
 		KeyboardBinding[n->name()] = static_cast<OIS::KeyCode>(strtol(n->value(), NULL, 0));
 	}
+
+	fichierConfKey.close();
 }
 
 const char * KeyboardMap::checkKey(OIS::KeyCode key)
@@ -125,7 +117,7 @@ void KeyboardMap::loadDefault()
 	KeyboardBinding["GAUCHE"] = static_cast<int>(0x1e);
 	KeyboardBinding["RECULER"] = static_cast<int>(0x1f);
 	KeyboardBinding["DEGAINER"] = static_cast<int>(0x2c);
-    KeyboardBinding["SAUTE"] = static_cast<int>(0x39);
+	KeyboardBinding["SAUTE"] = static_cast<int>(0x39);
 }
 
 } /* namespace Engine */

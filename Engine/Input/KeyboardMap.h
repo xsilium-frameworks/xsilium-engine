@@ -1,7 +1,7 @@
 /*
  * \file KeyboardMap.h
  *
- *  Created on: \date 4 aožt 2014
+ *  Created on: \date 4 aoï¿½t 2014
  *      Author: \author joda
  *  \brief :
  */
@@ -16,8 +16,10 @@
 #include <sstream>
 #include <fstream>
 
-#include "rapidxml.hpp"
-#include "rapidxml_print.hpp"
+#include <rapidxml_utils.hpp>
+#include <rapidxml_print.hpp>
+
+#include "Logging/LogManager.h"
 
 namespace Engine {
 
