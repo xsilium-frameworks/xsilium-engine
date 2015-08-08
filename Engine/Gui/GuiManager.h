@@ -1,10 +1,10 @@
 /*
-* \file GuiManager.h
-*
-*  Created on: \date 26 août 2014
-*      Author: \author xelfe joda
-*  \brief : Fichier d'en-tête du gestionnaire d'interface GUI
-*/
+ * \file GuiManager.h
+ *
+ *  Created on: \date 26 aoï¿½t 2014
+ *      Author: \author xelfe joda
+ *  \brief : Fichier d'en-tï¿½te du gestionnaire d'interface GUI
+ */
 #ifndef GUIMANAGER_H_
 #define GUIMANAGER_H_
 
@@ -12,139 +12,151 @@
 #define interface QQInterface
 #endif
 
-#include "Engine/Engine.h"
 #include "Gui/GuiInput.h"
 #include "Gui/GuiListenner.h"
+#include <Ogre.h>
+#include <Event/EventListener.h>
 
 
 /*!
-* \namespace Engine
-* \brief Espace de nommage regroupant les dfférentes classes du moteur.
-*/
+ * \namespace Engine
+ * \brief Espace de nommage regroupant les dffï¿½rentes classes du moteur.
+ */
 namespace Engine {
 
 class GuiListenner;
 
+/*!
+ * \class GuiManager
+ * \brief Classe gestionnaire d'interface GUI.
+ *
+ * Classe permettant de gï¿½rer les diffï¿½rentes interface graphique.
+ *
+ */
+class GuiManager: public Singleton<GuiManager>,
+public EventListener,
+public Ogre::FrameListener {
+
+	friend class Singleton<GuiManager> ;
+
+public:
 	/*!
-	* \class GuiManager
-	* \brief Classe gestionnaire d'interface GUI.
-	*
-	* Classe permettant de gèrer les différentes interface graphique.
-	*
-	*/
-	class GuiManager : public Singleton<GuiManager>, public EngineListenner , public Ogre::FrameListener {
+	 *  \brief Constructeur.
+	 *
+	 *  Constructeur de la classe GuiManager.
+	 *
+	 */
+	GuiManager();
 
-		friend class Singleton<GuiManager>;
+	/*!
+	 *  \brief Destructeur.
+	 *
+	 *  Destructeur abstrait de la classe GuiManager.
+	 *
+	 */
+	virtual ~GuiManager();
 
-	public:
-		/*!
-		*  \brief Constructeur.
-		*
-		*  Constructeur de la classe GuiManager.
-		*
-		*/
-		GuiManager();
+	/*!
+	 * \brief Application d'ï¿½vennements.
+	 *
+	 * initialisation du guiManager
+	 *
+	 */
+	void init(Ogre::Root* m_pRoot);
 
-		/*!
-		*  \brief Destructeur.
-		*
-		*  Destructeur abstrait de la classe GuiManager.
-		*
-		*/
-		virtual ~GuiManager();
+	/*!
+	 * \brief Application d'ï¿½vennements.
+	 *
+	 * Procï¿½de ï¿½ l'ï¿½vennement si il existe
+	 *
+	 * \param event Instance d'ï¿½vennement passï¿½ en paramï¿½tre par le client
+	 *
+	 */
+	void processEvent(Event* event);
 
-		/*!
-		* \brief Application d'évennements.
-		*
-		* Procède à l'évennement si il existe
-		*
-		* \param event Instance d'évennement passé en paramètre par le client
-		*
-		*/
-		void processEvent(Event* event);
+	/*!
+	 * \brief Methode avant le chargement d'un frame
+	 *
+	 * \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
+	 *
+	 * \return true si appellï¿½
+	 */
+	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 
-		/*!
-		* \brief Methode avant le chargement d'un frame
-		*
-		* \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
-		*
-		* \return true si appellé
-		*/
-		bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
+	/*!
+	 * \brief Methode aprï¿½s le chargement de tous les frames
+	 *
+	 * Mï¿½thode qui est chargï¿½ quand tous les ï¿½vennements par frame ï¿½ ï¿½tï¿½ appeller.
+	 *
+	 * \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
+	 *
+	 * \return true si appellï¿½
+	 */
+	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 
-		/*!
-		* \brief Methode après le chargement de tous les frames
-		*
-		* Méthode qui est chargé quand tous les évennements par frame à été appeller.
-		* 
-		* \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
-		*
-		* \return true si appellé
-		*/
-		bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
+	/*!
+	 * \brief Methode aprï¿½s le chargement d'un frame
+	 *
+	 * \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
+	 *
+	 * \return true si appellï¿½
+	 */
+	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
 
-		/*!
-		* \brief Methode après le chargement d'un frame
-		*
-		* \praram m_FrameEvent Instance de la constante Ogre::FrameEvent
-		*
-		* \return true si appellé
-		*/
-		bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
+	/*!
+	 * \brief Methode de configuration du theme GUI
+	 *
+	 * \praram event Instance d'evennement passï¿½ en paramï¿½tre par le client
+	 *
+	 */
+	void setTheme(Event* event);
 
-		/*!
-		* \brief Methode de configuration du theme GUI
-		*
-		* \praram event Instance d'evennement passé en paramètre par le client
-		*
-		*/
-		void setTheme(Event* event);
+	/*!
+	 * \brief Methode de configuration du theme GUI
+	 *
+	 * \praram
+	 *
+	 */
+	void setTheme(Ogre::String theme);
 
-		/*!
-		* \brief Methode de configuration du theme GUI
-		*
-		* \praram
-		*
-		*/
-		void setTheme(Ogre::String theme);
+	/*!
+	 * \brief Methode accesseur au nom du theme
+	 *
+	 * \return string nom du theme.
+	 *
+	 */
+	std::string getTheme();
 
-		/*!
-		* \brief Methode accesseur au nom du theme
-		*
-		* \return string nom du theme.
-		*
-		*/
-		std::string getTheme();
+	/*!
+	 * \brief Mï¿½thode de chargement de l'interface principale GUI
+	 *
+	 */
+	void interfacePrincipal();
 
-		/*!
-		* \brief Méthode de chargement de l'interface principale GUI
-		*
-		*/
-		void interfacePrincipal();
+	/*!
+	 * \brief Mï¿½thode de destruction de l'interface principale GUI
+	 *
+	 */
+	void deleteInterfacePrincipal();
 
-		/*!
-		* \brief Méthode de destruction de l'interface principale GUI
-		*
-		*/
-		void deleteInterfacePrincipal();
+	/*!
+	 * \brief Mï¿½thode de destruction de l'interface principale GUI
+	 *
+	 */
+	void loadRessource();
 
-		/*!
-		* \brief Méthode de destruction de l'interface principale GUI
-		*
-		*/
-		void loadRessource();
+	void addGuiListenner(GuiListenner* guiListenner);
+	void removeGuiListenner(GuiListenner* guiListenner);
 
-		void addGuiListenner(GuiListenner* guiListenner);
-		void removeGuiListenner(GuiListenner* guiListenner);
+private:
+	Ogre::String theme; /*!< Nom du theme configurï¿½. */
+	GuiInput* guiInput;
+	bool interfacePrincipale; /*!< Rï¿½sultat dï¿½signant si interfacePrincpale() ï¿½ ï¿½tï¿½ initialisï¿½. */
+	CEGUI::OgreRenderer * mRenderer;
+	Ogre::Root* m_pRoot;
 
-	private:
-		Ogre::String theme; /*!< Nom du theme configuré. */
-		GuiInput* guiInput;
-		bool interfacePrincipale; /*!< Résultat désignant si interfacePrincpale() à été initialisé. */
-		CEGUI::OgreRenderer * mRenderer;
-
-		std::vector<GuiListenner*> listOfInterface;
-	};
+	std::vector<GuiListenner*> listOfInterface;
+};
 
 } /* namespace Engine */
 

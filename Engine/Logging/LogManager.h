@@ -8,9 +8,9 @@
 #ifndef LOGMANAGER_H_
 #define LOGMANAGER_H_
 
-#include "Engine/Engine.h"
 #include <OgreLogManager.h>
 #include <CEGUI/Logger.h>
+#include <Singleton/Singleton.h>
 
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -88,7 +88,7 @@ namespace Engine {
 		*
 		*  \param[in] fileName : String de nom du fichier de log
 		*/
-		void initLog(Ogre::String fileName);
+		void initLog(std::string mResourcePath,std::string fileName);
 
 		/*!
 		*  \brief M�thode qui configure un message vers LogManager

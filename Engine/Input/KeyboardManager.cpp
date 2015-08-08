@@ -11,9 +11,6 @@ namespace Engine {
 
 KeyboardManager::KeyboardManager() {
 	keyboardMap = new KeyboardMap();
-
-	keyboardMap->load(*Engine::getInstance()->getResourcePath() + "configKey.xml");
-
 	InputManager::getInstance()->addKeyListener(this,"KeyboardManager");
 
 }
@@ -24,6 +21,11 @@ KeyboardManager::~KeyboardManager() {
 	delete keyboardMap;
 }
 
+void KeyboardManager::load(std::string mResourcePath,std::string configFile)
+{
+	keyboardMap->load(mResourcePath + configFile);
+}
+
 bool KeyboardManager::keyPressed( const OIS::KeyEvent &e )
 {
 	Event event ;
@@ -31,7 +33,7 @@ bool KeyboardManager::keyPressed( const OIS::KeyEvent &e )
 	event.setProperty("Fonction",keyboardMap->checkKey(e.key));
 	event.setProperty("Action","1");
 
-	Engine::getInstance()->addEvent(event);
+	EventManager::getInstance()->addEvent(event);
 	return true;
 }
 bool KeyboardManager::keyReleased( const OIS::KeyEvent &e )
@@ -41,17 +43,8 @@ bool KeyboardManager::keyReleased( const OIS::KeyEvent &e )
 	event.setProperty("Fonction",keyboardMap->checkKey(e.key));
 	event.setProperty("Action","0");
 
-	Engine::getInstance()->addEvent(event);
+	EventManager::getInstance()->addEvent(event);
 	return true;
-}
-
-void KeyboardManager::processEvent(Event * event)
-{
-
-}
-void KeyboardManager::exit()
-{
-
 }
 
 } /* namespace Engine */

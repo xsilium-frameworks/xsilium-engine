@@ -18,7 +18,7 @@ KeyboardMap::~KeyboardMap() {
 	// TODO Auto-generated destructor stub
 }
 
-void KeyboardMap::load(const std::string& file)
+void KeyboardMap::load(std::string file)
 {
 	fileName = file ;
 

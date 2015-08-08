@@ -32,7 +32,7 @@ public:
 	KeyboardMap();
 	virtual ~KeyboardMap();
 
-	void load(const std::string& file);
+	void load(std::string file);
 
 	void loadDefault();
 

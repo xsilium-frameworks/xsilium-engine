@@ -11,18 +11,15 @@ namespace Engine {
 
 GuiManager::GuiManager() {
 	interfacePrincipale = false;
+	mRenderer = 0;
+	guiInput = 0;
+	m_pRoot = 0;
 
-	Engine::getInstance()->addListenner(this);
-	Engine::getInstance()->getRoot()->addFrameListener(this);
-
-	mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-
-	guiInput = new GuiInput();
-	loadRessource();
+	EventManager::getInstance()->addListenneur(this);
 }
 
 GuiManager::~GuiManager() {
-	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	m_pRoot->removeFrameListener(this);
 	std::vector<GuiListenner*>::iterator guiIterator;
 
 	for (guiIterator = listOfInterface.begin() ; guiIterator != listOfInterface.end(); ++guiIterator)
@@ -33,6 +30,17 @@ GuiManager::~GuiManager() {
 
 	delete guiInput;
 	CEGUI::WindowManager::getSingleton().destroyAllWindows();
+}
+
+void GuiManager::init(Ogre::Root* m_pRoot)
+{
+	this->m_pRoot = m_pRoot ;
+	m_pRoot->addFrameListener(this);
+
+	mRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+
+	guiInput = new GuiInput();
+	loadRessource();
 }
 
 void GuiManager::processEvent(Event* event)
@@ -56,12 +64,6 @@ bool GuiManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 }
 bool GuiManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
-	if(!isEmpty())
-	{
-		Event* event = getEvent();
-		processEvent(event);
-		deleteEvent();
-	}
 	return true;
 }
 bool GuiManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
@@ -147,13 +149,13 @@ void GuiManager::removeGuiListenner(GuiListenner* guiListenner)
 {
 	std::vector<GuiListenner*>::iterator guiIterator;
 
-		for (guiIterator = listOfInterface.begin() ; guiIterator != listOfInterface.end(); )
-		{
-			if( (*guiIterator) == guiListenner)
-				guiIterator = listOfInterface.erase(guiIterator);
-			else
-				++guiIterator;
-		}
+	for (guiIterator = listOfInterface.begin() ; guiIterator != listOfInterface.end(); )
+	{
+		if( (*guiIterator) == guiListenner)
+			guiIterator = listOfInterface.erase(guiIterator);
+		else
+			++guiIterator;
+	}
 }
 
 

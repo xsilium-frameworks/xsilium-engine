@@ -102,7 +102,7 @@ void GuiChat::sendMessage()
 	Event event ;
 	event.setProperty("CHAT","1");
 	event.setProperty("Message",chatWindow->getChild("Editbox")->getText().c_str());
-	Engine::Engine::getInstance()->addEvent(event);
+	Engine::EventManager::getInstance()->addEvent(event);
 }
 
 void GuiChat::historiqueHaut()

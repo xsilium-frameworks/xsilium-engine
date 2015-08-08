@@ -27,11 +27,11 @@ namespace Engine {
 
 	}
 
-	void LogManager::initLog(Ogre::String fileName) {
+	void LogManager::initLog(std::string mResourcePath,std::string fileName) {
 
 		// Definition et creation des attributs du log
 		boost::log::add_file_log(
-			boost::log::keywords::file_name = *Engine::getInstance()->getResourcePath() + fileName + "_%N.log",
+			boost::log::keywords::file_name = mResourcePath + fileName + "_%N.log",
 			// rotation des logs a chaque 1 mo
 			boost::log::keywords::rotation_size = 1 * 1024 * 1024,
 			// rotation des logs a minuit

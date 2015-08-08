@@ -127,9 +127,9 @@ bool GuiAuth::cancelButton(const CEGUI::EventArgs &e)
 	if (senderID == "btnQuitter")
 	{
 		Event event ;
-		event.setProperty("GUI","1");
+		event.setProperty("AUTH","1");
 		event.setProperty("Fonction","QUIT");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	if (senderID == "ButtonAnnuler")
 	{
@@ -163,7 +163,7 @@ void GuiAuth::validationAuth()
 	event.setProperty("AUTH","1");
 	event.setProperty("Login",loginWindow->getChild("edtUsername")->getText().c_str());
 	event.setProperty("PassWord",loginWindow->getChild("edtPassword")->getText().c_str());
-	Engine::Engine::getInstance()->addEvent(event);
+	Engine::EventManager::getInstance()->addEvent(event);
 	loginWindow->getChild("edtUsername")->setText("");
 	loginWindow->getChild("edtPassword")->setText("");
 

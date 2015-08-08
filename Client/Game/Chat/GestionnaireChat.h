@@ -11,6 +11,7 @@
 
 #include <Network/NetworkManager.h>
 #include "Gui/GuiChat.h"
+#include <Event/EventManager.h>
 
 #include "Compte/Compte.h"
 

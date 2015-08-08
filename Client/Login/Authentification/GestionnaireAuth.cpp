@@ -39,7 +39,7 @@ bool GestionnaireAuth::initNetwork()
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Le serveur est plein desoler");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 		return false;
 	}
 	if( messageErreur == 2)
@@ -48,7 +48,7 @@ bool GestionnaireAuth::initNetwork()
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Impossible de se connecter au serveur");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 		return false;
 	}
 	return true;
@@ -65,7 +65,7 @@ void GestionnaireAuth::processPacket(Engine::MessagePacket * messagePacket)
 		event.setProperty("AUTH","1");
 		event.setProperty("Progression","3");
 		event.setProperty("ProgressionTotal","4");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 		handleEtapeDeux(messagePacket);
 	}
 	break;
@@ -75,12 +75,12 @@ void GestionnaireAuth::processPacket(Engine::MessagePacket * messagePacket)
 		event.setProperty("AUTH","1");
 		event.setProperty("Progression","4");
 		event.setProperty("ProgressionTotal","4");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 
 		Event event2 ;
 		event.setProperty("GAME","1");
 		event.setProperty("ChangeGameState","PlayState");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	case ID_SEND_CANCEL:
@@ -165,7 +165,7 @@ void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Le serveur n'arrive pas a lire les donnees");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	case ID_CONNECTION_BANNED :
@@ -173,7 +173,7 @@ void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","desoler Votre IP est banni ");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	case ID_INVALID_ACCOUNT_OR_PASSWORD :
@@ -181,7 +181,7 @@ void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Le login ou le mot de passe est incorrecte .");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	case ID_COMPTE_BANNIE :
@@ -189,7 +189,7 @@ void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Votre Compte a ete banni . \n Il est impossible de se connecter .");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	case ID_INVALID_IP :
@@ -197,7 +197,7 @@ void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Votre IP a ete banni .\n Il est imposible de se connecter .");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	case ID_ERROR_ETAPE :
@@ -205,7 +205,7 @@ void GestionnaireAuth::gestionnaireErreur(Engine::MessagePacket * messagePacket)
 		Event event ;
 		event.setProperty("AUTH","1");
 		event.setProperty("ErreurMessage","Le serveur a rencontre un probleme . ");
-		Engine::Engine::getInstance()->addEvent(event);
+		Engine::EventManager::getInstance()->addEvent(event);
 	}
 	break;
 	default:

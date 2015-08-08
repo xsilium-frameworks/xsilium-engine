@@ -39,7 +39,7 @@ void LoginState::update(double timeSinceLastFrame)
 
 void LoginState::processEvent(Event * event)
 {
-	if(event->hasProperty("GUI"))
+	if(event->hasProperty("AUTH"))
 	{
 		if( (event->getProperty("Fonction").compare("QUIT")) == 0 )
 		{

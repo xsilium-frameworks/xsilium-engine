@@ -111,7 +111,7 @@ void GraphicsMouvementManager::update(double timeSinceLastFrame)
 		event.setProperty("X",direction.x);
 		event.setProperty("Y",direction.y);
 		event.setProperty("Z",direction.z);
-		Engine::getInstance()->addEvent(event);
+        EventManager::getInstance()->addEvent(event);
 
 		newDirection = false;
 

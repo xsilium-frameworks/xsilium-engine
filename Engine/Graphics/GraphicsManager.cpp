@@ -19,25 +19,20 @@ GraphicsManager::GraphicsManager() {
 	inputManager = InputManager::getInstance();
 	sauvegardeParam = false;
 
-
-	m_pRoot = Engine::getInstance()->getRoot();
-
-	Engine::getInstance()->addListenner(this);
-
-	Engine::getInstance()->getRoot()->addFrameListener(this);
+	m_pRoot = 0;
 
 	graphicsEntiteManager = new GraphicsEntiteManager();
 	graphicsSceneLoader = new GraphicsSceneLoader();
 	PhysicsManager::getInstance();
 	graphicsMouvementManager = new GraphicsMouvementManager();
 
-
+	EventManager::getInstance()->addListenneur(this);
 
 }
 
 GraphicsManager::~GraphicsManager() {
 
-	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	m_pRoot->removeFrameListener(this);
 	PhysicsManager::DestroyInstance();
 	GraphicsObjetManager::DestroyInstance();
 	if(graphicsEntiteManager)
@@ -50,6 +45,14 @@ GraphicsManager::~GraphicsManager() {
 		delete graphicsMouvementManager ;
 	GraphicsCamera::DestroyInstance();
 	InputManager::DestroyInstance();
+
+#ifdef USE_RTSHADER_SYSTEM
+	// Finalize the RT Shader System.
+	finalizeRTShaderSystem();
+#endif // USE_RTSHADER_SYSTEM
+
+	if(m_pRoot)
+		delete m_pRoot ;
 }
 
 
@@ -61,8 +64,12 @@ void GraphicsManager::setParamettreOgre(Ogre::String key, Ogre::String valeur)
 	}
 }
 
-void GraphicsManager::initOgre()
+void GraphicsManager::init(std::string mResourcePath,std::string configFile)
 {
+	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + configFile + ".cfg","");
+
+	m_pRoot->addFrameListener(this);
+
 	// D�fini le mode par default OpenGL Rendering
 	m_pRenderSystem = m_pRoot->getRenderSystemByName("OpenGL Rendering Subsystem");
 
@@ -103,23 +110,22 @@ void GraphicsManager::createWindow()
 	m_pRenderWnd->getViewport(0)->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
 	inputManager->initialise(m_pRenderWnd);
-	Engine::getInstance()->setRenderWindow(m_pRenderWnd);
 
 	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 	m_pCamera = m_pSceneMgr->createCamera("CamPrincipal");
-    m_pCamera->setNearClipDistance(0.1);
-    graphicsCamera->setCamera(m_pCamera);
+	m_pCamera->setNearClipDistance(0.1);
+	graphicsCamera->setCamera(m_pCamera);
 	m_pRenderWnd->getViewport(0)->setCamera(m_pCamera);
 	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
 
 
 }
 
-void GraphicsManager::loadRessource()
+void GraphicsManager::loadRessource(std::string mResourcePath,std::string ressourceFile)
 {
 	Ogre::String secName, typeName, archName;
 	Ogre::ConfigFile cf;
-	cf.load( *(Engine::getInstance()->getResourcePath()) + "resources.cfg");
+	cf.load(mResourcePath + ressourceFile);
 
 	Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 	while (seci.hasMoreElements())
@@ -134,7 +140,7 @@ void GraphicsManager::loadRessource()
 
 #ifdef __APPLE__
 			if (!Ogre::StringUtil::startsWith(archName, "/", false)) // only adjust relative dirs
-				archName = Ogre::String(Ogre::macBundlePath() + "/" + archName);
+				archName = Ogre::String(mResourcePath + "/" + archName);
 #endif
 
 			Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
@@ -149,7 +155,7 @@ void GraphicsManager::loadRessource()
 
 void GraphicsManager::loadScene(Event* event)
 {
-	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,Engine::getInstance()->getRoot(),m_pRenderWnd,m_pCamera) ;
+	graphicsMeteoManager = new GraphicsMeteoManager(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera) ;
 	graphicsMeteoManager->init();
 
 	graphicsSceneLoader->parseDotScene( event->getProperty("NameScene"),event->getProperty("NameGroup"),m_pSceneMgr);
@@ -224,15 +230,6 @@ bool GraphicsManager::frameStarted(const Ogre::FrameEvent& m_FrameEvent)
 }
 bool GraphicsManager::frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent)
 {
-
-
-	if(!isEmpty())
-	{
-		Event* event = getEvent();
-		processEvent(event);
-		deleteEvent();
-	}
-
 	graphicsCamera->frameRenderingQueued(m_FrameEvent);
 	if(graphicsEntiteManager)
 		graphicsEntiteManager->update(m_FrameEvent.timeSinceLastFrame);
@@ -255,12 +252,9 @@ bool GraphicsManager::frameEnded(const Ogre::FrameEvent& m_FrameEvent)
 	return true;
 }
 
-void GraphicsManager::exit()
+Ogre::Root* GraphicsManager::getRoot()
 {
-#ifdef USE_RTSHADER_SYSTEM
-// Finalize the RT Shader System.
-	finalizeRTShaderSystem();
-#endif // USE_RTSHADER_SYSTEM
+	return this->m_pRoot;
 }
 
 

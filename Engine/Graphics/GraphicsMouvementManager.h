@@ -8,9 +8,9 @@
 #ifndef ENGINE_GRAPHICS_GRAPHICSMOUVEMENTMANAGER_H_
 #define ENGINE_GRAPHICS_GRAPHICSMOUVEMENTMANAGER_H_
 
-#include "Engine/Engine.h"
-#include "Input/InputManager.h"
+#include <Input/InputManager.h>
 #include "GraphicsCamera.h"
+#include <Event/EventManager.h>
 
 namespace Engine {
 

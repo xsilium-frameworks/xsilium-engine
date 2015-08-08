@@ -33,7 +33,7 @@ void PlayState::createScene() {
 	event.setProperty("NameScene", "SampleXSILIUM.scene");
 	event.setProperty("NameGroup", "General");
 
-	Engine::Engine::getInstance()->addEvent(event);
+	Engine::EventManager::getInstance()->addEvent(event);
 
 	/*for(int i = 1;i <2; i++)
 	{

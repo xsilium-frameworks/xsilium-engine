@@ -8,7 +8,6 @@
 #ifndef GRAPHICSMANAGER_H_
 #define GRAPHICSMANAGER_H_
 
-#include <Engine/Engine.h>
 #include "GraphicsEntiteManager.h"
 #include "GraphicsSceneLoader.h"
 #include "GraphicsCamera.h"
@@ -17,29 +16,30 @@
 #include "GraphicsMeteoManager.h"
 
 #include <Input/InputManager.h>
-
+#include <Logging/LogManager.h>
 #include <Physics/PhysicsManager.h>
+#include <Event/EventListener.h>
 
 namespace Engine {
 
 	/*
 	 *
 	 */
-	class GraphicsManager : public Singleton<GraphicsManager>, public EngineListenner, public Ogre::FrameListener {
+	class GraphicsManager : public Singleton<GraphicsManager>, public EventListener, public Ogre::FrameListener {
 
 		friend class Singleton < GraphicsManager > ;
 	public:
 		GraphicsManager();
 		virtual ~GraphicsManager();
 
-		void initOgre();
+		void init(std::string mResourcePath,std::string configFile);
 
 		void setParamettreOgre(Ogre::String key, Ogre::String valeur);
 
 		void createWindow();
 		void exit();
 
-		void loadRessource();
+		void loadRessource(std::string mResourcePath,std::string ressourceFile);
 
 		void loadScene(Event* event);
 
@@ -50,6 +50,9 @@ namespace Engine {
 		bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
 		bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 		bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
+
+		Ogre::Root* getRoot();
+
 
 	private:
 		Ogre::String				m_SceneFile;

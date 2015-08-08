@@ -10,23 +10,25 @@
 namespace Engine {
 
 Engine::Engine() {
-	m_pRoot = 0;
-	renderWindow=0;
+	graphicsManager = GraphicsManager::getInstance();
+	guiManager = GuiManager::getInstance();
+	logManager = LogManager::getInstance();
+	eventManager = EventManager::getInstance();
+
+	eventManager->addListenneur(this);
 
 }
 
 Engine::~Engine() {
-	if(m_pRoot)
-        delete m_pRoot ;
+	EventManager::DestroyInstance();
+	KeyboardManager::DestroyInstance();
+	GuiManager::DestroyInstance()  ;
+	GraphicsManager::DestroyInstance();
+	LogManager::DestroyInstance();
 }
 
-void Engine::initOgre(Ogre::String configFile)
-{
-	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + configFile + ".cfg","");
-}
 
-
-void Engine::initEngine(Ogre::String configFile, int nbThread)
+void Engine::initEngine(std::string configFile)
 {
 
 #ifdef __APPLE__
@@ -35,50 +37,50 @@ void Engine::initEngine(Ogre::String configFile, int nbThread)
 	mResourcePath = "";
 #endif
 
+	logManager->initLog(getResourcePath(), "client");
+
+	logManager->setLogMessage("Initialisation de l\'engine", NOTIFICATION);
+
+	graphicsManager->init(getResourcePath(),configFile);
+	graphicsManager->createWindow();
+	graphicsManager->loadRessource(getResourcePath(),"resources.cfg");
+
+
+	guiManager->init(graphicsManager->getRoot());
+
+	eventManager->init(graphicsManager->getRoot());
+
+	KeyboardManager::getInstance()->load(getResourcePath(), "configKey.xml");
+
+	GameStateManager::getInstance()->setRoot(graphicsManager->getRoot());
+	GameStateManager::getInstance()->setRenderWindow(graphicsManager->getRenderWindow());
+
 }
 
 Ogre::Root* Engine::getRoot()
 {
-	return this->m_pRoot;
+	return this->graphicsManager->getRoot();
 }
 
-Ogre::String * Engine::getResourcePath()
+std::string Engine::getResourcePath()
 {
-	return &this->mResourcePath;
+	return this->mResourcePath;
 }
 
-void Engine::addListenner(EngineListenner * engineListenner)
-{
-	listOfEngineListenner.push_back(engineListenner);
-}
-
-void Engine::addEvent(Event event)
-{
-	std::vector<EngineListenner*>::iterator it;
-	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); ++it)
-	{
-		(*it)->addEvent(event);
-	}
-}
-
-void Engine::stopEngine()
-{
-	m_pRoot->queueEndRendering(true);
-
-	std::vector<EngineListenner*>::iterator it;
-	for (it=listOfEngineListenner.begin(); it<listOfEngineListenner.end(); ++it)
-	{
-		(*it)->exit();
-	}
-}
-
-void Engine::setRenderWindow(Ogre::RenderWindow*	renderWindow)
-{
-	this->renderWindow = renderWindow ;
-}
 Ogre::RenderWindow* Engine::getRenderWindow()
 {
-	return renderWindow;
+	return this->graphicsManager->getRenderWindow();
+}
+
+void Engine::processEvent(Event* event)
+{
+	if(event->hasProperty("ENGINE"))
+	{
+		if( (event->getProperty("Fonction").compare("QUIT")) == 0 )
+		{
+			getRoot()->queueEndRendering(true);
+		}
+	}
 }
 
 } /* namespace Engine */

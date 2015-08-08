@@ -2,13 +2,16 @@
 #define GAME_STATE_MANAGER_H
 
 #include "GameState.h"
-#include "Engine/EngineListenner.h"
-#include "Logging/LogManager.h"
+#include <Event/EventListener.h>
+#include <Singleton/Singleton.h>
+#include <Logging/LogManager.h>
 
 namespace Engine {
 
 
-class GameStateManager : public GameStateListener , public EngineListenner {
+class GameStateManager : public GameStateListener , public EventListener , public Singleton<GameStateManager> {
+
+	friend class Singleton<GameStateManager> ;
 
 public:
 	typedef struct
@@ -36,12 +39,20 @@ public:
     bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
 
 
+    void setRoot(Ogre::Root* m_pRoot);
+    void setRenderWindow(Ogre::RenderWindow* m_pRenderWnd);
+
+
 protected:
 	void init(GameState *state);
 
 	std::vector<GameState*>		m_ActiveStateStack;
 	std::vector<state_info>		m_States;
 	InputManager* 				inputManager;
+
+private:
+	Ogre::Root* m_pRoot;
+	Ogre::RenderWindow*			m_pRenderWnd;
 
 
 };

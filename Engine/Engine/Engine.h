@@ -10,12 +10,13 @@
 
 #include "Singleton/Singleton.h"
 #include "Event/Event.h"
-#include "EngineListenner.h"
 #include <vector>
 
-
-#include <Ogre.h>
-#include <OgreRoot.h>
+#include <Graphics/GraphicsManager.h>
+#include <Gui/GuiManager.h>
+#include <Input/KeyboardManager.h>
+#include <GameState/GameStateManager.h>
+#include <Event/EventManager.h>
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
 #include <Cocoa/Cocoa.h>
@@ -37,7 +38,7 @@ namespace Engine {
  *  Classe d'initialisation des systèmes fondamentaux du client
  *
  */
-class Engine: public Singleton<Engine> {
+class Engine: public Singleton<Engine> , public EventListener {
 	friend class Singleton<Engine> ;
 
 public:
@@ -63,26 +64,7 @@ public:
 	 *  \param[in] configFile : String du nom de fichier de configuration
 	 *  \param[in] nbThread : int contenant le nombre de processus
 	 */
-	void initEngine(Ogre::String configFile, int nbThread);
-
-	/*!
-	 *  \brief Méthode d'initialisation de Ogre
-	 *
-	 *  \param[in] configFile : Ogre::String du nom de fichier de configuration
-	 */
-	void initOgre(Ogre::String configFile);
-
-	/*!
-	 *  \brief Méthode d'ajout d'écouteur
-	 *
-	 *  \param[in] engineListenner : Écouteur du moteur
-	 */
-	void addListenner(EngineListenner* engineListenner);
-
-	/*!
-	 *  \brief Méthode d'extinction des écouteurs du moteur
-	 */
-	void stopEngine();
+	void initEngine(std::string configFile);
 
 	/*!
 	 *  \brief Méthode de récupération de Ogre::Root
@@ -96,45 +78,20 @@ public:
 	 *
 	 *  \return mResourcePath
 	 */
-	Ogre::String * getResourcePath();
+	std::string getResourcePath();
 
-	/*!
-	 *  \brief Méthode d'ajout d'évennement
-	 *
-	 *  \param event : Évennement à ajouter
-	 */
-	void addEvent(Event event);
-
-	/*!
-	 *  \brief Méthode de démarrage des images
-	 *
-	 *  \param m_FrameEvent : Structure contenant de l'information d'un évennement par image
-	 */
-	bool frameStarted(const Ogre::FrameEvent& m_FrameEvent);
-
-	/*!
-	 *  \brief Méthode de mise en attente des images
-	 *
-	 *  \param m_FrameEvent : Structure contenant de l'information d'un évennement par image
-	 */
-	bool frameRenderingQueued(const Ogre::FrameEvent& m_FrameEvent);
-
-	/*!
-	 *  \brief Méthode de fin des images
-	 *
-	 *  \param m_FrameEvent : Structure contenant de l'information d'un évennement par image
-	 */
-	bool frameEnded(const Ogre::FrameEvent& m_FrameEvent);
-
-	void setRenderWindow(Ogre::RenderWindow*	renderWindow);
 	Ogre::RenderWindow* getRenderWindow();
+
+	void processEvent(Event* event);
+
 private:
 
-	Ogre::String mResourcePath; /*!< Chemin vers les ressources */
-	Ogre::Root* m_pRoot; /*!< Instance de Ogre::root */
-	Ogre::RenderWindow*	renderWindow; /*!< Instance de Ogre::RenderWindow */
+	std::string mResourcePath; /*!< Chemin vers les ressources */
 
-	std::vector<EngineListenner*> listOfEngineListenner; /*!< liste des écouteurs du moteur */
+	GuiManager* guiManager;
+	GraphicsManager * graphicsManager;
+	LogManager* logManager;
+	EventManager * eventManager;
 
 };
 

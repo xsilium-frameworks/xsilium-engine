@@ -34,7 +34,7 @@ void GestionnaireChat::processPacket(Engine::MessagePacket * messagePacket)
 	event.setProperty("CHAT","1");
 	event.setProperty("Perso",messagePacket->getProperty("Perso").c_str());
 	event.setProperty("Message",messagePacket->getProperty("Text").c_str());
-	Engine::Engine::getInstance()->addEvent(event);
+	Engine::EventManager::getInstance()->addEvent(event);
 }
 
 void GestionnaireChat::sendMessageChat(Event * event)

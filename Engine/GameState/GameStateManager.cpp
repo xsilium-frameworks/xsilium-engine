@@ -4,12 +4,13 @@ namespace Engine {
 
 GameStateManager::GameStateManager() {
 	inputManager = InputManager::getInstance();
-	Engine::getInstance()->addListenner(this);
-	Engine::getInstance()->getRoot()->addFrameListener(this);
+	m_pRoot = 0 ;
+	m_pRenderWnd = 0;
+	EventManager::getInstance()->addListenneur(this);
 }
 
 GameStateManager::~GameStateManager() {
-	Engine::getInstance()->getRoot()->removeFrameListener(this);
+	m_pRoot->removeFrameListener(this);
 	state_info si;
 
 	while (!m_ActiveStateStack.empty()) {
@@ -25,6 +26,17 @@ GameStateManager::~GameStateManager() {
 
 }
 
+void GameStateManager::setRoot(Ogre::Root* m_pRoot)
+{
+	this->m_pRoot = m_pRoot ;
+	m_pRoot->addFrameListener(this);
+}
+
+void GameStateManager::setRenderWindow(Ogre::RenderWindow* m_pRenderWnd)
+{
+	this->m_pRenderWnd = m_pRenderWnd;
+}
+
 void GameStateManager::addGameState(Ogre::String stateName, GameState* state) {
 	try {
 		state_info new_state_info;
@@ -35,7 +47,7 @@ void GameStateManager::addGameState(Ogre::String stateName, GameState* state) {
 		delete state;
 		throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR,
 				"Erreur de gestion d'un nouveau �tat\n"
-						+ Ogre::String(e.what()), "GameStateManager.cpp (39)");
+				+ Ogre::String(e.what()), "GameStateManager.cpp (39)");
 	}
 }
 
@@ -54,8 +66,8 @@ void GameStateManager::start(GameState* state) {
 	changeGameState(state);
 #if  (!__LP64__ || OGRE_PLATFORM != OGRE_PLATFORM_APPLE)
 
-	if (Engine::getInstance()->getRoot()->getRenderSystem() != NULL) {
-		Engine::getInstance()->getRoot()->startRendering(); // start the render loop
+	if (m_pRoot->getRenderSystem() != NULL) {
+		m_pRoot->startRendering(); // start the render loop
 	}
 
 #endif
@@ -112,13 +124,6 @@ void GameStateManager::popAllAndPushGameState(GameState* state) {
 bool GameStateManager::frameRenderingQueued(
 		const Ogre::FrameEvent& m_FrameEvent) {
 	if (!m_ActiveStateStack.empty()) {
-		if (!isEmpty()) {
-			Event* event = getEvent();
-			processEvent(event);
-			deleteEvent();
-		}
-    }
-    if (!m_ActiveStateStack.empty()) {
 		m_ActiveStateStack.back()->update(m_FrameEvent.timeSinceLastFrame);
 	}
 
@@ -140,11 +145,14 @@ void GameStateManager::processEvent(Event * event) {
 
 void GameStateManager::shutdown() {
 	LogManager::getInstance()->setLogMessage("Sortie de la boucle principale", NORMAL);
-	Engine::getInstance()->stopEngine();
+	Event event ;
+	event.setProperty("ENGINE","1");
+	event.setProperty("Fonction","QUIT");
+	Engine::EventManager::getInstance()->addEvent(event);
 }
 
 void GameStateManager::init(GameState* state) {
-	Engine::getInstance()->getRenderWindow()->resetStatistics();
+	m_pRenderWnd->resetStatistics();
 }
 
 }

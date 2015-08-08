@@ -3,12 +3,9 @@
 
 #include "Engine/Engine.h"
 #include "Game/PlayState.h"
-#include "Graphics/GraphicsManager.h"
 #include "GameState/GameStateManager.h"
-#include "Gui/GuiManager.h"
 #include "Logging/LogManager.h"
 #include "Login/LoginState.h"
-#include "Input/KeyboardManager.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
 
@@ -26,12 +23,6 @@ public:
 	void start();
     
     Ogre::RenderWindow* getWindow();
-
-private:
-	Engine::GraphicsManager* graphicsManager;
-	Engine::GameStateManager* gameStateManager;
-	Engine::GuiManager* guiManager;
-	Engine::LogManager* logManager;
 
 };
 
