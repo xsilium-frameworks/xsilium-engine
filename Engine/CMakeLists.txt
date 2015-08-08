@@ -1,7 +1,7 @@
 set( CORE_HEADER_FILES
 	 ./Callback/Callback.h
 	 ./Engine/Engine.h
-	 ./Event/EventListenner.h
+	 ./Event/EventListener.h
 	 ./Event/EventManager.h
 	 ./Event/Event.h
 	 ./GameState/GameState.h
