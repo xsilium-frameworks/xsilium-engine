@@ -31,10 +31,7 @@ void GraphicsEntiteManager::createEntite(Event * event)
 {
 	GraphicsEntite * graphicsEntite = new GraphicsEntite();
 
-	if(event->hasProperty("CreateEntite"))
-	{
-		graphicsEntite->setID(atoi(event->getProperty("CreateEntite").c_str() ) );
-	}
+	graphicsEntite->setID(atoi(event->getProperty("Entite").c_str() ) );
 
 	if(event->hasProperty("CharHeight"))
 	{
@@ -87,16 +84,16 @@ void GraphicsEntiteManager::deleteEntite(Ogre::String nom)
 
 void GraphicsEntiteManager::processEvent(Event * event)
 {
-	if(event->hasProperty("CreateEntite"))
+	if(event->hasProperty("Entite"))
 	{
-		createEntite(event);
-	}
-	if(event->hasProperty("IdEntite"))
-	{
-		GraphicsEntite * entite = trouverEntite(  atoi(event->getProperty("IdEntite").c_str()));
+		GraphicsEntite * entite = trouverEntite(  atoi(event->getProperty("Entite").c_str()));
 		if(entite != NULL)
 		{
 			entite->processEvent(event);
+		}
+		else
+		{
+			createEntite(event);
 		}
 	}
 }

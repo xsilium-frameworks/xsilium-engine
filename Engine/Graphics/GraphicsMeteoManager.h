@@ -10,6 +10,7 @@
 
 #include "GraphicsWater.h"
 #include "GraphicsSky.h"
+#include <Event/Event.h>
 
 namespace Engine {
 

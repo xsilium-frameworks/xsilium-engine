@@ -35,25 +35,26 @@ void PlayState::createScene() {
 
 	Engine::EventManager::getInstance()->addEvent(event);
 
-	/*for(int i = 1;i <2; i++)
+	for(int i = 1;i <=10; i++)
 	{
 
 		Event event2 ;
-		event2.setProperty("Entite","1");
-		event2.setProperty("CreateEntite",i);
+		event2.setProperty("Entite",i);
 		event2.setProperty("CharHeight","5");
 		event2.setProperty("RunSpeed","17");
 		event2.setProperty("TurnSpeed","500.0");
-		event2.setProperty("NomEntite","Perso" + i );
+		event2.setProperty("NomEntite",i);
 		event2.setProperty("fileMesh","Sinbad.mesh");
 
-		event2.setProperty("PositionX","5");
-		event2.setProperty("PositionY","1000");
-		event2.setProperty("PositionZ","5");
+		event2.setProperty("PositionX","-120");
+		event2.setProperty("PositionY","500");
+		event2.setProperty("PositionZ","-150");
 
-		Engine::Engine::getInstance()->addEvent(event2);
 
-	}*/
+
+		Engine::EventManager::getInstance()->addEvent(event2);
+
+	}
 
 	/*Event event3 ;
 	event3.setProperty("Entite","1");

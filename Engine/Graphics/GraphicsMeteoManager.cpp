@@ -487,9 +487,9 @@ void GraphicsMeteoManager::storm(bool flag)
 void GraphicsMeteoManager::init()
 {
 	graphicsSky->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
-	graphicsWater->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
-	graphicsHydraxRttListener = new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX());
-	graphicsWater->addRttListener(graphicsHydraxRttListener);
+	//graphicsWater->init(m_pSceneMgr,m_pRoot,m_pRenderWnd,m_pCamera);
+	//graphicsHydraxRttListener = new GraphicsHydraxRttListener(graphicsSky->getSkyX(),graphicsWater->getHydraX());
+	//graphicsWater->addRttListener(graphicsHydraxRttListener);
 
 	beafourt(mBeafourt);
 

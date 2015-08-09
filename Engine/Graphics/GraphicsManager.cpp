@@ -169,7 +169,7 @@ void GraphicsManager::loadScene(Event* event)
 	PhysicsManager::getInstance()->setRootSceneNode(m_pSceneMgr->getRootSceneNode());
 
 
-	/*Ogre::TerrainGroup::TerrainIterator it = graphicsSceneLoader->getTerrainGroup()->getTerrainIterator();
+	Ogre::TerrainGroup::TerrainIterator it = graphicsSceneLoader->getTerrainGroup()->getTerrainIterator();
 	while(it.hasMoreElements())
 	{
 		Ogre::Terrain* terrain = it.getNext()->instance;
@@ -196,7 +196,7 @@ void GraphicsManager::loadScene(Event* event)
 				terrain->getPosition(),
 				terrain->getWorldSize()/(terrain->getSize()-1) );
 
-	}*/
+	}
 	graphicsMouvementManager->activeMouvement();
 }
 

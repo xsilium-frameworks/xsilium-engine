@@ -11,9 +11,11 @@ namespace Engine {
 
 PhysicsEntite::PhysicsEntite() {
 
+
+	//TODO Attention variable en dur
 	btTransform startTransform;
 	startTransform.setIdentity();
-	startTransform.setOrigin(btVector3(4, 4, 4));
+	startTransform.setOrigin(btVector3(-120, 1000, -150));
 
 	btPairCachingGhostObject * characterGhostObject =
 			new btPairCachingGhostObject();
@@ -62,7 +64,7 @@ PhysicsEntite::PhysicsEntite() {
     mWasOnGround = false;
     mWasJumping = false;
     mCanStand = true;
-    mCurrentPosition.setValue(4, 4, 4);
+    mCurrentPosition.setValue(0, 0,0);
     mMass = 20;
 
 }
