@@ -2,8 +2,6 @@
 #define GAME_STATE_MANAGER_H
 
 #include "GameState.h"
-#include <Event/EventListener.h>
-#include <Singleton/Singleton.h>
 #include <Logging/LogManager.h>
 
 namespace Engine {

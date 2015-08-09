@@ -12,7 +12,6 @@
 #include <queue>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition_variable.hpp>
-#include "Event.h"
 #include "EventListener.h"
 #include <Singleton/Singleton.h>
 #include <Ogre.h>

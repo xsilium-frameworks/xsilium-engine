@@ -1,5 +1,4 @@
 set( CORE_HEADER_FILES
-	 ./Callback/Callback.h
 	 ./Engine/Engine.h
 	 ./Event/EventListener.h
 	 ./Event/EventManager.h
@@ -45,7 +44,6 @@ set( CORE_HEADER_FILES
 
 
 set (CORE_SOURCE_FILES 
-	 ./Callback/Callback.cpp
 	 ./Engine/Engine.cpp
 	 ./Event/EventManager.cpp
 	 ./Event/Event.cpp

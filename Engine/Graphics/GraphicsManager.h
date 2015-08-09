@@ -10,15 +10,8 @@
 
 #include "GraphicsEntiteManager.h"
 #include "GraphicsSceneLoader.h"
-#include "GraphicsCamera.h"
 #include "GraphicsMouvementManager.h"
-#include "GraphicsObjetManager.h"
 #include "GraphicsMeteoManager.h"
-
-#include <Input/InputManager.h>
-#include <Logging/LogManager.h>
-#include <Physics/PhysicsManager.h>
-#include <Event/EventListener.h>
 
 namespace Engine {
 

@@ -12,10 +12,8 @@
 #define interface QQInterface
 #endif
 
-#include "Gui/GuiInput.h"
-#include "Gui/GuiListenner.h"
-#include <Ogre.h>
-#include <Event/EventListener.h>
+#include "GuiInput.h"
+#include "GuiListenner.h"
 
 
 /*!

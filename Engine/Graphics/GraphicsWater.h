@@ -8,13 +8,9 @@
 #ifndef GRAPHICSWATER_H_
 #define GRAPHICSWATER_H_
 
-#include "OgreTerrainGroup.h"
-#include "Graphics/GraphicsHydraxRttListener.h"
-#include "Logging/LogManager.h"
-
-#include "Hydrax.h"
-#include "Noise/Perlin/Perlin.h"
-#include "Modules/ProjectedGrid/ProjectedGrid.h"
+#include <OgreTerrainGroup.h>
+#include "GraphicsHydraxRttListener.h"
+#include <Logging/LogManager.h>
 
 namespace Engine {
 

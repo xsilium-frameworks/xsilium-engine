@@ -8,15 +8,10 @@
 #ifndef ENGINE_H_
 #define ENGINE_H_
 
-#include "Singleton/Singleton.h"
-#include "Event/Event.h"
-#include <vector>
-
 #include <Graphics/GraphicsManager.h>
 #include <Gui/GuiManager.h>
 #include <Input/KeyboardManager.h>
 #include <GameState/GameStateManager.h>
-#include <Event/EventManager.h>
 
 #if (OGRE_PLATFORM == OGRE_PLATFORM_APPLE) && __LP64__
 #include <Cocoa/Cocoa.h>

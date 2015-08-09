@@ -8,10 +8,8 @@
 #ifndef GRAPHICSMETEOMANAGER_H_
 #define GRAPHICSMETEOMANAGER_H_
 
-#include "GraphicsHydraxRttListener.h"
 #include "GraphicsWater.h"
 #include "GraphicsSky.h"
-#include "Event/Event.h"
 
 namespace Engine {
 

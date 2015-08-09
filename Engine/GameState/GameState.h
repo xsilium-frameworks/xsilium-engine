@@ -3,7 +3,6 @@
 
 #include <Input/InputManager.h>
 #include <Event/EventManager.h>
-#include <Ogre.h>
 #include "GameStateListener.h"
 
 

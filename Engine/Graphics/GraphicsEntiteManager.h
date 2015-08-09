@@ -8,7 +8,6 @@
 #ifndef GRAPHICSENTITEMANAGER_H_
 #define GRAPHICSENTITEMANAGER_H_
 
-#include "Event/Event.h"
 #include "GraphicsEntite.h"
 #include <vector>
 

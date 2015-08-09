@@ -8,13 +8,10 @@
 #ifndef GRAPHICSENTITE_H_
 #define GRAPHICSENTITE_H_
 
-#include <Ogre.h>
 #include "GraphicsAnimation.h"
-#include "Graphics/GraphicsCamera.h"
-#include "Event/Event.h"
-#include "Physics/PhysicsManager.h"
-#include "Physics/PhysicsEntite.h"
-#include "Graphics/GraphicsObjetManager.h"
+#include "GraphicsCamera.h"
+#include <Physics/PhysicsEntite.h>
+#include "GraphicsObjetManager.h"
 
 namespace Engine {
 
