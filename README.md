@@ -15,7 +15,7 @@ The engine is based on librairies below:
 	- Bullet (Physic & Collision)
 	- SkyX	 (Atmospheric system)
 	- Hydrax (Water system)	
-	- OpenAL (3d sound engine)
+	- SDL (Sound (I/O later)
 
 Dependencies:
 
