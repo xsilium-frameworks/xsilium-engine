@@ -14,6 +14,7 @@ MessagePacket::MessagePacket()
 {
 	opcode = 0;
 	sousOpcode = 0;
+	timestamp = boost::posix_time::microsec_clock::universal_time();
 
 }
 
@@ -39,6 +40,16 @@ void MessagePacket::setOpcode(int opcode)
 void MessagePacket::setSousOpcode(int sousOpcode)
 {
 	this->sousOpcode = sousOpcode;
+}
+
+boost::posix_time::ptime MessagePacket::getTimestamp()
+{
+	return timestamp;
+}
+
+void MessagePacket::setTimestamp(boost::posix_time::ptime timestamp)
+{
+	this->timestamp = timestamp ;
 }
 
 } /* namespace Engine */
