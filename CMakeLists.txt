@@ -53,7 +53,7 @@ include(MacroLogFeature)
 include(OgreAddTargets)
 include(OgreConfigTargets)
 include(PreprocessorUtils)
-
+include(SubModule)
 include(ConfigXsilium)
 
 
