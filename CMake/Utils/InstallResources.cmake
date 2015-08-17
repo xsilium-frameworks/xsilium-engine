@@ -50,6 +50,7 @@ elseif (UNIX)
   set(OGRE_PLUGIN_DIR_REL "../lib")
   set(OGRE_PLUGIN_DIR_DBG "../lib")
   set(OGRE_CFG_INSTALL_PATH "share/OGRE")
+  file(COPY ${XSILIUM_SOURCE_DIR}/${OGRE_MEDIA_PATH} DESTINATION ${OGRE_CFG_INSTALL_PATH})
 endif ()
 
 # configure plugins.cfg
