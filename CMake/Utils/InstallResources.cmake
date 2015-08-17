@@ -5,6 +5,8 @@
 #
 # The contents of this file are placed in the public domain. Feel
 # free to make use of it in any way you like.
+#
+# This file was modified for https://github.com/xsilium-frameworks
 #-------------------------------------------------------------------
 
 ##################################################################
@@ -15,8 +17,6 @@ if (WIN32)
   set(OGRE_MEDIA_PATH "Media")
   set(OGRE_MEDIA_DIR_REL "../../${OGRE_MEDIA_PATH}")
   set(OGRE_MEDIA_DIR_DBG "../../${OGRE_MEDIA_PATH}")
-  set(OGRE_TEST_MEDIA_DIR_REL "../../Tests/${OGRE_MEDIA_PATH}")
-  set(OGRE_TEST_MEDIA_DIR_DBG "../../Tests/${OGRE_MEDIA_PATH}")
   set(OGRE_PLUGIN_DIR_REL ".")
   set(OGRE_PLUGIN_DIR_DBG ".")
   set(OGRE_SAMPLES_DIR_REL ".")
@@ -36,8 +36,6 @@ elseif (APPLE)
     else()
       set(OGRE_MEDIA_DIR_REL "${OGRE_MEDIA_PATH}")
       set(OGRE_MEDIA_DIR_DBG "${OGRE_MEDIA_PATH}")
-      set(OGRE_TEST_MEDIA_DIR_REL "../../../../Tests/${OGRE_MEDIA_PATH}")
-      set(OGRE_TEST_MEDIA_DIR_DBG "../../../../Tests/${OGRE_MEDIA_PATH}")
     endif()
   endif()
   set(OGRE_PLUGIN_DIR_REL "")
@@ -46,15 +44,11 @@ elseif (APPLE)
   set(OGRE_SAMPLES_DIR_DBG "")
   set(OGRE_CFG_INSTALL_PATH "bin")
 elseif (UNIX)
-  set(OGRE_MEDIA_PATH "share/OGRE/Media")
-  set(OGRE_MEDIA_DIR_REL "${CMAKE_INSTALL_PREFIX}/${OGRE_MEDIA_PATH}")
-  set(OGRE_MEDIA_DIR_DBG "${CMAKE_INSTALL_PREFIX}/${OGRE_MEDIA_PATH}")
-  set(OGRE_TEST_MEDIA_DIR_REL "${CMAKE_INSTALL_PREFIX}/Tests/Media")
-  set(OGRE_TEST_MEDIA_DIR_DBG "${CMAKE_INSTALL_PREFIX}/Tests/Media")
-  set(OGRE_PLUGIN_DIR_REL "${CMAKE_INSTALL_PREFIX}/${OGRE_LIB_DIRECTORY}/OGRE")
-  set(OGRE_PLUGIN_DIR_DBG "${CMAKE_INSTALL_PREFIX}/${OGRE_LIB_DIRECTORY}/OGRE")
-  set(OGRE_SAMPLES_DIR_REL "${CMAKE_INSTALL_PREFIX}/${OGRE_LIB_DIRECTORY}/OGRE/Samples")
-  set(OGRE_SAMPLES_DIR_DBG "${CMAKE_INSTALL_PREFIX}/${OGRE_LIB_DIRECTORY}/OGRE/Samples")
+  set(OGRE_MEDIA_PATH "xsilium-assets")
+  set(OGRE_MEDIA_DIR_REL "${OGRE_MEDIA_PATH}")
+  set(OGRE_MEDIA_DIR_DBG "${OGRE_MEDIA_PATH}")
+  set(OGRE_PLUGIN_DIR_REL "../lib")
+  set(OGRE_PLUGIN_DIR_DBG "../lib")
   set(OGRE_CFG_INSTALL_PATH "share/OGRE")
 endif ()
 
@@ -124,16 +118,7 @@ if (MSVC AND NOT NMAKE)
   configure_file(${OGRE_TEMPLATES_DIR}/quakemap.cfg.in ${CMAKE_BINARY_DIR}/bin/release/quakemap.cfg)
   configure_file(${OGRE_TEMPLATES_DIR}/quakemap.cfg.in ${CMAKE_BINARY_DIR}/bin/relwithdebinfo/quakemap.cfg)
   configure_file(${OGRE_TEMPLATES_DIR}/quakemap.cfg.in ${CMAKE_BINARY_DIR}/bin/minsizerel/quakemap.cfg)
-  # create samples.cfg
-  configure_file(${OGRE_TEMPLATES_DIR}/samples_d.cfg.in ${CMAKE_BINARY_DIR}/bin/debug/samples_d.cfg)
-  configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${CMAKE_BINARY_DIR}/bin/release/samples.cfg)
-  configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${CMAKE_BINARY_DIR}/bin/relwithdebinfo/samples.cfg)
-  configure_file(${OGRE_TEMPLATES_DIR}/samples.cfg.in ${CMAKE_BINARY_DIR}/bin/minsizerel/samples.cfg)
-  # create tests.cfg
-  configure_file(${OGRE_TEMPLATES_DIR}/tests_d.cfg.in ${CMAKE_BINARY_DIR}/bin/debug/tests_d.cfg)
-  configure_file(${OGRE_TEMPLATES_DIR}/tests.cfg.in ${CMAKE_BINARY_DIR}/bin/release/tests.cfg)
-  configure_file(${OGRE_TEMPLATES_DIR}/tests.cfg.in ${CMAKE_BINARY_DIR}/bin/relwithdebinfo/tests.cfg)
-  configure_file(${OGRE_TEMPLATES_DIR}/tests.cfg.in ${CMAKE_BINARY_DIR}/bin/minsizerel/tests.cfg)
+
 else() # other OS only need one cfg file
   string(TOLOWER "${CMAKE_BUILD_TYPE}" OGRE_BUILD_TYPE)
   if (OGRE_BUILD_TYPE STREQUAL "debug" AND NOT APPLE)
@@ -143,11 +128,4 @@ else() # other OS only need one cfg file
   configure_file(${OGRE_TEMPLATES_DIR}/resources${OGRE_CFG_SUFFIX}.cfg.in ${CMAKE_BINARY_DIR}/bin/resources${OGRE_CFG_SUFFIX}.cfg)
   # create plugins.cfg
   configure_file(${OGRE_TEMPLATES_DIR}/plugins${OGRE_CFG_SUFFIX}.cfg.in ${CMAKE_BINARY_DIR}/bin/plugins${OGRE_CFG_SUFFIX}.cfg)
-  # create quakemap.cfg
-  configure_file(${OGRE_TEMPLATES_DIR}/quakemap${OGRE_CFG_SUFFIX}.cfg.in ${CMAKE_BINARY_DIR}/bin/quakemap${OGRE_CFG_SUFFIX}.cfg)
-  # create samples.cfg
-  configure_file(${OGRE_TEMPLATES_DIR}/samples${OGRE_CFG_SUFFIX}.cfg.in ${CMAKE_BINARY_DIR}/bin/samples${OGRE_CFG_SUFFIX}.cfg)
-  # create tests.cfg
-  configure_file(${OGRE_TEMPLATES_DIR}/tests${OGRE_CFG_SUFFIX}.cfg.in ${CMAKE_BINARY_DIR}/bin/tests${OGRE_CFG_SUFFIX}.cfg)
-endif ()
-
+  endif ()
