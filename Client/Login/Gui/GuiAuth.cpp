@@ -91,8 +91,8 @@ void GuiAuth::initGui()
 
 	parent = CEGUI::System::getSingleton().getDefaultGUIContext().getRootWindow();
 
-	loginWindow =  winMgr.loadLayoutFromFile("Login.layout");
-	erreurWindow = winMgr.loadLayoutFromFile("Error.layout");
+	loginWindow =  winMgr.loadLayoutFromFile("login.layout");
+	erreurWindow = winMgr.loadLayoutFromFile("error.layout");
 	progressionWindow = winMgr.loadLayoutFromFile("progressBar.layout");
 
 	loginWindow->getChild("btnConnexion")->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(&GuiAuth::validButton, this));
