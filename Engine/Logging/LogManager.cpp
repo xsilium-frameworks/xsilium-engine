@@ -65,7 +65,7 @@ namespace Engine {
 	// Listener event log de cegui
 	void LogManager::logEvent(const CEGUI::String &message, CEGUI::LoggingLevel level) {
 		boost::log::sources::severity_logger< severity_level > logMgr;
-		BOOST_LOG_SEV(logMgr, CEGUI) << message;
+		BOOST_LOG_SEV(logMgr, CEGUI) << &message;
 	}
 
 	// Listener nom de fichier de cegui 
