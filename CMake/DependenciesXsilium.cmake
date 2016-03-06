@@ -22,6 +22,7 @@ set(ZZip_LIBRARIES "ZZipLib")
 set(FREEIMAGE_FOUND 1)
 set(FREEIMAGE_INCLUDE_DIRS "${XSILIUM_DEP_DIR}/FreeImage/Source")
 set(FREEIMAGE_LIBRARIES "FreeImage" )
+set(FreeImage_LIBRARIES "FreeImage" )
 set( FREEIMAGE_DEFINITIONS_DYNAMIC "FREEIMAGE_EXPORTS" CACHE STRING "preprocessor definitions" )
 
 # Find FreeType

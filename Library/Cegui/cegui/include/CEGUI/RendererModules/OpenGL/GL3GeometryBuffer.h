@@ -44,6 +44,8 @@ public:
     virtual ~OpenGL3GeometryBuffer();
 
     void initialiseOpenGLBuffers();
+    //! The functions first binds the vbo and then sets it up for rendering.
+    void configureVertexArray() const;
     void deinitialiseOpenGLBuffers();
     void updateOpenGLBuffers();
 

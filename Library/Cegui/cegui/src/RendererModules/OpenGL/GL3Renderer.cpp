@@ -24,8 +24,7 @@
  *   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *   OTHER DEALINGS IN THE SOFTWARE.
  ***************************************************************************/
-#include <GL/glew.h>
-
+#include "CEGUI/RendererModules/OpenGL/GL.h"
 #include "CEGUI/RendererModules/OpenGL/ShaderManager.h"
 #include "CEGUI/RendererModules/OpenGL/GL3Renderer.h"
 #include "CEGUI/RendererModules/OpenGL/Texture.h"
@@ -42,9 +41,7 @@
 #include "CEGUI/Logger.h"
 #include "CEGUI/RendererModules/OpenGL/StateChangeWrapper.h"
 
-#include <sstream>
 #include <algorithm>
-#include <cstring>
 
 // Start of CEGUI namespace section
 namespace CEGUI
@@ -60,8 +57,6 @@ namespace CEGUI
 #ifndef APIENTRY
 #   define APIENTRY
 #endif
-//! Dummy function for if real ones are not present (saves testing each render)
-static void APIENTRY activeTextureDummy(GLenum) {}
 
 //----------------------------------------------------------------------------//
 // template specialised class that does the real work for us
@@ -147,31 +142,37 @@ void OpenGL3Renderer::destroy(OpenGL3Renderer& renderer)
 
 //----------------------------------------------------------------------------//
 OpenGL3Renderer::OpenGL3Renderer() :
+    OpenGLRendererBase(true),
     d_shaderStandard(0),
     d_openGLStateChanger(0),
     d_shaderManager(0)
 {
-    initialiseRendererIDString();
-    initialiseGLExtensions();
-    initialiseTextureTargetFactory();
-    initialiseOpenGLShaders();
-
-    d_openGLStateChanger = CEGUI_NEW_AO OpenGL3StateChangeWrapper(*this);
+    init();
+    CEGUI_UNUSED(d_s3tcSupported);
+    // d_s3tcSupported is unused, but must be preserved to avoid breaking ABI
 }
 
 //----------------------------------------------------------------------------//
 OpenGL3Renderer::OpenGL3Renderer(const Sizef& display_size) :
-    OpenGLRendererBase(display_size),
+    OpenGLRendererBase(display_size, true),
     d_shaderStandard(0),
     d_openGLStateChanger(0),
     d_shaderManager(0)
 {
+    init();
+}
+
+//----------------------------------------------------------------------------//
+void OpenGL3Renderer::init()
+{
+    if (      OpenGLInfo::getSingleton().isUsingOpenglEs()
+          &&  OpenGLInfo::getSingleton().verMajor() < 2)
+        CEGUI_THROW(RendererException("Only version 2 and up of OpenGL ES is "
+                                      "supported by this type of renderer."));
     initialiseRendererIDString();
-    initialiseGLExtensions();
     initialiseTextureTargetFactory();
     initialiseOpenGLShaders();
-
-    d_openGLStateChanger = CEGUI_NEW_AO OpenGL3StateChangeWrapper(*this);
+    d_openGLStateChanger = CEGUI_NEW_AO OpenGL3StateChangeWrapper();
 }
 
 //----------------------------------------------------------------------------//
@@ -185,9 +186,10 @@ OpenGL3Renderer::~OpenGL3Renderer()
 //----------------------------------------------------------------------------//
 void OpenGL3Renderer::initialiseRendererIDString()
 {
-    d_rendererID = 
-        "CEGUI::OpenGL3Renderer - Official OpenGL 3.2 core based "
-        "renderer module.";
+    d_rendererID = OpenGLInfo::getSingleton().isUsingDesktopOpengl()
+        ?  "CEGUI::OpenGL3Renderer - Official OpenGL 3.2 core based "
+           "renderer module."
+        :  "CEGUI::OpenGL3Renderer - OpenGL ES 2 renderer module.";
 }
 //----------------------------------------------------------------------------//
 OpenGLGeometryBufferBase* OpenGL3Renderer::createGeometryBuffer_impl()
@@ -209,21 +211,19 @@ void OpenGL3Renderer::beginRendering()
     // this information may be relevant for people combining deprecated and modern
     // functions. In that case disable client states like this: glDisableClientState(GL_VERTEX_ARRAY);
 
+    d_openGLStateChanger->reset();
 
-    // do required set-up.  yes, it really is this minimal ;)
+    // if enabled, restores a subset of the GL state back to default values.
+    if (d_initExtraStates)
+        setupExtraStates();
+
     glEnable(GL_SCISSOR_TEST);
     glEnable(GL_BLEND);
 
     // force set blending ops to get to a known state.
     setupRenderingBlendMode(BM_NORMAL, true);
 
-    // if enabled, restores a subset of the GL state back to default values.
-    if (d_initExtraStates)
-        setupExtraStates();
-
     d_shaderStandard->bind();
-
-    d_openGLStateChanger->reset();
 }
 
 //----------------------------------------------------------------------------//
@@ -232,14 +232,10 @@ void OpenGL3Renderer::endRendering()
     glUseProgram(0);
 
     if (d_initExtraStates)
-    {
-        glDisable(GL_SCISSOR_TEST);
-    
-        glBlendFunc(GL_ONE, GL_ZERO);
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+        setupExtraStates();
+
+    glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
 }
 
 //----------------------------------------------------------------------------//
@@ -248,14 +244,19 @@ void OpenGL3Renderer::setupExtraStates()
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if (OpenGLInfo::getSingleton().isPolygonModeSupported())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
+    
+    d_openGLStateChanger->blendFunc(GL_ONE, GL_ZERO);
 
+    if (OpenGLInfo::getSingleton().isVaoSupported())
+        d_openGLStateChanger->bindVertexArray(0);
     glUseProgram(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    d_openGLStateChanger->bindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    d_openGLStateChanger->bindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 //----------------------------------------------------------------------------//
@@ -348,43 +349,9 @@ void OpenGL3Renderer::initialiseOpenGLShaders()
 }
 
 //----------------------------------------------------------------------------//
-void OpenGL3Renderer::initialiseGLExtensions()
-{
-    glewExperimental = GL_TRUE;
-
-    GLenum err = glewInit();
-    if(err != GLEW_OK)
-    {
-        std::ostringstream err_string;
-        //Problem: glewInit failed, something is seriously wrong.
-        err_string << "failed to initialise the GLEW library. "
-            << glewGetErrorString(err);
-
-        CEGUI_THROW(RendererException(err_string.str().c_str()));
-    }
-    //Clear the useless error glew produces as of version 1.7.0, when using OGL3.2 Core Profile
-    glGetError();
-
-    // Why do we do this and not use GLEW_EXT_texture_compression_s3tc?
-    // Because of glewExperimental, of course!
-    int ext_count;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &ext_count);
-    for(int i = 0; i < ext_count; ++i)
-    {
-        if (!std::strcmp(
-                reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i)),
-                                              "GL_EXT_texture_compression_s3tc"))
-        {
-            d_s3tcSupported = true;
-            break;
-        }
-    }
-}
-
-//----------------------------------------------------------------------------//
 bool OpenGL3Renderer::isS3TCSupported() const
 {
-    return d_s3tcSupported;
+    return OpenGLInfo::getSingleton().isS3tcSupported();
 }
 
 //----------------------------------------------------------------------------//

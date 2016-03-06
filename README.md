@@ -9,8 +9,8 @@ The xsilium-engine repo contain the engine and also a Demo/test client.
 
 The engine is based on librairies below:
 
-	- Ogre	 (3d engine)
-	- CeGui	 (GUI librairie)
+	- Ogre	 (3d engine) 1.9 rev8581
+	- CeGui	 (GUI librairie) 0.8 rev6179
 	- Enet	 (Network API)
 	- Bullet (Physic & Collision)
 	- SkyX	 (Atmospheric system)

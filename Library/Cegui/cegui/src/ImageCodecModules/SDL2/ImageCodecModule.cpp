@@ -1,9 +1,12 @@
 /***********************************************************************
-    created:    Wed, 8th Feb 2012
-    author:     Lukas E Meindl
+	created:	04/07/2014
+	author:		Luca Ebach <bitbucket@lucebac.net>
+                        with code by John Norman
+	
+	purpose:	This codec provides SDL2 based image loading 
 *************************************************************************/
 /***************************************************************************
- *   Copyright (C) 2004 - 2012 Paul D Turner & The CEGUI Development Team
+ *   Copyright (C) 2004 - 2015 Paul D Turner & The CEGUI Development Team
  *
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -25,51 +28,14 @@
  *   OTHER DEALINGS IN THE SOFTWARE.
  ***************************************************************************/
 
-#ifndef _CEGUIOpenGL3StandardShaderFrag_h_
-#define _CEGUIOpenGL3StandardShaderFrag_h_
+#include <CEGUI/ImageCodecModules/SDL2/ImageCodecModule.h>
 
-namespace CEGUI
+CEGUI::ImageCodec* createImageCodec(void)
 {
-
-const char
-    StandardShaderFrag_Opengl3[] = 
-        "#version 150 core\n"
-        
-        "uniform sampler2D texture0;\n"
-        "in vec2 exTexCoord;\n"
-        "in vec4 exColour;\n"
-        "out vec4 out0;\n"
-        
-        "void main(void)\n"
-        "{\n"
-            "out0 = texture(texture0, exTexCoord) * exColour;\n"
-        "}",
-    StandardShaderFrag_OpenglEs2[] = 
-        "#version 100\n"
-
-        "uniform sampler2D texture0;\n"
-        "precision mediump float;\n"
-        "varying vec2 exTexCoord;\n"
-        "varying vec4 exColour;\n"
-
-        "void main(void)\n"
-        "{\n"
-            "gl_FragColor = texture2D(texture0, exTexCoord) * exColour;\n"
-        "}",
-    StandardShaderFrag_OpenglEs3[] = 
-        "#version 300 es\n"
-
-        "uniform sampler2D texture0;\n"
-        "precision highp float;\n"
-        "in vec2 exTexCoord;\n"
-        "in vec4 exColour;\n"
-        "layout(location = 0) out vec4 out0;\n"
-        
-        "void main(void)\n"
-        "{\n"
-            "out0 = texture(texture0, exTexCoord) * exColour;\n"
-        "}";
-    
+    return CEGUI_NEW_AO CEGUI::SDL2ImageCodec();
 }
 
-#endif
+void destroyImageCodec(CEGUI::ImageCodec* imageCodec)
+{
+    CEGUI_DELETE_AO imageCodec;
+}

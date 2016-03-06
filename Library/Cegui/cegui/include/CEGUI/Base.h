@@ -137,6 +137,9 @@
 #   define  CEGUI_FUNCTION_NAME CEGUI::String("[Function name unavailable]")
 #endif
 
+//! Prevent an "unused parameter/variable" warning.
+#define CEGUI_UNUSED(var) (static_cast<void>(var))
+
 /*************************************************************************
 	Documentation for the CEGUI namespace itself
 *************************************************************************/
@@ -158,10 +161,10 @@ typedef unsigned short	ushort;
 typedef unsigned int	uint;
 typedef unsigned char	uchar;
 
-typedef long long  int64;
-typedef int        int32;
-typedef short      int16;
-typedef char       int8;
+typedef long long    int64;
+typedef int          int32;
+typedef short        int16;
+typedef signed char  int8;
 
 typedef unsigned long long  uint64;
 typedef unsigned int        uint32;

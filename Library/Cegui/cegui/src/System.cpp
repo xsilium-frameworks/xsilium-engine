@@ -478,7 +478,7 @@ void System::executeScriptFile(const String& filename, const String& resourceGro
         // Forward script exceptions with line number and file info
         CEGUI_CATCH(ScriptException& e)
         {
-            CEGUI_THROW(e);
+            CEGUI_RETHROW;
         }
 		CEGUI_CATCH(...)
 		{
@@ -510,7 +510,7 @@ int	System::executeScriptGlobal(const String& function_name) const
         // Forward script exceptions with line number and file info
         CEGUI_CATCH(ScriptException& e)
         {
-            CEGUI_THROW(e);
+            CEGUI_RETHROW;
         }
 		CEGUI_CATCH(...)
 		{
@@ -543,7 +543,7 @@ void System::executeScriptString(const String& str) const
         // Forward script exceptions with line number and file info
         CEGUI_CATCH(ScriptException& e)
         {
-            CEGUI_THROW(e);
+            CEGUI_RETHROW;
         }
         CEGUI_CATCH(...)
         {
@@ -771,6 +771,7 @@ void System::setXMLParser(const String& parserName)
     // perform initialisation of XML parser.
     d_xmlParser->initialise();
 #else
+    CEGUI_UNUSED(parserName);
     Logger::getSingleton().logEvent(
         "System::setXMLParser(const String& parserName) called from statically "
         "linked CEGUI library - unable to load dynamic module!", Errors);
@@ -827,6 +828,7 @@ void System::setupImageCodec(const String& codecName)
 #    if defined(CEGUI_STATIC)
         // for static build use static createImageCodec to create codec object
         d_imageCodec = createImageCodec();
+        CEGUI_UNUSED(codecName);
 #    else
         // load the appropriate image codec module
         d_imageCodecModule = codecName.empty() ?
