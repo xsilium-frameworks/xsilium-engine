@@ -56,7 +56,7 @@ namespace Engine {
 	class LogManager : public Singleton<LogManager>, Ogre::LogListener, CEGUI::Logger {
 
 #ifdef _WIN32
-        friend class Singleton < LogManager > ;
+        friend class Engine::Singleton < LogManager > ;
 
 #else
         friend class Engine::Singleton<LogManager> ;
