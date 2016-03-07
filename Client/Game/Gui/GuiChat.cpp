@@ -17,7 +17,7 @@ GuiChat::GuiChat() {
 GuiChat::~GuiChat() {
 	if(chatWindow)
 	{
-		chatWindow->destroy();
+        parent->removeChild(chatWindow);
 		CEGUI::WindowManager::getSingleton().destroyWindow(chatWindow);
 	}
 }

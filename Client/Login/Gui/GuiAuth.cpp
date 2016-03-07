@@ -19,17 +19,17 @@ GuiAuth::GuiAuth() {
 GuiAuth::~GuiAuth() {
 	if(loginWindow)
 	{
-		loginWindow->destroy();
+        parent->removeChild(loginWindow);
 		CEGUI::WindowManager::getSingleton().destroyWindow(loginWindow);
 	}
 	if(erreurWindow)
 	{
-		erreurWindow->destroy();
+		parent->removeChild(erreurWindow);
 		CEGUI::WindowManager::getSingleton().destroyWindow(erreurWindow);
 	}
 	if(progressionWindow)
 	{
-		progressionWindow->destroy();
+		parent->removeChild(progressionWindow);
 		CEGUI::WindowManager::getSingleton().destroyWindow(progressionWindow);
 	}
 }
