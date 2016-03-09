@@ -24,8 +24,9 @@
 
 enum typeForAuth
 {
-	ID_CHALLENGE = 0,
+	ID_CHALLENGE= 0,
 	ID_REPONSE,
+    ID_REALMSLIST,
 	ID_SEND_CANCEL,
 	ID_ERREUR
 };
