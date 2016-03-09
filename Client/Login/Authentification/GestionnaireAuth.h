@@ -19,7 +19,7 @@
 
 
 
-#define AUTH_HOST "127.0.0.1"
+#define AUTH_HOST "192.168.0.13"
 #define AUTH_PORT 60000
 
 enum typeForAuth

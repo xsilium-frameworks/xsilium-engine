@@ -35,8 +35,13 @@ public:
 	template<typename Type1>
 	std::string getProperty(Type1 inName)
 	{
-		std::string key = toString(inName);
-		return mProperties.find(key)->second;
+		std::string retour;
+		if (hasProperty(inName))
+		{
+			std::string key = toString(inName);
+			retour = mProperties.find(key)->second;
+		}
+		return retour; 
 	}
 
 	template<typename Type1>
