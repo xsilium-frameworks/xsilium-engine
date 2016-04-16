@@ -13,8 +13,6 @@ namespace Engine {
 MessagePacket::MessagePacket() {
     opcode = 0;
     sousOpcode = 0;
-    timestampDepart = boost::posix_time::microsec_clock::universal_time();
-
 }
 
 MessagePacket::~MessagePacket() {

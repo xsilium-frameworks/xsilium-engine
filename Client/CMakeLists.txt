@@ -12,6 +12,7 @@ set(CORE_SOURCE_FILES
     Game/PlayState.cpp
     Game/Chat/GestionnaireChat.cpp
     Game/Gui/GuiChat.cpp
+    Game/Entite/EntiteManager.cpp
     Login/LoginState.cpp 
     Login/Authentification/GestionnaireAuth.cpp
     Login/Gui/GuiAuth.cpp
@@ -23,6 +24,7 @@ set(CORE_HEADER_FILES
     Game/PlayState.h
     Game/Chat/GestionnaireChat.h
     Game/Gui/GuiChat.h
+    Game/Entite/EntiteManager.h
     Login/LoginState.h
     Login/Authentification/GestionnaireAuth.h
     Login/Gui/GuiAuth.h
@@ -131,7 +133,7 @@ if (APPLE)
 		${OGRE_SAMPLE_CONTENTS_PATH}/Resources/
         COMMAND ditto 
 		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/SampleBrowser_OSX.icns ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
-		COMMAND cp 
+		COMMAND ln ARGS -s -f
 		${CMAKE_CURRENT_SOURCE_DIR}/dist/bin/configKey.xml ${OGRE_SAMPLE_CONTENTS_PATH}/Resources
 		)
 
@@ -161,16 +163,26 @@ if (APPLE)
     endforeach(FWK)
 
     add_custom_command(TARGET ${TargetName} POST_BUILD
-		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIRapidXMLParser.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libCEGUIRapidXMLParser.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUICoreWindowRendererSet.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libCEGUICoreWindowRendererSet.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIBase-0.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libCEGUIBase-0.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
-		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/libCEGUIOgreRenderer-0.dylib
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libCEGUIOgreRenderer-0.dylib
 		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libBulletCollision.${BULLET_VERSION}.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libBulletDynamics.${BULLET_VERSION}.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libBulletSoftBody.${BULLET_VERSION}.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libLinearMath.${BULLET_VERSION}.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/		
+		COMMAND ln ARGS -s -f ${CMAKE_BINARY_DIR}/lib/${OGRE_OSX_BUILD_CONFIGURATION}/libConvexDecomposition.${BULLET_VERSION}.dylib
+		${OGRE_SAMPLE_CONTENTS_PATH}/Frameworks/		
 		)
-
 endif()
 
 

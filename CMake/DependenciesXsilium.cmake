@@ -220,3 +220,9 @@ set(CEGUI_FOUND 1)
 set(CEGUI_INCLUDE_DIRS "${XSILIUM_SOURCE_DIR}/Library/Cegui/cegui/include" "${XSILIUM_BINARY_DIR}/Library/Cegui/cegui/include")
 set(CEGUI_LIBRARIES "CEGUIBase-0")
 
+#BULLET
+SET(BULLET_VERSION 2.83)
+
+#Golbal
+set( XSILIUM_FRAMEWORKS_INSTALL_PATH "@executable_path/../Frameworks")
+

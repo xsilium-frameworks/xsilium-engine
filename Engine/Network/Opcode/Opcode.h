@@ -8,42 +8,38 @@
 #ifndef OPCODE_H_
 #define OPCODE_H_
 
-enum typerequete
-{
-	   XSILIUM_AUTH = 0,
-	   XSILIUM_KINGDOM,
-	   XSILIUM_ZONE,
-	   XSILIUM_ALL
+enum typerequete {
+    XSILIUM_AUTH = 0, XSILIUM_KINGDOM, XSILIUM_ZONE, XSILIUM_ALL
 };
 
-enum Opcode
-{
-	// partie generique
+enum Opcode {
+    // partie generique
 
-	ID_CONNEXION = 0,
+    ID_CONNEXION = 0,
 
-	ID_DECONEXION,
+    ID_DECONEXION,
 
-	// partie authentification
+    // partie authentification
 
-	ID_AUTH,
-	ID_ROYAUME,
-	ID_ZONE,
+    ID_AUTH,
+    ID_ROYAUME,
+    ID_ZONE,
 
-	//partie royaume
+    //partie royaume
 
-	ID_CHAT,
+    ID_CHAT,
 
-	//partie ticket
+    //partie ticket
 
-	ID_TICKET,
+    ID_TICKET,
 
-	//Partie message
+    //Partie message
 
-	ID_MAIL,
+    ID_MAIL,
 
-	ID_ALL
+    ID_WORLD,
+
+    ID_ALL
 };
-
 
 #endif /* OPCODE_H_ */
