@@ -1,2 +1,0 @@
-commit.comment.template=${task.status} - ${connector.task.prefix} references \#${task.key}\: ${task.description} 
-eclipse.preferences.version=1

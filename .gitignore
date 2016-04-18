@@ -3,3 +3,26 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 install_manifest.txt
+
+.metadata
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Eclipse Core
+.project
+.externalToolBuilders/
+*.launch
+.cproject
+.target
+.tern-project
+.texlipse
+
+# Code Recommenders
+.recommenders/
