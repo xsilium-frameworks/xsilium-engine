@@ -66,8 +66,12 @@ void GraphicsManager::setParamettreOgre(Ogre::String key, Ogre::String valeur)
 
 void GraphicsManager::init(std::string mResourcePath,std::string configFile)
 {
+//Debug name convention
+#ifdef _DEBUG
+	m_pRoot = new Ogre::Root(mResourcePath + "plugins_d.cfg", mResourcePath + configFile + ".cfg", "");
+#else
 	m_pRoot = new Ogre::Root(mResourcePath + "plugins.cfg",mResourcePath + configFile + ".cfg","");
-
+#endif
 	m_pRoot->addFrameListener(this);
 
 	// D�fini le mode par default OpenGL Rendering

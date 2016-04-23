@@ -43,8 +43,13 @@ void Engine::initEngine(std::string configFile)
 
 	graphicsManager->init(getResourcePath(),configFile);
 	graphicsManager->createWindow();
-	graphicsManager->loadRessource(getResourcePath(),"resources.cfg");
 
+// Debug name convention
+#ifdef _DEBUG
+	graphicsManager->loadRessource(getResourcePath(), "resources_d.cfg");
+#else
+	graphicsManager->loadRessource(getResourcePath(),"resources.cfg");
+#endif
 
 	guiManager->init(graphicsManager->getRoot());
 
