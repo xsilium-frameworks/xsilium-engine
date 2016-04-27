@@ -40,11 +40,25 @@ void PlayState::createScene() {
 
     Engine::EventManager::getInstance()->addEvent(event);
 
-    /*Event event3 ;
-     event3.setProperty("Entite","1");
-     event3.setProperty("IdEntite","1");
-     event3.setProperty("Camera","1");
-     Engine::Engine::getInstance()->addEvent(event3);*/
+    Event event2;
+    event2.setProperty("Entite", 1);
+    event2.setProperty("CharHeight", "5");
+    event2.setProperty("RunSpeed", "17");
+    event2.setProperty("TurnSpeed", "500.0");
+    event2.setProperty("NomEntite", "test");
+    event2.setProperty("fileMesh", "Sinbad.mesh");
+
+    event2.setProperty("PositionX", "-120");
+    event2.setProperty("PositionY", "500");
+    event2.setProperty("PositionZ", "-150");
+
+    Engine::EventManager::getInstance()->addEvent(event2);
+
+    Event event3;
+    event3.setProperty("Camera", "1");
+    event3.setProperty("Target", "test");
+    event3.setProperty("Type", "1");
+    Engine::EventManager::getInstance()->addEvent(event3);
 
 }
 

@@ -29,10 +29,7 @@ namespace Engine {
  *
  */
 enum CameraStyle {
-	CS_FREELOOK,
-	CS_ORBIT,
-	CS_MANUAL,
-	CS_3PERS
+    CS_FREELOOK, CS_ORBIT, CS_MANUAL, CS_3PERS
 };
 
 /*!
@@ -42,72 +39,76 @@ enum CameraStyle {
  * Classe permettant de g�rer les diff�rent style de camera.
  *
  */
-class GraphicsCamera : public Singleton<GraphicsCamera> {
+class GraphicsCamera: public Singleton<GraphicsCamera> {
 
-	friend class Singleton<GraphicsCamera>;
+    friend class Singleton<GraphicsCamera> ;
 
 public:
-	GraphicsCamera();
-	virtual ~GraphicsCamera();
+    GraphicsCamera();
+    virtual ~GraphicsCamera();
 
-	/*-----------------------------------------------------------------------------
-		| Swaps the camera on our camera man for another camera.
-		-----------------------------------------------------------------------------*/
-	virtual void setCamera(Ogre::Camera* cam);
+    /*-----------------------------------------------------------------------------
+     | Swaps the camera on our camera man for another camera.
+     -----------------------------------------------------------------------------*/
+    virtual void setCamera(Ogre::Camera* cam);
 
-	virtual Ogre::Camera* getCamera();
+    virtual Ogre::Camera* getCamera();
 
-	/*-----------------------------------------------------------------------------
-		| Sets the target we will revolve around. Only applies for orbit style.
-		-----------------------------------------------------------------------------*/
-	virtual void setTarget(Ogre::SceneNode* target);
+    /*-----------------------------------------------------------------------------
+     | Sets the target we will revolve around. Only applies for orbit style.
+     -----------------------------------------------------------------------------*/
+    virtual void setTarget(Ogre::SceneNode* target);
+    virtual void setTargetByName(Ogre::String targetName);
 
-	virtual Ogre::SceneNode* getTarget();
+    virtual Ogre::SceneNode* getTarget();
 
-	/*-----------------------------------------------------------------------------
-		| Sets the spatial offset from the target. Only applies for orbit style.
-		-----------------------------------------------------------------------------*/
-	virtual void setYawPitchDist(Ogre::Radian yaw, Ogre::Radian pitch, Ogre::Real dist);
+    /*-----------------------------------------------------------------------------
+     | Sets the spatial offset from the target. Only applies for orbit style.
+     -----------------------------------------------------------------------------*/
+    virtual void setYawPitchDist(Ogre::Radian yaw, Ogre::Radian pitch, Ogre::Real dist);
 
-	/*-----------------------------------------------------------------------------
-		| Sets the camera's top speed. Only applies for free-look style.
-		-----------------------------------------------------------------------------*/
-	virtual void setTopSpeed(Ogre::Real topSpeed);
+    /*-----------------------------------------------------------------------------
+     | Sets the camera's top speed. Only applies for free-look style.
+     -----------------------------------------------------------------------------*/
+    virtual void setTopSpeed(Ogre::Real topSpeed);
 
-	virtual Ogre::Real getTopSpeed();
+    virtual Ogre::Real getTopSpeed();
 
-	/*-----------------------------------------------------------------------------
-		| Sets the movement style of our camera man.
-		-----------------------------------------------------------------------------*/
-	virtual void setStyle(CameraStyle style);
+    /*-----------------------------------------------------------------------------
+     | Sets the movement style of our camera man.
+     -----------------------------------------------------------------------------*/
+    virtual void setStyle(CameraStyle style);
 
-	virtual CameraStyle getStyle();
+    virtual CameraStyle getStyle();
 
-	/*-----------------------------------------------------------------------------
-		| Manually stops the camera when in free-look mode.
-		-----------------------------------------------------------------------------*/
-	virtual void manualStop();
+    /*-----------------------------------------------------------------------------
+     | Manually stops the camera when in free-look mode.
+     -----------------------------------------------------------------------------*/
+    virtual void manualStop();
 
-	virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
-	/*-----------------------------------------------------------------------------
-		| Processes mouse movement differently for each style.
-		-----------------------------------------------------------------------------*/
-	virtual void injectMouseMove(const OIS::MouseEvent& evt);
+    /*-----------------------------------------------------------------------------
+     | Processes mouse movement differently for each style.
+     -----------------------------------------------------------------------------*/
+    virtual void injectMouseMove(const OIS::MouseEvent& evt);
 
-	void processEvent(Event * event);
+    void processEvent(Event * event);
+
+    void initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWindow* m_pRenderWnd);
 
 protected:
 
-	Ogre::Camera*		mCamera;
-	CameraStyle			mStyle;
-	Ogre::SceneNode*	mTarget;
-	bool				mOrbiting;
-	bool				mZooming;
-	Ogre::Real			mTopSpeed;
-	Ogre::Vector3		mVelocity;
-	bool				mFastMove;
-	Ogre::Vector3 		direction;
+    Ogre::Camera* mCamera;
+    CameraStyle mStyle;
+    Ogre::SceneNode* mTarget;
+    bool mOrbiting;
+    bool mZooming;
+    Ogre::Real mTopSpeed;
+    Ogre::Vector3 mVelocity;
+    bool mFastMove;
+    Ogre::Vector3 direction;
+    Ogre::SceneManager* mSceneMgr;
 };
 }
 

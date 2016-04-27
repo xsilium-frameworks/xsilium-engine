@@ -15,25 +15,18 @@
 
 namespace Engine {
 
-enum AnimEntiteID
-{
-	ANIM_IDLE_BASE,
-	ANIM_IDLE_TOP,
+enum AnimEntiteID {
+    ANIM_IDLE_BASE, ANIM_IDLE_TOP,
 
-	ANIM_RUN_BASE,
-	ANIM_RUN_TOP,
+    ANIM_RUN_BASE, ANIM_RUN_TOP,
 
-	ANIM_HANDS_CLOSED,
-	ANIM_HANDS_RELAXED,
+    ANIM_HANDS_CLOSED, ANIM_HANDS_RELAXED,
 
-	ANIM_DRAW_SWORDS,
+    ANIM_DRAW_SWORDS,
 
-	ANIM_SLICE_VERTICAL,
-	ANIM_SLICE_HORIZONTAL,
+    ANIM_SLICE_VERTICAL, ANIM_SLICE_HORIZONTAL,
 
-	ANIM_JUMP_START,
-	ANIM_JUMP_LOOP,
-	ANIM_JUMP_END
+    ANIM_JUMP_START, ANIM_JUMP_LOOP, ANIM_JUMP_END
 };
 
 /*
@@ -41,63 +34,63 @@ enum AnimEntiteID
  */
 class GraphicsEntite {
 public:
-	GraphicsEntite();
-	virtual ~GraphicsEntite();
+    GraphicsEntite();
+    virtual ~GraphicsEntite();
 
-	void initEntite(Ogre::SceneManager* sceneMgr,Ogre::String nom,Ogre::String fileMesh);
+    void initEntite(Ogre::SceneManager* sceneMgr, Ogre::String nom, Ogre::String fileMesh);
 
-	void setCharHeight(int charHeight);
-	void setRunSpeed(int runSpeed);
-	void setTurnSpeed(double turnSpeed);
-	void setID(int id);
-	int getID();
+    void setCharHeight(int charHeight);
+    void setRunSpeed(int runSpeed);
+    void setTurnSpeed(double turnSpeed);
+    void setID(int id);
+    int getID();
 
-	void setPosition(Ogre::Vector3 position);
+    void setPosition(Ogre::Vector3 position);
 
-	Ogre::Vector3 getWorldPosition ();
-	Ogre::String * getNom();
+    Ogre::Vector3 getWorldPosition();
+    Ogre::String * getNom();
 
-	void degainerArme();
+    void degainerArme();
 
-	void update(double timeSinceLastFrame);
+    void update(double timeSinceLastFrame);
 
-	void updateAnimation(double timeSinceLastFrame);
+    void updateAnimation(double timeSinceLastFrame);
 
-	void processEvent(Event * event);
+    void processEvent(Event * event);
 
-	void addEquipement(Ogre::Entity * objet,Ogre::String emplacement);
-	void deleteEquipement(Ogre::String emplacement);
+    void addEquipement(Ogre::Entity * objet, Ogre::String emplacement);
+    void deleteEquipement(Ogre::String emplacement);
 
-	void deplaceEntite(Ogre::Vector3 direction );
+    void deplaceEntite(Ogre::Vector3 direction);
 
-	void setOrientation(Ogre::Quaternion orientation);
+    void setOrientation(Ogre::Quaternion orientation);
 
 private:
-	Ogre::String  nom;
-	int id;
+    Ogre::String nom;
+    int id;
 
-	int  charHeight ;
-	int  runSpeed ;
-	double  turnSpeed ;
+    int charHeight;
+    int runSpeed;
+    double turnSpeed;
 
-	Ogre::SceneManager* msceneMgr;
-	Ogre::SceneNode *mMainNode; // Main character node
-	Ogre::Entity* mBodyEnt;
+    Ogre::SceneManager* msceneMgr;
+    Ogre::SceneNode *mMainNode; // Main character node
+    Ogre::Entity* mBodyEnt;
 
-	GraphicsAnimation * graphicsAnimation ;
+    GraphicsAnimation * graphicsAnimation;
 
-	std::map<Ogre::String,Ogre::Entity*> listOfObject;
+    std::map<Ogre::String, Ogre::Entity*> listOfObject;
 
-	bool degainer;
+    bool degainer;
 
-	Ogre::Vector3 direction;
+    Ogre::Vector3 direction;
 
-	Ogre::String animNames[12];
+    Ogre::String animNames[12];
 
-	bool mMoving;
-	bool mIsFalling;
+    bool mMoving;
+    bool mIsFalling;
 
-	PhysicsEntite * physicsEntite;
+    PhysicsEntite * physicsEntite;
 
 };
 
