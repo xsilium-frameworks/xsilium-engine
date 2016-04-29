@@ -246,6 +246,9 @@ void GraphicsCamera::initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWin
 
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
+	// 3rd camera stuff
+	Ogre::Vector3 direction = m_pNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+	direction.normalise();
 }
 
 }
