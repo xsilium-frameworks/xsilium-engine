@@ -237,6 +237,8 @@ void GraphicsCamera::initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWin
 	m_pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pCamNode = m_pNode->createChildSceneNode();
 	m_pCamNode->setPosition(0, 1.8, 3); // Ratio 1unity-1meter, 1.8 meters of the ground, 3 meters behind
+	m_pPitchNode = m_pCamNode->createChildSceneNode();
+	m_pPitchNode->attachObject(mCamera);
 
     Ogre::Viewport* vp = m_pRenderWnd->addViewport(mCamera);
     vp->setCamera(mCamera);
