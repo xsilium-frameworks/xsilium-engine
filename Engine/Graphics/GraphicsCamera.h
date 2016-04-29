@@ -109,6 +109,13 @@ protected:
     bool mFastMove;
     Ogre::Vector3 direction;
     Ogre::SceneManager* mSceneMgr;
+
+private:
+
+	// Nodes needed for 3rd camera system
+	Ogre::SceneNode* m_pNode;		// main node
+	Ogre::SceneNode* m_pCamNode;	// camera node attached to main node
+	Ogre::SceneNode* m_pPitchNode;  // pitch node attached to camera node
 };
 }
 

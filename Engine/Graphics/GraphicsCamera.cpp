@@ -19,6 +19,11 @@ GraphicsCamera::GraphicsCamera() {
     mFastMove = false;
     mStyle = CS_FREELOOK;
     mSceneMgr = 0;
+
+	// 3rd camera stuff
+	m_pNode = 0;
+	m_pPitchNode = 0;
+	m_pCamNode = 0;
 }
 
 GraphicsCamera::~GraphicsCamera() {
@@ -227,6 +232,11 @@ void GraphicsCamera::initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWin
     mCamera = m_pSceneMgr->createCamera("CamPrincipal");
     mSceneMgr = m_pSceneMgr;
     mCamera->setNearClipDistance(0.1);
+
+	// 3rd camera stuff
+	m_pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pCamNode = m_pNode->createChildSceneNode();
+	m_pCamNode->setPosition(0, 1.8, 3); // Ratio 1unity-1meter, 1.8 meters of the ground, 3 meters behind
 
     Ogre::Viewport* vp = m_pRenderWnd->addViewport(mCamera);
     vp->setCamera(mCamera);
