@@ -100,6 +100,7 @@ public:
     Ogre::SceneNode*& getPPitchNode();
     void setPPitchNode(Ogre::SceneNode*& pPitchNode);
 
+    Ogre::Vector3& getPosition();
     void setPosition(Ogre::Vector3& position);
 
 protected:
@@ -113,6 +114,7 @@ protected:
     Ogre::Vector3 mVelocity;
     bool mFastMove;
     Ogre::Vector3 direction;
+    Ogre::Vector3 position;
 
 private:
 

@@ -25,6 +25,7 @@ GraphicsCamera::GraphicsCamera() {
     m_pCamNode = 0;
 
     direction = Ogre::Vector3::ZERO;
+    position = Ogre::Vector3::ZERO;
 }
 
 GraphicsCamera::~GraphicsCamera() {
@@ -167,6 +168,7 @@ bool GraphicsCamera::frameRenderingQueued(const Ogre::FrameEvent& evt) {
         }
 
         if (mStyle == CS_3PERS) {
+            m_pNode->setPosition(position);
             // move the camera smoothly to the goal
             Ogre::Vector3 goalOffset = m_pCamNode->_getDerivedPosition()
                     - m_pPitchNode->getPosition();
@@ -269,7 +271,7 @@ void GraphicsCamera::setPPitchNode(Ogre::SceneNode*& pPitchNode) {
 }
 
 void GraphicsCamera::setPosition(Ogre::Vector3& position) {
-    m_pPitchNode->setPosition(position * 2);
+    this->position = position + Ogre::Vector3::UNIT_Y * 2;
 }
 
 }
