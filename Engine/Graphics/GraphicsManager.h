@@ -58,7 +58,12 @@ private:
     Ogre::Root* m_pRoot;
     Ogre::SceneManager* m_pSceneMgr;
 
-    Ogre::String fenetreName;
+	// Nodes needed for 3rd camera system
+	Ogre::SceneNode* m_pNode;		// main node
+	Ogre::SceneNode* m_pCamNode;	// camera node attached to main node
+	Ogre::SceneNode* m_pPitchNode;  // pitch node attached to camera node
+	
+	Ogre::String fenetreName;
     bool sauvegardeParam;
 
     GraphicsEntiteManager* graphicsEntiteManager;

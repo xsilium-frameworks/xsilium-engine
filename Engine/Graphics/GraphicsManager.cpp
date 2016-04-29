@@ -20,6 +20,11 @@ GraphicsManager::GraphicsManager() {
 
     m_pRoot = 0;
 
+	// 3rd camera stuff
+	m_pNode = 0;
+	m_pPitchNode = 0;
+	m_pCamNode = 0;
+
     graphicsEntiteManager = new GraphicsEntiteManager();
     graphicsSceneLoader = new GraphicsSceneLoader();
     PhysicsManager::getInstance();
@@ -94,20 +99,24 @@ void GraphicsManager::init(std::string mResourcePath, std::string configFile) {
 }
 
 void GraphicsManager::createWindow() {
-    m_pRenderWnd = m_pRoot->initialise(true, "Xsilium");
+	m_pRenderWnd = m_pRoot->initialise(true, "Xsilium");
 
-    if (sauvegardeParam)
-        m_pRoot->saveConfig();
+	if (sauvegardeParam)
+		m_pRoot->saveConfig();
 
-    m_pRenderWnd->setActive(true);
+	m_pRenderWnd->setActive(true);
 
-    inputManager->initialise(m_pRenderWnd);
+	inputManager->initialise(m_pRenderWnd);
 
-    m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
+	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 
-    graphicsCamera->initCamera(m_pSceneMgr, m_pRenderWnd);
-    graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
+	graphicsCamera->initCamera(m_pSceneMgr, m_pRenderWnd);
+	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
 
+	// 3rd camera stuff
+	m_pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pCamNode = m_pNode->createChildSceneNode();
+	m_pCamNode->setPosition(0, 1.8, 3); // Ratio 1unity-1meter, 1.8 meters of the ground, 3 meters behind
 }
 
 void GraphicsManager::loadRessource(std::string mResourcePath, std::string ressourceFile) {
