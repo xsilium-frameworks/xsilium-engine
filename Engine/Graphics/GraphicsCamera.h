@@ -97,6 +97,11 @@ public:
 
     void initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWindow* m_pRenderWnd);
 
+    Ogre::SceneNode*& getPPitchNode();
+    void setPPitchNode(Ogre::SceneNode*& pPitchNode);
+
+    void setPosition(Ogre::Vector3& position);
+
 protected:
 
     Ogre::Camera* mCamera;
@@ -108,14 +113,13 @@ protected:
     Ogre::Vector3 mVelocity;
     bool mFastMove;
     Ogre::Vector3 direction;
-    Ogre::SceneManager* mSceneMgr;
 
 private:
 
-	// Nodes needed for 3rd camera system
-	Ogre::SceneNode* m_pNode;		// main node
-	Ogre::SceneNode* m_pCamNode;	// camera node attached to main node
-	Ogre::SceneNode* m_pPitchNode;  // pitch node attached to camera node
+    // Nodes needed for 3rd camera system
+    Ogre::SceneNode* m_pNode;		// main node
+    Ogre::SceneNode* m_pCamNode;	// camera node attached to main node
+    Ogre::SceneNode* m_pPitchNode;  // pitch node attached to camera node
 };
 }
 

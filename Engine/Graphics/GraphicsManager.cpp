@@ -94,19 +94,20 @@ void GraphicsManager::init(std::string mResourcePath, std::string configFile) {
 }
 
 void GraphicsManager::createWindow() {
-	m_pRenderWnd = m_pRoot->initialise(true, "Xsilium");
+    m_pRenderWnd = m_pRoot->initialise(true, "Xsilium");
 
-	if (sauvegardeParam)
-		m_pRoot->saveConfig();
+    if (sauvegardeParam)
+        m_pRoot->saveConfig();
 
-	m_pRenderWnd->setActive(true);
+    m_pRenderWnd->setActive(true);
 
-	inputManager->initialise(m_pRenderWnd);
+    inputManager->initialise(m_pRenderWnd);
 
-	m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
+    m_pSceneMgr = m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
 
-	graphicsCamera->initCamera(m_pSceneMgr, m_pRenderWnd);
-	graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
+    graphicsCamera->initCamera(m_pSceneMgr, m_pRenderWnd);
+    graphicsMouvementManager->setGraphicsCamera(graphicsCamera);
+    graphicsMouvementManager->setGraphicsEntiteManager(graphicsEntiteManager);
 }
 
 void GraphicsManager::loadRessource(std::string mResourcePath, std::string ressourceFile) {

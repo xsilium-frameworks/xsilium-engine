@@ -64,6 +64,8 @@ public:
     void deplaceEntite(Ogre::Vector3 direction);
 
     void setOrientation(Ogre::Quaternion orientation);
+    bool isCurrentPlayer();
+    void setCurrentPlayer(bool currentPlayer);
 
 private:
     Ogre::String nom;
@@ -91,6 +93,8 @@ private:
     bool mIsFalling;
 
     PhysicsEntite * physicsEntite;
+
+    bool currentPlayer;
 
 };
 

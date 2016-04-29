@@ -10,6 +10,7 @@
 
 #include <Input/InputManager.h>
 #include "GraphicsCamera.h"
+#include "GraphicsEntiteManager.h"
 #include <Event/EventManager.h>
 
 namespace Engine {
@@ -18,31 +19,36 @@ namespace Engine {
  *
  */
 
-class GraphicsMouvementManager : public OIS::MouseListener  {
+class GraphicsMouvementManager: public OIS::MouseListener {
 public:
-	GraphicsMouvementManager();
-	virtual ~GraphicsMouvementManager();
+    GraphicsMouvementManager();
+    virtual ~GraphicsMouvementManager();
 
-	void setGraphicsCamera(GraphicsCamera * graphicsCamera);
+    void setGraphicsCamera(GraphicsCamera * graphicsCamera);
 
-	void processEvent(Event * event);
+    void processEvent(Event * event);
 
-	void update(double timeSinceLastFrame);
+    void update(double timeSinceLastFrame);
 
+    bool mouseMoved(const OIS::MouseEvent &e);
+    bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
-	bool mouseMoved(const OIS::MouseEvent &e);
-	bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-	bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+    void activeMouvement();
+    void deactiveMouvement();
 
-	void activeMouvement();
-	void deactiveMouvement();
+    void setGraphicsEntiteManager(GraphicsEntiteManager*& graphicsEntiteManager);
 
 private:
-	GraphicsCamera * graphicsCamera;
-	Ogre::Vector3 direction;
-	bool newDirection;
+    GraphicsCamera * graphicsCamera;
+    GraphicsEntiteManager * graphicsEntiteManager;
 
-	bool deplacement;
+    Ogre::Vector3 direction;
+    bool newDirection;
+
+    bool deplacement;
+    bool clickLeft;
+    bool clickRight;
 
 };
 

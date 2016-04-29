@@ -20,6 +20,7 @@ GraphicsEntite::GraphicsEntite() {
     graphicsAnimation = 0;
     direction = Ogre::Vector3::ZERO;
     degainer = false;
+    mIsFalling = false;
 
     mMoving = false;
 
@@ -42,6 +43,8 @@ GraphicsEntite::GraphicsEntite() {
     animNames[ANIM_JUMP_START] = "JumpStart";
     animNames[ANIM_JUMP_LOOP] = "JumpLoop";
     animNames[ANIM_JUMP_END] = "JumpEnd";
+
+    currentPlayer = false;
 
 }
 
@@ -279,6 +282,14 @@ void GraphicsEntite::processEvent(Event * event) {
 
         }
     }
+}
+
+bool GraphicsEntite::isCurrentPlayer() {
+    return currentPlayer;
+}
+
+void GraphicsEntite::setCurrentPlayer(bool currentPlayer) {
+    this->currentPlayer = currentPlayer;
 }
 
 } /* namespace Engine */

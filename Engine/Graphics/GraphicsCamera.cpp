@@ -18,12 +18,13 @@ GraphicsCamera::GraphicsCamera() {
     mVelocity = Ogre::Vector3::ZERO;
     mFastMove = false;
     mStyle = CS_FREELOOK;
-    mSceneMgr = 0;
 
-	// 3rd camera stuff
-	m_pNode = 0;
-	m_pPitchNode = 0;
-	m_pCamNode = 0;
+    // 3rd camera stuff
+    m_pNode = 0;
+    m_pPitchNode = 0;
+    m_pCamNode = 0;
+
+    direction = Ogre::Vector3::ZERO;
 }
 
 GraphicsCamera::~GraphicsCamera() {
@@ -55,7 +56,7 @@ void GraphicsCamera::setTarget(Ogre::SceneNode* target) {
 
 void GraphicsCamera::setTargetByName(Ogre::String targetName) {
 
-    Ogre::SceneNode * targetTemp = mSceneMgr->getSceneNode(targetName);
+    Ogre::SceneNode * targetTemp = mCamera->getSceneManager()->getSceneNode(targetName);
     if (targetTemp) {
         setTarget(targetTemp);
     }
@@ -164,6 +165,15 @@ bool GraphicsCamera::frameRenderingQueued(const Ogre::FrameEvent& evt) {
             if (mVelocity != Ogre::Vector3::ZERO)
                 mCamera->move(mVelocity * evt.timeSinceLastFrame);
         }
+
+        if (mStyle == CS_3PERS) {
+            // move the camera smoothly to the goal
+            Ogre::Vector3 goalOffset = m_pCamNode->_getDerivedPosition()
+                    - m_pPitchNode->getPosition();
+            m_pPitchNode->translate(goalOffset * evt.timeSinceLastFrame * 9.0f);
+            // always look at the pivot
+            m_pPitchNode->lookAt(m_pNode->_getDerivedPosition(), Ogre::Node::TS_WORLD);
+        }
     }
 
     return true;
@@ -203,8 +213,12 @@ void GraphicsCamera::injectMouseMove(const OIS::MouseEvent& evt) {
         mCamera->yaw(Ogre::Degree(-evt.state.X.rel * 0.15f));
         mCamera->pitch(Ogre::Degree(-evt.state.Y.rel * 0.15f));
     } else if (mStyle == CS_3PERS) {
-        mCamera->yaw(Ogre::Degree(-evt.state.X.rel * 0.15f));
-        mCamera->pitch(Ogre::Degree(-evt.state.Y.rel * 0.15f));
+
+        Ogre::Real deltaYaw = -0.05f * evt.state.X.rel;
+        Ogre::Real deltaPitch = -0.05f * evt.state.Y.rel;
+        Ogre::Real deltaZoom = -0.0005f * evt.state.Z.rel;
+
+        m_pNode->yaw(Ogre::Degree(deltaYaw), Ogre::Node::TS_WORLD);
     }
 
 }
@@ -230,25 +244,32 @@ void GraphicsCamera::processEvent(Event * event) {
 void GraphicsCamera::initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWindow* m_pRenderWnd) {
 
     mCamera = m_pSceneMgr->createCamera("CamPrincipal");
-    mSceneMgr = m_pSceneMgr;
     mCamera->setNearClipDistance(0.1);
 
-	// 3rd camera stuff
-	m_pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_pCamNode = m_pNode->createChildSceneNode();
-	m_pCamNode->setPosition(0, 1.8, 3); // Ratio 1unity-1meter, 1.8 meters of the ground, 3 meters behind
-	m_pPitchNode = m_pCamNode->createChildSceneNode();
-	m_pPitchNode->attachObject(mCamera);
+    // 3rd camera stuff
+    m_pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+    m_pCamNode = m_pNode->createChildSceneNode();
+    m_pCamNode->setPosition(0, 1.8, 3); // Ratio 1unity-1meter, 1.8 meters of the ground, 3 meters behind
+    m_pPitchNode = m_pCamNode->createChildSceneNode();
+    m_pPitchNode->attachObject(mCamera);
 
     Ogre::Viewport* vp = m_pRenderWnd->addViewport(mCamera);
     vp->setCamera(mCamera);
     vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
 
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+}
 
-	// 3rd camera stuff
-	Ogre::Vector3 direction = m_pNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
-	direction.normalise();
+Ogre::SceneNode*& GraphicsCamera::getPPitchNode() {
+    return m_pPitchNode;
+}
+
+void GraphicsCamera::setPPitchNode(Ogre::SceneNode*& pPitchNode) {
+    m_pPitchNode = pPitchNode;
+}
+
+void GraphicsCamera::setPosition(Ogre::Vector3& position) {
+    m_pPitchNode->setPosition(position * 2);
 }
 
 }

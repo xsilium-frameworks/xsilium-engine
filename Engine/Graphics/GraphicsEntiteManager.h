@@ -18,25 +18,26 @@ namespace Engine {
  */
 class GraphicsEntiteManager {
 public:
-	GraphicsEntiteManager();
-	virtual ~GraphicsEntiteManager();
+    GraphicsEntiteManager();
+    virtual ~GraphicsEntiteManager();
 
-	void createEntite(Event * event);
-	GraphicsEntite * trouverEntite(int id);
-	void deleteEntite(Ogre::String nom);
+    void createEntite(Event * event);
+    GraphicsEntite * trouverEntite(int id);
+    void deleteEntite(Ogre::String nom);
 
-	void setSceneManager(Ogre::SceneManager* msceneMgr);
+    void setSceneManager(Ogre::SceneManager* msceneMgr);
 
-	void update(float time);
+    void update(float time);
 
-	void processEvent(Event * event);
+    void processEvent(Event * event);
 
+    GraphicsEntite * getEntiteCurrentPlayer();
 
 private:
-	std::vector<GraphicsEntite *> listOfEntite ;
-	std::vector<GraphicsEntite *>::iterator entite ;
+    std::vector<GraphicsEntite *> listOfEntite;
+    std::vector<GraphicsEntite *>::iterator entite;
 
-	Ogre::SceneManager* msceneMgr;
+    Ogre::SceneManager* msceneMgr;
 };
 
 } /* namespace Engine */

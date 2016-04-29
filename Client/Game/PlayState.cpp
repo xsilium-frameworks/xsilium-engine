@@ -51,13 +51,14 @@ void PlayState::createScene() {
     event2.setProperty("PositionX", "-120");
     event2.setProperty("PositionY", "500");
     event2.setProperty("PositionZ", "-150");
+    event2.setProperty("CurrentPlayer", "1");
 
     Engine::EventManager::getInstance()->addEvent(event2);
 
     Event event3;
     event3.setProperty("Camera", "1");
     event3.setProperty("Target", "test");
-    event3.setProperty("Type", "1");
+    event3.setProperty("Type", "2");
     Engine::EventManager::getInstance()->addEvent(event3);
 
 }
