@@ -250,7 +250,7 @@ void GraphicsCamera::initCamera(Ogre::SceneManager* m_pSceneMgr, Ogre::RenderWin
 
     // 3rd camera stuff
     m_pNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-    m_pCamNode = m_pNode->createChildSceneNode();
+	m_pCamNode = m_pNode;
     m_pCamNode->setPosition(0, 1.8, 3); // Ratio 1unity-1meter, 1.8 meters of the ground, 3 meters behind
     m_pPitchNode = m_pCamNode->createChildSceneNode();
     m_pPitchNode->attachObject(mCamera);
@@ -271,7 +271,7 @@ void GraphicsCamera::setPPitchNode(Ogre::SceneNode*& pPitchNode) {
 }
 
 void GraphicsCamera::setPosition(Ogre::Vector3& position) {
-    this->position = position + Ogre::Vector3::UNIT_Y * 2;
+    m_pPitchNode->setPosition(position * 2);
 }
 
 }
